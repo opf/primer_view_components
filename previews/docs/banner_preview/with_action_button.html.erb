@@ -1,0 +1,4 @@
+<%= render(Primer::Alpha::Banner.new) do |component| %>
+  This is a banner with an action button!
+  <% component.with_action_button(size: :small) { "Take action" } %>
+<% end %>

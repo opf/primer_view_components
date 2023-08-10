@@ -1,0 +1,12 @@
+<%= render Primer::Alpha::ActionMenu.new(menu_id: "my-action-menu-2") do |c| %>
+ <% c.with_show_button(icon: :"kebab-horizontal", "aria-label": "Menu") %>
+ <% c.with_item(tag: :a, href: "https://primer.style/design/") do %>
+   Primer Design Link
+ <% end %>
+ <% c.with_item(tag: :button, type: "button") do %>
+   Quote Reply
+ <% end %>
+ <% c.with_item(tag: :"clipboard-copy", value: "Text to copy") do %>
+   Copy Text
+ <% end %>
+ <% end %>

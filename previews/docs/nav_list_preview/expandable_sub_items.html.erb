@@ -1,0 +1,24 @@
+
+<%= render(Primer::Alpha::NavList.new(aria: { label: "Settings" }, selected_item_id: :email_notifications)) do |component| %>
+  <% component.with_group do |group| %>
+    <% group.with_heading(title: "Account Settings") %>
+    <% group.with_item(label: "Notification settings") do |item| %>
+      <% item.with_leading_visual_icon(icon: :bell) %>
+      <% item.with_item(label: "Email", selected_by_ids: :email_notifications, href: "/account/notifications/email") do |subitem| %>
+        <% subitem.with_trailing_visual_icon(icon: :mail) %>
+      <% end %>
+      <% item.with_item(label: "SMS", selected_by_ids: :sms_notifications, href: "/account/notifications/sms") do |subitem| %>
+        <% subitem.with_trailing_visual_icon(icon: :"device-mobile") %>
+      <% end %>
+    <% end %>
+    <% group.with_item(label: "Messages") do |item| %>
+      <% item.with_leading_visual_icon(icon: :bookmark) %>
+      <% item.with_item(label: "Inbox", href: "/account/messages/inbox") do |subitem| %>
+        <% subitem.with_trailing_visual_counter(count: 10) %>
+      <% end %>
+      <% item.with_item(label: "Organizer", href: "/account/messages/organizer") do |subitem| %>
+        <% subitem.with_trailing_visual_label(scheme: :primary) { "New" } %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

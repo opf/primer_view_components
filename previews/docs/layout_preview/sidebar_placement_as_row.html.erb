@@ -1,0 +1,12 @@
+<%= render(Primer::Alpha::Layout.new) do |component| %>
+  <% component.with_main(border: true) { "Main" } %>
+  <% component.with_sidebar(row_placement: :start, border: true) { "Sidebar" } %>
+<% end %>
+<%= render(Primer::Alpha::Layout.new(mt: 5)) do |component| %>
+  <% component.with_main(border: true) { "Main" } %>
+  <% component.with_sidebar(row_placement: :end, border: true) { "Sidebar" } %>
+<% end %>
+<%= render(Primer::Alpha::Layout.new(mt: 5)) do |component| %>
+  <% component.with_main(border: true) { "Main" } %>
+  <% component.with_sidebar(row_placement: :none, border: true) { "Sidebar" } %>
+<% end %>

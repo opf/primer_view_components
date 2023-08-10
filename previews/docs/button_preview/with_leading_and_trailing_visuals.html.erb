@@ -1,0 +1,5 @@
+<%= render(Primer::ButtonComponent.new) do |component| %>
+  <% component.with_leading_visual_icon(icon: :star) %>
+  <% component.with_trailing_visual_counter(count: 15) %>
+  Button
+<% end %>

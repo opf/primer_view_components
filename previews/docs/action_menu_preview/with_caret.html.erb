@@ -1,0 +1,15 @@
+<%= render Primer::Alpha::ActionMenu.new(menu_id: "my-action-menu-1") do |c| %>
+  <% c.with_show_button do |button| %>
+    <% button.with_trailing_action_icon(icon: "triangle-down") %>
+    Menu
+  <% end %>
+  <% c.with_item(tag: :a, href: "https://primer.style/design/") do %>
+    Primer Design
+  <% end %>
+  <% c.with_item(tag: :button, type: "button") do %>
+    Quote Reply
+  <% end %>
+  <% c.with_item(tag: :"clipboard-copy", value: "Text to copy") do %>
+    Copy Text
+  <% end %>
+<% end %>

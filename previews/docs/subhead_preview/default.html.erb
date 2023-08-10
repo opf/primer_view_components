@@ -1,0 +1,8 @@
+<%= render(Primer::Beta::Subhead.new) do |component| %>
+  <% component.with_heading(tag: :h3) do %>
+    My Heading
+  <% end %>
+  <% component.with_description do %>
+    My Description
+  <% end %>
+<% end %>

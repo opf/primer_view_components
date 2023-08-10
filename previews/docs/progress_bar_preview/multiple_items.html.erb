@@ -1,0 +1,5 @@
+<%= render(Primer::Beta::ProgressBar.new) do |component| %>
+  <% component.with_item(percentage: 10) %>
+  <% component.with_item(bg: :accent_emphasis, percentage: 20) %>
+  <% component.with_item(bg: :danger_emphasis, percentage: 30) %>
+<% end %>

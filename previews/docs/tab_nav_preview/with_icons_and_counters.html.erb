@@ -1,0 +1,15 @@
+<%= render(Primer::Alpha::TabNav.new(label: "With icons and counters")) do |component| %>
+  <% component.with_tab(href: "#", selected: true) do |tab| %>
+    <% tab.with_icon(icon: :star) %>
+    <% tab.with_text { "Item 1" } %>
+  <% end %>
+  <% component.with_tab(href: "#") do |tab| %>
+    <% tab.with_icon(icon: :star) %>
+    <% tab.with_text { "Item 2" } %>
+    <% tab.with_counter(count: 10) %>
+  <% end %>
+  <% component.with_tab(href: "#") do |tab| %>
+    <% tab.with_text { "Item 3" } %>
+    <% tab.with_counter(count: 10) %>
+  <% end %>
+<% end %>

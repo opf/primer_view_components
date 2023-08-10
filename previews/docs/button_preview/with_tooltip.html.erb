@@ -1,0 +1,4 @@
+<%= render(Primer::ButtonComponent.new(id: "button-with-tooltip")) do |component| %>
+  <% component.with_tooltip(text: "Tooltip text") %>
+  Button
+<% end %>

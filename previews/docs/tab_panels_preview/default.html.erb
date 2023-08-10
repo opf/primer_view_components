@@ -1,0 +1,14 @@
+<%= render(Primer::Alpha::TabPanels.new(label: "With panels")) do |component| %>
+  <% component.with_tab(id: "tab-1", selected: true) do |tab| %>
+    <% tab.with_text { "Tab 1" } %>
+    <% tab.with_panel do %>
+      Panel 1
+    <% end %>
+  <% end %>
+  <% component.with_tab(id: "tab-2") do |tab| %>
+    <% tab.with_text { "Tab 2" } %>
+    <% tab.with_panel do %>
+      Panel 2
+    <% end %>
+  <% end %>
+<% end %>

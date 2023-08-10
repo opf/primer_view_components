@@ -1,0 +1,12 @@
+<%= render(Primer::Alpha::Layout.new(stacking_breakpoint: :sm)) do |component| %>
+  <% component.with_main(border: true) { "Main" } %>
+  <% component.with_sidebar(border: true) { "Sidebar" } %>
+<% end %>
+<%= render(Primer::Alpha::Layout.new(stacking_breakpoint: :md, mt: 5)) do |component| %>
+  <% component.with_main(border: true) { "Main" } %>
+  <% component.with_sidebar(border: true) { "Sidebar" } %>
+<% end %>
+<%= render(Primer::Alpha::Layout.new(stacking_breakpoint: :lg, mt: 5)) do |component| %>
+  <% component.with_main(border: true) { "Main" } %>
+  <% component.with_sidebar(border: true) { "Sidebar" } %>
+<% end %>

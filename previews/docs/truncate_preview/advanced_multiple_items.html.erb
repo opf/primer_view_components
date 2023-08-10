@@ -1,0 +1,9 @@
+<%= render(Primer::Beta::Truncate.new(tag: :ol)) do |component| %>
+  <% component.with_item(tag: :li) do %>primer<% end %>
+  <% component.with_item(tag: :li, priority: true) do %>/ css<% end %>
+  <% component.with_item(tag: :li) do %>/ Issues<% end %>
+  <% component.with_item(tag: :li) do %>/ #123 —<% end %>
+  <% component.with_item(tag: :li, priority: true) do %>
+    Visual bug on primer.style found in lists
+  <% end %>
+<% end %>

@@ -1,0 +1,4 @@
+<%= render(Primer::Beta::State.new(title: "title")) { "Default" } %>
+<%= render(Primer::Beta::State.new(title: "title", scheme: :open)) { "Open" } %>
+<%= render(Primer::Beta::State.new(title: "title", scheme: :closed)) { "Closed" } %>
+<%= render(Primer::Beta::State.new(title: "title", scheme: :merged)) { "Merged" } %>

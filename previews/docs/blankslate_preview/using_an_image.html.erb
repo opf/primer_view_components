@@ -1,0 +1,5 @@
+<%= render Primer::Beta::Blankslate.new do |component| %>
+  <% component.with_visual_image(src: Primer::ExampleImage::BASE64_SRC, alt: "Security - secure vault") %>
+  <% component.with_heading(tag: :h2).with_content("Title") %>
+  <% component.with_description { "Description"} %>
+<% end %>

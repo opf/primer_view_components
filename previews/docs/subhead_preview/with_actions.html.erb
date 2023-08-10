@@ -1,0 +1,15 @@
+<%= render(Primer::Beta::Subhead.new) do |component| %>
+  <% component.with_heading do %>
+    My Heading
+  <% end %>
+  <% component.with_description do %>
+    My Description
+  <% end %>
+  <% component.with_actions do %>
+    <%= render(
+      Primer::ButtonComponent.new(
+        tag: :a, href: "http://www.google.com", scheme: :danger
+      )
+    ) { "Action" } %>
+  <% end %>
+<% end %>

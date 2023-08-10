@@ -1,0 +1,6 @@
+<%= render Primer::Beta::Blankslate.new do |component| %>
+  <% component.with_visual_icon(icon: :book) %>
+  <% component.with_heading(tag: :h2).with_content("Welcome to the mona wiki!") %>
+  <% component.with_description { "Wikis provide a place in your repository to lay out the roadmap of your project, show the current status, and document software better, together."} %>
+  <% component.with_primary_action(href: "https://github.com/monalisa/mona/wiki/_new").with_content("Create the first page") %>
+<% end %>

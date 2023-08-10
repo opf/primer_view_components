@@ -1,0 +1,4 @@
+<%= render(Primer::LayoutComponent.new(side: :left)) do |component| %>
+  <% component.with_sidebar { "Sidebar" } %>
+  <% component.with_main { "Main" } %>
+<% end %>
