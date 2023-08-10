@@ -1,0 +1,9 @@
+
+<%= render Primer::Beta::Details.new do |component| %>
+  <% component.with_summary do %>
+    Summary
+  <% end %>
+  <% component.with_body do %>
+    Body
+  <% end %>
+<% end %>

@@ -1,0 +1,14 @@
+<%= render(Primer::Beta::BorderBox.new(padding: :condensed)) do |component| %>
+  <% component.with_header do %>
+    Header
+  <% end %>
+  <% component.with_body do %>
+    Body
+  <% end %>
+  <% component.with_row do %>
+    Row two
+  <% end %>
+  <% component.with_footer do %>
+    Footer
+  <% end %>
+<% end %>

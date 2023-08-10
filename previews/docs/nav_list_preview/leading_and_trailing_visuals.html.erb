@@ -1,0 +1,15 @@
+
+<%= render(Primer::Alpha::NavList.new(aria: { label: "Settings" }, selected_item_id: :personal_info)) do |component| %>
+  <% component.with_group do |group| %>
+    <% group.with_heading(title: "Account Settings") %>
+    <% group.with_avatar_item(src: "https://github.com/github.png", username: "person", selected_by_ids: :personal_info, href: "/account/info") %>
+    <% group.with_item(label: "Notifications", selected_by_ids: :notifications, href: "/account/notifications") do |item| %>
+      <% item.with_leading_visual_icon(icon: :bell) %>
+      <% item.with_trailing_visual_counter(count: 15) %>
+    <% end %>
+    <% group.with_item(label: "Billing info", selected_by_ids: :billing, href: "/account/billing") do |item| %>
+      <% item.with_leading_visual_icon(icon: :package) %>
+      <% item.with_trailing_visual_icon(icon: :"dot-fill", color: :attention) %>
+    <% end %>
+  <% end %>
+<% end %>

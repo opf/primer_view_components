@@ -1,0 +1,16 @@
+<%= render(Primer::Alpha::Layout.new) do |component| %>
+  <% component.with_main(width: :full, border: true) { "Main" } %>
+  <% component.with_sidebar(border: true) { "Sidebar" } %>
+<% end %>
+<%= render(Primer::Alpha::Layout.new(mt: 5)) do |component| %>
+  <% component.with_main(width: :md, border: true) { "Main" } %>
+  <% component.with_sidebar(border: true) { "Sidebar" } %>
+<% end %>
+<%= render(Primer::Alpha::Layout.new(mt: 5)) do |component| %>
+  <% component.with_main(width: :lg, border: true) { "Main" } %>
+  <% component.with_sidebar(border: true) { "Sidebar" } %>
+<% end %>
+<%= render(Primer::Alpha::Layout.new(mt: 5)) do |component| %>
+  <% component.with_main(width: :xl, border: true) { "Main" } %>
+  <% component.with_sidebar(border: true) { "Sidebar" } %>
+<% end %>

@@ -1,0 +1,6 @@
+
+<%= render(Primer::Alpha::SegmentedControl.new("aria-label": "File view", size: :small)) do |component| %>
+  <%= component.with_item(label: "Preview", selected: true) %>
+  <%= component.with_item(label: "Raw") %>
+  <%= component.with_item(label: "Blame") %>
+<% end %>

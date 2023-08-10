@@ -1,0 +1,11 @@
+<%= render(Primer::Alpha::Dropdown.new) do |component| %>
+  <% component.with_button do %>
+    Dropdown
+  <% end %>
+
+  <% component.with_menu(header: "Options") do |menu|
+    menu.with_item { "Item 1" }
+    menu.with_item { "Item 2" }
+    menu.with_item { "Item 3" }
+  end %>
+<% end %>

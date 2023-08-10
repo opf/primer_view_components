@@ -1,0 +1,4 @@
+<%= render(Primer::Beta::Flash.new) { "This is a flash message!" } %>
+<%= render(Primer::Beta::Flash.new(scheme: :warning)) { "This is a warning flash message!" } %>
+<%= render(Primer::Beta::Flash.new(scheme: :danger)) { "This is a danger flash message!" } %>
+<%= render(Primer::Beta::Flash.new(scheme: :success)) { "This is a success flash message!" } %>

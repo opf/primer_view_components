@@ -1,0 +1,5 @@
+<%= render(Primer::Alpha::TabNav.new(label: "Default", body_arguments: { classes: "custom-class", border: true, border_color: :accent_emphasis })) do |component| %>
+  <% component.with_tab(selected: true, href: "#") { "Tab 1" }%>
+  <% component.with_tab(href: "#") { "Tab 2" } %>
+  <% component.with_tab(href: "#") { "Tab 3" } %>
+<% end %>

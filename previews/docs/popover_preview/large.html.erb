@@ -1,0 +1,8 @@
+<%= render Primer::Beta::Popover.new do |component| %>
+  <% component.with_heading do %>
+    Activity feed
+  <% end %>
+  <% component.with_body(large: true) do %>
+    This is the large Popover body.
+  <% end %>
+<% end %>

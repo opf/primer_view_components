@@ -1,0 +1,11 @@
+<%= render(Primer::Beta::Truncate.new) do |component| %>
+  <% component.with_item(max_width: 300, expandable: true) do %>branch-name-that-is-really-long-branch-name-that-is-really-long-branch-name-that-is-really-long<% end %>
+<% end %>
+<br/>
+<%= render(Primer::Beta::Truncate.new) do |component| %>
+  <% component.with_item(max_width: 200, expandable: true) do %>branch-name-that-is-really-long-branch-name-that-is-really-long-branch-name-that-is-really-long<% end %>
+<% end %>
+<br/>
+<%= render(Primer::Beta::Truncate.new) do |component| %>
+  <% component.with_item(max_width: 100, expandable: true) do %>branch-name-that-is-really-long-branch-name-that-is-really-long-branch-name-that-is-really-long<% end %>
+<% end %>

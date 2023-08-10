@@ -1,0 +1,6 @@
+<%= render(Primer::Beta::Truncate.new) do |component| %>
+  <% component.with_item do %>really-long-repository-owner-name<% end %>
+  <% component.with_item(font_weight: :bold) do %>
+    <%= render(Primer::BaseComponent.new(tag: :span, font_weight: :normal)) { "/" } %> really-long-repository-name
+  <% end %>
+<% end %>

@@ -1,0 +1,13 @@
+<%= render(Primer::Alpha::Navigation::Tab.new) do |component| %>
+  <% component.with_icon(:star) %>
+  <% component.with_text { "Tab" } %>
+<% end %>
+<%= render(Primer::Alpha::Navigation::Tab.new) do |component| %>
+  <% component.with_icon(:star) %>
+  <% component.with_text { "Tab" } %>
+  <% component.with_counter(count: 10) %>
+<% end %>
+<%= render(Primer::Alpha::Navigation::Tab.new) do |component| %>
+  <% component.with_text { "Tab" } %>
+  <% component.with_counter(count: 10) %>
+<% end %>

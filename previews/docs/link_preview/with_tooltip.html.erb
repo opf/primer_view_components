@@ -1,0 +1,4 @@
+<%= render(Primer::Beta::Link.new(href: "#", id: "link-with-tooltip")) do |component| %>
+  <% component.with_tooltip(text: "Tooltip text") %>
+  Link
+<% end %>

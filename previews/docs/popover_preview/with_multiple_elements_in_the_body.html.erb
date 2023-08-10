@@ -1,0 +1,11 @@
+<%= render Primer::Beta::Popover.new do |component| %>
+  <% component.with_heading do %>
+    Activity feed
+  <% end %>
+  <% component.with_body(caret: :left) do %>
+    <p>This is the Popover body.</p>
+    <%= render Primer::ButtonComponent.new(type: :submit) do %>
+      Got it!
+    <% end %>
+  <% end %>
+<% end %>

@@ -1,0 +1,6 @@
+<%= render(Primer::Beta::AutoComplete::Item.new(selected: true, value: "value")) do %>
+  Selected
+<% end %>
+<%= render(Primer::Beta::AutoComplete::Item.new(value: "value")) do %>
+  Not selected
+<% end %>

@@ -1,0 +1,6 @@
+<%= render(Primer::Alpha::Banner.new) do |component| %>
+  Comment saved!
+  <% component.with_action_content do %>
+    <%= render(Primer::IconButton.new(icon: :pencil, mr: 1, "aria-label": "Edit")) %>
+  <% end %>
+<% end %>

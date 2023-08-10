@@ -1,0 +1,15 @@
+<%= render Primer::Alpha::ActionMenu.new(menu_id: "my-action-menu-0") do |c| %>
+  <% c.with_show_button { "Menu" } %>
+  <% c.with_item(tag: :a, href: "https://primer.style/design/") do %>
+    Primer Design
+  <% end %>
+  <% c.with_item(tag: :button, type: "button", onclick: "() => {}") do %>
+    Quote Reply
+  <% end %>
+  <% c.with_item(tag: :"clipboard-copy", value: "Text to copy") do %>
+    Copy Text
+  <% end %>
+  <% c.with_item(href: "https://google.com", form_arguments: { name: "foo", value: "bar", method: :post }) do %>
+    Submit form
+  <% end %>
+<% end %>

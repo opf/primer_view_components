@@ -1,0 +1,6 @@
+<%= render(Primer::Alpha::ButtonMarketing.new(mr: 2)) { "Default" } %>
+<%= render(Primer::Alpha::ButtonMarketing.new(scheme: :primary, mr: 2)) { "Primary" } %>
+<%= render(Primer::Alpha::ButtonMarketing.new(scheme: :outline)) { "Outline" } %>
+<div class="color-bg-emphasis">
+  <%= render(Primer::Alpha::ButtonMarketing.new(scheme: :transparent)) { "Transparent" } %>
+</div>

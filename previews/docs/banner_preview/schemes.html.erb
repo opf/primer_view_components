@@ -1,0 +1,6 @@
+<div style="display: grid; row-gap: 15px">
+  <%= render(Primer::Alpha::Banner.new) { "This is a banner message!" } %>
+  <%= render(Primer::Alpha::Banner.new(scheme: :warning)) { "This is a warning banner!" } %>
+  <%= render(Primer::Alpha::Banner.new(scheme: :danger)) { "This is a danger banner!" } %>
+  <%= render(Primer::Alpha::Banner.new(scheme: :success)) { "This is a success banner!" } %>
+</div>

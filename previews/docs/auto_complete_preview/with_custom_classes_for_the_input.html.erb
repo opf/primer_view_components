@@ -1,0 +1,3 @@
+<%= render(Primer::Beta::AutoComplete.new(label_text: "Fruits", src: "/view-components/rails-app/auto_complete", input_id: "fruits-input--custom-input", list_id: "fruits-popup--custom-input")) do |component| %>
+  <% component.with_input(classes: "custom-class") %>
+<% end %>

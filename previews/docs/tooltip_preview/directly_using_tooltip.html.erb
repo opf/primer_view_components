@@ -1,0 +1,4 @@
+<div style="position: relative;">
+  <button type="button" id="test-button">Test</button>
+  <%= render(Primer::Alpha::Tooltip.new(for_id: "test-button", type: :description, text: "This tooltip should take up the full width", direction: :ne)) %>
+</div>

@@ -1,0 +1,4 @@
+<%= render(Primer::ButtonComponent.new(id: "save-button")) do |component| %>
+  <% component.with_tooltip(text: "This will immediately impact all organization members", type: :description, direction: :ne) %>
+  Save
+<% end %>
