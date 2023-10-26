@@ -33,6 +33,42 @@ module Primer
         end
       end
 
+      # @label Back button
+      def back_button
+        render(Primer::OpenProject::PageHeader.new) do |header|
+          header.with_title() { "Hello" }
+          header.with_back_button(href: "#")
+        end
+      end
+
+      # @label Back button and breadcrumbs
+      def back_button_and_breadcrumbs
+        breadcrumb_items = [
+          {href: "/root", text: "Root"},
+          "\u003ca href=\"/root/sub\"\u003eSub\u003c/a\u003e" ,
+          "test"
+        ]
+        render(Primer::OpenProject::PageHeader.new) do |header|
+          header.with_title() { "Hello" }
+          header.with_back_button(href: "#")
+          header.with_breadcrumbs(breadcrumb_items)
+        end
+      end
+
+      # @label Breadcrumbs don't show breadcrumb
+      def back_button_and_no_breadcrumbs
+        breadcrumb_items = [
+          "test1",
+          "test2" ,
+          "test3"
+        ]
+        render(Primer::OpenProject::PageHeader.new) do |header|
+          header.with_title() { "Hello" }
+          header.with_back_button(href: "#")
+          header.with_breadcrumbs(breadcrumb_items, show_breadcrumb: false)
+        end
+      end
+
       # @label With actions
       def actions
         render_with_template(locals: {})

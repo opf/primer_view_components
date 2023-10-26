@@ -435,6 +435,12 @@
   "PageHeader-actions": [
     "Primer::OpenProject::PageHeader"
   ],
+  "PageHeader-back_button": [
+    "Primer::OpenProject::PageHeader"
+  ],
+  "PageHeader-breadcrumbs": [
+    "Primer::OpenProject::PageHeader"
+  ],
   "PageHeader-description": [
     "Primer::OpenProject::PageHeader"
   ],

@@ -50,6 +50,44 @@ module Primer
         Primer::BaseComponent.new(**system_arguments)
       }
 
+      # Optional backbutton prepend the title
+      renders_one :back_button, lambda { |**system_arguments|
+        deny_tag_argument(**system_arguments)
+        system_arguments[:tag] = :a
+        system_arguments[:icon] = "arrow-left"
+        system_arguments[:scheme] = :invisible
+        system_arguments[:size] = :medium
+        system_arguments[:aria] = { label: I18n.t("button_back") }
+        system_arguments[:classes] = class_names(system_arguments[:classes], "PageHeader-back_button")
+
+        Primer::Beta::IconButton.new(**system_arguments)
+      }
+
+      # Optional breadcrumbs above the title row
+      # Items can be an array of string, hash {href, text} or an anchor tag string
+      renders_one :breadcrumbs, lambda { |items, show_breadcrumb: true|
+        return if !show_breadcrumb
+
+        render(Primer::Beta::Breadcrumbs.new(classes: ["PageHeader-breadcrumbs"] )) do |breadcrumbs|
+          items.each do |item|
+
+            # transform anchor tag strings to {href, text} objects
+            # e.g "\u003ca href=\"/admin\"\u003eAdministration\u003c/a\u003e"
+            if (item.is_a?(String) && item.start_with?("\u003c"))
+              item = transformLinkHtmlStringToObject(item)
+            end
+
+            case item
+            when String
+              breadcrumbs.with_item(href: '#') { item }
+            when Hash
+              breadcrumbs.with_item(href: item[:href]) { item[:text] }
+            end
+          end
+        end
+      }
+
+
       def initialize(**system_arguments)
         @system_arguments = deny_tag_argument(**system_arguments)
 
@@ -63,6 +101,16 @@ module Primer
 
       def render?
         title?
+      end
+
+      private
+
+      def transformLinkHtmlStringToObject(html_string)
+        # Parse the HTML
+        doc = Nokogiri::HTML.fragment(html_string)
+        # Extract href and text
+        anchor = doc.at('a')
+        { href: anchor['href'], text: anchor.text }
       end
     end
   end

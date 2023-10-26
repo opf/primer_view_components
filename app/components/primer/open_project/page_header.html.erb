@@ -1,4 +1,6 @@
 <%= render Primer::BaseComponent.new(**@system_arguments) do %>
+  <%= breadcrumbs %>
+  <%= back_button %>
   <%= title %>
   <%= description %>
   <%= actions %>
