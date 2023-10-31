@@ -64,33 +64,28 @@ module Primer
         system_arguments[:scheme] = :invisible
         system_arguments[:classes] = class_names(system_arguments[:classes], "PageHeader-backButton")
 
-        Primer::Beta::IconButton.new(**system_arguments)
+        Primer::Beta::IconButton.new(size: size, icon: icon, **system_arguments)
       }
 
       # Optional breadcrumbs above the title row
       # Items can be an array of string, hash {href, text} or an anchor tag string
       renders_one :breadcrumbs, lambda { |items, show_breadcrumb: true|
-        return if !show_breadcrumb
+        return unless show_breadcrumb
 
-        render(Primer::Beta::Breadcrumbs.new(classes: ["PageHeader-breadcrumbs"] )) do |breadcrumbs|
+        render(Primer::Beta::Breadcrumbs.new(classes: ["PageHeader-breadcrumbs"])) do |breadcrumbs|
           items.each do |item|
-
             # transform anchor tag strings to {href, text} objects
             # e.g "\u003ca href=\"/admin\"\u003eAdministration\u003c/a\u003e"
-            if (item.is_a?(String) && item.start_with?("\u003c"))
-              item = transformLinkHtmlStringToObject(item)
-            end
+            item = anchor_string_to_object(item) if item.is_a?(String) && item.start_with?("\u003c")
 
-            case item
-            when String
-              breadcrumbs.with_item(href: '#') { item }
-            when Hash
+            if item.is_a?(String)
+              breadcrumbs.with_item(href: "#") { item }
+            else
               breadcrumbs.with_item(href: item[:href]) { item[:text] }
             end
           end
         end
       }
-
 
       def initialize(**system_arguments)
         @system_arguments = deny_tag_argument(**system_arguments)
@@ -109,12 +104,12 @@ module Primer
 
       private
 
-      def transformLinkHtmlStringToObject(html_string)
+      def anchor_string_to_object(html_string)
         # Parse the HTML
         doc = Nokogiri::HTML.fragment(html_string)
         # Extract href and text
-        anchor = doc.at('a')
-        { href: anchor['href'], text: anchor.text }
+        anchor = doc.at("a")
+        { href: anchor["href"], text: anchor.text }
       end
     end
   end
