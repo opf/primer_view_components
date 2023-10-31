@@ -53,7 +53,7 @@ module Primer
         Primer::BaseComponent.new(**system_arguments)
       }
 
-      # Optional backbutton prepend the title
+      # Optional back button prepend the title
       renders_one :back_button, lambda { |
         size: DEFAULT_BACK_BUTTON_SIZE,
         icon: DEFAULT_BACK_BUTTON_ICON,
@@ -62,7 +62,7 @@ module Primer
         deny_tag_argument(**system_arguments)
         system_arguments[:tag] = :a
         system_arguments[:scheme] = :invisible
-        system_arguments[:classes] = class_names(system_arguments[:classes], "PageHeader-back_button")
+        system_arguments[:classes] = class_names(system_arguments[:classes], "PageHeader-backButton")
 
         Primer::Beta::IconButton.new(**system_arguments)
       }
