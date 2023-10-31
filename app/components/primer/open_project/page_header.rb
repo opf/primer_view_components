@@ -62,7 +62,6 @@ module Primer
         deny_tag_argument(**system_arguments)
         system_arguments[:tag] = :a
         system_arguments[:scheme] = :invisible
-        system_arguments[:aria] = { label: I18n.t("button_back") }
         system_arguments[:classes] = class_names(system_arguments[:classes], "PageHeader-back_button")
 
         Primer::Beta::IconButton.new(**system_arguments)
