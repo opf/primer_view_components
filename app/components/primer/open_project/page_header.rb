@@ -13,6 +13,9 @@ module Primer
         DEFAULT_HEADER_VARIANT
       ].freeze
 
+      DEFAULT_BACK_BUTTON_SIZE = :medium
+      DEFAULT_BACK_BUTTON_ICON = "arrow-left"
+
       status :open_project
 
       # The title of the page header
@@ -51,12 +54,14 @@ module Primer
       }
 
       # Optional backbutton prepend the title
-      renders_one :back_button, lambda { |**system_arguments|
+      renders_one :back_button, lambda { |
+        size: DEFAULT_BACK_BUTTON_SIZE,
+        icon: DEFAULT_BACK_BUTTON_ICON,
+        **system_arguments
+      |
         deny_tag_argument(**system_arguments)
         system_arguments[:tag] = :a
-        system_arguments[:icon] = "arrow-left"
         system_arguments[:scheme] = :invisible
-        system_arguments[:size] = :medium
         system_arguments[:aria] = { label: I18n.t("button_back") }
         system_arguments[:classes] = class_names(system_arguments[:classes], "PageHeader-back_button")
 
