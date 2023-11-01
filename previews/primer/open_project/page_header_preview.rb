@@ -37,7 +37,7 @@ module Primer
       def back_button
         render(Primer::OpenProject::PageHeader.new) do |header|
           header.with_title() { "Hello" }
-          header.with_back_button(href: "#")
+          header.with_back_button(href: "#", 'aria-label': "Back")
         end
       end
 
@@ -50,7 +50,7 @@ module Primer
         ]
         render(Primer::OpenProject::PageHeader.new) do |header|
           header.with_title() { "Hello" }
-          header.with_back_button(href: "#")
+          header.with_back_button(href: "#", 'aria-label': "Back")
           header.with_breadcrumbs(breadcrumb_items)
         end
       end
@@ -64,7 +64,7 @@ module Primer
         ]
         render(Primer::OpenProject::PageHeader.new) do |header|
           header.with_title() { "Hello" }
-          header.with_back_button(href: "#")
+          header.with_back_button(href: "#", 'aria-label': "Back")
           header.with_breadcrumbs(breadcrumb_items, show_breadcrumb: false)
         end
       end
