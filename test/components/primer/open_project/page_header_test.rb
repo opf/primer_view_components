@@ -49,4 +49,16 @@ class PrimerOpenProjectPageHeaderTest < Minitest::Test
     assert_text("An action")
     assert_selector(".PageHeader-actions")
   end
+
+  def test_renders_back_button
+    render_inline(Primer::OpenProject::PageHeader.new) do |header|
+      header.with_title { "Hello" }
+      header.with_back_button(href: "/link", 'aria-label': "Back")
+    end
+
+    assert_text("Hello")
+    assert_selector(".PageHeader-title")
+    assert_selector(".PageHeader-backButton")
+    assert_selector(".Button-withTooltip a[href='/link']")
+  end
 end
