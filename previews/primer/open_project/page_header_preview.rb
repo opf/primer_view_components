@@ -44,8 +44,8 @@ module Primer
       # @label Back button and breadcrumbs
       def back_button_and_breadcrumbs
         breadcrumb_items = [
-          {href: "/root", text: "Root"},
-          "\u003ca href=\"/root/sub\"\u003eSub\u003c/a\u003e" ,
+          {href: "/foo", text: "Foo"},
+          "\u003ca href=\"/foo/bar\"\u003eBar\u003c/a\u003e" ,
           "test"
         ]
         render(Primer::OpenProject::PageHeader.new) do |header|

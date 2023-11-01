@@ -72,7 +72,7 @@ module Primer
       renders_one :breadcrumbs, lambda { |items, show_breadcrumb: true|
         return unless show_breadcrumb
 
-        render(Primer::Beta::Breadcrumbs.new(classes: ["PageHeader-breadcrumbs"])) do |breadcrumbs|
+        render(Primer::Beta::Breadcrumbs.new(classes: class_names("PageHeader-breadcrumbs"))) do |breadcrumbs|
           items.each do |item|
             # transform anchor tag strings to {href, text} objects
             # e.g "\u003ca href=\"/admin\"\u003eAdministration\u003c/a\u003e"
