@@ -69,8 +69,9 @@ module Primer
 
       # Optional breadcrumbs above the title row
       # Items can be an array of string, hash {href, text} or an anchor tag string
-      renders_one :breadcrumbs, lambda { |items|
-        render(Primer::Beta::Breadcrumbs.new(classes: class_names("PageHeader-breadcrumbs"))) do |breadcrumbs|
+      renders_one :breadcrumbs, lambda { |items, **system_arguments|
+        system_arguments[:classes] = class_names(system_arguments[:classes], "PageHeader-breadcrumbs")
+        render(Primer::Beta::Breadcrumbs.new(**system_arguments)) do |breadcrumbs|
           items.each do |item|
             # transform anchor tag strings to {href, text} objects
             # e.g "\u003ca href=\"/admin\"\u003eAdministration\u003c/a\u003e"
