@@ -64,8 +64,8 @@ class PrimerOpenProjectPageHeaderTest < Minitest::Test
 
   def test_renders_breadcrumbs
     breadcrumb_items = [
-      {href: "/foo", text: "Foo"},
-      "\u003ca href=\"/foo/bar\"\u003eBar\u003c/a\u003e" ,
+      { href: "/foo", text: "Foo" },
+      "\u003ca href=\"/foo/bar\"\u003eBar\u003c/a\u003e",
       "test"
     ]
 
