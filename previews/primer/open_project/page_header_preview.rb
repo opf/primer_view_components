@@ -54,6 +54,11 @@ module Primer
           header.with_breadcrumbs(breadcrumb_items)
         end
       end
+
+      # @label With actions
+      def actions
+        render_with_template(locals: {})
+      end
     end
   end
 end
