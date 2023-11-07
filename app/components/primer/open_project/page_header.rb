@@ -92,9 +92,7 @@ module Primer
         system_arguments[:classes] = class_names(system_arguments[:classes], "PageHeader-breadcrumbs")
         render(Primer::Beta::Breadcrumbs.new(**system_arguments)) do |breadcrumbs|
           items.each do |item|
-            # transform anchor tag strings to {href, text} objects
-            # e.g "\u003ca href=\"/admin\"\u003eAdministration\u003c/a\u003e"
-            item = anchor_string_to_object(item) if item.is_a?(String) && item.start_with?("\u003c")
+            item = anchor_string_to_object(item) if anchor_tag_string?(item)
 
             if item.is_a?(String)
               breadcrumbs.with_item(href: "#") { item }
@@ -122,12 +120,19 @@ module Primer
 
       private
 
+      # transform anchor tag strings to {href, text} objects
+      # e.g "\u003ca href=\"/admin\"\u003eAdministration\u003c/a\u003e"
       def anchor_string_to_object(html_string)
         # Parse the HTML
         doc = Nokogiri::HTML.fragment(html_string)
         # Extract href and text
         anchor = doc.at("a")
         { href: anchor["href"], text: anchor.text }
+      end
+
+      # Check if the item is an anchor tag string e.g "\u003ca href=\"/admin\"\u003eAdministration\u003c/a\u003e"
+      def anchor_tag_string?(item)
+        item.is_a?(String) && item.start_with?("\u003c")
       end
     end
   end
