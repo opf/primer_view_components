@@ -34,10 +34,13 @@ module Primer
       end
 
       # @label Back button
-      def back_button
+      # @param href [String] text
+      # @param size [Symbol] select [small, medium, large]
+      # @param icon [String] select ["arrow-left", "chevron-left", "triangle-left"]
+      def back_button(href: "#", size: :medium, icon: "arrow-left")
         render(Primer::OpenProject::PageHeader.new) do |header|
           header.with_title() { "Hello" }
-          header.with_back_button(href: "#", 'aria-label': "Back")
+          header.with_back_button(href: href, size: size, icon: icon, 'aria-label': "Back")
         end
       end
 
