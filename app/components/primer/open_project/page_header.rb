@@ -14,7 +14,18 @@ module Primer
       ].freeze
 
       DEFAULT_BACK_BUTTON_SIZE = :medium
+      BACK_BUTTON_SIZE_OPTIONS = [
+        :small,
+        DEFAULT_HEADER_VARIANT,
+        :large
+      ].freeze
+
       DEFAULT_BACK_BUTTON_ICON = "arrow-left"
+      BACK_BUTTON_ICON_OPTIONS = [
+        DEFAULT_BACK_BUTTON_ICON,
+        "chevron-left",
+        "triangle-left"
+      ].freeze
 
       status :open_project
 
@@ -62,6 +73,8 @@ module Primer
         deny_tag_argument(**system_arguments)
         system_arguments[:tag] = :a
         system_arguments[:scheme] = :invisible
+        system_arguments[:size] = fetch_or_fallback(BACK_BUTTON_SIZE_OPTIONS, size, DEFAULT_BACK_BUTTON_SIZE)
+        system_arguments[:icon] = fetch_or_fallback(BACK_BUTTON_ICON_OPTIONS, icon, DEFAULT_BACK_BUTTON_ICON)
         system_arguments[:classes] = class_names(system_arguments[:classes], "PageHeader-backButton")
 
         Primer::Beta::IconButton.new(size: size, icon: icon, **system_arguments)
