@@ -65,6 +65,10 @@ module Primer
       }
 
       # Optional back button prepend the title
+      #
+      # @param size [Symbol] <%= one_of(Primer::OpenProject::PageHeader::BACK_BUTTON_SIZE_OPTIONS) %>
+      # @param icon [String] <%= one_of(Primer::OpenProject::PageHeader::BACK_BUTTON_ICON_OPTIONS) %>
+      # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
       renders_one :back_button, lambda { |
         size: DEFAULT_BACK_BUTTON_SIZE,
         icon: DEFAULT_BACK_BUTTON_ICON,
@@ -77,7 +81,7 @@ module Primer
         system_arguments[:icon] = fetch_or_fallback(BACK_BUTTON_ICON_OPTIONS, icon, DEFAULT_BACK_BUTTON_ICON)
         system_arguments[:classes] = class_names(system_arguments[:classes], "PageHeader-backButton")
 
-        Primer::Beta::IconButton.new(size: size, icon: icon, **system_arguments)
+        Primer::Beta::IconButton.new(**system_arguments)
       }
 
       # Optional breadcrumbs above the title row
