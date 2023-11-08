@@ -33,7 +33,7 @@ module Primer
         end
       end
 
-      # @label Back button
+      # @label With back button
       # @param href [String] text
       # @param size [Symbol] select [small, medium, large]
       # @param icon [String] select ["arrow-left", "chevron-left", "triangle-left"]
@@ -44,16 +44,15 @@ module Primer
         end
       end
 
-      # @label Back button and breadcrumbs
-      def back_button_and_breadcrumbs
+      # @label With breadcrumbs
+      def breadcrumbs
         breadcrumb_items = [
           {href: "/foo", text: "Foo"},
           "\u003ca href=\"/foo/bar\"\u003eBar\u003c/a\u003e" ,
-          "test"
+          "Baz"
         ]
         render(Primer::OpenProject::PageHeader.new) do |header|
           header.with_title() { "A title" }
-          header.with_back_button(href: "#", 'aria-label': "Back")
           header.with_breadcrumbs(breadcrumb_items)
         end
       end
