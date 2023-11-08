@@ -1,11 +1,10 @@
 <%= render(Primer::OpenProject::PageHeader.new) do |component| %>
   <% component.with_title(tag: :h1) do %>
-    Hello this is a long title for testing
+    A title
   <% end %>
   <% component.with_description do %>
     A description with actions
   <% end %>
-  <% component.with_back_button(href: "#", 'aria-label': "Back") %>
   <% component.with_actions do %>
     <%= render(Primer::Alpha::ActionMenu.new) do |component| %>
       <% component.with_show_button { "Menu" } %>

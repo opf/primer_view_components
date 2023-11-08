@@ -52,7 +52,7 @@ module Primer
           "test"
         ]
         render(Primer::OpenProject::PageHeader.new) do |header|
-          header.with_title() { "Hello this is a long title for testing" }
+          header.with_title() { "A title" }
           header.with_back_button(href: "#", 'aria-label': "Back")
           header.with_breadcrumbs(breadcrumb_items)
         end
