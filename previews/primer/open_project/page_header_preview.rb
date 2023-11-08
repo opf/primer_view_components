@@ -18,10 +18,22 @@ module Primer
       # @param variant [Symbol] select [medium, large]
       # @param title [String] text
       # @param description [String] text
-      def playground(variant: :medium, title: "Hello", description: "Last updated 5 minutes ago by XYZ.")
+      # @param with_back_button [Boolean]
+      # @param with_breadcrumbs [Boolean]
+      def playground(
+        variant: :medium,
+        title: "Hello",
+        description: "Last updated 5 minutes ago by XYZ.",
+        with_back_button: false,
+        with_breadcrumbs: false
+      )
+        breadcrumb_items = [{ href: "/foo", text: "Foo" }, { href: "/bar", text: "Bar" }, "Baz"]
+
         render(Primer::OpenProject::PageHeader.new) do |header|
           header.with_title(variant: variant) { title }
           header.with_description { description }
+          header.with_back_button(href: "#", 'aria-label': "Back") if with_back_button
+          header.with_breadcrumbs(breadcrumb_items) if with_breadcrumbs
         end
       end
 
@@ -44,7 +56,7 @@ module Primer
       # @param icon [String] select ["arrow-left", "chevron-left", "triangle-left"]
       def back_button(href: "#", size: :medium, icon: "arrow-left")
         render(Primer::OpenProject::PageHeader.new) do |header|
-          header.with_title() { "Hello" }
+          header.with_title { "Hello" }
           header.with_back_button(href: href, size: size, icon: icon, 'aria-label': "Back")
         end
       end
@@ -52,12 +64,12 @@ module Primer
       # @label With breadcrumbs
       def breadcrumbs
         breadcrumb_items = [
-          {href: "/foo", text: "Foo"},
-          "\u003ca href=\"/foo/bar\"\u003eBar\u003c/a\u003e" ,
+          { href: "/foo", text: "Foo" },
+          "\u003ca href=\"/foo/bar\"\u003eBar\u003c/a\u003e",
           "Baz"
         ]
         render(Primer::OpenProject::PageHeader.new) do |header|
-          header.with_title() { "A title" }
+          header.with_title { "A title" }
           header.with_breadcrumbs(breadcrumb_items)
         end
       end
