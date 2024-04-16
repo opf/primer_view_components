@@ -11,9 +11,10 @@ module Primer
         # @param dialog_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::Alpha::Dialog) %>.
         # @param button_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::Beta::Button) %> or <%= link_to_component(Primer::Beta::IconButton) %>, depending on the value of the `icon:` argument.
         def initialize(dialog_arguments: {}, button_arguments: {})
+          component = dialog_arguments.delete(:component) || Primer::Alpha::Dialog
           callback = button_arguments.delete(:button_block)
 
-          @dialog = Primer::Alpha::Dialog.new(**dialog_arguments)
+          @dialog = component.new(**dialog_arguments)
           @button = @dialog.with_show_button(**button_arguments) do |button|
             callback&.call(button)
           end

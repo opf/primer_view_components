@@ -57,19 +57,19 @@ module Primer
       #
       # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
       renders_many :actions, types: {
-        icon_button: lambda { |icon:, mobile_icon:, label:, scheme: DEFAULT_ACTION_SCHEME, **system_arguments|
+        icon_button: lambda { |component: Primer::Beta::IconButton, icon:, mobile_icon: icon, label:, scheme: DEFAULT_ACTION_SCHEME, **system_arguments|
           deny_tag_argument(**system_arguments)
           system_arguments = set_action_arguments(system_arguments, scheme: scheme)
           add_option_to_mobile_menu(system_arguments, mobile_icon, label, scheme)
 
-          Primer::Beta::IconButton.new(icon: icon, "aria-label": label, **system_arguments)
+          component.new(icon: icon, "aria-label": label, **system_arguments)
         },
-        button: lambda { |mobile_icon:, mobile_label:, scheme: DEFAULT_ACTION_SCHEME, **system_arguments|
+        button: lambda { |component: Primer::Beta::Button, mobile_icon:, mobile_label:, scheme: DEFAULT_ACTION_SCHEME, **system_arguments|
           deny_tag_argument(**system_arguments)
           system_arguments = set_action_arguments(system_arguments, scheme: scheme)
           add_option_to_mobile_menu(system_arguments, mobile_icon, mobile_label, scheme)
 
-          Primer::Beta::Button.new(**system_arguments)
+          component.new(**system_arguments)
         },
         zen_mode_button: lambda { |mobile_icon: Primer::OpenProject::ZenModeButton::ZEN_MODE_BUTTON_ICON, mobile_label: Primer::OpenProject::ZenModeButton::ZEN_MODE_BUTTON_LABEL, **system_arguments|
           deny_tag_argument(**system_arguments)
@@ -79,17 +79,17 @@ module Primer
           Primer::OpenProject::ZenModeButton.new(**system_arguments)
         },
 
-        link: lambda { |mobile_icon:, mobile_label:, scheme: DEFAULT_ACTION_SCHEME, **system_arguments|
+        link: lambda { |component: Primer::Beta::Link, mobile_icon:, mobile_label:, scheme: DEFAULT_ACTION_SCHEME, **system_arguments|
           deny_tag_argument(**system_arguments)
           system_arguments[:target] ||= "_top"
 
           system_arguments = set_action_arguments(system_arguments, scheme: scheme)
           add_option_to_mobile_menu(system_arguments, mobile_icon, mobile_label, scheme)
 
-          Primer::Beta::Link.new(**system_arguments)
+          component.new(**system_arguments)
         },
         # Should only be used rarely on a per-need basis
-        text: lambda { |**system_arguments|
+        text: lambda { |component: Primer::Beta::Text, **system_arguments|
           system_arguments = set_action_arguments(system_arguments)
 
           system_arguments[:color] ||= :muted
@@ -97,7 +97,7 @@ module Primer
           # Enforce that texts are hidden on mobile
           system_arguments[:display] = [:none, :flex]
 
-          Primer::Beta::Text.new(**system_arguments)
+          component.new(**system_arguments)
         },
         menu: {
           renders: lambda { |**system_arguments, &block|
