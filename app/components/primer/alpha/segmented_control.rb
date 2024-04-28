@@ -60,8 +60,8 @@ module Primer
       end
 
       def render?
-        valid_items_count = items.count <= (@hide_labels ? 6 : 5) && items.count >= 2
-        raise ArgumentError, "A segmented control should have 2–5 choices with text labels, or up to 6 icon-only buttons." if !valid_items_count && !Rails.env.production?
+        valid_items_count = items.count <= (@hide_labels ? 8 : 7) && items.count >= 2
+        raise ArgumentError, "A segmented control should have 2–7 choices with text labels, or up to 8 icon-only buttons." if !valid_items_count && !Rails.env.production?
 
         valid_items_count
       end

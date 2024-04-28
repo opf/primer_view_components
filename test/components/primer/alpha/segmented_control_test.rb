@@ -80,10 +80,12 @@ module Primer
             component.with_item(label: "Item 4") { "Item 4" }
             component.with_item(label: "Item 5") { "Item 5" }
             component.with_item(label: "Item 6") { "Item 6" }
+            component.with_item(label: "Item 7") { "Item 7" }
+            component.with_item(label: "Item 8") { "Item 8" }
           end
         end
 
-        assert_equal(error.message, "A segmented control should have 2–5 choices with text labels, or up to 6 icon-only buttons.")
+        assert_equal(error.message, "A segmented control should have 2–7 choices with text labels, or up to 8 icon-only buttons.")
       end
 
       def test_doesnt_render_with_too_many_icon_items
@@ -96,10 +98,12 @@ module Primer
             component.with_item(icon: :zap, label: "Item 5") { "Item 5" }
             component.with_item(icon: :zap, label: "Item 6") { "Item 6" }
             component.with_item(icon: :zap, label: "Item 7") { "Item 7" }
+            component.with_item(icon: :zap, label: "Item 8") { "Item 8" }
+            component.with_item(icon: :zap, label: "Item 9") { "Item 9" }
           end
         end
 
-        assert_equal(error.message, "A segmented control should have 2–5 choices with text labels, or up to 6 icon-only buttons.")
+        assert_equal(error.message, "A segmented control should have 2–7 choices with text labels, or up to 8 icon-only buttons.")
       end
 
       def test_raises_if_no_aria_label_is_provided
