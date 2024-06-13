@@ -21,6 +21,7 @@ module Primer
       ].freeze
 
       DEFAULT_ACTION_SCHEME = :default
+      ACTIONS_DISPLAY = [:none, :flex].freeze
       MOBILE_ACTIONS_DISPLAY = [:flex, :none].freeze
 
       DEFAULT_LEADING_ACTION_DISPLAY = [:none, :flex].freeze
@@ -252,7 +253,7 @@ module Primer
 
       def set_action_arguments(system_arguments, scheme: nil)
         system_arguments[:ml] ||= 2
-        system_arguments[:display] = [:none, :flex]
+        system_arguments[:display] = ACTIONS_DISPLAY
         system_arguments[:size] = :medium
         system_arguments[:scheme] = scheme unless scheme.nil?
         system_arguments[:classes] = class_names(
