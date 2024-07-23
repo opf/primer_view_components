@@ -193,6 +193,7 @@ declare global {
   interface Window {
     ToggleSwitchElement: typeof ToggleSwitchElement
     Turbo: {
+      // eslint-disable-next-line no-unused-vars
       renderStreamMessage: (message: string) => void
     }
   }
