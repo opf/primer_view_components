@@ -2,8 +2,8 @@
 
 if ! command -v overmind &> /dev/null
 then
-  echo "Please install overmind."
-  exit 1
+  echo "overmind is needed to run this script. Installing now."
+  gem install overmind
 fi
 
 # Gems
