@@ -38,6 +38,7 @@
     "lint:eslint": "eslint 'app/components/**/*.ts'",
     "lint:eslint:fix": "eslint 'app/components/**/*.ts' --fix",
     "changeset:version": "changeset version && script/version",
+    "build": "script/build-assets",
     "build:js": "script/build-assets js",
     "build:css": "script/build-assets css"
   },
@@ -58,7 +59,7 @@
   "devDependencies": {
     "@changesets/changelog-github": "^0.5.0",
     "@changesets/cli": "^2.24.1",
-    "@github/axe-github": "^0.6.1",
+    "@github/axe-github": "^0.7.0",
     "@github/browserslist-config": "^1.0.0",
     "@github/markdownlint-github": "^0.6.0",
     "@github/prettier-config": "0.0.6",
@@ -91,7 +92,9 @@
     "stylelint": "^16.1.0",
     "stylelint-config-standard": "^36.0.0",
     "tslib": "^2.4.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "vite": "^5.3.5",
+    "vite-plugin-ruby": "^5.0.0"
   },
   "prettier": "@github/prettier-config",
   "browserslist": "extends @github/browserslist-config"
