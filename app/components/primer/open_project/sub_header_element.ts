@@ -6,6 +6,23 @@ class SubHeaderElement extends HTMLElement {
   @targets hiddenItemsOnExpandedFilter: HTMLElement[]
   @targets shownItemsOnExpandedFilter: HTMLElement[]
 
+  connectedCallback() {
+    this.clearFilterButton = this.querySelector('.FormControl-input-trailingAction') as HTMLElement;
+    this.toggleFilterInputClearButton()
+  }
+
+  toggleFilterInputClearButton() {
+    if (!this.clearFilterButton) {
+      return
+    }
+
+    if (this.filterInput.value.length > 0) {
+      this.clearFilterButton.classList.remove('d-none')
+    } else {
+      this.clearFilterButton.classList.add('d-none')
+    }
+  }
+
   expandFilterInput() {
     for (const item of this.hiddenItemsOnExpandedFilter) {
       item.classList.add('d-none')
