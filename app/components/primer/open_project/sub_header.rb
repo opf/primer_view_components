@@ -55,7 +55,7 @@ module Primer
 
         @mobile_filter_trigger = Primer::Beta::IconButton.new(icon: system_arguments[:leading_visual][:icon],
                                                               display: [:inline_flex, :none],
-                                                              aria: {label: label },
+                                                              aria: { label: label },
                                                               "data-action": "click:sub-header#expandFilterInput",
                                                               "data-targets": HIDDEN_FILTER_TARGET_SELECTOR)
 
