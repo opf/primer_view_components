@@ -10,12 +10,17 @@ class SubHeaderElement extends HTMLElement {
   clearButtonWrapper: HTMLElement | null
 
   connectedCallback() {
-    this.clearFilterButton = this.querySelector('button.FormControl-input-trailingAction') as HTMLButtonElement
-    this.clearButtonWrapper = this.clearFilterButton.closest('.FormControl-input-wrap') as HTMLElement
+    this.#waitForCondition(
+      () => Boolean(this.filterInput),
+      () => {
+        this.clearFilterButton = this.querySelector('button.FormControl-input-trailingAction') as HTMLButtonElement
+        this.clearButtonWrapper = this.clearFilterButton.closest('.FormControl-input-wrap') as HTMLElement
 
-    if (this.clearFilterButton) {
-      this.toggleFilterInputClearButton()
-    }
+        if (this.clearFilterButton) {
+          this.toggleFilterInputClearButton()
+        }
+      }
+    )
   }
 
   toggleFilterInputClearButton() {
@@ -57,6 +62,23 @@ class SubHeaderElement extends HTMLElement {
     }
 
     this.classList.remove('SubHeader--expandedSearch')
+  }
+
+  // Waits for condition to return true. If it returns false initially, this function creates a
+  // MutationObserver that calls body() whenever the contents of the component change.
+  #waitForCondition(condition: () => boolean, body: () => void) {
+    if (condition()) {
+      body()
+    } else {
+      const mutationObserver = new MutationObserver(() => {
+        if (condition()) {
+          body()
+          mutationObserver.disconnect()
+        }
+      })
+
+      mutationObserver.observe(this, {childList: true, subtree: true})
+    }
   }
 }
 
