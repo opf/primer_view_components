@@ -2,6 +2,8 @@
 
 ENV["RAILS_ENV"] = "test"
 
+ENV["VITE_RUBY_SKIP_COMPATIBILITY_CHECK"] = "true"
+
 if ENV["COVERAGE"] == "1"
   require "simplecov"
 
