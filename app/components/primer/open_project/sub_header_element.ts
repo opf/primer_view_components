@@ -10,17 +10,7 @@ class SubHeaderElement extends HTMLElement {
   clearButtonWrapper: HTMLElement | null
 
   connectedCallback() {
-    this.#waitForCondition(
-      () => Boolean(this.filterInput),
-      () => {
-        this.clearFilterButton = this.querySelector('button.FormControl-input-trailingAction') as HTMLButtonElement
-        this.clearButtonWrapper = this.clearFilterButton.closest('.FormControl-input-wrap') as HTMLElement
-
-        if (this.clearFilterButton) {
-          this.toggleFilterInputClearButton()
-        }
-      }
-    )
+    this.#setupFilterInputClearButton();
   }
 
   toggleFilterInputClearButton() {
@@ -62,6 +52,20 @@ class SubHeaderElement extends HTMLElement {
     }
 
     this.classList.remove('SubHeader--expandedSearch')
+  }
+
+  #setupFilterInputClearButton(){
+    this.#waitForCondition(
+      () => Boolean(this.filterInput),
+      () => {
+        this.clearFilterButton = this.querySelector('button.FormControl-input-trailingAction') as HTMLButtonElement
+        this.clearButtonWrapper = this.clearFilterButton.closest('.FormControl-input-wrap') as HTMLElement
+
+        if (this.clearFilterButton) {
+          this.toggleFilterInputClearButton()
+        }
+      }
+    )
   }
 
   // Waits for condition to return true. If it returns false initially, this function creates a
