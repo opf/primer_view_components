@@ -10,7 +10,7 @@ class SubHeaderElement extends HTMLElement {
   clearButtonWrapper: HTMLElement | null
 
   connectedCallback() {
-    this.#setupFilterInputClearButton();
+    this.#setupFilterInputClearButton()
   }
 
   toggleFilterInputClearButton() {
@@ -54,7 +54,7 @@ class SubHeaderElement extends HTMLElement {
     this.classList.remove('SubHeader--expandedSearch')
   }
 
-  #setupFilterInputClearButton(){
+  #setupFilterInputClearButton() {
     this.#waitForCondition(
       () => Boolean(this.filterInput),
       () => {
@@ -64,7 +64,7 @@ class SubHeaderElement extends HTMLElement {
         if (this.clearFilterButton) {
           this.toggleFilterInputClearButton()
         }
-      }
+      },
     )
   }
 
