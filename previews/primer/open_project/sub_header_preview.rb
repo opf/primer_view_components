@@ -23,7 +23,11 @@ module Primer
         value: nil
       )
         render(Primer::OpenProject::SubHeader.new) do |component|
-          component.with_filter_input(name: "filter", label: "Filter", show_clear_button:, value:) if show_filter_input
+          component.with_filter_input(
+            name: "filter",
+            label: "Filter",
+            show_clear_button: show_clear_button,
+            value: value) if show_filter_input
           component.with_filter_button do |button|
             button.with_trailing_visual_counter(count: "15")
             "Filter"

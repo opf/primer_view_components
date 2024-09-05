@@ -2,12 +2,16 @@ import {controller, target, targets} from '@github/catalyst'
 
 @controller
 class SubHeaderElement extends HTMLElement {
-  @target filterInput: HTMLElement
+  @target filterInput: HTMLInputElement
   @targets hiddenItemsOnExpandedFilter: HTMLElement[]
   @targets shownItemsOnExpandedFilter: HTMLElement[]
 
+  clearFilterButton: HTMLButtonElement | null
+  clearButtonWrapper: HTMLElement | null
+
   connectedCallback() {
-    this.clearFilterButton = this.querySelector('button.FormControl-input-trailingAction') as HTMLElement;
+    this.clearFilterButton = this.querySelector('button.FormControl-input-trailingAction') as HTMLButtonElement
+    this.clearButtonWrapper = this.clearFilterButton.closest('.FormControl-input-wrap') as HTMLElement
 
     if (this.clearFilterButton) {
       this.toggleFilterInputClearButton()
@@ -15,9 +19,16 @@ class SubHeaderElement extends HTMLElement {
   }
 
   toggleFilterInputClearButton() {
+    if (!(this.clearButtonWrapper && this.clearFilterButton)) {
+      return
+    }
     if (this.filterInput.value.length > 0) {
+      // Remove the wrapper's trailingAction class in order to have the filterInput's
+      // whole width used for the placeholder text.
+      this.clearButtonWrapper.classList.add('FormControl-input-wrap--trailingAction')
       this.clearFilterButton.classList.remove('d-none')
     } else {
+      this.clearButtonWrapper.classList.remove('FormControl-input-wrap--trailingAction')
       this.clearFilterButton.classList.add('d-none')
     }
   }
