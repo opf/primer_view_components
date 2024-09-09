@@ -53,6 +53,7 @@ class SubHeaderElement extends HTMLElement {
     this.waitForCondition(
       () => Boolean(this.filterInput),
       () => {
+        this.filterInput.classList.remove('SubHeader-filterInput_hiddenClearButton')
         this.clearFilterButton = this.querySelector('button.FormControl-input-trailingAction') as HTMLButtonElement
 
         if (this.clearFilterButton) {

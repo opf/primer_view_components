@@ -38,7 +38,7 @@ module Primer
       renders_one :filter_input, lambda { |name:, label:, **system_arguments|
         system_arguments[:classes] = class_names(
           system_arguments[:classes],
-          "SubHeader-filterInput"
+          "SubHeader-filterInput SubHeader-filterInput_hiddenClearButton"
         )
         system_arguments[:placeholder] ||= I18n.t("button_filter")
         system_arguments[:leading_visual] ||= { icon: :search }
