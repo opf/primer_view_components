@@ -16,7 +16,7 @@ module Primer
       # @param value text
       def playground(
         show_filter_input: true,
-        show_clear_button: false,
+        show_clear_button: true,
         show_filter_button: true,
         show_action_button: true,
         text: nil,

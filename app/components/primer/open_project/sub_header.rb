@@ -47,6 +47,8 @@ module Primer
         system_arguments[:data] ||= {}
         system_arguments[:data][:target]= "sub-header.filterInput"
 
+        system_arguments[:show_clear_button] = true if system_arguments[:show_clear_button].nil?
+
         if system_arguments[:show_clear_button]
           system_arguments[:data] = merge_data(
             system_arguments,
