@@ -10,7 +10,7 @@ class SubHeaderElement extends HTMLElement {
   clearButtonWrapper: HTMLElement | null
 
   connectedCallback() {
-    this.#setupFilterInputClearButton()
+    this.setupFilterInputClearButton()
   }
 
   toggleFilterInputClearButton() {
@@ -18,12 +18,8 @@ class SubHeaderElement extends HTMLElement {
       return
     }
     if (this.filterInput.value.length > 0) {
-      // Remove the wrapper's trailingAction class in order to have the filterInput's
-      // whole width used for the placeholder text.
-      this.clearButtonWrapper.classList.add('FormControl-input-wrap--trailingAction')
       this.clearFilterButton.classList.remove('d-none')
     } else {
-      this.clearButtonWrapper.classList.remove('FormControl-input-wrap--trailingAction')
       this.clearFilterButton.classList.add('d-none')
     }
   }
@@ -54,8 +50,8 @@ class SubHeaderElement extends HTMLElement {
     this.classList.remove('SubHeader--expandedSearch')
   }
 
-  #setupFilterInputClearButton() {
-    this.#waitForCondition(
+  setupFilterInputClearButton() {
+    this.waitForCondition(
       () => Boolean(this.filterInput),
       () => {
         this.clearFilterButton = this.querySelector('button.FormControl-input-trailingAction') as HTMLButtonElement
@@ -70,7 +66,7 @@ class SubHeaderElement extends HTMLElement {
 
   // Waits for condition to return true. If it returns false initially, this function creates a
   // MutationObserver that calls body() whenever the contents of the component change.
-  #waitForCondition(condition: () => boolean, body: () => void) {
+  waitForCondition(condition: () => boolean, body: () => void) {
     if (condition()) {
       body()
     } else {

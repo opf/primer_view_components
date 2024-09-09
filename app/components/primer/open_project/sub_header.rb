@@ -48,10 +48,17 @@ module Primer
         system_arguments[:data][:target]= "sub-header.filterInput"
 
         if system_arguments[:show_clear_button]
-          system_arguments[:data][:action] = <<~ACTION
-            input:sub-header#toggleFilterInputClearButton
-            focus:sub-header#toggleFilterInputClearButton
-          ACTION
+          system_arguments[:data] = merge_data(
+            system_arguments,
+            {
+              data: {
+                action: <<~JS
+                  input:sub-header#toggleFilterInputClearButton
+                  focus:sub-header#toggleFilterInputClearButton
+                JS
+              }
+            }
+          )
         end
 
         @mobile_filter_trigger = Primer::Beta::IconButton.new(icon: system_arguments[:leading_visual][:icon],
