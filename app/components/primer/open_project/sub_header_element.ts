@@ -6,20 +6,24 @@ class SubHeaderElement extends HTMLElement {
   @targets hiddenItemsOnExpandedFilter: HTMLElement[]
   @targets shownItemsOnExpandedFilter: HTMLElement[]
 
-  clearFilterButton: HTMLButtonElement | null
-
   connectedCallback() {
     this.setupFilterInputClearButton()
   }
 
+  setupFilterInputClearButton() {
+    this.waitForCondition(
+      () => Boolean(this.filterInput),
+      () => {
+        this.toggleFilterInputClearButton()
+      },
+    )
+  }
+
   toggleFilterInputClearButton() {
-    if (!this.clearFilterButton) {
-      return
-    }
     if (this.filterInput.value.length > 0) {
-      this.clearFilterButton.classList.remove('d-none')
+      this.filterInput.classList.remove('SubHeader-filterInput_hiddenClearButton')
     } else {
-      this.clearFilterButton.classList.add('d-none')
+      this.filterInput.classList.add('SubHeader-filterInput_hiddenClearButton')
     }
   }
 
@@ -49,23 +53,9 @@ class SubHeaderElement extends HTMLElement {
     this.classList.remove('SubHeader--expandedSearch')
   }
 
-  setupFilterInputClearButton() {
-    this.waitForCondition(
-      () => Boolean(this.filterInput),
-      () => {
-        this.filterInput.classList.remove('SubHeader-filterInput_hiddenClearButton')
-        this.clearFilterButton = this.querySelector('button.FormControl-input-trailingAction') as HTMLButtonElement
-
-        if (this.clearFilterButton) {
-          this.toggleFilterInputClearButton()
-        }
-      },
-    )
-  }
-
   // Waits for condition to return true. If it returns false initially, this function creates a
   // MutationObserver that calls body() whenever the contents of the component change.
-  waitForCondition(condition: () => boolean, body: () => void) {
+  private waitForCondition(condition: () => boolean, body: () => void) {
     if (condition()) {
       body()
     } else {
