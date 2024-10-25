@@ -8,12 +8,13 @@ class ZenModeButtonElement extends HTMLElement {
   // eslint-disable-next-line custom-elements/no-constructor
   constructor() {
     super()
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this
-    document.addEventListener("fullscreenchange", (function() {
+    document.addEventListener('fullscreenchange', function () {
       if (!document.fullscreenElement && self.inZenMode) {
         self.performAction()
       }
-    }))
+    })
   }
 
   dispatchZenModeStatus() {
