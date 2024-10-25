@@ -8,15 +8,17 @@ class ZenModeButtonElement extends HTMLElement {
   // eslint-disable-next-line custom-elements/no-constructor
   constructor() {
     super()
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const self = this
-    document.addEventListener('fullscreenchange', function () {
-      if (!document.fullscreenElement && self.inZenMode) {
-        self.performAction()
-      }
-    })
+    document.addEventListener('fullscreenchange', this.fullscreenChangeEventHandler.bind(this))
   }
 
+  disconnectedCallback() {
+    document.removeEventListener('fullscreenchange', this.fullscreenChangeEventHandler.bind(this))
+  }
+
+  fullscreenChangeEventHandler() {
+    this.changeButtonState(!this.inZenMode)
+    this.dispatchZenModeStatus()
+  }
   dispatchZenModeStatus() {
     // Create a new custom event
     const event = new CustomEvent('zenModeToggled', {
@@ -29,19 +31,19 @@ class ZenModeButtonElement extends HTMLElement {
   }
 
   private deactivateZenMode() {
-    this.inZenMode = false
-    this.button.setAttribute('aria-pressed', 'false')
-    if (document.exitFullscreen && document.fullscreenElement) {
+    if (document.exitFullscreen) {
       void document.exitFullscreen()
     }
   }
 
   private activateZenMode() {
-    this.inZenMode = true
-    this.button.setAttribute('aria-pressed', 'true')
     if (document.documentElement.requestFullscreen) {
       void document.documentElement.requestFullscreen()
     }
+  }
+  public changeButtonState(inZenMode:boolean) {
+    this.inZenMode = inZenMode
+    this.button.setAttribute('aria-pressed', inZenMode.toString())
   }
 
   public performAction() {
@@ -50,7 +52,6 @@ class ZenModeButtonElement extends HTMLElement {
     } else {
       this.activateZenMode()
     }
-    this.dispatchZenModeStatus()
   }
 }
 
