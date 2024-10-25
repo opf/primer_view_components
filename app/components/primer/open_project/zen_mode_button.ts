@@ -41,7 +41,7 @@ class ZenModeButtonElement extends HTMLElement {
       void document.documentElement.requestFullscreen()
     }
   }
-  public changeButtonState(inZenMode:boolean) {
+  public changeButtonState(inZenMode: boolean) {
     this.inZenMode = inZenMode
     this.button.setAttribute('aria-pressed', inZenMode.toString())
   }
