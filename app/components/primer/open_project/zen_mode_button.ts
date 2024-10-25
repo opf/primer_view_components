@@ -5,6 +5,17 @@ class ZenModeButtonElement extends HTMLElement {
   @target button: HTMLElement
   inZenMode = false
 
+  // eslint-disable-next-line custom-elements/no-constructor
+  constructor() {
+    super()
+    const self = this
+    document.addEventListener("fullscreenchange", (function() {
+      if (!document.fullscreenElement && self.inZenMode) {
+        self.performAction()
+      }
+    }))
+  }
+
   dispatchZenModeStatus() {
     // Create a new custom event
     const event = new CustomEvent('zenModeToggled', {
@@ -19,7 +30,7 @@ class ZenModeButtonElement extends HTMLElement {
   private deactivateZenMode() {
     this.inZenMode = false
     this.button.setAttribute('aria-pressed', 'false')
-    if (document.exitFullscreen) {
+    if (document.exitFullscreen && document.fullscreenElement) {
       void document.exitFullscreen()
     }
   }
