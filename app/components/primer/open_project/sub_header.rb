@@ -50,7 +50,7 @@ module Primer
           },
         },
         component: {
-          # A generic slot to render whatever component you like on the right side
+          # A generic slot to render whatever component you like on the left side
           renders: lambda { |**kwargs|
             deny_tag_argument(**kwargs)
             kwargs[:tag] = :div

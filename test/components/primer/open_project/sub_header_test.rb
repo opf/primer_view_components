@@ -56,6 +56,20 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
     assert_text("Button 1")
     assert_text("Button 2")
   end
+  def test_renders_a_custom_button_as_left_action
+    render_inline(Primer::OpenProject::SubHeader.new) do |component|
+      component.with_left_action_component do
+        "<div class='ButtonGroup'><div><button class='MyCustomClass'>Button 1</button></div><div><button class='MyCustomClass'>Button 2</button></div></div>".html_safe
+      end
+    end
+
+    assert_selector(".SubHeader")
+    assert_selector(".SubHeader-leftPane")
+    assert_selector(".SubHeader-leftPane .ButtonGroup")
+    assert_selector(".SubHeader-leftPane .MyCustomClass")
+    assert_text("Button 1")
+    assert_text("Button 2")
+  end
 
   def test_renders_a_text
     render_inline(Primer::OpenProject::SubHeader.new) do |component|
