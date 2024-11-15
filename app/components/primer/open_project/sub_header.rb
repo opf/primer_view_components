@@ -156,10 +156,9 @@ module Primer
 
 
       # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
-      def initialize(show_buttons_left: false, **system_arguments)
+      def initialize(**system_arguments)
         @system_arguments = system_arguments
         @system_arguments[:tag] = :"sub-header"
-        @show_buttons_left = show_buttons_left
 
         @filter_container = Primer::BaseComponent.new(tag: :div,
                                                       classes: "SubHeader-filterContainer",
