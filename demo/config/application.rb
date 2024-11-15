@@ -77,7 +77,7 @@ module Demo
           { assets: assets }
         end
       }
-      Lookbook.define_panel("assets", asset_panel_config)
+      Lookbook.add_panel("assets", asset_panel_config)
 
       config.lookbook.project_name = "Primer ViewComponents v#{Primer::ViewComponents::VERSION::STRING}"
       config.lookbook.preview_display_options = {
