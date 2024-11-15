@@ -32,6 +32,17 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
     assert_selector(".SubHeader .Button--iconOnly")
   end
 
+  def test_renders_a_left_button_as_action
+    render_inline(Primer::OpenProject::SubHeader.new) do |component|
+      component.with_left_action_button(scheme: :default) do
+        "Check"
+      end
+    end
+
+    assert_selector(".SubHeader")
+    assert_selector(".SubHeader-leftPane .Button--secondary")
+  end
+
   def test_renders_a_custom_button_as_action
     render_inline(Primer::OpenProject::SubHeader.new) do |component|
       component.with_action_component do
