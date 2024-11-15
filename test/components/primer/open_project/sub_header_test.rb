@@ -71,6 +71,15 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
     assert_text("Button 2")
   end
 
+  def test_renders_an_icon_button_as_left_action
+    render_inline(Primer::OpenProject::SubHeader.new) do |component|
+      component.with_left_action_button(icon: :plus, aria: { label: "Create" })
+    end
+
+    assert_selector(".SubHeader")
+    assert_selector(".SubHeader-leftPane .Button--iconOnly")
+  end
+
   def test_renders_a_text
     render_inline(Primer::OpenProject::SubHeader.new) do |component|
       component.with_text { "Hello world!" }
