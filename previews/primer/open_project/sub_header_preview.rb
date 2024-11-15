@@ -96,6 +96,11 @@ module Primer
           end
         end
       end
+
+      # @label With buttons in left side
+      def left_action_buttons
+        render_with_template(locals: {})
+      end
     end
   end
 end
