@@ -1,5 +1,8 @@
 <%= render Primer::BaseComponent.new(**@system_arguments) do %>
   <div class="SubHeader-leftPane">
+    <% left_actions.each do |action| %>
+      <%= action %>
+    <% end %>
     <%= render @filter_container do %>
       <%= filter_input %>
       <%= render @mobile_filter_cancel do

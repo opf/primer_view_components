@@ -34,6 +34,30 @@ module Primer
           },
         }
       }
+      # A button or custom content that will render on the left-hand side of the component.
+      #
+      # To render a button, call the `with_left_action_button` method, which accepts the arguments accepted by <%= link_to_component(Primer::Beta::Button) %>.
+      #
+      # To render custom content, call the `with_left_action_component` method and pass a block that returns HTML.
+      renders_many :left_actions, types: {
+        button: {
+          renders: lambda { |icon: nil, **kwargs|
+            if icon
+              Primer::Beta::IconButton.new(icon: icon, **kwargs)
+            else
+              Primer::Beta::Button.new(**kwargs)
+            end
+          },
+        },
+        component: {
+          # A generic slot to render whatever component you like on the right side
+          renders: lambda { |**kwargs|
+            deny_tag_argument(**kwargs)
+            kwargs[:tag] = :div
+            Primer::BaseComponent.new(**kwargs)
+          },
+        }
+      }
 
       renders_one :filter_input, lambda { |name:, label:, **system_arguments|
         system_arguments[:classes] = class_names(
@@ -132,9 +156,10 @@ module Primer
 
 
       # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
-      def initialize(**system_arguments)
+      def initialize(show_buttons_left: false, **system_arguments)
         @system_arguments = system_arguments
         @system_arguments[:tag] = :"sub-header"
+        @show_buttons_left = show_buttons_left
 
         @filter_container = Primer::BaseComponent.new(tag: :div,
                                                       classes: "SubHeader-filterContainer",
