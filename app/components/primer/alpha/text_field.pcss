@@ -122,6 +122,8 @@
 ** .FormControl
 ** ├─ .FormControl-label
 ** │  ├─ .FormControl-input-wrap
+** │  │  ├─ .FormControl-input-trailingVisualWrap
+** │  │  │  ├─ .FormControl-input-trailingVisual
 ** │  │  ├─ .FormControl-input-leadingVisualWrap
 ** │  │  │  ├─ .FormControl-input-leadingVisual
 ** │  │  ├─ .FormControl-input
@@ -283,6 +285,23 @@
     }
   }
 
+  & .FormControl-input-trailingVisualWrap {
+    position: absolute;
+    top: var(--base-size-8);
+    right: var(--base-size-8);
+    display: block;
+    width: var(--base-size-16);
+    height: var(--base-size-16);
+    color: var(--fgColor-muted);
+    pointer-events: none;
+
+    /* octicon */
+    & .FormControl-input-trailingVisual {
+      display: block;
+      user-select: none;
+    }
+  }
+
   /* TODO: replace with new Button component */
   & .FormControl-input-trailingAction {
     position: absolute;
@@ -363,10 +382,28 @@
     }
   }
 
+  /* if trailingVisual is present */
+
   /*
 	┌──────────────────┬──32px──┐
 	╎  ┌──────────────┐  ┌────┐ ╎
-	╎   24px               24px   ╎
+	╎   24px               24px ╎
+	╎  └──────────────┘  └────┘ ╎
+	└──────────────────┴────────┘
+  */
+
+  &.FormControl-input-wrap--trailingVisual {
+    & .FormControl-input {
+      padding-inline-end: calc(
+              var(--control-medium-paddingInline-condensed) + var(--base-size-16) + var(--control-medium-gap)
+      ); /* 32px */
+    }
+  }
+
+  /*
+	┌──────────────────┬──32px──┐
+	╎  ┌──────────────┐  ┌────┐ ╎
+	╎   24px               24px ╎
 	╎  └──────────────┘  └────┘ ╎
 	└──────────────────┴────────┘
   */
@@ -406,6 +443,10 @@
     & .FormControl-input-leadingVisualWrap {
       top: calc(var(--control-medium-paddingInline-condensed) - var(--base-size-2)); /* 6px */
       left: calc(var(--control-medium-paddingInline-condensed) - var(--base-size-2)); /* 6px */
+    }
+    & .FormControl-input-trailingVisualWrap {
+      top: calc(var(--control-medium-paddingInline-condensed) - var(--base-size-2)); /* 6px */
+      right: calc(var(--control-medium-paddingInline-condensed) - var(--base-size-2)); /* 6px */
     }
 
     /*
@@ -457,6 +498,10 @@
       top: var(--control-medium-paddingInline-normal);
       left: var(--control-medium-paddingInline-normal);
     }
+    & .FormControl-input-trailingVisualWrap {
+      top: var(--control-medium-paddingInline-normal);
+      right: var(--control-medium-paddingInline-normal);
+    }
 
     /*
     ┌──36px──┬───12px padding──────┐
@@ -470,6 +515,13 @@
       & .FormControl-input.FormControl-large {
         padding-inline-start: calc(
           var(--control-large-paddingInline-normal) + var(--base-size-16) + var(--control-large-gap)
+        ); /* 36px */
+      }
+    }
+    &.FormControl-input-wrap--trailingVisual {
+      & .FormControl-input.FormControl-large {
+        padding-inline-end: calc(
+                var(--control-large-paddingInline-normal) + var(--base-size-16) + var(--control-large-gap)
         ); /* 36px */
       }
     }

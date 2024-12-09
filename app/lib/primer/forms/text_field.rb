@@ -23,6 +23,7 @@ module Primer
           "FormControl-input-wrap",
           INPUT_WRAP_SIZE[input.size],
           { "FormControl-input-wrap--trailingAction": @input.show_clear_button? },
+          { "FormControl-input-wrap--trailingVisual": @input.trailing_visual? },
           { "FormControl-input-wrap--leadingVisual": @input.leading_visual? }
         ]
         wrap_classes << Primer::Forms::Dsl::Input::INPUT_WIDTH_MAPPINGS[@input.input_width] if @input.input_width
