@@ -1,5 +1,5 @@
 ---
-"@openproject/primer-view-components": patch
+"@openproject/primer-view-components": minor
 ---
 
 [59468] Initial implementation of Danger Confirmation Dialog
