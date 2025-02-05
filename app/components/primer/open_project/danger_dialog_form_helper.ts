@@ -18,13 +18,11 @@ class DangerDialogFormHelperElement extends HTMLElement {
   toggle(): void {
     if (this.checkbox) {
       this.submitButton.disabled = !this.checkbox.checked
+      this.submitButton.ariaDisabled = String(!this.checkbox.checked)
     }
   }
 
   #reset(): void {
-    if (this.checkbox) {
-      this.checkbox.disabled = false
-    }
     this.toggle()
   }
 }
