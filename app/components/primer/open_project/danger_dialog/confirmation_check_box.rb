@@ -27,7 +27,7 @@ module Primer
             target: "danger-dialog-form-helper.checkbox",
             action: "change:danger-dialog-form-helper#toggle"
           }
-          @check_box_arguments[:autofocus] = true
+          @check_box_arguments[:tabindex] = 0
           @check_box_arguments[:aria] = merge_aria(@check_box_arguments, { aria: { controls: confirm_button_id } })
         end
 
