@@ -1,0 +1,14 @@
+<%= render(Primer::OpenProject::DangerDialog.new(
+    title: "Delete dialog",
+    form_arguments: { action: generic_form_submission_path(route_format) }
+  )) do |dialog| %>
+  <% dialog.with_show_button { "Click me" } %>
+  <% dialog.with_confirmation_message do |message|
+      message.with_heading(tag: :h2).with_content("Permanently delete this item?")
+      message.with_description_content("This action is not reversible. Please proceed with caution.")
+     end %>
+  <% dialog.with_additional_details do %>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nunc tellus, finibus vitae purus vitae, venenatis sodales nibh. Duis orci quam, vehicula sed iaculis et, dignissim vel felis. Cras ac pretium nisl. Proin efficitur vehicula dui, eu pulvinar neque convallis et. Nam interdum imperdiet urna, at aliquam lectus mattis nec. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec cursus dolor et eros ornare, id pretium magna interdum. Cras cursus lorem eu semper bibendum. Nulla facilisi. In accumsan dignissim arcu vel congue. Sed auctor lacus ipsum, vitae posuere purus scelerisque ac. Suspendisse tincidunt justo eget libero luctus semper. Vivamus vitae erat ut erat malesuada volutpat.</p>
+  <% end %>
+  <% dialog.with_confirmation_check_box_content("I understand that this deletion cannot be reversed") %>
+<% end %>

@@ -3,6 +3,8 @@
 require "system/test_case"
 
 class IntegrationOpenProjectDangerDialogTest < System::TestCase
+  include Primer::WindowTestHelpers
+
   def test_submit_button_enabled_on_dialog_open_default
     visit_preview(:default)
 
@@ -60,6 +62,18 @@ class IntegrationOpenProjectDangerDialogTest < System::TestCase
 
     form_params = JSON.parse(page.document.text)["form_params"]
     assert_equal "1", form_params["confirm_dangerous_action"]
+  end
+
+  def test_buttons_visible_without_scrolling_with_form
+    visit_preview(:with_form_long_additional_details_test, route_format: :json)
+    window.resize(width: window.viewport_size[0], height: 250)
+
+    click_button("Click me")
+
+    assert_selector(".DangerDialog") do
+      assert_selector("button[data-close-dialog-id]", obscured: false)
+      assert_selector("button[data-submit-dialog-id]", obscured: false)
+    end
   end
 
   def test_submit_button_submits_form_builder_form
