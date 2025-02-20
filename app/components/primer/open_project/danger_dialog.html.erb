@@ -12,7 +12,14 @@
       </scrollable-region>
       <%= render(Primer::Alpha::Dialog::Footer.new(show_divider: false)) do %>
         <%= render(Primer::Beta::Button.new(data: { "close-dialog-id": dialog_id })) { @cancel_button_text } %>
-        <%= render(Primer::Beta::Button.new(type: (@form_wrapper.shows_form? ? :submit : :button), scheme: :danger, data: { "submit-dialog-id": dialog_id })) { @confirm_button_text } %>
+        <%= render(Primer::Beta::Button.new(
+          id: @confirm_button_id,
+          type: (@form_wrapper.shows_form? ? :submit : :button), 
+          scheme: :danger,
+          role: :region,
+          data: { "submit-dialog-id": dialog_id },
+          aria: { live: "polite" }
+          )) { @confirm_button_text } %>
       <% end %>
     <% end %>
   </danger-dialog-form-helper>
