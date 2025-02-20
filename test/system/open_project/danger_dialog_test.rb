@@ -62,6 +62,19 @@ class IntegrationOpenProjectDangerDialogTest < System::TestCase
     assert_equal "1", form_params["confirm_dangerous_action"]
   end
 
+  def test_buttons_visible_without_scrolling_with_form
+    visit_preview(:with_form_long_additional_details_test, route_format: :json)
+
+    click_button("Click me")
+
+    current_window.resize_to(800, 200)
+
+    assert_selector(".DangerDialog") do
+      assert_selector("button[data-close-dialog-id]", obscured: false)
+      assert_selector("button[data-submit-dialog-id]", obscured: false)
+    end
+  end
+
   def test_submit_button_submits_form_builder_form
     visit_preview(:with_form_builder_form_test, route_format: :json)
 

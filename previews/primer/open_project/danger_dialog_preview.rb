@@ -96,6 +96,12 @@ module Primer
       def with_form_test(route_format: :html)
         render_with_template(locals: { route_format: route_format })
       end
+
+      # @label With form and long additional details for testing purposes
+      # @hidden
+      def with_form_long_additional_details_test(route_format: :html)
+        render_with_template(locals: { route_format: route_format })
+      end
     end
   end
 end

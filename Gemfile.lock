@@ -1,3 +1,12 @@
+GIT
+  remote: https://github.com/myabc/cuprite.git
+  revision: 6f5b31a1c0ff0ff15d91ff617e49bb65122eb6b6
+  branch: feature/support-node-obscured
+  specs:
+    cuprite (0.15.1)
+      capybara (~> 3.0)
+      ferrum (~> 0.16.0)
+
 PATH
   remote: .
   specs:
@@ -76,9 +85,6 @@ GEM
       addressable
     cssbundling-rails (1.4.1)
       railties (>= 6.0.0)
-    cuprite (0.15)
-      capybara (~> 3.0)
-      ferrum (~> 0.14.0)
     debug (1.9.2)
       irb (~> 1.10)
       reline (>= 0.3.8)
@@ -94,11 +100,12 @@ GEM
       smart_properties
     erblint-github (1.0.1)
     erubi (1.13.0)
-    ferrum (0.14)
+    ferrum (0.16)
       addressable (~> 2.5)
+      base64 (~> 0.2)
       concurrent-ruby (~> 1.1)
       webrick (~> 1.7)
-      websocket-driver (>= 0.6, < 0.8)
+      websocket-driver (~> 0.7)
     ffi (1.16.3)
     hashdiff (1.1.0)
     htmlbeautifier (1.4.3)
@@ -279,7 +286,8 @@ GEM
       hashdiff (>= 0.4.0, < 2.0.0)
     webrick (1.8.1)
     websocket (1.2.10)
-    websocket-driver (0.7.6)
+    websocket-driver (0.7.7)
+      base64
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
     xpath (3.2.0)
@@ -300,7 +308,7 @@ DEPENDENCIES
   bootsnap (>= 1.4.2)
   capybara (~> 3.40.0)
   cssbundling-rails (~> 1.4)
-  cuprite (~> 0.15)
+  cuprite (~> 0.15)!
   debug
   erb_lint (~> 0.6)
   erblint-github (~> 1.0)
