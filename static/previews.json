@@ -832,92 +832,6 @@
   {
     "name": "auto_complete",
     "component": "AutoComplete",
-    "status": "deprecated",
-    "lookup_path": "primer/alpha/auto_complete",
-    "examples": [
-      {
-        "preview_path": "primer/alpha/auto_complete/playground",
-        "name": "playground",
-        "snapshot": "false",
-        "skip_rules": {
-          "wont_fix": [
-            "region"
-          ],
-          "will_fix": [
-            "color-contrast"
-          ]
-        }
-      },
-      {
-        "preview_path": "primer/alpha/auto_complete/default",
-        "name": "default",
-        "snapshot": "true",
-        "skip_rules": {
-          "wont_fix": [
-            "region"
-          ],
-          "will_fix": [
-            "color-contrast"
-          ]
-        }
-      },
-      {
-        "preview_path": "primer/alpha/auto_complete/with_non_visible_label",
-        "name": "with_non_visible_label",
-        "snapshot": "false",
-        "skip_rules": {
-          "wont_fix": [
-            "region"
-          ],
-          "will_fix": [
-            "color-contrast"
-          ]
-        }
-      },
-      {
-        "preview_path": "primer/alpha/auto_complete/with_inline_label",
-        "name": "with_inline_label",
-        "snapshot": "false",
-        "skip_rules": {
-          "wont_fix": [
-            "region"
-          ],
-          "will_fix": [
-            "color-contrast"
-          ]
-        }
-      },
-      {
-        "preview_path": "primer/alpha/auto_complete/with_icon",
-        "name": "with_icon",
-        "snapshot": "false",
-        "skip_rules": {
-          "wont_fix": [
-            "region"
-          ],
-          "will_fix": [
-            "color-contrast"
-          ]
-        }
-      },
-      {
-        "preview_path": "primer/alpha/auto_complete/with_clear_button",
-        "name": "with_clear_button",
-        "snapshot": "false",
-        "skip_rules": {
-          "wont_fix": [
-            "region"
-          ],
-          "will_fix": [
-            "color-contrast"
-          ]
-        }
-      }
-    ]
-  },
-  {
-    "name": "auto_complete",
-    "component": "AutoComplete",
     "status": "beta",
     "lookup_path": "primer/beta/auto_complete",
     "examples": [
@@ -1145,6 +1059,92 @@
       {
         "preview_path": "primer/beta/auto_complete/inset",
         "name": "inset",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "auto_complete",
+    "component": "AutoComplete",
+    "status": "deprecated",
+    "lookup_path": "primer/alpha/auto_complete",
+    "examples": [
+      {
+        "preview_path": "primer/alpha/auto_complete/playground",
+        "name": "playground",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/alpha/auto_complete/default",
+        "name": "default",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/alpha/auto_complete/with_non_visible_label",
+        "name": "with_non_visible_label",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/alpha/auto_complete/with_inline_label",
+        "name": "with_inline_label",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/alpha/auto_complete/with_icon",
+        "name": "with_icon",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/alpha/auto_complete/with_clear_button",
+        "name": "with_clear_button",
         "snapshot": "false",
         "skip_rules": {
           "wont_fix": [
@@ -4277,40 +4277,6 @@
   },
   {
     "name": "heading",
-    "component": "Heading",
-    "status": "beta",
-    "lookup_path": "primer/beta/heading",
-    "examples": [
-      {
-        "preview_path": "primer/beta/heading/playground",
-        "name": "playground",
-        "snapshot": "false",
-        "skip_rules": {
-          "wont_fix": [
-            "region"
-          ],
-          "will_fix": [
-            "color-contrast"
-          ]
-        }
-      },
-      {
-        "preview_path": "primer/beta/heading/default",
-        "name": "default",
-        "snapshot": "true",
-        "skip_rules": {
-          "wont_fix": [
-            "region"
-          ],
-          "will_fix": [
-            "color-contrast"
-          ]
-        }
-      }
-    ]
-  },
-  {
-    "name": "heading",
     "component": "OpenProject::Heading",
     "status": "open_project",
     "lookup_path": "primer/open_project/heading",
@@ -4330,6 +4296,40 @@
       },
       {
         "preview_path": "primer/open_project/heading/default",
+        "name": "default",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "heading",
+    "component": "Heading",
+    "status": "beta",
+    "lookup_path": "primer/beta/heading",
+    "examples": [
+      {
+        "preview_path": "primer/beta/heading/playground",
+        "name": "playground",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/beta/heading/default",
         "name": "default",
         "snapshot": "true",
         "skip_rules": {
