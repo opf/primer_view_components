@@ -66,7 +66,7 @@ class IntegrationOpenProjectDangerDialogTest < System::TestCase
 
   def test_buttons_visible_without_scrolling_with_form
     visit_preview(:with_form_long_additional_details_test, route_format: :json)
-    window.resize(width: window.viewport_size[0], height: 250)
+    window.resize(height: 250)
 
     click_button("Click me")
 
