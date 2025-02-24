@@ -4,4 +4,4 @@
   - button "Close"
   - heading "Success" [level=2]
   - paragraph: Great! Everything worked well.
-  - 'button "Translation missing: en.button_close"'
+  - button "Close"
