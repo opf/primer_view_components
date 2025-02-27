@@ -11,7 +11,7 @@ module Primer
         @page = page
       end
 
-      def resize(width:, height:)
+      def resize(width: viewport_width, height: viewport_height)
         if firefox?
           page.driver.browser.manage.window.resize_to(width, height)
         elsif chrome?
@@ -26,6 +26,14 @@ module Primer
         elsif chrome?
           page.driver.browser.viewport_size
         end
+      end
+
+      def viewport_width
+        viewport_size[0]
+      end
+
+      def viewport_height
+        viewport_size[1]
       end
     end
 
