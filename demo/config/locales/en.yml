@@ -1,0 +1,11 @@
+en:
+  button_cancel: "Cancel"
+  button_close: "Close"
+  button_delete: "Delete"
+  button_delete_permanently: "Delete permanently"
+  button_filter: "Filter"
+  button_save: "Save"
+  label_more: "More"
+  label_loading: "Loading"
+  label_title: "Title"
+  label_zen_mode: "Zen mode"
