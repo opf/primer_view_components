@@ -10,7 +10,7 @@
     <% end %>
     <%= flex.with_row do %>
       <% if @description.present? %>
-        <%= render(Primer::Beta::Text.new(color: :subtle, data: { target: "collapsible-header.description" }) ) { @description } %>
+        <%= render(Primer::Beta::Text.new(color: :subtle, data: { targets: "collapsible-header.collapsibleElements" }) ) { @description } %>
       <% end %>
     <% end %>
   <% end %>
