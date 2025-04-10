@@ -2,8 +2,9 @@ import {attr, target, targets} from '@github/catalyst'
 
 // eslint-disable-next-line custom-elements/expose-class-on-global
 export abstract class CollapsibleHelperElement extends HTMLElement {
-  @target arrowDown: HTMLElement
-  @target arrowUp: HTMLElement
+  @target arrowDown: Element
+  @target arrowUp: Element
+  @target triggerElement: HTMLElement
   @targets collapsibleElements: HTMLElement[]
 
   @attr collapsed = false
@@ -23,27 +24,34 @@ export abstract class CollapsibleHelperElement extends HTMLElement {
   }
 
   hideAll() {
-    // For whatever reason, setting `hidden` directly does not work on the SVGs
-    this.arrowDown.removeAttribute('hidden')
-    this.arrowUp.setAttribute('hidden', '')
+    showElement(this.arrowDown)
+    hideElement(this.arrowUp)
+    this.triggerElement.setAttribute('aria-expanded', 'false')
 
-    for (const el of this.collapsibleElements) {
-      el.hidden = true
-    }
+    this.collapsibleElements.forEach(hideElement)
 
     this.classList.add(`${this.baseClass}--collapsed`)
   }
 
   expandAll() {
-    this.arrowUp.removeAttribute('hidden')
-    this.arrowDown.setAttribute('hidden', '')
+    hideElement(this.arrowDown)
+    showElement(this.arrowUp)
+    this.triggerElement.setAttribute('aria-expanded', 'true')
 
-    for (const el of this.collapsibleElements) {
-      el.hidden = false
-    }
+    this.collapsibleElements.forEach(showElement)
 
     this.classList.remove(`${this.baseClass}--collapsed`)
   }
 
   abstract get baseClass(): string
+}
+
+function hideElement(el: Element) {
+  el.classList.add('d-none')
+  el.setAttribute('aria-hidden', 'true')
+}
+
+function showElement(el: Element) {
+  el.classList.remove('d-none')
+  el.setAttribute('aria-hidden', 'false')
 }
