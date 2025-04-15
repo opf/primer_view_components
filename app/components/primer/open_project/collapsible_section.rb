@@ -62,6 +62,8 @@ module Primer
 
         @system_arguments[:data] ||= {}
         @system_arguments[:data][:collapsed] = true if @collapsed
+
+        @system_arguments[:display] ||= :inline_block
       end
 
       private
