@@ -11,7 +11,9 @@ module Primer
       # @param anchor_side [Symbol] select [outside_bottom, outside_top, outside_left, outside_right]
       # @param size [Symbol] select [auto, small, medium, large, xlarge]
       def playground(
-        select_variant: Primer::Alpha::ActionMenu::DEFAULT_SELECT_VARIANT, anchor_align: Primer::Alpha::Overlay::DEFAULT_ANCHOR_ALIGN, anchor_side: Primer::Alpha::Overlay::DEFAULT_ANCHOR_SIDE,
+        select_variant: Primer::Alpha::ActionMenu::PrimaryMenu::DEFAULT_SELECT_VARIANT,
+        anchor_align: Primer::Alpha::Overlay::DEFAULT_ANCHOR_ALIGN,
+        anchor_side: Primer::Alpha::Overlay::DEFAULT_ANCHOR_SIDE,
         size: Primer::Alpha::Overlay::DEFAULT_SIZE
       )
         render(Primer::Alpha::ActionMenu.new(select_variant: select_variant, anchor_align: anchor_align, anchor_side: anchor_side, size: size)) do |menu|
@@ -405,6 +407,27 @@ module Primer
       # @label Two menus
       #
       def two_menus; end
+
+      # @label Sub-menus
+      #
+      def sub_menus
+        render(Primer::Alpha::ActionMenu.new) do |menu|
+          menu.with_show_button { "Edit" }
+          menu.with_item(label: "Cut")
+          menu.with_item(label: "Copy")
+          menu.with_sub_menu_item(label: "Paste special") do |sub_menu|
+            sub_menu.with_leading_visual_icon(icon: :"sparkle-fill")
+            sub_menu.with_item(label: "Paste plain text")
+            sub_menu.with_item(label: "Paste formulas")
+            sub_menu.with_item(label: "Paste with formatting")
+            sub_menu.with_sub_menu_item(label: "Paste from") do |sub_menu|
+              sub_menu.with_item(label: "Current clipboard")
+              sub_menu.with_item(label: "History")
+              sub_menu.with_item(label: "Another device")
+            end
+          end
+        end
+      end
     end
   end
 end

@@ -3,6 +3,7 @@ import '@oddbird/popover-polyfill'
 import type {IncludeFragmentElement} from '@github/include-fragment-element'
 import AnchoredPositionElement from '../../anchored_position'
 import {observeMutationsUntilConditionMet} from '../../utils'
+import {ActionMenuRovingTabIndexStack} from './action_menu_roving_tab_index_stack'
 
 type SelectVariant = 'none' | 'single' | 'multiple' | null
 type SelectedItem = {
@@ -16,17 +17,16 @@ const menuItemSelectors = validSelectors.map(selector => `:not([hidden]) > ${sel
 
 @controller
 export class ActionMenuElement extends HTMLElement {
-  @target
-  includeFragment: IncludeFragmentElement
-
-  @target
-  overlay: AnchoredPositionElement
+  @target includeFragment: IncludeFragmentElement
+  @target overlay: AnchoredPositionElement
+  @target list: HTMLElement
 
   #abortController: AbortController
   #originalLabel = ''
   #inputName = ''
   #invokerBeingClicked = false
   #intersectionObserver: IntersectionObserver
+  #tabIndexStack: ActionMenuRovingTabIndexStack
 
   get selectVariant(): SelectVariant {
     return this.getAttribute('data-select-variant') as SelectVariant
@@ -102,7 +102,7 @@ export class ActionMenuElement extends HTMLElement {
     this.addEventListener('mouseover', this, {signal})
     this.addEventListener('focusout', this, {signal})
     this.addEventListener('mousedown', this, {signal})
-    this.popoverElement?.addEventListener('toggle', this, {signal})
+    this.addEventListener('toggle', this, {signal, capture: true})
     this.#setDynamicLabel()
     this.#updateInput()
     this.#softDisableItems()
@@ -149,6 +149,8 @@ export class ActionMenuElement extends HTMLElement {
     if (!this.includeFragment) {
       this.setAttribute('data-ready', 'true')
     }
+
+    this.#tabIndexStack = new ActionMenuRovingTabIndexStack()
   }
 
   disconnectedCallback() {
@@ -204,10 +206,9 @@ export class ActionMenuElement extends HTMLElement {
     const targetIsInvoker = this.invokerElement?.contains(event.target as HTMLElement)
     const eventIsActivation = this.#isActivation(event)
 
-    if (event.type === 'toggle' && (event as ToggleEvent).newState === 'open') {
-      window.requestAnimationFrame(() => {
-        this.#firstItem?.focus()
-      })
+    if (event.type === 'toggle' && event instanceof ToggleEvent) {
+      this.#handleToggleEvent(event)
+      return
     }
 
     if (targetIsInvoker && event.type === 'mousedown') {
@@ -241,7 +242,7 @@ export class ActionMenuElement extends HTMLElement {
       return
     }
 
-    const item = (event.target as Element).closest(menuItemSelectors.join(','))
+    const item = (event.target as Element).closest(menuItemSelectors.join(',')) as HTMLElement | null
     const targetIsItem = item !== null
 
     if (targetIsItem && eventIsActivation) {
@@ -262,7 +263,7 @@ export class ActionMenuElement extends HTMLElement {
       // We then click it manually to navigate.
       if (this.#isAnchorActivationViaSpace(event)) {
         event.preventDefault()
-        ;(item as HTMLElement).click()
+        item.click()
       }
 
       this.#handleItemActivated(item)
@@ -272,6 +273,46 @@ export class ActionMenuElement extends HTMLElement {
 
     if (event.type === 'include-fragment-replaced') {
       this.#handleIncludeFragmentReplaced()
+      return
+    }
+
+    if (targetIsItem && event instanceof KeyboardEvent) {
+      this.#handleItemKeyboardEvent(event, item)
+    }
+  }
+
+  #handleItemKeyboardEvent(event: KeyboardEvent, item: HTMLElement) {
+    switch (event.key) {
+      case 'ArrowRight': {
+        const subMenu = this.#subMenuForItem(item)
+        subMenu?.showPopover()
+        break
+      }
+
+      case 'ArrowLeft':
+        if (item.closest('role[menu]') !== this.list) {
+          const overlay = item.closest('anchored-position') as AnchoredPositionElement | null
+          overlay?.hidePopover()
+        }
+
+        break
+    }
+  }
+
+  #handleToggleEvent(event: ToggleEvent) {
+    const subMenu = event.target as AnchoredPositionElement
+
+    if (event.newState === 'open') {
+      this.#tabIndexStack.push(subMenu)
+
+      window.requestAnimationFrame(() => {
+        const firstItem = subMenu.querySelector(menuItemSelectors.join(',')) as HTMLElement | null
+        firstItem?.focus()
+      })
+    } else {
+      this.#tabIndexStack.pop(subMenu)
+      const item = this.#itemForSubMenu(subMenu)
+      if (item) item.focus()
     }
   }
 
@@ -322,7 +363,12 @@ export class ActionMenuElement extends HTMLElement {
     dialog.addEventListener('cancel', handleDialogClose, {signal})
   }
 
-  #handleItemActivated(item: Element) {
+  #handleItemActivated(item: HTMLElement) {
+    if (this.#subMenuForItem(item)) {
+      // Let the anchored-position logic take over and open the sub-menu
+      return
+    }
+
     // Hide popover after current event loop to prevent changes in focus from
     // altering the target of the event. Not doing this specifically affects
     // <a> tags. It causes the event to be sent to the currently focused element
@@ -521,7 +567,7 @@ export class ActionMenuElement extends HTMLElement {
 
   checkItem(item: Element | null) {
     if (item && (this.selectVariant === 'single' || this.selectVariant === 'multiple')) {
-      const itemContent = item.querySelector('.ActionListContent')!
+      const itemContent = item.querySelector('.ActionListContent')! as HTMLElement
       const ariaChecked = itemContent.getAttribute('aria-checked') === 'true'
 
       if (!ariaChecked) {
@@ -532,13 +578,33 @@ export class ActionMenuElement extends HTMLElement {
 
   uncheckItem(item: Element | null) {
     if (item && (this.selectVariant === 'single' || this.selectVariant === 'multiple')) {
-      const itemContent = item.querySelector('.ActionListContent')!
+      const itemContent = item.querySelector('.ActionListContent')! as HTMLElement
       const ariaChecked = itemContent.getAttribute('aria-checked') === 'true'
 
       if (ariaChecked) {
         this.#handleItemActivated(itemContent)
       }
     }
+  }
+
+  #subMenuForItem(item: HTMLElement): AnchoredPositionElement | null {
+    const popoverId = item.getAttribute('popovertarget')
+
+    if (popoverId) {
+      return this.querySelector(`[id="${popoverId}"]`) as AnchoredPositionElement
+    }
+
+    return null
+  }
+
+  #itemForSubMenu(subMenu: HTMLElement): HTMLElement | null {
+    const anchorId = subMenu.getAttribute('anchor')
+
+    if (anchorId) {
+      return this.querySelector(`[id="${anchorId}"]`) as HTMLElement | null
+    }
+
+    return null
   }
 }
 
