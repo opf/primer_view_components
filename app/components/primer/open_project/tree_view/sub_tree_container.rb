@@ -33,13 +33,6 @@ module Primer
           @system_arguments[:style] = "list-style: none;"
           @system_arguments[:hidden] = !expanded?
         end
-
-        # The numeric depth of this node.
-        #
-        # @return [Integer] This node's depth.
-        def level
-          @level ||= @path.size
-        end
       end
     end
   end

@@ -83,6 +83,58 @@ module Primer
 
         assert_selector "li[aria-labelledby='#{content_id}']"
       end
+
+      def test_loading_spinner
+        render_preview(:loading_spinner)
+
+        assert_selector("tree-view-include-fragment", visible: :hidden) do |node|
+          node.assert_selector("[data-target='tree-view-sub-tree-node.loadingIndicator'] svg", visible: :hidden)
+          node.assert_selector("button[data-target='tree-view-sub-tree-node.retryButton']", visible: :hidden)
+        end
+      end
+
+      def test_loading_skeleton
+        render_preview(:loading_skeleton)
+
+        assert_selector("tree-view-include-fragment", visible: :hidden) do |node|
+          node.assert_selector("[data-target='tree-view-sub-tree-node.loadingIndicator'] .TreeViewItemSkeleton", visible: :hidden)
+          node.assert_selector("button[data-target='tree-view-sub-tree-node.retryButton']", visible: :hidden)
+        end
+      end
+
+      def test_leaf_leading_action
+        render_preview(:leaf_node_playground, params: { leading_action_icon: :grabber })
+
+        assert_selector("[role=treeitem] .TreeViewItemLeadingAction button svg.octicon-grabber")
+      end
+
+      def test_leaf_trailing_visual
+        render_preview(:leaf_node_playground, params: { trailing_visual_icon: :"diff-modified" })
+
+        assert_selector("[role=treeitem] .TreeViewItemVisual svg.octicon-diff-modified")
+      end
+
+      def test_sub_tree_leading_action
+        render_inline(Primer::OpenProject::TreeView.new) do |tree|
+          tree.with_sub_tree(label: "src") do |sub_tree|
+            sub_tree.with_leading_action_button(icon: :grabber, aria: { label: "Leading action icon" })
+            sub_tree.with_leaf(label: "button.rb")
+          end
+        end
+
+        assert_selector("[role=treeitem] .TreeViewItemLeadingAction button svg.octicon-grabber")
+      end
+
+      def test_sub_tree_leading_visual
+        render_inline(Primer::OpenProject::TreeView.new) do |tree|
+          tree.with_sub_tree(label: "src") do |sub_tree|
+            sub_tree.with_leading_visual_icon(icon: :"sparkle-fill")
+            sub_tree.with_leaf(label: "button.rb")
+          end
+        end
+
+        assert_selector("[role=treeitem] .TreeViewItemVisual svg.octicon-sparkle-fill")
+      end
     end
   end
 end

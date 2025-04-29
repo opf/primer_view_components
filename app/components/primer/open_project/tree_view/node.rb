@@ -49,8 +49,8 @@ module Primer
 
         # @param path [Array<String>] The node's "path," i.e. this node's label and the labels of all its ancestors. This node should be reachable by traversing the tree following this path.
         # @param current [Boolean] Whether or not this node is the current node. The current node is styled differently than regular nodes and is the first element that receives focus when tabbing to the `TreeView` component.
-        # @param select_variant [Symbol] Controls the type of checkbox that appears. <%= one_of(SELECT_VARIANT_OPTIONS) %>
-        # @param checked [Boolean | String] The checked state of the node's checkbox. <%= one_of(CHECKED_STATES) %>
+        # @param select_variant [Symbol] Controls the type of checkbox that appears. <%= one_of(Primer::OpenProject::TreeView::Node::SELECT_VARIANT_OPTIONS) %>
+        # @param checked [Boolean | String] The checked state of the node's checkbox. <%= one_of(Primer::OpenProject::TreeView::Node::CHECKED_STATES) %>
         # @param system_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::Alpha::ActionList) %>.
         def initialize(
           path:,

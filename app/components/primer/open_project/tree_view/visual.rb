@@ -9,7 +9,7 @@ module Primer
       # not be used directly.
       class Visual < Primer::Component
         # @param id [String] This visual's HTML ID.
-        # @param visual [ViewComponent::Base] A renderable component like an instance of <%= link_to_component(Primer::Beta::Octicon) to render as the visual. %>
+        # @param visual [ViewComponent::Base] A renderable component like an instance of <%= link_to_component(Primer::Beta::Octicon) %> to render as the visual.
         # @param label [String] Text describing this visual that will be visible only to screen readers.
         def initialize(id:, visual:, label: nil)
           @id = id

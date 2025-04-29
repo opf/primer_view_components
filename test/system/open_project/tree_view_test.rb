@@ -10,16 +10,15 @@ module OpenProject
     ##### TEST HELPERS #####
 
     def selector_for(*path)
-      path_selector = path.to_json.gsub('"', '\"')
-      "[role=treeitem][data-path=\"#{path_selector}\"]"
+      "[role=treeitem][data-path='#{path.to_json}']"
     end
 
     def activate_at_path(*path)
-      find(selector_for(*path), match: :first).trigger(:click)
+      find("#{selector_for(*path)} .TreeViewItemContainer", match: :first).click
     end
 
     def check_at_path(*path)
-      find("#{selector_for(*path)} .TreeViewItemCheckbox", match: :first).trigger(:click)
+      find("#{selector_for(*path)} .TreeViewItemCheckbox", match: :first).click
     end
 
     def label_at_path(*path)
@@ -31,7 +30,7 @@ module OpenProject
       return unless node.tag_name == "li"
       return unless node["role"] == "treeitem"
 
-      node.find_css(".TreeViewItemContentText").first.node.text
+      node.find_css(".TreeViewItemContentText").first.all_text
     end
 
     def node_at_path(*path)
@@ -374,7 +373,7 @@ module OpenProject
     def test_fires_event_before_activation
       visit_preview(:default)
 
-      details = capture_event('treeViewBeforeNodeActivated') do
+      details = capture_event("treeViewBeforeNodeActivated") do
         activate_at_path("src")
       end
 
@@ -390,7 +389,7 @@ module OpenProject
 
       refute_path "src", "button.rb"
 
-      capture_event('treeViewBeforeNodeActivated', cancel: true) do
+      capture_event("treeViewBeforeNodeActivated", cancel: true) do
         activate_at_path("src")
       end
 
@@ -401,7 +400,7 @@ module OpenProject
     def test_fires_activation_event
       visit_preview(:default)
 
-      details = capture_event('treeViewNodeActivated') do
+      details = capture_event("treeViewNodeActivated") do
         activate_at_path("src")
       end
 
@@ -415,7 +414,7 @@ module OpenProject
     def test_fires_event_before_checking
       visit_preview(:default, select_variant: :multiple)
 
-      details = capture_event('treeViewBeforeNodeChecked') do
+      details = capture_event("treeViewBeforeNodeChecked") do
         check_at_path("src")
       end
 
@@ -433,7 +432,7 @@ module OpenProject
 
       refute_path_checked "src"
 
-      capture_event('treeViewBeforeNodeChecked', cancel: true) do
+      capture_event("treeViewBeforeNodeChecked", cancel: true) do
         check_at_path("src")
       end
 
@@ -444,7 +443,7 @@ module OpenProject
     def test_fires_check_event
       visit_preview(:default, select_variant: :multiple)
 
-      details = capture_event('treeViewNodeChecked') do
+      details = capture_event("treeViewNodeChecked") do
         check_at_path("src")
       end
 
