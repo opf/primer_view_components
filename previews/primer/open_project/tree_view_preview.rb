@@ -33,12 +33,10 @@ module Primer
       #
       # @param simulate_failure [Boolean] toggle
       # @param simulate_empty [Boolean] toggle
-      # @param select_variant [Symbol] select [multiple, none]
-      def loading_spinner(simulate_failure: false, simulate_empty: false, select_variant: :none)
+      def loading_spinner(simulate_failure: false, simulate_empty: false)
         render_with_template(locals: {
           simulate_failure: coerce_bool(simulate_failure),
           simulate_empty: coerce_bool(simulate_empty),
-          select_variant: select_variant.to_sym
         })
       end
 
@@ -46,12 +44,10 @@ module Primer
       #
       # @param simulate_failure [Boolean] toggle
       # @param simulate_empty [Boolean] toggle
-      # @param select_variant [Symbol] select [multiple, none]
-      def loading_skeleton(simulate_failure: false, simulate_empty: false, select_variant: :none)
+      def loading_skeleton(simulate_failure: false, simulate_empty: false)
         render_with_template(locals: {
           simulate_failure: coerce_bool(simulate_failure),
-          simulate_empty: coerce_bool(simulate_empty),
-          select_variant: select_variant.to_sym
+          simulate_empty: coerce_bool(simulate_empty)
         })
       end
 

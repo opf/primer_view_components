@@ -97,8 +97,6 @@ module Primer
           @container = SubTreeContainer.new(**system_arguments)
         end
 
-        private
-
         def defer?
           loader?
         end

@@ -34,6 +34,11 @@ module Primer
         # @return [String]
         attr_reader :checked
 
+        # This node's select variant (i.e. check box variant).
+        #
+        # @return [Symbol]
+        attr_reader :select_variant
+
         DEFAULT_SELECT_VARIANT = :none
         SELECT_VARIANT_OPTIONS = [
           :multiple,

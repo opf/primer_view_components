@@ -135,6 +135,18 @@ module Primer
 
         assert_selector("[role=treeitem] .TreeViewItemVisual svg.octicon-sparkle-fill")
       end
+
+      def test_disallows_multi_select_for_async_sub_trees
+        error = assert_raises(ArgumentError) do
+          render_inline(Primer::OpenProject::TreeView.new) do |tree|
+            tree.with_sub_tree(label: "src", select_variant: :multiple) do |sub_tree|
+              sub_tree.with_loading_spinner(src: "/foobar")
+            end
+          end
+        end
+
+        assert_equal error.message, "TreeView does not currently support select variants for sub-trees loaded asynchronously."
+      end
     end
   end
 end

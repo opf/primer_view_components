@@ -132,6 +132,15 @@ module Primer
           @node = Primer::OpenProject::TreeView::Node.new(**@system_arguments, path: @sub_tree.path)
         end
 
+        def render_in(*args, &block)
+          super.tap do
+            # check this _after_ rendering so @sub_tree's slots are defined
+            if @node.select_variant != :none && @sub_tree.defer?
+              raise ArgumentError, "TreeView does not currently support select variants for sub-trees loaded asynchronously."
+            end
+          end
+        end
+
         private
 
         def base_id
