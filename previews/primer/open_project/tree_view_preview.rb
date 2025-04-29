@@ -6,10 +6,12 @@ module Primer
     class TreeViewPreview < ViewComponent::Preview
       # @param expanded [Boolean] toggle
       # @param select_variant [Symbol] select [multiple, none]
-      def default(expanded: false, select_variant: :none)
+      # @param select_strategy [Symbol] select [self, descendants]
+      def default(expanded: false, select_variant: :none, select_strategy: :descendants)
         render_with_template(locals: {
           expanded: coerce_bool(expanded),
-          select_variant: select_variant.to_sym
+          select_variant: select_variant.to_sym,
+          select_strategy: select_strategy.to_sym
         })
       end
 
@@ -17,10 +19,12 @@ module Primer
       #
       # @param expanded [Boolean] toggle
       # @param select_variant [Symbol] select [multiple, none]
-      def playground(expanded: false, select_variant: :none)
+      # @param select_strategy [Symbol] select [self, descendants]
+      def playground(expanded: false, select_variant: :none, select_strategy: :descendants)
         render_with_template(locals: {
           expanded: coerce_bool(expanded),
           select_variant: select_variant.to_sym,
+          select_strategy: select_strategy.to_sym,
           populate: -> (*args) { populate(*args) }
         })
       end

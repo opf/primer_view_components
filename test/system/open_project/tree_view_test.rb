@@ -66,7 +66,12 @@ module OpenProject
     end
 
     def refute_path_checked(*path, value: :true)
-      refute_selector "#{selector_for(*path)}[aria-checked='#{value}']"
+      if value == :true_or_mixed
+        refute_path_checked(*path, "true")
+        refute_path_checked(*path, "mixed")
+      else
+        refute_selector "#{selector_for(*path)}[aria-checked='#{value}']"
+      end
     end
 
     def remove_fail_param_from_fragment_src_for(*path)
@@ -515,6 +520,29 @@ module OpenProject
       assert_path_checked "primer", "alpha", value: :mixed
       assert_path_checked "primer", "alpha", "action_bar", value: :mixed
       assert_path_checked "primer", "alpha", "action_bar", "item.rb"
+    end
+
+    def test_self_select_strategy_does_not_check_parent
+      visit_preview(:playground, expanded: true, select_variant: :multiple, select_strategy: :self)
+
+      check_at_path("primer", "alpha", "action_bar", "item.rb")
+
+      refute_path_checked "primer", value: :true_or_mixed
+      refute_path_checked "primer", "alpha", value: :true_or_mixed
+      refute_path_checked "primer", "alpha", "action_bar", value: :true_or_mixed
+
+      assert_path_checked "primer", "alpha", "action_bar", "item.rb"
+    end
+
+    def test_self_select_strategy_checking_sub_tree_does_not_check_children
+      visit_preview(:playground, expanded: true, select_variant: :multiple, select_strategy: :self)
+
+      check_at_path("primer", "alpha", "action_bar")
+
+      refute_path_checked "primer", "alpha", "action_bar", "divider.rb", value: :true_or_mixed
+      refute_path_checked "primer", "alpha", "action_bar", "item.rb", value: :true_or_mixed
+
+      assert_path_checked "primer", "alpha", "action_bar"
     end
   end
 end

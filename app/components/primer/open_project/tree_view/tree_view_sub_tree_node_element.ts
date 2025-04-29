@@ -74,6 +74,8 @@ export class TreeViewSubTreeNodeElement extends HTMLElement {
     )
 
     const checkedMutationObserver = new MutationObserver(() => {
+      if (this.selectStrategy !== 'descendants') return
+
       let checkType = 'unknown'
 
       for (const node of this.eachDirectDescendantNode()) {
@@ -105,6 +107,10 @@ export class TreeViewSubTreeNodeElement extends HTMLElement {
       subtree: true,
       attributeFilter: ['aria-checked'],
     })
+  }
+
+  get selectStrategy(): string {
+    return this.node.getAttribute('data-select-strategy') || 'descendants'
   }
 
   disconnectedCallback() {
@@ -304,9 +310,11 @@ export class TreeViewSubTreeNodeElement extends HTMLElement {
     const rootInfo = this.treeView?.infoFromNode(this.node, newCheckValue)
     if (rootInfo) nodeInfos.push(rootInfo)
 
-    for (const node of this.eachDescendantNode()) {
-      const info = this.treeView?.infoFromNode(node, newCheckValue)
-      if (info) nodeInfos.push(info)
+    if (this.selectStrategy === 'descendants') {
+      for (const node of this.eachDescendantNode()) {
+        const info = this.treeView?.infoFromNode(node, newCheckValue)
+        if (info) nodeInfos.push(info)
+      }
     }
 
     const checkSuccess = this.dispatchEvent(

@@ -8,6 +8,12 @@ module Primer
       # This component is part of the <%= link_to_component(Primer::OpenProject::TreeView) %> component and should
       # not be used directly.
       class SubTreeNode < Primer::Component
+        DEFAULT_SELECT_STRATEGY = :descendants
+        SELECT_STRATEGIES = [
+          :self,
+          DEFAULT_SELECT_STRATEGY
+        ]
+
         # @!parse
         #   # Adds a leading visual icon rendered to the left of the node's label.
         #   #
@@ -102,10 +108,12 @@ module Primer
         # @param label [String] The node's label, i.e. it's textual content.
         # @param path [Array<String>] The node's "path," i.e. this node's label and the labels of all its ancestors. This node should be reachable by traversing the tree following this path.
         # @param expanded [Boolean] Whether or not this sub-tree should be rendered expanded.
+        # @param select_strategy [Symbol] What should happen when this sub-tree node is checked. <%= one_of(Primer::OpenProject::TreeView::SubTreeNode::SELECT_STRATEGIES) %>
         # @param system_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::OpenProject::TreeView::Node) %>.
-        def initialize(label:, path:, expanded: false, **system_arguments)
+        def initialize(label:, path:, expanded: false, select_strategy: DEFAULT_SELECT_STRATEGY, **system_arguments)
           @label = label
           @system_arguments = system_arguments
+          @select_strategy = fetch_or_fallback(SELECT_STRATEGIES, select_strategy, DEFAULT_SELECT_STRATEGY)
 
           @system_arguments[:aria] = merge_aria(
             @system_arguments,
@@ -130,6 +138,14 @@ module Primer
           )
 
           @node = Primer::OpenProject::TreeView::Node.new(**@system_arguments, path: @sub_tree.path)
+
+          return if @node.select_variant == :none
+
+          @node.merge_system_arguments!(
+            data: {
+              "select-strategy": @select_strategy
+            }
+          )
         end
 
         def render_in(*args, &block)
