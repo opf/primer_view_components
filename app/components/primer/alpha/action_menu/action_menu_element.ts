@@ -3,7 +3,7 @@ import '@oddbird/popover-polyfill'
 import type {IncludeFragmentElement} from '@github/include-fragment-element'
 import AnchoredPositionElement from '../../anchored_position'
 import {observeMutationsUntilConditionMet} from '../../utils'
-import {ActionMenuRovingTabIndexStack} from './action_menu_roving_tab_index_stack'
+import {ActionMenuFocusZoneStack} from './action_menu_focus_zone_stack'
 
 type SelectVariant = 'none' | 'single' | 'multiple' | null
 type SelectedItem = {
@@ -11,9 +11,6 @@ type SelectedItem = {
   value: string | null | undefined
   element: Element
 }
-
-const validSelectors = ['[role="menuitem"]', '[role="menuitemcheckbox"]', '[role="menuitemradio"]']
-const menuItemSelectors = validSelectors.map(selector => `:not([hidden]) > ${selector}`)
 
 @controller
 export class ActionMenuElement extends HTMLElement {
@@ -26,7 +23,11 @@ export class ActionMenuElement extends HTMLElement {
   #inputName = ''
   #invokerBeingClicked = false
   #intersectionObserver: IntersectionObserver
-  #tabIndexStack: ActionMenuRovingTabIndexStack
+  #tabIndexStack: ActionMenuFocusZoneStack
+
+  static validItemRoles = ['menuitem', 'menuitemcheckbox', 'menuitemradio']
+  static validSelectors = ActionMenuElement.validItemRoles.map(role => `[role="${role}"]`)
+  static menuItemSelectors = ActionMenuElement.validSelectors.map(selector => `:not([hidden]) > ${selector}`)
 
   get selectVariant(): SelectVariant {
     return this.getAttribute('data-select-variant') as SelectVariant
@@ -150,7 +151,7 @@ export class ActionMenuElement extends HTMLElement {
       this.setAttribute('data-ready', 'true')
     }
 
-    this.#tabIndexStack = new ActionMenuRovingTabIndexStack()
+    this.#tabIndexStack = new ActionMenuFocusZoneStack()
   }
 
   disconnectedCallback() {
@@ -160,7 +161,7 @@ export class ActionMenuElement extends HTMLElement {
   #softDisableItems() {
     const {signal} = this.#abortController
 
-    for (const item of this.querySelectorAll(validSelectors.join(','))) {
+    for (const item of this.querySelectorAll(ActionMenuElement.validSelectors.join(','))) {
       item.addEventListener('click', this.#potentiallyDisallowActivation.bind(this), {signal})
       item.addEventListener('keydown', this.#potentiallyDisallowActivation.bind(this), {signal})
     }
@@ -170,7 +171,7 @@ export class ActionMenuElement extends HTMLElement {
   #potentiallyDisallowActivation(event: Event): boolean {
     if (!this.#isActivation(event)) return false
 
-    const item = (event.target as HTMLElement).closest(menuItemSelectors.join(','))
+    const item = (event.target as HTMLElement).closest(ActionMenuElement.menuItemSelectors.join(','))
     if (!item) return false
 
     if (item.getAttribute('aria-disabled')) {
@@ -242,7 +243,7 @@ export class ActionMenuElement extends HTMLElement {
       return
     }
 
-    const item = (event.target as Element).closest(menuItemSelectors.join(',')) as HTMLElement | null
+    const item = (event.target as Element).closest(ActionMenuElement.menuItemSelectors.join(',')) as HTMLElement | null
     const targetIsItem = item !== null
 
     if (targetIsItem && eventIsActivation) {
@@ -306,7 +307,7 @@ export class ActionMenuElement extends HTMLElement {
       this.#tabIndexStack.push(subMenu)
 
       window.requestAnimationFrame(() => {
-        const firstItem = subMenu.querySelector(menuItemSelectors.join(',')) as HTMLElement | null
+        const firstItem = subMenu.querySelector(ActionMenuElement.menuItemSelectors.join(',')) as HTMLElement | null
         firstItem?.focus()
       })
     } else {
@@ -504,11 +505,11 @@ export class ActionMenuElement extends HTMLElement {
   }
 
   get #firstItem(): HTMLElement | null {
-    return this.querySelector(menuItemSelectors.join(','))
+    return this.querySelector(ActionMenuElement.menuItemSelectors.join(','))
   }
 
   get items(): HTMLElement[] {
-    return Array.from(this.querySelectorAll(menuItemSelectors.join(',')))
+    return Array.from(this.querySelectorAll(ActionMenuElement.menuItemSelectors.join(',')))
   }
 
   getItemById(itemId: string): HTMLElement | null {
