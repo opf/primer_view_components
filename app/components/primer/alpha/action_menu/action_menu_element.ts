@@ -4,6 +4,7 @@ import type {IncludeFragmentElement} from '@github/include-fragment-element'
 import AnchoredPositionElement from '../../anchored_position'
 import {observeMutationsUntilConditionMet} from '../../utils'
 import {ActionMenuFocusZoneStack} from './action_menu_focus_zone_stack'
+import {ClipboardCopyElement} from '@github/clipboard-copy-element'
 
 type SelectVariant = 'none' | 'single' | 'multiple' | null
 type SelectedItem = {
@@ -23,7 +24,7 @@ export class ActionMenuElement extends HTMLElement {
   #inputName = ''
   #invokerBeingClicked = false
   #intersectionObserver: IntersectionObserver
-  #tabIndexStack: ActionMenuFocusZoneStack
+  #focusZoneStack: ActionMenuFocusZoneStack
 
   static validItemRoles = ['menuitem', 'menuitemcheckbox', 'menuitemradio']
   static validSelectors = ActionMenuElement.validItemRoles.map(role => `[role="${role}"]`)
@@ -151,7 +152,21 @@ export class ActionMenuElement extends HTMLElement {
       this.setAttribute('data-ready', 'true')
     }
 
-    this.#tabIndexStack = new ActionMenuFocusZoneStack()
+    const levelObserver = new MutationObserver(() => this.#updateLevels())
+    levelObserver.observe(this, {childList: true, subtree: true})
+
+    this.#updateLevels()
+
+    this.#focusZoneStack = new ActionMenuFocusZoneStack()
+  }
+
+  #updateLevels() {
+    let idx = 1
+
+    for (const menu of this.querySelectorAll('[role=menu]')) {
+      menu.setAttribute('data-level', idx.toString())
+      idx++
+    }
   }
 
   disconnectedCallback() {
@@ -196,11 +211,25 @@ export class ActionMenuElement extends HTMLElement {
     )
   }
 
+  #isClipboardActivationViaKeyboard(event: Event): boolean {
+    return (
+      event.target instanceof ClipboardCopyElement &&
+      event instanceof KeyboardEvent &&
+      event.type === 'keydown' &&
+      !(event.ctrlKey || event.altKey || event.metaKey || event.shiftKey) &&
+      (event.key === ' ' || event.key === 'Enter')
+    )
+  }
+
   #isActivation(event: Event): boolean {
     // Some browsers fire MouseEvents (Firefox) and others fire PointerEvents (Chrome). Activating an item via
     // enter or space counterintuitively fires one of these rather than a KeyboardEvent. Since PointerEvent
     // inherits from MouseEvent, it is enough to check for MouseEvent here.
-    return (event instanceof MouseEvent && event.type === 'click') || this.#isAnchorActivationViaSpace(event)
+    return (
+      (event instanceof MouseEvent && event.type === 'click') ||
+      this.#isAnchorActivationViaSpace(event) ||
+      this.#isClipboardActivationViaKeyboard(event)
+    )
   }
 
   handleEvent(event: Event) {
@@ -304,14 +333,16 @@ export class ActionMenuElement extends HTMLElement {
     const subMenu = event.target as AnchoredPositionElement
 
     if (event.newState === 'open') {
-      this.#tabIndexStack.push(subMenu)
+      // allow tabbing away from primary menu, but trap focus in sub-menus
+      const isPrimaryMenu = subMenu === this.overlay
+      this.#focusZoneStack.push(subMenu, {trapFocus: !isPrimaryMenu})
 
       window.requestAnimationFrame(() => {
         const firstItem = subMenu.querySelector(ActionMenuElement.menuItemSelectors.join(',')) as HTMLElement | null
         firstItem?.focus()
       })
     } else {
-      this.#tabIndexStack.pop(subMenu)
+      this.#focusZoneStack.pop(subMenu)
       const item = this.#itemForSubMenu(subMenu)
       if (item) item.focus()
     }

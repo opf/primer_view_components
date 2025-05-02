@@ -18,8 +18,9 @@ export class ActionMenuFocusZoneStack {
     return this.#stack[this.#stack.length - 1]
   }
 
-  push(next: AnchoredPositionElement) {
-    this.#stack.push({element: next, abortController: this.#setupFocusZone(next)})
+  push(next: AnchoredPositionElement, options: {trapFocus: boolean} = {trapFocus: true}) {
+    const {trapFocus} = options
+    this.#stack.push({element: next, abortController: this.#setupFocusZone(next, trapFocus)})
   }
 
   pop(target?: AnchoredPositionElement) {
@@ -34,8 +35,8 @@ export class ActionMenuFocusZoneStack {
     entry?.abortController?.abort()
   }
 
-  #setupFocusZone(containerEl: AnchoredPositionElement): AbortController | undefined {
-    const {signal: focusZoneSignal} = focusZone(containerEl, {
+  #setupFocusZone(containerEl: AnchoredPositionElement, trapFocus: boolean): AbortController | undefined {
+    const focusZoneAbortController = focusZone(containerEl, {
       bindKeys: FocusKeys.ArrowVertical | FocusKeys.ArrowHorizontal | FocusKeys.HomeAndEnd | FocusKeys.Backspace,
       focusOutBehavior: 'wrap',
 
@@ -44,7 +45,12 @@ export class ActionMenuFocusZoneStack {
       },
     })
 
-    return focusTrap(containerEl, undefined, focusZoneSignal)
+    if (trapFocus) {
+      const {signal: focusZoneSignal} = focusZoneAbortController
+      return focusTrap(containerEl, undefined, focusZoneSignal)
+    } else {
+      return focusZoneAbortController
+    }
   }
 
   elementIsMenuItem(element: HTMLElement): boolean {

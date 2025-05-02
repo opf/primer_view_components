@@ -285,8 +285,13 @@ module Primer
       # @label With actions
       #
       # @param disable_items toggle
-      def with_actions(disable_items: false, route_format: :html)
-        render_with_template(locals: { disable_items: disable_items, route_format: route_format })
+      # @param nest_in_sub_menu toggle
+      def with_actions(disable_items: false, nest_in_sub_menu: false, route_format: :html)
+        render_with_template(locals: {
+          disable_items: disable_items,
+          nest_in_sub_menu: nest_in_sub_menu,
+          route_format: route_format
+        })
       end
 
       # @label Single select form
