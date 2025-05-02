@@ -176,12 +176,17 @@ module Primer
 
       # @param system_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::Alpha::ActionMenu::PrimaryMenu) %>.
       def initialize(**overlay_arguments)
-        @primary_menu = PrimaryMenu.new(**overlay_arguments)
+        @primary_menu = PrimaryMenu.allocate
+        @system_arguments = @primary_menu.send(:initialize, **overlay_arguments)
 
-        @system_arguments = {
-          tag: :"action-menu",
-          "data-select-variant": @primary_menu.select_variant
-        }
+        @system_arguments[:tag] = :"action-menu"
+        @system_arguments[:preload] = true if @primary_menu.preload?
+
+        @system_arguments[:data] = merge_data(
+          @system_arguments, {
+            data: { "select-variant": @primary_menu.select_variant }
+          }
+        )
 
         @system_arguments[:"data-dynamic-label"] = "" if @primary_menu.dynamic_label
 
@@ -194,8 +199,6 @@ module Primer
 
       def before_render
         content
-
-        raise ArgumentError, "`items` cannot be set when `src` is specified" if @src.present? && @primary_menu.items.any?
       end
 
       def render?

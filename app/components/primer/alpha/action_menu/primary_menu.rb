@@ -14,8 +14,10 @@ module Primer
           @dynamic_label = dynamic_label
           @dynamic_label_prefix = dynamic_label_prefix
 
-          system_arguments[:data] = merge_data(
-            system_arguments,
+          system_arguments[:list_arguments] ||= {}
+
+          system_arguments[:list_arguments][:data] = merge_data(
+            system_arguments[:list_arguments],
             { data: { target: "action-menu.list" } }
           )
 

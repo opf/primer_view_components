@@ -8,6 +8,17 @@ module Alpha
     include Primer::JsTestHelpers
     include Primer::KeyboardTestHelpers
 
+    def self.errors_to_retry
+      # The logic in primer/behaviors' focus-zone code can cause weird race conditions
+      # that mess with `document.activeElement`, making it slightly unreliable in the
+      # test environment.
+      @errors_to_retry ||= [Minitest::Assertion].tap do |error_classes|
+        if Primer::DriverTestHelpers.firefox?
+          error_classes << Selenium::WebDriver::Error::UnexpectedAlertOpenError
+        end
+      end
+    end
+
     ###### HELPER METHODS ######
 
     def click_on_invoker_button(expect_to_open: true)
@@ -117,6 +128,7 @@ module Alpha
       return if !expect_focus_change || current_item["aria-disabled"]
       return unless sub_menu_id
 
+      # make sure the first list item in the sub-menu is the active element
       assert_selector("##{sub_menu_id} ul > li [role=menuitem], [role=menuitemradio], [role=menuitemcheckbox]") do |element|
         page.evaluate_script("document.activeElement === arguments[0]", element)
       end
@@ -189,7 +201,7 @@ module Alpha
 
       accept_alert do
         # "click" on first item
-        activate_via_enter
+        activate_via_enter(expect_focus_change: false)
       end
     end
 
@@ -201,7 +213,7 @@ module Alpha
 
       accept_alert do
         # "click" on first item
-        activate_via_enter
+        activate_via_enter(expect_focus_change: false)
       end
     end
 
@@ -212,7 +224,7 @@ module Alpha
 
       accept_alert do
         # "click" on first item
-        activate_via_space
+        activate_via_space(expect_focus_change: false)
       end
     end
 
@@ -224,7 +236,7 @@ module Alpha
 
       accept_alert do
         # "click" on first item
-        activate_via_space
+        activate_via_space(expect_focus_change: false)
       end
     end
 

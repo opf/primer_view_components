@@ -26,7 +26,7 @@ module Primer
         # @param size [Symbol] <%= one_of(Primer::Alpha::Overlay::SIZE_OPTIONS) %>.
         # @param src [String] Used with an `include-fragment` element to load menu content from the given source URL.
         # @param preload [Boolean] When true, and src is present, loads the `include-fragment` on trigger hover.
-        # @param select_variant [Symbol] <%= one_of(Primer::Alpha::ActionMenu::SELECT_VARIANT_OPTIONS) %>
+        # @param select_variant [Symbol] <%= one_of(Primer::Alpha::ActionMenu::Menu::SELECT_VARIANT_OPTIONS) %>
         # @param form_arguments [Hash] Allows an `ActionMenu` to act as a select list in multi- and single-select modes. Pass the `builder:` and `name:` options to this hash. `builder:` should be an instance of `ActionView::Helpers::FormBuilder`, which are created by the standard Rails `#form_with` and `#form_for` helpers. The `name:` option is the desired name of the field that will be included in the params sent to the server on form submission.
         # @param overlay_arguments [Hash] Arguments to pass to the underlying <%= link_to_component(Primer::Alpha::Overlay) %>
         # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>.
@@ -46,9 +46,7 @@ module Primer
           @menu_id = menu_id
           @src = src
           @preload = fetch_or_fallback_boolean(preload, DEFAULT_PRELOAD)
-          @system_arguments = system_arguments
 
-          @system_arguments[:preload] = true if @src.present? && preload?
           @select_variant = fetch_or_fallback(SELECT_VARIANT_OPTIONS, select_variant, DEFAULT_SELECT_VARIANT)
 
           overlay_arguments[:data] = merge_data(
@@ -73,6 +71,8 @@ module Primer
             form_arguments: form_arguments,
             **list_arguments
           )
+
+          system_arguments # rubocop:disable Lint/Void
         end
 
         # @!parse
@@ -83,7 +83,7 @@ module Primer
 
         # Adds a new item to the list.
         #
-        # @param system_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::Alpha::ActionList::Item) %>.
+      # @param system_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::Alpha::ActionList::Item) %>.
         def with_item(**system_arguments, &block)
           @list.with_item(**system_arguments, &block)
         end
@@ -118,6 +118,12 @@ module Primer
 
         def with_group(**system_arguments, &block)
           @list.with_group(**system_arguments, &block)
+        end
+
+        private
+
+        def before_render
+          raise ArgumentError, "`items` cannot be set when `src` is specified" if src.present? && items.any?
         end
       end
     end

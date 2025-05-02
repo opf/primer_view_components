@@ -342,6 +342,8 @@ export class ActionMenuElement extends HTMLElement {
         firstItem?.focus()
       })
     } else {
+      // Note that this will also cause focus to return to the invoker button, which is
+      // desirable
       this.#focusZoneStack.pop(subMenu)
       const item = this.#itemForSubMenu(subMenu)
       if (item) item.focus()

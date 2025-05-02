@@ -60,4 +60,8 @@ export class ActionMenuFocusZoneStack {
   get #validItemRoles(): string[] {
     return ActionMenuElement.validItemRoles
   }
+
+  get isEmpty(): boolean {
+    return this.#stack.length === 0
+  }
 }
