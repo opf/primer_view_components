@@ -53,3 +53,20 @@
 .SubHeader-filterInput_hiddenClearButton + button.FormControl-input-trailingAction {
   display: none;
 }
+
+@media (max-width: 543.98px) {
+    .SubHeader {
+        grid-template-areas: "left right" "middle middle" "bottom bottom";
+        grid-template-columns: 1fr auto;
+        grid-row-gap: var(--stack-gap-condensed);
+    }
+
+    .SubHeader--emptyLeftPane {
+        grid-template-areas: "middle middle right" "bottom bottom bottom";
+        grid-template-columns: auto 1fr auto;
+    }
+
+    .SubHeader-middlePane {
+        text-align: left;
+    }
+}
