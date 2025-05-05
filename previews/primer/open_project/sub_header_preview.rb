@@ -78,6 +78,26 @@ module Primer
         render_with_template(locals: {})
       end
 
+      # @label With SegmentedControl
+      def segmented_control
+        render(Primer::OpenProject::SubHeader.new) do |component|
+          component.with_filter_button(mobile_icon: :filter, mobile_label: "Filter") do |button|
+            button.with_trailing_visual_counter(count: "15")
+            "Filter"
+          end
+
+          component.with_segmented_control("aria-label": "Segmented control") do |control|
+            control.with_item(tag: :a, href: "#", label: "Preview", icon: :eye, selected: true)
+            control.with_item(tag: :a, href: "#", label: "Raw", icon: :"file-code")
+          end
+
+          component.with_action_button(mobile_icon: :plus, mobile_label: "Create", scheme: :primary)  do |button|
+            button.with_leading_visual_icon(icon: :plus)
+            "Create"
+          end
+        end
+      end
+
       # @label With a custom area below
       def bottom_pane
         render_with_template(locals: {})
