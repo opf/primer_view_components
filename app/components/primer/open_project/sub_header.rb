@@ -115,6 +115,14 @@ module Primer
         }
       }
 
+      renders_one :segmented_control, lambda { |**system_arguments, &block|
+          deny_tag_argument(**system_arguments)
+
+          @mobile_segmented_control = Primer::Alpha::ActionMenu.new(**system_arguments)
+
+          Primer::Alpha::SegmentedControl.new(**system_arguments)
+      }
+
       renders_one :text, lambda { |**system_arguments|
         system_arguments[:font_weight] ||= :bold
 

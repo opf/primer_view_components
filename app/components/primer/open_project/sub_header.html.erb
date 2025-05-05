@@ -8,6 +8,8 @@
     <% end if filter_input.present? %>
     <%= render @mobile_filter_trigger if @mobile_filter_trigger.present? %>
     <%= filter_button %>
+
+    <%= segmented_control %>
   </div>
   <div class="SubHeader-middlePane" data-targets="<%= HIDDEN_FILTER_TARGET_SELECTOR %>">
     <%= text %>
