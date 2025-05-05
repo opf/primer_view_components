@@ -165,6 +165,23 @@ module Alpha
       assert_selector("action-menu button[aria-controls]", text: "Menu")
     end
 
+    def test_sub_menu_dynamic_labels
+      visit_preview(:single_select_with_internal_label, nest_in_sub_menu: true)
+      assert_selector("action-menu button[aria-controls]", text: "Menu: Quote reply")
+
+      click_on_invoker_button
+      click_on_first_item
+      click_on_first_item(level: 2)
+
+      assert_selector("action-menu button[aria-controls]", text: "Menu: Copy link")
+
+      click_on_invoker_button
+      click_on_first_item
+      click_on_first_item(level: 2)
+
+      assert_selector("action-menu button[aria-controls]", text: "Menu")
+    end
+
     def test_anchor_align
       visit_preview(:align_end)
 
@@ -758,11 +775,34 @@ module Alpha
       assert_equal "bar", response["value"]
     end
 
+    def test_sub_menu_individual_items_can_submit_post_requests_via_forms
+      visit_preview(:with_actions, route_format: :json, nest_in_sub_menu: true)
+
+      click_on_invoker_button
+      click_on_first_item
+      click_on_fourth_item(level: 2)
+
+      response = JSON.parse(find("pre").text)
+      assert_equal "bar", response["value"]
+    end
+
     def test_single_select_items_can_submit_forms
       visit_preview(:single_select_form_items, route_format: :json)
 
       click_on_invoker_button
       click_on_first_item
+
+      # for some reason the JSON response is wrapped in HTML, I have no idea why
+      response = JSON.parse(find("pre").text)
+      assert_equal "group-by-repository", response["value"]
+    end
+
+    def test_sub_menu_single_select_items_can_submit_forms
+      visit_preview(:single_select_form_items, route_format: :json, nest_in_sub_menu: true)
+
+      click_on_invoker_button
+      click_on_first_item
+      click_on_first_item(level: 2)
 
       # for some reason the JSON response is wrapped in HTML, I have no idea why
       response = JSON.parse(find("pre").text)
@@ -782,12 +822,44 @@ module Alpha
       assert_equal "group-by-repository", response["value"]
     end
 
+    def test_sub_menu_single_select_items_can_submit_forms_on_enter
+      visit_preview(:single_select_form_items, route_format: :json, nest_in_sub_menu: true)
+
+      open_menu_via_keyboard
+
+      # "click" first item
+      arrow_down_to("Sub-menu")
+      activate_via_enter
+      arrow_down_to("Repository")
+      activate_via_enter
+
+      # for some reason the JSON response is wrapped in HTML, I have no idea why
+      response = JSON.parse(find("pre").text)
+      assert_equal "group-by-repository", response["value"]
+    end
+
     def test_single_select_items_can_submit_forms_on_keydown_space
       visit_preview(:single_select_form_items, route_format: :json)
 
       open_menu_via_keyboard
 
       # "click" first item
+      activate_via_space
+
+      # for some reason the JSON response is wrapped in HTML, I have no idea why
+      response = JSON.parse(find("pre").text)
+      assert_equal "group-by-repository", response["value"]
+    end
+
+    def test_sub_menu_single_select_items_can_submit_forms_on_keydown_space
+      visit_preview(:single_select_form_items, route_format: :json, nest_in_sub_menu: true)
+
+      open_menu_via_keyboard
+
+      # "click" first item
+      arrow_down_to("Sub-menu")
+      activate_via_space
+      arrow_down_to("Repository")
       activate_via_space
 
       # for some reason the JSON response is wrapped in HTML, I have no idea why

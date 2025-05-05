@@ -147,6 +147,19 @@ module Primer
         end
       end
 
+      def test_renders_groups_in_sub_menu
+        render_preview(:with_groups, params: { nest_in_sub_menu: true })
+
+        assert_selector("ul[role=menu] ul[role=menu]") do |menu|
+          menu.assert_selector(".ActionList-sectionDivider .ActionList-sectionDivider-title", count: 3)
+          menu.assert_selector("ul[role=group]", count: 3) do |group|
+            group.assert_selector("li[role=none]") do |item|
+              item.assert_selector "button[role=menuitem]"
+            end
+          end
+        end
+      end
+
       def test_renders_individual_items_inside_groups_when_at_least_one_group
         render_preview(:with_items_and_groups)
 
@@ -199,6 +212,23 @@ module Primer
 
       def test_renders_submenus
         render_preview(:with_actions, params: { nest_in_sub_menu: true })
+
+        assert_selector("action-menu") do |menu|
+          sub_menu_button = page.find_css("li button", text: "Sub-menu").first
+          popover_id = sub_menu_button["popovertarget"]
+
+          menu.assert_selector("anchored-position##{popover_id} ul", visible: false) do |sub_menu|
+            sub_menu.assert_selector("li button[role='menuitem']", text: "Alert", visible: false)
+            sub_menu.assert_selector("li a", text: "Navigate", visible: false)
+            sub_menu.assert_selector("li clipboard-copy[role='menuitem']", text: "Copy text", visible: false)
+          end
+        end
+      end
+
+      def test_renders_internal_label
+        render_preview(:single_select_with_internal_label)
+
+        assert_selector("button[aria-haspopup='true'] .Button-label", text: "Menu")
       end
     end
   end

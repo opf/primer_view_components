@@ -57,13 +57,9 @@ module Primer
       # @label With groups
       #
       # @snapshot interactive
-      def with_groups
-        render(Primer::Alpha::ActionMenu.new(menu_id: "menu-1")) do |menu|
-          menu.with_show_button do |button|
-            button.with_trailing_action_icon(icon: :"triangle-down")
-            "Favorite character"
-          end
-
+      # @param nest_in_sub_menu toggle
+      def with_groups(nest_in_sub_menu: false)
+        contents = -> (menu) {
           menu.with_group do |group|
             group.with_heading(title: "Battlestar Galactica")
             group.with_item(label: "William Adama")
@@ -86,6 +82,21 @@ module Primer
             group.with_item(label: "Luke Skywalker")
             group.with_item(label: "Han Solo")
             group.with_item(label: "Chewbacca")
+          end
+        }
+
+        render(Primer::Alpha::ActionMenu.new(menu_id: "menu-1")) do |menu|
+          menu.with_show_button do |button|
+            button.with_trailing_action_icon(icon: :"triangle-down")
+            "Favorite character"
+          end
+
+          if nest_in_sub_menu
+            menu.with_sub_menu_item(label: "Sub-menu") do |sub_menu_item|
+              contents.call(sub_menu_item)
+            end
+          else
+            contents.call(menu)
           end
         end
       end
@@ -220,17 +231,29 @@ module Primer
       # @label Single Select with Internal Label
       #
       # @snapshot interactive
-      def single_select_with_internal_label
-        render(Primer::Alpha::ActionMenu.new(select_variant: :single, dynamic_label: true, dynamic_label_prefix: "Menu")) do |menu|
-          menu.with_show_button do |button|
-            button.with_trailing_action_icon(icon: :"triangle-down")
-            "Menu"
-          end
+      # @param nest_in_sub_menu toggle
+      def single_select_with_internal_label(nest_in_sub_menu: false)
+        contents = -> (menu) {
           menu.with_item(label: "Copy link") do |item|
             item.with_trailing_visual_label(scheme: :accent, inline: true).with_content("Recommended")
           end
           menu.with_item(label: "Quote reply", active: true)
           menu.with_item(label: "Reference in new issue")
+        }
+
+        render(Primer::Alpha::ActionMenu.new(select_variant: :single, dynamic_label: true, dynamic_label_prefix: "Menu")) do |menu|
+          menu.with_show_button do |button|
+            button.with_trailing_action_icon(icon: :"triangle-down")
+            "Menu"
+          end
+
+          if nest_in_sub_menu
+            menu.with_sub_menu_item(label: "Sub-menu") do |sub_menu_item|
+              contents.call(sub_menu_item)
+            end
+          else
+            contents.call(menu)
+          end
         end
       end
 
@@ -268,10 +291,9 @@ module Primer
 
       # @label With deferred content
       #
-      def with_deferred_content
-        render(Primer::Alpha::ActionMenu.new(menu_id: "deferred", src: UrlHelpers.action_menu_deferred_path)) do |menu|
-          menu.with_show_button { "Menu with deferred content" }
-        end
+      # @param nest_in_sub_menu toggle
+      def with_deferred_content(nest_in_sub_menu: false)
+        render_with_template(locals: { nest_in_sub_menu: nest_in_sub_menu })
       end
 
       # @label With deferred preloaded content
@@ -302,8 +324,9 @@ module Primer
 
       # @label Single select form items
       #
-      def single_select_form_items(route_format: :html)
-        render_with_template(locals: { route_format: route_format })
+      # @param nest_in_sub_menu toggle
+      def single_select_form_items(route_format: :html, nest_in_sub_menu: false)
+        render_with_template(locals: { route_format: route_format, nest_in_sub_menu: nest_in_sub_menu })
       end
 
       # @label Multiple select form
