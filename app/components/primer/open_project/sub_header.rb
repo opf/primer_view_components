@@ -35,6 +35,11 @@ module Primer
             end
           },
         },
+        button_group: {
+          renders: lambda { |**kwargs|
+            Primer::Beta::ButtonGroup.new(**kwargs)
+          },
+        },
         component: {
           # A generic slot to render whatever component you like on the right side
           renders: lambda { |**kwargs|
