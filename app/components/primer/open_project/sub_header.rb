@@ -10,6 +10,9 @@ module Primer
       HIDDEN_FILTER_TARGET_SELECTOR = "sub-header.hiddenItemsOnExpandedFilter"
       SHOWN_FILTER_TARGET_SELECTOR = "sub-header.shownItemsOnExpandedFilter"
 
+      MOBILE_ACTIONS_DISPLAY = [:flex, :none].freeze
+      DESKTOP_ACTIONS_DISPLAY = [:none, :flex].freeze
+
       # A button or custom content that will render on the right-hand side of the component.
       #
       # To render a button, call the `with_button` method, which accepts the arguments accepted by <%= link_to_component(Primer::Beta::Button) %>.
@@ -17,11 +20,18 @@ module Primer
       # To render custom content, call the `with_button_component` method and pass a block that returns HTML.
       renders_many :actions, types: {
         button: {
-          renders: lambda { |icon: nil, **kwargs|
+          renders: lambda { |icon: nil, mobile_icon:, mobile_label:, **kwargs|
             if icon
-              Primer::Beta::IconButton.new(icon: icon, **kwargs)
+              Primer::Beta::IconButton.new(icon: icon, display: DESKTOP_ACTIONS_DISPLAY, **kwargs)
             else
-              Primer::Beta::Button.new(**kwargs)
+              @mobile_button =  Primer::Beta::IconButton.new(icon: mobile_icon,
+                                                             aria: {
+                                                               label: mobile_label
+                                                             },
+                                                             display: MOBILE_ACTIONS_DISPLAY,
+                                                             **kwargs)
+
+              Primer::Beta::Button.new(display: DESKTOP_ACTIONS_DISPLAY, **kwargs)
             end
           },
         },
@@ -83,7 +93,7 @@ module Primer
       # To render custom content, call the `with_filter_component` method and pass a block that returns HTML.
       renders_one :filter_button, types: {
         button: {
-          renders: lambda { |icon: nil, **kwargs|
+          renders: lambda { |icon: nil, mobile_icon: :filter, mobile_label: I18n.t("button_filter"), **kwargs|
             kwargs[:classes] = class_names(
               kwargs[:classes],
               "SubHeader-filterButton"
@@ -92,9 +102,16 @@ module Primer
             kwargs[:data][:targets] ||= HIDDEN_FILTER_TARGET_SELECTOR
 
             if icon
-              Primer::Beta::IconButton.new(icon: icon, **kwargs)
+              Primer::Beta::IconButton.new(icon: icon, display: DESKTOP_ACTIONS_DISPLAY, **kwargs)
             else
-              Primer::Beta::Button.new(**kwargs)
+              @mobile_filter_button =  Primer::Beta::IconButton.new(icon: mobile_icon,
+                                                             aria: {
+                                                               label: mobile_label
+                                                             },
+                                                             display: MOBILE_ACTIONS_DISPLAY,
+                                                             **kwargs)
+
+              Primer::Beta::Button.new(display: DESKTOP_ACTIONS_DISPLAY, **kwargs)
             end
           },
 

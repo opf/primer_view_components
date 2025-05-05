@@ -35,7 +35,7 @@ module Primer
 
           component.with_text { text } unless text.nil?
 
-          component.with_action_button(scheme: :primary) do |button|
+          component.with_action_button(mobile_icon: :plus, mobile_label: "Create", scheme: :primary) do |button|
               button.with_leading_visual_icon(icon: :plus)
               "Create"
           end if show_action_button
@@ -46,12 +46,12 @@ module Primer
       def default
         render(Primer::OpenProject::SubHeader.new) do |component|
           component.with_filter_input(name: "filter", label: "Filter")
-          component.with_filter_button do |button|
+          component.with_filter_button(mobile_icon: :filter, mobile_label: "Filter") do |button|
             button.with_trailing_visual_counter(count: "15")
             "Filter"
           end
 
-          component.with_action_button(scheme: :primary)  do |button|
+          component.with_action_button(mobile_icon: :plus, mobile_label: "Create", scheme: :primary)  do |button|
             button.with_leading_visual_icon(icon: :plus)
             "Create"
           end
@@ -110,7 +110,7 @@ module Primer
 
           component.with_text { "Hello world!" }
 
-          component.with_action_button(scheme: :primary)  do |button|
+          component.with_action_button(mobile_icon: :plus, mobile_label: "Create", scheme: :primary)  do |button|
             button.with_leading_visual_icon(icon: :plus)
             "Create"
           end

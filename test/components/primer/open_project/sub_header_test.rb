@@ -8,11 +8,11 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
   def test_renders
     render_inline(Primer::OpenProject::SubHeader.new) do |component|
       component.with_filter_input(name: "filter", label: "Filter")
-      component.with_action_button(scheme: :primary) do |button|
+      component.with_action_button(mobile_icon: :plus, mobile_label: "Create", scheme: :primary) do |button|
         button.with_leading_visual_icon(icon: :plus)
         "Create"
       end
-      component.with_action_button(scheme: :danger) { "Delete" }
+      component.with_action_button(mobile_icon: :trash, mobile_label: "Delete", scheme: :danger) { "Delete" }
     end
 
     assert_selector(".SubHeader")
@@ -25,7 +25,7 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
 
   def test_renders_an_icon_button_as_action
     render_inline(Primer::OpenProject::SubHeader.new) do |component|
-      component.with_action_button(icon: :plus, aria: { label: "Create" })
+      component.with_action_button(icon: :plus, mobile_icon: :plus, mobile_label: "Create", aria: { label: "Create" })
     end
 
     assert_selector(".SubHeader")
