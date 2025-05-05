@@ -32,6 +32,22 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
     assert_selector(".SubHeader .Button--iconOnly")
   end
 
+  def test_renders_a_button_group_as_action
+    render_inline(Primer::OpenProject::SubHeader.new) do |component|
+      component.with_action_button_group do |group|
+        group.with_button { "Button 1" }
+        group.with_button { "Button 2" }
+        group.with_button { "Button 3" }
+      end
+    end
+
+    assert_selector(".SubHeader")
+    assert_selector(".SubHeader .ButtonGroup")
+    assert_text("Button 1")
+    assert_text("Button 2")
+    assert_text("Button 3")
+  end
+
   def test_renders_a_custom_button_as_action
     render_inline(Primer::OpenProject::SubHeader.new) do |component|
       component.with_action_component do
@@ -109,6 +125,20 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
       "[data-action=\" input:sub-header#toggleFilterInputClearButton focus:sub-header#toggleFilterInputClearButton\"]"
     )
     assert_selector(".FormControl-input-trailingAction[data-action=\"click:primer-text-field#clearContents\"]")
+  end
+
+  def test_renders_a_segmented_control
+    render_inline(Primer::OpenProject::SubHeader.new) do |component|
+      component.with_segmented_control("aria-label": "Segmented control") do |control|
+        control.with_item(tag: :a, href: "#", label: "Preview", icon: :eye, selected: true)
+        control.with_item(tag: :a, href: "#", label: "Raw", icon: :"file-code")
+      end
+    end
+
+    assert_selector(".SubHeader")
+    assert_selector(".SubHeader .SegmentedControl")
+    assert_text("Preview")
+    assert_text("Raw")
   end
 
   def test_does_not_render_input_events_when_show_clear_button_is_not_set

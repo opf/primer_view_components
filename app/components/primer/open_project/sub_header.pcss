@@ -5,7 +5,7 @@
     grid-template-areas: "left middle right" "bottom bottom bottom";
     grid-template-columns: auto 1fr auto;
     align-items: center;
-    margin-bottom: 16px;
+    margin-bottom: var(--base-size-16);
 }
 
 .SubHeader--expandedSearch {
@@ -51,7 +51,7 @@
     gap: 8px;
 }
 
-.SubHeader-filterInput_hiddenClearButton + button.FormControl-input-trailingAction {
+.SubHeader-filterInput_hiddenClearButton + .FormControl-input-trailingAction {
   display: none;
 }
 
