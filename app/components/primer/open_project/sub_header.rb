@@ -146,6 +146,13 @@ module Primer
           system_arguments[:classes]
         )
       end
+
+      def before_render
+        @system_arguments[:classes] = class_names(
+          @system_arguments[:classes],
+          "SubHeader--emptyLeftPane" => !segmented_control? && !filter_button && !filter_input
+        )
+      end
     end
   end
 end
