@@ -13,6 +13,11 @@
     <%= filter_button %>
 
     <%= segmented_control %>
+    <% if @segmented_control_block.present? %>
+      <%= render(@mobile_segmented_control) do |control| %>
+        <% @segmented_control_block.call(control) %>
+      <% end %>
+    <% end %>
   </div>
   <div class="SubHeader-middlePane" data-targets="<%= HIDDEN_FILTER_TARGET_SELECTOR %>">
     <%= text %>

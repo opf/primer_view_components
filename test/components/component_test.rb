@@ -221,6 +221,7 @@ class PrimerComponentTest < Minitest::Test
       "Primer::OpenProject::PageHeader::Menu",
       "Primer::OpenProject::PageHeader::Dialog",
       "Primer::OpenProject::PageHeader::Title",
+      "Primer::OpenProject::SubHeader::SegmentedControl",
       "Primer::OpenProject::SidePanel::Section",
       "Primer::OpenProject::DangerDialog::FormWrapper",
       "Primer::OpenProject::TreeView::IconPair",
