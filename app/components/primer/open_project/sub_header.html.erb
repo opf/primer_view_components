@@ -29,7 +29,7 @@
 
     <% @mobile_buttons.each do |mobile_button| %>
       <%= render(mobile_button) %>
-    <% end %>
+    <% end unless @mobile_buttons.nil? %>
   </div>
   <% if bottom_pane_component.present? %>
     <div class="SubHeader-bottomPane">
