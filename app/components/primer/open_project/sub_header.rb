@@ -20,19 +20,19 @@ module Primer
       # To render custom content, call the `with_button_component` method and pass a block that returns HTML.
       renders_many :actions, types: {
         button: {
-          renders: lambda { |icon: nil, mobile_icon:, mobile_label:, **kwargs|
+          renders: lambda { |icon: nil, leading_icon:, mobile_label:, **kwargs|
             if icon
               Primer::Beta::IconButton.new(icon: icon, **kwargs)
             else
               @mobile_buttons ||= []
-              @mobile_buttons.push(Primer::Beta::IconButton.new(icon: mobile_icon,
+              @mobile_buttons.push(Primer::Beta::IconButton.new(icon: leading_icon,
                                                                 aria: {
                                                                   label: mobile_label
                                                                 },
                                                                 display: MOBILE_ACTIONS_DISPLAY,
                                                                 **kwargs))
 
-              Primer::Beta::Button.new(display: DESKTOP_ACTIONS_DISPLAY, **kwargs)
+              Primer::OpenProject::SubHeader::Button.new(icon: leading_icon, display: DESKTOP_ACTIONS_DISPLAY, **kwargs)
             end
           },
         },
@@ -108,7 +108,7 @@ module Primer
       # To render custom content, call the `with_filter_component` method and pass a block that returns HTML.
       renders_one :filter_button, types: {
         button: {
-          renders: lambda { |icon: nil, mobile_icon: :filter, mobile_label: I18n.t("button_filter"), **kwargs|
+          renders: lambda { |icon: nil, leading_icon: :filter, mobile_label: I18n.t("button_filter"), **kwargs|
             kwargs[:classes] = class_names(
               kwargs[:classes],
               "SubHeader-filterButton"
@@ -127,14 +127,14 @@ module Primer
             if icon
               Primer::Beta::IconButton.new(icon: icon, display: DESKTOP_ACTIONS_DISPLAY, **kwargs)
             else
-              @mobile_filter_button =  Primer::Beta::IconButton.new(icon: mobile_icon,
+              @mobile_filter_button =  Primer::Beta::IconButton.new(icon: leading_icon,
                                                              aria: {
                                                                label: mobile_label
                                                              },
                                                              display: MOBILE_ACTIONS_DISPLAY,
                                                              **kwargs)
 
-              Primer::Beta::Button.new(display: DESKTOP_ACTIONS_DISPLAY, **kwargs)
+              Primer::OpenProject::SubHeader::Button.new(icon: leading_icon, display: DESKTOP_ACTIONS_DISPLAY, **kwargs)
             end
           },
 

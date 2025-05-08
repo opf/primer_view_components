@@ -35,9 +35,8 @@ module Primer
 
           component.with_text { text } unless text.nil?
 
-          component.with_action_button(mobile_icon: :plus, mobile_label: "Create", scheme: :primary) do |button|
-              button.with_leading_visual_icon(icon: :plus)
-              "Create"
+          component.with_action_button(leading_icon: :plus, mobile_label: "Create", scheme: :primary) do
+            "Create"
           end if show_action_button
         end
       end
@@ -46,13 +45,12 @@ module Primer
       def default
         render(Primer::OpenProject::SubHeader.new) do |component|
           component.with_filter_input(name: "filter", label: "Filter")
-          component.with_filter_button(mobile_icon: :filter, mobile_label: "Filter") do |button|
+          component.with_filter_button do |button|
             button.with_trailing_visual_counter(count: "15")
             "Filter"
           end
 
-          component.with_action_button(mobile_icon: :plus, mobile_label: "Create", scheme: :primary)  do |button|
-            button.with_leading_visual_icon(icon: :plus)
+          component.with_action_button(leading_icon: :plus, mobile_label: "Create", scheme: :primary) do
             "Create"
           end
         end
@@ -81,7 +79,7 @@ module Primer
       # @label With SegmentedControl
       def segmented_control
         render(Primer::OpenProject::SubHeader.new) do |component|
-          component.with_filter_button(mobile_icon: :filter, mobile_label: "Filter") do |button|
+          component.with_filter_button do |button|
             button.with_trailing_visual_counter(count: "15")
             "Filter"
           end
@@ -91,8 +89,7 @@ module Primer
             control.with_item(tag: :a, href: "#", label: "Raw", icon: :"file-code")
           end
 
-          component.with_action_button(mobile_icon: :plus, mobile_label: "Create", scheme: :primary)  do |button|
-            button.with_leading_visual_icon(icon: :plus)
+          component.with_action_button(leading_icon: :plus, mobile_label: "Create", scheme: :primary) do
             "Create"
           end
         end
@@ -110,8 +107,7 @@ module Primer
 
           component.with_text { "Hello world!" }
 
-          component.with_action_button(mobile_icon: :plus, mobile_label: "Create", scheme: :primary)  do |button|
-            button.with_leading_visual_icon(icon: :plus)
+          component.with_action_button(leading_icon: :plus, mobile_label: "Create", scheme: :primary) do
             "Create"
           end
         end
