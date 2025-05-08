@@ -15,7 +15,7 @@ class Primer::OpenProject::SubHeader::SegmentedControlTest < Minitest::Test
     assert_text("Raw")
   end
 
-  def does_not_render_without_icon
+  def test_does_not_render_without_icon
     err = assert_raises ArgumentError do
       render_inline(Primer::OpenProject::SubHeader::SegmentedControl.new("aria-label": "Segmented control")) do |control|
         control.with_item(tag: :a, href: "#", label: "Preview", selected: true)
@@ -23,6 +23,6 @@ class Primer::OpenProject::SubHeader::SegmentedControlTest < Minitest::Test
       end
     end
 
-    assert_equal "missing keyword :icon", err.message
+    assert_equal "missing keyword: :icon", err.message
   end
 end

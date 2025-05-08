@@ -7,6 +7,10 @@
     group.with_button(icon: "sort-desc", "aria-label": "Button 3")
   end %>
 
+  <% component.with_action_button(leading_icon: :star, mobile_label: "Star") do
+    "Star"
+  end %>
+
   <% component.with_action_button(leading_icon: :plus, mobile_label: "Create", scheme: :primary) do
     "Create"
   end %>

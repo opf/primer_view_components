@@ -20,32 +20,25 @@ module Primer
       # To render custom content, call the `with_button_component` method and pass a block that returns HTML.
       renders_many :actions, types: {
         button: {
-          renders: lambda { |icon: nil, leading_icon:, mobile_label:, **kwargs|
-            if icon
-              Primer::Beta::IconButton.new(icon: icon, **kwargs)
+          renders: lambda { |icon_only: false, leading_icon:, mobile_label:, **kwargs|
+            kwargs[:icon] = leading_icon
+
+            if icon_only
+              Primer::Beta::IconButton.new(**kwargs)
             else
               @mobile_buttons ||= []
-              @mobile_buttons.push(Primer::Beta::IconButton.new(icon: leading_icon,
-                                                                aria: {
+              @mobile_buttons.push(Primer::Beta::IconButton.new(aria: {
                                                                   label: mobile_label
                                                                 },
                                                                 display: MOBILE_ACTIONS_DISPLAY,
                                                                 **kwargs))
 
-              Primer::OpenProject::SubHeader::Button.new(icon: leading_icon, display: DESKTOP_ACTIONS_DISPLAY, **kwargs)
+              Primer::OpenProject::SubHeader::Button.new(display: DESKTOP_ACTIONS_DISPLAY, **kwargs)
             end
           },
         },
         button_group: {
           renders: lambda { |**kwargs|
-            kwargs[:data] = merge_data(
-              kwargs, {
-                data: {
-                  targets: HIDDEN_FILTER_TARGET_SELECTOR,
-                }
-              }
-            )
-
             Primer::OpenProject::SubHeader::ButtonGroup.new(**kwargs)
           },
         },
@@ -54,6 +47,7 @@ module Primer
           renders: lambda { |**kwargs|
             deny_tag_argument(**kwargs)
             kwargs[:tag] = :div
+
             Primer::BaseComponent.new(**kwargs)
           },
         }
@@ -108,33 +102,23 @@ module Primer
       # To render custom content, call the `with_filter_component` method and pass a block that returns HTML.
       renders_one :filter_button, types: {
         button: {
-          renders: lambda { |icon: nil, leading_icon: :filter, mobile_label: I18n.t("button_filter"), **kwargs|
-            kwargs[:classes] = class_names(
-              kwargs[:classes],
-              "SubHeader-filterButton"
-            )
-
-            kwargs[:data] = merge_data(
-              kwargs, {
-                data: {
-                  targets: HIDDEN_FILTER_TARGET_SELECTOR,
-                }
-              }
-            )
-
+          renders: lambda { |icon_only: false, leading_icon: :filter, mobile_label: I18n.t("button_filter"), **kwargs|
             kwargs[:mr] ||= 2
+            kwargs[:icon] = leading_icon
 
-            if icon
-              Primer::Beta::IconButton.new(icon: icon, display: DESKTOP_ACTIONS_DISPLAY, **kwargs)
+            icon_args = kwargs.dup
+            icon_args = set_as_hidden_filter_target(icon_args)
+
+            if icon_only
+              Primer::Beta::IconButton.new(**icon_args)
             else
-              @mobile_filter_button =  Primer::Beta::IconButton.new(icon: leading_icon,
-                                                             aria: {
+              @mobile_filter_button =  Primer::Beta::IconButton.new(aria: {
                                                                label: mobile_label
                                                              },
                                                              display: MOBILE_ACTIONS_DISPLAY,
-                                                             **kwargs)
+                                                             **icon_args)
 
-              Primer::OpenProject::SubHeader::Button.new(icon: leading_icon, display: DESKTOP_ACTIONS_DISPLAY, **kwargs)
+              Primer::OpenProject::SubHeader::Button.new(display: DESKTOP_ACTIONS_DISPLAY, **kwargs)
             end
           },
 
@@ -145,13 +129,7 @@ module Primer
           renders: lambda { |**kwargs|
             deny_tag_argument(**kwargs)
             kwargs[:tag] = :div
-            kwargs[:data] = merge_data(
-              kwargs, {
-                data: {
-                  targets: HIDDEN_FILTER_TARGET_SELECTOR,
-                }
-              }
-            )
+            kwargs = set_as_hidden_filter_target(kwargs)
 
             Primer::BaseComponent.new(**kwargs)
           },
@@ -162,15 +140,8 @@ module Primer
 
       renders_one :segmented_control, lambda { |**system_arguments, &block|
           deny_tag_argument(**system_arguments)
-
-          system_arguments[:data] = merge_data(
-            system_arguments, {
-              data: {
-                targets: HIDDEN_FILTER_TARGET_SELECTOR
-              }
-            }
-          )
           system_arguments[:mr] ||= 2
+          system_arguments = set_as_hidden_filter_target(system_arguments)
 
           @segmented_control_block = block
           @mobile_segmented_control = Primer::OpenProject::SubHeader::SegmentedControl.new(
@@ -221,6 +192,18 @@ module Primer
           @system_arguments[:classes],
           "SubHeader--emptyLeftPane" => !segmented_control? && !filter_button && !filter_input
         )
+      end
+
+      def set_as_hidden_filter_target(system_arguments)
+        system_arguments[:data] ||= {}
+        system_arguments[:data] = merge_data(
+            system_arguments, {
+            data: {
+              targets: HIDDEN_FILTER_TARGET_SELECTOR,
+            }
+          }
+        )
+        system_arguments
       end
     end
   end

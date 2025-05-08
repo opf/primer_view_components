@@ -17,7 +17,7 @@ class Primer::OpenProject::SubHeader::ButtonGroupTest < Minitest::Test
     assert_text("Button 3")
   end
 
-  def does_not_render_without_icon
+  def test_does_not_render_without_icon
     err = assert_raises ArgumentError do
       render_inline(Primer::OpenProject::SubHeader::ButtonGroup.new) do |group|
         group.with_button("aria-label": "Button 1")
@@ -26,6 +26,6 @@ class Primer::OpenProject::SubHeader::ButtonGroupTest < Minitest::Test
       end
     end
 
-    assert_equal "missing keyword :icon", err.message
+    assert_equal "missing keyword: :icon", err.message
   end
 end

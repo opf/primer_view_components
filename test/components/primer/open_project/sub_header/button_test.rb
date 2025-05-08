@@ -2,7 +2,7 @@
 
 require "components/test_helper"
 
-class Primer::OpenProject::SubHeader::ButtonGroupTest < Minitest::Test
+class Primer::OpenProject::SubHeader::ButtonTest < Minitest::Test
   include Primer::ComponentTestHelpers
 
   def test_renders
@@ -16,18 +16,18 @@ class Primer::OpenProject::SubHeader::ButtonGroupTest < Minitest::Test
     end
   end
 
-  def does_not_render_without_icon
+  def test_does_not_render_without_icon
     err = assert_raises ArgumentError do
       render_inline(Primer::OpenProject::SubHeader::Button.new)
     end
 
-    assert_equal "missing keyword :icon", err.message
+    assert_equal "missing keyword: :icon", err.message
   end
 
-  def does_not_render_with_a_leading_icon_slot
+  def test_does_not_render_with_a_leading_icon_slot
     err = assert_raises ArgumentError do
       render_inline(Primer::OpenProject::SubHeader::Button.new(icon: :star)) do |button|
-        button.with_leading_visual_icon(icon :star)
+        button.with_leading_visual_icon(icon: :star)
         "Hello World"
       end
     end

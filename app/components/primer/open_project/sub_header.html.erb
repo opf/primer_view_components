@@ -10,18 +10,22 @@
     <%= render @mobile_filter_trigger if @mobile_filter_trigger.present? %>
 
     <%= render(@mobile_filter_button) if @mobile_filter_button.present? %>
+
     <%= filter_button %>
 
     <%= segmented_control %>
+
     <% if @segmented_control_block.present? %>
       <%= render(@mobile_segmented_control) do |control| %>
         <% @segmented_control_block.call(control) %>
       <% end %>
     <% end %>
   </div>
+
   <div class="SubHeader-middlePane" data-targets="<%= HIDDEN_FILTER_TARGET_SELECTOR %>">
     <%= text %>
   </div>
+
   <div class="SubHeader-rightPane" data-targets="<%= HIDDEN_FILTER_TARGET_SELECTOR %>">
     <% actions.each do |action| %>
       <%= action %>
@@ -31,6 +35,7 @@
       <%= render(mobile_button) %>
     <% end unless @mobile_buttons.nil? %>
   </div>
+
   <% if bottom_pane_component.present? %>
     <div class="SubHeader-bottomPane">
       <%= bottom_pane_component %>
