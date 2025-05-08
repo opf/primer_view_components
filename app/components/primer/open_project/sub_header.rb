@@ -22,14 +22,15 @@ module Primer
         button: {
           renders: lambda { |icon: nil, mobile_icon:, mobile_label:, **kwargs|
             if icon
-              Primer::Beta::IconButton.new(icon: icon, display: DESKTOP_ACTIONS_DISPLAY, **kwargs)
+              Primer::Beta::IconButton.new(icon: icon, **kwargs)
             else
-              @mobile_button =  Primer::Beta::IconButton.new(icon: mobile_icon,
-                                                             aria: {
-                                                               label: mobile_label
-                                                             },
-                                                             display: MOBILE_ACTIONS_DISPLAY,
-                                                             **kwargs)
+              @mobile_buttons ||= []
+              @mobile_buttons.push(Primer::Beta::IconButton.new(icon: mobile_icon,
+                                                                aria: {
+                                                                  label: mobile_label
+                                                                },
+                                                                display: MOBILE_ACTIONS_DISPLAY,
+                                                                **kwargs))
 
               Primer::Beta::Button.new(display: DESKTOP_ACTIONS_DISPLAY, **kwargs)
             end
@@ -37,7 +38,15 @@ module Primer
         },
         button_group: {
           renders: lambda { |**kwargs|
-            Primer::Beta::ButtonGroup.new(**kwargs)
+            kwargs[:data] = merge_data(
+              kwargs, {
+                data: {
+                  targets: HIDDEN_FILTER_TARGET_SELECTOR,
+                }
+              }
+            )
+
+            Primer::OpenProject::SubHeader::ButtonGroup.new(**kwargs)
           },
         },
         component: {
@@ -104,8 +113,14 @@ module Primer
               kwargs[:classes],
               "SubHeader-filterButton"
             )
-            kwargs[:data] ||= {}
-            kwargs[:data][:targets] ||= HIDDEN_FILTER_TARGET_SELECTOR
+
+            kwargs[:data] = merge_data(
+              kwargs, {
+                data: {
+                  targets: HIDDEN_FILTER_TARGET_SELECTOR,
+                }
+              }
+            )
 
             kwargs[:mr] ||= 2
 
@@ -130,8 +145,13 @@ module Primer
           renders: lambda { |**kwargs|
             deny_tag_argument(**kwargs)
             kwargs[:tag] = :div
-            kwargs[:data] ||= {}
-            kwargs[:data][:targets] ||= HIDDEN_FILTER_TARGET_SELECTOR
+            kwargs[:data] = merge_data(
+              kwargs, {
+                data: {
+                  targets: HIDDEN_FILTER_TARGET_SELECTOR,
+                }
+              }
+            )
 
             Primer::BaseComponent.new(**kwargs)
           },

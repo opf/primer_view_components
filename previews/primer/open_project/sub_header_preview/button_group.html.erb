@@ -2,8 +2,13 @@
   <% component.with_filter_input(name: "filter", label: "Filter") %>
 
   <% component.with_action_button_group do |group|
-    group.with_button { "Button 1" }
-    group.with_button { "Button 2" }
-    group.with_button { "Button 3" }
+    group.with_button(icon: :note, "aria-label": "Button 1")
+    group.with_button(icon: :rows, "aria-label": "Button 2")
+    group.with_button(icon: "sort-desc", "aria-label": "Button 3")
+  end %>
+
+  <% component.with_action_button(mobile_icon: :plus, mobile_label: "Create", scheme: :primary)  do |button|
+    button.with_leading_visual_icon(icon: :plus)
+    "Create"
   end %>
 <% end %>

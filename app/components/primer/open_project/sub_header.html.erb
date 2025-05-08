@@ -24,8 +24,11 @@
   </div>
   <div class="SubHeader-rightPane" data-targets="<%= HIDDEN_FILTER_TARGET_SELECTOR %>">
     <% actions.each do |action| %>
-      <%= render(@mobile_button) if @mobile_button.present? %>
       <%= action %>
+    <% end %>
+
+    <% @mobile_buttons.each do |mobile_button| %>
+      <%= render(mobile_button) %>
     <% end %>
   </div>
   <% if bottom_pane_component.present? %>
