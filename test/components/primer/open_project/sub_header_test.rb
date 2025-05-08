@@ -47,6 +47,25 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
     assert_selector(".octicon.octicon-sort-desc")
   end
 
+  def test_renders_a_menu_as_action
+    render_inline(Primer::OpenProject::SubHeader.new) do |component|
+      component.with_action_menu(leading_icon: :plus, label: "Create", button_arguments: { scheme: :primary, "aria-label": "Menu"}) do |menu|
+        menu.with_item(label: "Foo") do |item|
+          item.with_leading_visual_icon(icon: :paste)
+        end
+        menu.with_item(label: "Bar") do |item|
+          item.with_leading_visual_icon(icon: :log)
+        end
+      end
+    end
+
+    assert_selector(".Button-leadingVisual .octicon-plus")
+    assert_selector("ul[role=menu]") do
+      assert_selector ".ActionListItem", text: "Foo"
+      assert_selector ".ActionListItem", text: "Bar"
+    end
+  end
+
   def test_renders_a_custom_button_as_action
     render_inline(Primer::OpenProject::SubHeader.new) do |component|
       component.with_action_component do

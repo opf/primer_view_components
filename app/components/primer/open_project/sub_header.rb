@@ -20,18 +20,19 @@ module Primer
       # To render custom content, call the `with_button_component` method and pass a block that returns HTML.
       renders_many :actions, types: {
         button: {
-          renders: lambda { |icon_only: false, leading_icon:, mobile_label:, **kwargs|
+          renders: lambda { |icon_only: false, leading_icon:, mobile_label:, **kwargs, &block|
             kwargs[:icon] = leading_icon
 
             if icon_only
               Primer::Beta::IconButton.new(**kwargs)
             else
-              @mobile_buttons ||= []
-              @mobile_buttons.push(Primer::Beta::IconButton.new(aria: {
-                                                                  label: mobile_label
-                                                                },
-                                                                display: MOBILE_ACTIONS_DISPLAY,
-                                                                **kwargs))
+              @mobile_actions ||= []
+              mobile_component =  Primer::Beta::IconButton.new(aria: {
+                                                                 label: mobile_label
+                                                               },
+                                                               display: MOBILE_ACTIONS_DISPLAY,
+                                                               **kwargs)
+              @mobile_actions.push({ component: mobile_component, block: block})
 
               Primer::OpenProject::SubHeader::Button.new(display: DESKTOP_ACTIONS_DISPLAY, **kwargs)
             end
@@ -40,6 +41,21 @@ module Primer
         button_group: {
           renders: lambda { |**kwargs|
             Primer::OpenProject::SubHeader::ButtonGroup.new(**kwargs)
+          },
+        },
+        menu: {
+          renders: lambda { |icon_only: false, leading_icon:, label:, button_arguments: {}, **kwargs, &block|
+            kwargs[:leading_icon] = leading_icon
+            kwargs[:label] = label
+            kwargs[:button_arguments] = button_arguments
+
+            @mobile_actions ||= []
+            mobile_component =  Primer::OpenProject::SubHeader::Menu.new(icon_only: true,
+                                                                         display: MOBILE_ACTIONS_DISPLAY,
+                                                                         **kwargs)
+            @mobile_actions.push({ component: mobile_component, block: block})
+
+            Primer::OpenProject::SubHeader::Menu.new(icon_only: icon_only,display: DESKTOP_ACTIONS_DISPLAY, **kwargs)
           },
         },
         component: {
