@@ -77,6 +77,7 @@ module Primer
         @mobile_filter_trigger = Primer::Beta::IconButton.new(icon: system_arguments[:leading_visual][:icon],
                                                               display: [:inline_flex, :none],
                                                               aria: { label: label },
+                                                              mr: 2,
                                                               "data-action": "click:sub-header#expandFilterInput",
                                                               "data-targets": HIDDEN_FILTER_TARGET_SELECTOR)
 
@@ -105,6 +106,8 @@ module Primer
             )
             kwargs[:data] ||= {}
             kwargs[:data][:targets] ||= HIDDEN_FILTER_TARGET_SELECTOR
+
+            kwargs[:mr] ||= 2
 
             if icon
               Primer::Beta::IconButton.new(icon: icon, display: DESKTOP_ACTIONS_DISPLAY, **kwargs)
@@ -147,8 +150,16 @@ module Primer
               }
             }
           )
+          system_arguments[:mr] ||= 2
 
-          Primer::Alpha::SegmentedControl.new(**system_arguments)
+          @segmented_control_block = block
+          @mobile_segmented_control = Primer::OpenProject::SubHeader::SegmentedControl.new(
+            hide_labels: true,
+            display: MOBILE_ACTIONS_DISPLAY,
+            **system_arguments
+          )
+
+          Primer::OpenProject::SubHeader::SegmentedControl.new(display: DESKTOP_ACTIONS_DISPLAY, **system_arguments)
       }
 
       renders_one :text, lambda { |**system_arguments|
@@ -174,7 +185,9 @@ module Primer
 
         @filter_container = Primer::BaseComponent.new(tag: :div,
                                                       classes: "SubHeader-filterContainer",
-                                                      display: [:none, :flex],
+                                                      display: DESKTOP_ACTIONS_DISPLAY,
+
+                                                      mr: 2,
                                                       data: { targets: SHOWN_FILTER_TARGET_SELECTOR })
 
         @system_arguments[:classes] = class_names(
