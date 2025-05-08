@@ -31,9 +31,11 @@
       <%= action %>
     <% end %>
 
-    <% @mobile_buttons.each do |mobile_button| %>
-      <%= render(mobile_button) %>
-    <% end unless @mobile_buttons.nil? %>
+    <% @mobile_actions.each do |mobile_action| %>
+      <%= render(mobile_action[:component]) do |action| %>
+        <% mobile_action[:block].call(action) %>
+      <% end %>
+    <% end unless @mobile_actions.nil? %>
   </div>
 
   <% if bottom_pane_component.present? %>
