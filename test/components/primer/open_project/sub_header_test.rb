@@ -35,17 +35,17 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
   def test_renders_a_button_group_as_action
     render_inline(Primer::OpenProject::SubHeader.new) do |component|
       component.with_action_button_group do |group|
-        group.with_button { "Button 1" }
-        group.with_button { "Button 2" }
-        group.with_button { "Button 3" }
+        group.with_button(icon: :note, "aria-label": "Button 1")
+        group.with_button(icon: :rows, "aria-label": "Button 2")
+        group.with_button(icon: "sort-desc", "aria-label": "Button 3")
       end
     end
 
     assert_selector(".SubHeader")
     assert_selector(".SubHeader .ButtonGroup")
-    assert_text("Button 1")
-    assert_text("Button 2")
-    assert_text("Button 3")
+    assert_selector(".octicon.octicon-note")
+    assert_selector(".octicon.octicon-rows")
+    assert_selector(".octicon.octicon-sort-desc")
   end
 
   def test_renders_a_custom_button_as_action
