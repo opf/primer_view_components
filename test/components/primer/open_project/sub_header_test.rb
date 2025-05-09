@@ -8,11 +8,10 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
   def test_renders
     render_inline(Primer::OpenProject::SubHeader.new) do |component|
       component.with_filter_input(name: "filter", label: "Filter")
-      component.with_action_button(scheme: :primary) do |button|
-        button.with_leading_visual_icon(icon: :plus)
+      component.with_action_button(leading_icon: :plus, label: "Create", scheme: :primary) do |button|
         "Create"
       end
-      component.with_action_button(scheme: :danger) { "Delete" }
+      component.with_action_button(leading_icon: :trash, label: "Delete", scheme: :danger) { "Delete" }
     end
 
     assert_selector(".SubHeader")
@@ -25,11 +24,46 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
 
   def test_renders_an_icon_button_as_action
     render_inline(Primer::OpenProject::SubHeader.new) do |component|
-      component.with_action_button(icon: :plus, aria: { label: "Create" })
+      component.with_action_button(icon_only: true, leading_icon: :plus, label: "Create", aria: { label: "Create" })
     end
 
     assert_selector(".SubHeader")
     assert_selector(".SubHeader .Button--iconOnly")
+  end
+
+  def test_renders_a_button_group_as_action
+    render_inline(Primer::OpenProject::SubHeader.new) do |component|
+      component.with_action_button_group do |group|
+        group.with_button(icon: :note, "aria-label": "Button 1")
+        group.with_button(icon: :rows, "aria-label": "Button 2")
+        group.with_button(icon: "sort-desc", "aria-label": "Button 3")
+      end
+    end
+
+    assert_selector(".SubHeader")
+    assert_selector(".SubHeader .ButtonGroup")
+    assert_selector(".octicon.octicon-note")
+    assert_selector(".octicon.octicon-rows")
+    assert_selector(".octicon.octicon-sort-desc")
+  end
+
+  def test_renders_a_menu_as_action
+    render_inline(Primer::OpenProject::SubHeader.new) do |component|
+      component.with_action_menu(leading_icon: :plus, label: "Create", button_arguments: { scheme: :primary, "aria-label": "Menu"}) do |menu|
+        menu.with_item(label: "Foo") do |item|
+          item.with_leading_visual_icon(icon: :paste)
+        end
+        menu.with_item(label: "Bar") do |item|
+          item.with_leading_visual_icon(icon: :log)
+        end
+      end
+    end
+
+    assert_selector(".Button-leadingVisual .octicon-plus")
+    assert_selector("ul[role=menu]") do
+      assert_selector ".ActionListItem", text: "Foo"
+      assert_selector ".ActionListItem", text: "Bar"
+    end
   end
 
   def test_renders_a_custom_button_as_action
@@ -64,10 +98,22 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
     end
 
     assert_selector(".SubHeader")
-    assert_selector(".SubHeader-filterButton")
-    assert_text("Filter")
+    assert_selector(".SubHeader-leftPane") do
+      assert_text("Filter")
+    end
   end
 
+  def test_renders_an_icon_button_as_filter_button
+    render_inline(Primer::OpenProject::SubHeader.new) do |component|
+      component.with_filter_button(icon_only: true)
+    end
+
+    assert_selector(".SubHeader")
+    assert_selector(".SubHeader-leftPane") do
+      assert_selector(".SubHeader .Button--iconOnly")
+      assert_selector(".octicon.octicon-filter")
+    end
+  end
 
   def test_renders_an_icon_filter_button
     render_inline(Primer::OpenProject::SubHeader.new) do |component|
@@ -75,7 +121,7 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
     end
 
     assert_selector(".SubHeader")
-    assert_selector(".SubHeader-filterButton.Button--iconOnly .octicon-filter")
+    assert_selector(".SubHeader-leftPane .Button--iconOnly .octicon-filter")
   end
 
   def test_renders_a_custom_filter_button
@@ -109,6 +155,31 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
       "[data-action=\" input:sub-header#toggleFilterInputClearButton focus:sub-header#toggleFilterInputClearButton\"]"
     )
     assert_selector(".FormControl-input-trailingAction[data-action=\"click:primer-text-field#clearContents\"]")
+  end
+
+  def test_renders_a_segmented_control
+    render_inline(Primer::OpenProject::SubHeader.new) do |component|
+      component.with_segmented_control("aria-label": "Segmented control") do |control|
+        control.with_item(tag: :a, href: "#", label: "Preview", icon: :eye, selected: true)
+        control.with_item(tag: :a, href: "#", label: "Raw", icon: :"file-code")
+      end
+    end
+
+    assert_selector(".SubHeader")
+    assert_selector(".SubHeader .SegmentedControl")
+    assert_text("Preview")
+    assert_text("Raw")
+  end
+
+  def test_renders_empty_left_pane
+    render_inline(Primer::OpenProject::SubHeader.new) do |component|
+      component.with_action_button_group do |group|
+        group.with_button(icon: :note, "aria-label": "Button 1")
+        group.with_button(icon: :rows, "aria-label": "Button 2")
+      end
+    end
+
+    assert_selector(".SubHeader.SubHeader--emptyLeftPane")
   end
 
   def test_does_not_render_input_events_when_show_clear_button_is_not_set
