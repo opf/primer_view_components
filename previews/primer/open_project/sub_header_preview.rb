@@ -35,7 +35,7 @@ module Primer
 
           component.with_text { text } unless text.nil?
 
-          component.with_action_button(leading_icon: :plus, mobile_label: "Create", scheme: :primary) do
+          component.with_action_button(leading_icon: :plus, label: "Create", scheme: :primary) do
             "Create"
           end if show_action_button
         end
@@ -50,7 +50,7 @@ module Primer
             "Filter"
           end
 
-          component.with_action_button(leading_icon: :plus, mobile_label: "Create", scheme: :primary) do
+          component.with_action_button(leading_icon: :plus, label: "Create", scheme: :primary) do
             "Create"
           end
         end
@@ -89,7 +89,7 @@ module Primer
             control.with_item(tag: :a, href: "#", label: "Raw", icon: :"file-code")
           end
 
-          component.with_action_button(leading_icon: :plus, mobile_label: "Create", scheme: :primary) do
+          component.with_action_button(leading_icon: :plus, label: "Create", scheme: :primary) do
             "Create"
           end
         end
@@ -107,7 +107,7 @@ module Primer
 
           component.with_text { "Hello world!" }
 
-          component.with_action_button(leading_icon: :plus, mobile_label: "Create", scheme: :primary) do
+          component.with_action_button(leading_icon: :plus, label: "Create", scheme: :primary) do
             "Create"
           end
         end
