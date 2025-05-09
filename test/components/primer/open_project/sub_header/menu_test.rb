@@ -34,7 +34,7 @@ class Primer::OpenProject::SubHeader::ButtonTest < Minitest::Test
     end
 
     assert_no_selector(".Button-leadingVisual .octicon-star")
-    assert_selector(".Button--iconOnly.d-flex .octicon-star")
+    assert_selector(".Button--iconOnly .octicon-star")
 
     assert_selector("ul[role=menu]") do
       assert_selector ".ActionListItem", text: "Subitem 1"

@@ -20,17 +20,19 @@ module Primer
       # To render custom content, call the `with_button_component` method and pass a block that returns HTML.
       renders_many :actions, types: {
         button: {
-          renders: lambda { |icon_only: false, leading_icon:, mobile_label:, **kwargs, &block|
+          renders: lambda { |icon_only: false, leading_icon:, label:, **kwargs, &block|
             kwargs[:icon] = leading_icon
+
+            kwargs[:aria] ||= merge_aria(
+              kwargs,
+              { aria: { label: label } }
+            )
 
             if icon_only
               Primer::Beta::IconButton.new(**kwargs)
             else
               @mobile_actions ||= []
-              mobile_component =  Primer::Beta::IconButton.new(aria: {
-                                                                 label: mobile_label
-                                                               },
-                                                               display: MOBILE_ACTIONS_DISPLAY,
+              mobile_component =  Primer::Beta::IconButton.new(display: MOBILE_ACTIONS_DISPLAY,
                                                                **kwargs)
               @mobile_actions.push({ component: mobile_component, block: block})
 
