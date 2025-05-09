@@ -124,17 +124,19 @@ module Primer
             kwargs[:mr] ||= 2
             kwargs[:icon] = leading_icon
 
+            kwargs[:aria] ||= merge_aria(
+              kwargs,
+              { aria: { label: mobile_label } }
+            )
+
             icon_args = kwargs.dup
             icon_args = set_as_hidden_filter_target(icon_args)
 
             if icon_only
               Primer::Beta::IconButton.new(**icon_args)
             else
-              @mobile_filter_button =  Primer::Beta::IconButton.new(aria: {
-                                                               label: mobile_label
-                                                             },
-                                                             display: MOBILE_ACTIONS_DISPLAY,
-                                                             **icon_args)
+              @mobile_filter_button =  Primer::Beta::IconButton.new(display: MOBILE_ACTIONS_DISPLAY,
+                                                                    **icon_args)
 
               Primer::OpenProject::SubHeader::Button.new(display: DESKTOP_ACTIONS_DISPLAY, **kwargs)
             end

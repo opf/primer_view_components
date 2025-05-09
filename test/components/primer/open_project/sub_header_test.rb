@@ -103,6 +103,17 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
     end
   end
 
+  def test_renders_an_icon_button_as_filter_button
+    render_inline(Primer::OpenProject::SubHeader.new) do |component|
+      component.with_filter_button(icon_only: true)
+    end
+
+    assert_selector(".SubHeader")
+    assert_selector(".SubHeader-leftPane") do
+      assert_selector(".SubHeader .Button--iconOnly")
+      assert_selector(".octicon.octicon-filter")
+    end
+  end
 
   def test_renders_an_icon_filter_button
     render_inline(Primer::OpenProject::SubHeader.new) do |component|
