@@ -31,6 +31,16 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
     assert_selector(".SubHeader .Button--iconOnly")
   end
 
+  def test_renders_a_button_without_label
+    err = assert_raises ArgumentError do
+      render_inline(Primer::OpenProject::SubHeader.new) do |component|
+        component.with_action_button(icon_only: true, leading_icon: :plus, label: "", aria: { label: "Create" })
+      end
+    end
+
+    assert_equal "You need to provide a valid label.", err.message
+  end
+
   def test_renders_a_button_group_as_action
     render_inline(Primer::OpenProject::SubHeader.new) do |component|
       component.with_action_button_group do |group|
@@ -64,6 +74,23 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
       assert_selector ".ActionListItem", text: "Foo"
       assert_selector ".ActionListItem", text: "Bar"
     end
+  end
+
+  def test_renders_a_menu_without_label
+    err = assert_raises ArgumentError do
+      render_inline(Primer::OpenProject::SubHeader.new) do |component|
+        component.with_action_menu(leading_icon: :plus, label: "", button_arguments: { scheme: :primary, "aria-label": "Menu"}) do |menu|
+          menu.with_item(label: "Foo") do |item|
+            item.with_leading_visual_icon(icon: :paste)
+          end
+          menu.with_item(label: "Bar") do |item|
+            item.with_leading_visual_icon(icon: :log)
+          end
+        end
+      end
+    end
+
+    assert_equal "You need to provide a valid label.", err.message
   end
 
   def test_renders_a_custom_button_as_action
@@ -155,6 +182,21 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
       "[data-action=\" input:sub-header#toggleFilterInputClearButton focus:sub-header#toggleFilterInputClearButton\"]"
     )
     assert_selector(".FormControl-input-trailingAction[data-action=\"click:primer-text-field#clearContents\"]")
+  end
+
+  def test_renders_a_filter_input_label
+    err = assert_raises ArgumentError do
+      render_inline(Primer::OpenProject::SubHeader.new) do |component|
+        component.with_filter_input(
+          name: "filter",
+          label: "",
+          show_clear_button: true,
+          value: "value is set"
+        )
+      end
+    end
+
+    assert_equal "You need to provide a valid label.", err.message
   end
 
   def test_renders_a_segmented_control

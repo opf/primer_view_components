@@ -72,4 +72,19 @@ class Primer::OpenProject::SubHeader::ButtonTest < Minitest::Test
 
     assert_equal "Do not use the show_button slot within the SubHeader, as it is reserved. Instead provide a leading_icon within the subHeader button slot", err.message
   end
+
+  def test_does_not_render_without_a_label
+    err = assert_raises ArgumentError do
+      render_inline(Primer::OpenProject::SubHeader::Menu.new(leading_icon: :star, label: "")) do |menu|
+        menu.with_item(label: "Subitem 1") do |item|
+          item.with_leading_visual_icon(icon: :paste)
+        end
+        menu.with_item(label: "Subitem 2") do |item|
+          item.with_leading_visual_icon(icon: :log)
+        end
+      end
+    end
+
+    assert_equal "You need to provide a valid label.", err.message
+  end
 end

@@ -32,6 +32,11 @@ module Primer
         @icon_only = icon_only
         @leading_icon = leading_icon
         @label = label
+
+        if @label.nil? || @label.empty?
+          raise ArgumentError, "You need to provide a valid label."
+        end
+
         @button_arguments = button_arguments
 
         @menu = Primer::Alpha::ActionMenu.new(**system_arguments)

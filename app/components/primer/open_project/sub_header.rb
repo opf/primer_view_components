@@ -21,6 +21,10 @@ module Primer
       renders_many :actions, types: {
         button: {
           renders: lambda { |icon_only: false, leading_icon:, label:, **kwargs, &block|
+            if label.nil? || label.empty?
+              raise ArgumentError, "You need to provide a valid label."
+            end
+
             kwargs[:icon] = leading_icon
 
             kwargs[:aria] ||= merge_aria(
@@ -47,6 +51,10 @@ module Primer
         },
         menu: {
           renders: lambda { |icon_only: false, leading_icon:, label:, button_arguments: {}, **kwargs, &block|
+            if label.nil? || label.empty?
+              raise ArgumentError, "You need to provide a valid label."
+            end
+
             kwargs[:leading_icon] = leading_icon
             kwargs[:label] = label
             kwargs[:button_arguments] = button_arguments
@@ -72,6 +80,10 @@ module Primer
       }
 
       renders_one :filter_input, lambda { |name:, label:, **system_arguments|
+        if label.nil? || label.empty?
+          raise ArgumentError, "You need to provide a valid label."
+        end
+
         system_arguments[:classes] = class_names(
           system_arguments[:classes],
           "SubHeader-filterInput",
