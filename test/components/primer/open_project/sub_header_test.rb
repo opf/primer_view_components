@@ -93,20 +93,6 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
     assert_equal "You need to provide a valid label.", err.message
   end
 
-  def test_renders_a_custom_button_as_action
-    render_inline(Primer::OpenProject::SubHeader.new) do |component|
-      component.with_action_component do
-        "<div class='ButtonGroup'><div><button class='MyCustomClass'>Button 1</button></div><div><button class='MyCustomClass'>Button 2</button></div></div>".html_safe
-      end
-    end
-
-    assert_selector(".SubHeader")
-    assert_selector(".SubHeader .ButtonGroup")
-    assert_selector(".SubHeader .MyCustomClass")
-    assert_text("Button 1")
-    assert_text("Button 2")
-  end
-
   def test_renders_a_text
     render_inline(Primer::OpenProject::SubHeader.new) do |component|
       component.with_text { "Hello world!" }

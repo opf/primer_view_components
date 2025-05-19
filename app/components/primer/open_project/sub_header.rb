@@ -69,15 +69,6 @@ module Primer
 
             Primer::OpenProject::SubHeader::Menu.new(icon_only: icon_only,display: DESKTOP_ACTIONS_DISPLAY, **kwargs)
           },
-        },
-        component: {
-          # A generic slot to render whatever component you like on the right side
-          renders: lambda { |**kwargs|
-            deny_tag_argument(**kwargs)
-            kwargs[:tag] = :div
-
-            Primer::BaseComponent.new(**kwargs)
-          },
         }
       }
 

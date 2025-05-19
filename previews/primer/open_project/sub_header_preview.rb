@@ -62,6 +62,9 @@ module Primer
       end
 
       # @label With Dialog
+      # Only async dialogs are supported in the SubHeader.
+      # Since we duplicate the buttons for mobile purposes,
+      # the dialog would otherwise be duplicated (with the same ID) as well
       def dialog_buttons
         render_with_template(locals: {})
       end
