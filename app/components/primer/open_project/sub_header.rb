@@ -32,12 +32,14 @@ module Primer
               { aria: { label: label } }
             )
 
+            icon_args = kwargs.deep_dup
+
             if icon_only
-              Primer::Beta::IconButton.new(**kwargs)
+              Primer::Beta::IconButton.new(**icon_args)
             else
               @mobile_actions ||= []
               mobile_component =  Primer::Beta::IconButton.new(display: MOBILE_ACTIONS_DISPLAY,
-                                                               **kwargs)
+                                                               **icon_args)
               @mobile_actions.push({ component: mobile_component, block: block})
 
               Primer::OpenProject::SubHeader::Button.new(display: DESKTOP_ACTIONS_DISPLAY, **kwargs)
@@ -141,7 +143,7 @@ module Primer
               { aria: { label: mobile_label } }
             )
 
-            icon_args = kwargs.dup
+            icon_args = kwargs.deep_dup
             icon_args = set_as_hidden_filter_target(icon_args)
 
             if icon_only
