@@ -18,6 +18,7 @@ module Primer
         else
           @menu.with_show_button("aria-label": @label, **system_arguments) do |button|
             button.with_leading_visual_icon(icon: @leading_icon)
+            button.with_trailing_action_icon(icon: @trailing_icon) unless @trailing_icon.nil?
             @label
           end
         end
@@ -28,9 +29,10 @@ module Primer
       # @param label [String] The button label
       # @param button_arguments [Hash] Additional arguments for the button
       # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
-      def initialize(icon_only: false, leading_icon:, label:, button_arguments: {}, **system_arguments)
+      def initialize(icon_only: false, leading_icon:, label:, trailing_icon: nil, button_arguments: {}, **system_arguments)
         @icon_only = icon_only
         @leading_icon = leading_icon
+        @trailing_icon = trailing_icon
         @label = label
 
         if @label.nil? || @label.empty?
