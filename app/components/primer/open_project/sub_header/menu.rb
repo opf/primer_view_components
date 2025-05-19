@@ -13,10 +13,12 @@ module Primer
       }
 
       def set_show_button(**system_arguments)
+        aria_label = aria("label", system_arguments) || @label
+
         if @icon_only
-          @menu.with_show_button(icon: @leading_icon, "aria-label": @label, **system_arguments)
+          @menu.with_show_button(icon: @leading_icon, "aria-label": aria_label, **system_arguments)
         else
-          @menu.with_show_button("aria-label": @label, **system_arguments) do |button|
+          @menu.with_show_button("aria-label": aria_label, **system_arguments) do |button|
             button.with_leading_visual_icon(icon: @leading_icon)
             button.with_trailing_action_icon(icon: @trailing_icon) unless @trailing_icon.nil?
             @label
