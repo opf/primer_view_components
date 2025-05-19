@@ -58,7 +58,6 @@
     .SubHeader {
         grid-template-areas: "left right" "middle middle" "bottom bottom";
         grid-template-columns: 1fr auto;
-        grid-row-gap: var(--stack-gap-condensed);
     }
 
     .SubHeader--emptyLeftPane {
@@ -74,5 +73,9 @@
 
     .SubHeader-middlePane {
         text-align: left;
+    }
+
+    .SubHeader-middlePane:has(> *) {
+        margin-top: var(--stack-gap-normal);
     }
 }
