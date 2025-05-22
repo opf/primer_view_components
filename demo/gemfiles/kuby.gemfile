@@ -5,4 +5,9 @@ gem "kuby-azure", "~> 0.4.0"
 gem "kuby-kind", "~> 0.2"
 gem "kind-rb", "~> 0.1"
 
+gem "mutex_m"
+gem "base64"
+gem "ostruct"
+gem "logger"
+
 gem "pry-byebug"

@@ -376,6 +376,7 @@ DEPENDENCIES
   actionview (= 7.1.3.2)
   activemodel (= 7.1.3.2)
   activesupport (= 7.1.3.2)
+  base64
   bootsnap (>= 1.4.2)
   cssbundling-rails (~> 1.4)
   foreman
@@ -385,8 +386,11 @@ DEPENDENCIES
   kuby-core (~> 0.20)
   kuby-kind (~> 0.2)
   listen
+  logger
   lookbook (~> 2.3.8)
+  mutex_m
   openproject-primer_view_components!
+  ostruct
   pry-byebug
   puma (~> 6.6.0)
   rack-cors

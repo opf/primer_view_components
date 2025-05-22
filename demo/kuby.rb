@@ -38,8 +38,8 @@ Kuby.define("ViewComponentsStorybook") do
   shared = lambda {
     docker do
       credentials do
-        username "GitHubActions"
-        password ENV["AZURE_ACR_PASSWORD"]
+        username ENV["DOCKER_USERNAME"]
+        password ENV["DOCKER_PASSWORD"]
       end
 
       setup_phase.base_image = "ruby:3.3"
@@ -181,6 +181,21 @@ Kuby.define("ViewComponentsStorybook") do
       end
 
       provider :kind
+    end
+  end
+
+  environment(:staging) do
+    instance_exec(&shared)
+
+    kubernetes do
+      configure_plugin :rails_app do
+        tls_enabled true
+        hostname "open-project.camerondutro.com"
+      end
+
+      provider :bare_metal do
+        kubeconfig "/Users/camertron/workspace/camertron/pvc-hetzner/kubeconfig"
+      end
     end
   end
 end
