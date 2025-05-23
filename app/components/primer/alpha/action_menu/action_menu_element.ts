@@ -64,6 +64,11 @@ export class ActionMenuElement extends HTMLElement {
     return (this.invokerElement?.popoverTargetElement as HTMLElement) || null
   }
 
+  // i.e. sub-menus
+  get childPopoverElements(): HTMLElement[] {
+    return Array.from(this.overlay.querySelectorAll('anchored-position')) as AnchoredPositionElement[]
+  }
+
   get invokerElement(): HTMLButtonElement | null {
     const id = this.querySelector('[role=menu]')?.id
     if (!id) return null
@@ -471,6 +476,10 @@ export class ActionMenuElement extends HTMLElement {
 
   #hide() {
     this.popoverElement?.hidePopover()
+
+    for (const child of this.childPopoverElements) {
+      child.hidePopover()
+    }
   }
 
   #isOpen() {
