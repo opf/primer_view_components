@@ -14,7 +14,7 @@ module Primer
           DEFAULT_SELECT_VARIANT
         ].freeze
 
-        attr_reader :menu_id, :list, :preload, :src, :select_variant
+        attr_reader :menu_id, :anchor_side, :anchor_align, :list, :preload, :src, :select_variant
 
         delegate :items, to: :@list
 
@@ -46,6 +46,8 @@ module Primer
           @menu_id = menu_id
           @src = src
           @preload = fetch_or_fallback_boolean(preload, DEFAULT_PRELOAD)
+          @anchor_side = anchor_side
+          @anchor_align = anchor_align
 
           @select_variant = fetch_or_fallback(SELECT_VARIANT_OPTIONS, select_variant, DEFAULT_SELECT_VARIANT)
 
