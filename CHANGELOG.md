@@ -1,16 +1,44 @@
 # CHANGELOG
 
+## 0.67.0
+
+### Minor Changes
+
+- [#305](https://github.com/opf/primer_view_components/pull/305) [`9a9bef3`](https://github.com/opf/primer_view_components/commit/9a9bef368d8a924e06991b35522d9b66102d0ed4) Thanks [@camertron](https://github.com/camertron)! - Allow TreeView nodes to be anchors or buttons
+
+### Patch Changes
+
+- [#306](https://github.com/opf/primer_view_components/pull/306) [`393296b`](https://github.com/opf/primer_view_components/commit/393296b7b0540d307728147becaa23c3d04d327d) Thanks [@HDinger](https://github.com/HDinger)! - Enforce title for CollapsibleSection and CollapsibleHeader to be a String
+
+## 0.66.2
+
+### Patch Changes
+
+- [#303](https://github.com/opf/primer_view_components/pull/303) [`6acd402`](https://github.com/opf/primer_view_components/commit/6acd40288ff9101ada7d9ddc34eb001aa8e2839f) Thanks [@camertron](https://github.com/camertron)! - Fix issue causing TreeView sub-trees to not expand/collapse when clicking the arrows
+
+## 0.66.1
+
+### Patch Changes
+
+- [#301](https://github.com/opf/primer_view_components/pull/301) [`7314060`](https://github.com/opf/primer_view_components/commit/731406049569485849e5219a68dad8ca5dcc76e2) Thanks [@HDinger](https://github.com/HDinger)! - Add spacing to custom filter button Primer::OpenProject::SubHeader
+
+## 0.66.0
+
+### Minor Changes
+
+- [#292](https://github.com/opf/primer_view_components/pull/292) [`516760e`](https://github.com/opf/primer_view_components/commit/516760e09f9005b590457a2d8a21fa369a091e82) Thanks [@HDinger](https://github.com/HDinger)! - Improve mobile support for SubHeader by requiring a leading icon for each action. Further, the support for custom action buttons was removed.
+
 ## 0.65.0
 
 ### Minor Changes
 
-- [#293](https://github.com/opf/primer_view_components/pull/293) [`ef83e47`](https://github.com/opf/primer_view_components/commit/ef83e476e3a1a7d99752e3a4139aa549191dc2d4) Thanks [@HDinger](https://github.com/HDinger)! - Introduce the TreeView component
+- [#295](https://github.com/opf/primer_view_components/pull/295) [`48d3acd`](https://github.com/opf/primer_view_components/commit/48d3acd10d460147539f7c0e1d5537d68535825c) Thanks [@HDinger](https://github.com/HDinger)! - Introduce the TreeView component
 
 ### Patch Changes
 
-- [#293](https://github.com/opf/primer_view_components/pull/293) [`ef83e47`](https://github.com/opf/primer_view_components/commit/ef83e476e3a1a7d99752e3a4139aa549191dc2d4) Thanks [@HDinger](https://github.com/HDinger)! - Remove overridden capture method in forms code.
+- [#295](https://github.com/opf/primer_view_components/pull/295) [`48d3acd`](https://github.com/opf/primer_view_components/commit/48d3acd10d460147539f7c0e1d5537d68535825c) Thanks [@HDinger](https://github.com/HDinger)! - Remove overridden capture method in forms code.
 
-- [#293](https://github.com/opf/primer_view_components/pull/293) [`ef83e47`](https://github.com/opf/primer_view_components/commit/ef83e476e3a1a7d99752e3a4139aa549191dc2d4) Thanks [@HDinger](https://github.com/HDinger)! - Update the SelectPanel no results pane to a smaller height
+- [#295](https://github.com/opf/primer_view_components/pull/295) [`48d3acd`](https://github.com/opf/primer_view_components/commit/48d3acd10d460147539f7c0e1d5537d68535825c) Thanks [@HDinger](https://github.com/HDinger)! - Update the SelectPanel no results pane to a smaller height
 
 ## 0.64.1
 
