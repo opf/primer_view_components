@@ -696,6 +696,21 @@ module Alpha
       assert_selector "dialog#my-dialog"
     end
 
+    def test_closes_sub_menus_when_dialog_opened
+      visit_preview(:opens_dialog, nest_in_sub_menu: true)
+
+      click_on_invoker_button
+      click_on_first_item
+
+      click_on_second_item(level: 2)
+
+      assert_selector "dialog#my-dialog"
+      click_on "Cancel"
+
+      click_on_invoker_button
+      refute_selector "action-menu ul li", text: "Show dialog"
+    end
+
     def test_single_select_form_submission
       visit_preview(:single_select_form, route_format: :json)
 
