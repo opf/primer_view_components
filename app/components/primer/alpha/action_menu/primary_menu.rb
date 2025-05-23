@@ -5,12 +5,21 @@ module Primer
   module Alpha
     class ActionMenu
       class PrimaryMenu < Menu
+        DEFAULT_ANCHOR_ALIGN = :start
+        DEFAULT_ANCHOR_SIDE = :outside_bottom
+
         attr_reader :dynamic_label, :dynamic_label_prefix
 
         # @param dynamic_label [Boolean] Whether or not to display the text of the currently selected item in the show button.
         # @param dynamic_label_prefix [String] If provided, the prefix is prepended to the dynamic label and displayed in the show button.
         # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>.
-        def initialize(dynamic_label: false, dynamic_label_prefix: nil, **system_arguments)
+        def initialize(
+          anchor_align: DEFAULT_ANCHOR_ALIGN,
+          anchor_side: DEFAULT_ANCHOR_SIDE,
+          dynamic_label: false,
+          dynamic_label_prefix: nil,
+          **system_arguments
+        )
           @dynamic_label = dynamic_label
           @dynamic_label_prefix = dynamic_label_prefix
 
@@ -21,7 +30,11 @@ module Primer
             { data: { target: "action-menu.list" } }
           )
 
-          super(**system_arguments)
+          super(
+            anchor_align: anchor_align,
+            anchor_side: anchor_side,
+            **system_arguments
+          )
         end
 
         # @!parse

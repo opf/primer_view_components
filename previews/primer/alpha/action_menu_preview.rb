@@ -347,9 +347,11 @@ module Primer
 
       # @label Opens a dialog
       #
-      def opens_dialog(menu_id: "menu-1")
+      # @param nest_in_sub_menu toggle
+      def opens_dialog(menu_id: "menu-1", nest_in_sub_menu: false)
         render_with_template(locals: {
-                               menu_id: menu_id
+                               menu_id: menu_id,
+                               nest_in_sub_menu: nest_in_sub_menu
                              })
       end
 
@@ -438,23 +440,22 @@ module Primer
 
       # @label Sub-menus
       #
-      def sub_menus
-        render(Primer::Alpha::ActionMenu.new) do |menu|
-          menu.with_show_button { "Edit" }
-          menu.with_item(label: "Cut")
-          menu.with_item(label: "Copy")
-          menu.with_sub_menu_item(label: "Paste special") do |sub_menu|
-            sub_menu.with_leading_visual_icon(icon: :"sparkle-fill")
-            sub_menu.with_item(label: "Paste plain text")
-            sub_menu.with_item(label: "Paste formulas")
-            sub_menu.with_item(label: "Paste with formatting")
-            sub_menu.with_sub_menu_item(label: "Paste from") do |sub_menu|
-              sub_menu.with_item(label: "Current clipboard")
-              sub_menu.with_item(label: "History")
-              sub_menu.with_item(label: "Another device")
-            end
-          end
-        end
+      # @param anchor_align [Symbol] select [start, center, end]
+      # @param anchor_side [Symbol] select [outside_bottom, outside_top, outside_left, outside_right]
+      # @param sub_menu_anchor_align [Symbol] select [start, center, end]
+      # @param sub_menu_anchor_side [Symbol] select [outside_bottom, outside_top, outside_left, outside_right]
+      def sub_menus(
+        anchor_align: Primer::Alpha::ActionMenu::PrimaryMenu::DEFAULT_ANCHOR_ALIGN,
+        anchor_side: Primer::Alpha::ActionMenu::PrimaryMenu::DEFAULT_ANCHOR_SIDE,
+        sub_menu_anchor_align: Primer::Alpha::ActionMenu::SubMenu::DEFAULT_ANCHOR_ALIGN,
+        sub_menu_anchor_side: Primer::Alpha::ActionMenu::SubMenu::DEFAULT_ANCHOR_SIDE
+      )
+        render_with_template(locals: {
+          anchor_align: anchor_align.to_sym,
+          anchor_side: anchor_side.to_sym,
+          sub_menu_anchor_align: sub_menu_anchor_align,
+          sub_menu_anchor_side: sub_menu_anchor_side
+        })
       end
     end
   end

@@ -8,8 +8,8 @@ module Primer
 
         def initialize(content_arguments: {}, **system_arguments)
           @menu_id = self.class.generate_id
-          @sub_menu = SubMenu.new(**system_arguments, menu_id: @menu_id)
-
+          @sub_menu = SubMenu.allocate
+          system_arguments = @sub_menu.send(:initialize, **system_arguments, menu_id: @menu_id)
           system_arguments[:id] = "#{@menu_id}-button"
 
           content_arguments[:tag] = :button
