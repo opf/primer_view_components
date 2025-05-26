@@ -15,7 +15,7 @@ module Primer
       # @param tag [Symbol] Customize the element type of the rendered title container.
       # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
       renders_one :title, lambda { |tag: TITLE_TAG_FALLBACK, **system_arguments, &block|
-        raise ArgumentError, "Title must be a string" unless block.call.is_a?(String)
+        raise ArgumentError, "Title must be a string" unless string_or_nil?(block.call)
 
         system_arguments[:tag] = fetch_or_fallback(TITLE_TAG_OPTIONS, tag, TITLE_TAG_FALLBACK)
         system_arguments[:font_size] ||= 3
@@ -28,7 +28,7 @@ module Primer
       #
       # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
       renders_one :caption, lambda { |**system_arguments, &block|
-        raise ArgumentError, "Caption must be a string" unless block.call.is_a?(String)
+        raise ArgumentError, "Caption must be a string" unless string_or_nil?(block.call)
 
         system_arguments[:color] ||= :subtle
         system_arguments[:mr] ||= 2
@@ -41,7 +41,7 @@ module Primer
       #
       # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
       renders_one :additional_information, lambda { |**system_arguments, &block|
-        raise ArgumentError, "The additional information must be a string" unless block.call.is_a?(String)
+        raise ArgumentError, "The additional information must be a string" unless string_or_nil?(block.call)
 
         Primer::BaseComponent.new(tag: :div, **system_arguments)
       }
@@ -81,6 +81,10 @@ module Primer
         raise ArgumentError, "Collapsible content must be present" unless collapsible_content.present?
 
         true
+      end
+
+      def string_or_nil?(val)
+        val.is_a?(String) || val.nil?
       end
     end
   end

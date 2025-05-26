@@ -12,7 +12,7 @@ module Primer
         #
         # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
         renders_one :title, lambda { |**system_arguments, &block|
-          raise ArgumentError, "Title must be a string" unless block.call.is_a?(String)
+          raise ArgumentError, "Title must be a string" unless string_or_nil?(block.call)
 
           system_arguments[:mr] ||= 2
 
@@ -33,7 +33,7 @@ module Primer
         #
         # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
         renders_one :description, lambda { |**system_arguments, &block|
-          raise ArgumentError, "Description must be a string" unless block.call.is_a?(String)
+          raise ArgumentError, "Description must be a string" unless string_or_nil?(block.call)
           system_arguments[:color] ||= :subtle
           system_arguments[:hidden] = @collapsed
 
@@ -85,6 +85,10 @@ module Primer
           raise ArgumentError, "This component must be called inside the header of a `Primer::Beta::BorderBox`" unless @box.present? && @box.is_a?(Primer::Beta::BorderBox)
 
           true
+        end
+
+        def string_or_nil?(val)
+          val.is_a?(String) || val.nil?
         end
       end
     end
