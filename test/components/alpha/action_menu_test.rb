@@ -160,6 +160,27 @@ module Primer
         end
       end
 
+      def test_renders_sub_menus_in_sub_menus
+        render_inline Primer::Alpha::ActionMenu.new(menu_id: "foo") do |component|
+          component.with_show_button { "Trigger" }
+          component.with_sub_menu_item(label: "Level 2") do |level2|
+            level2.with_sub_menu_item(label: "Level 3") do |level3|
+              level3.with_item(label: "Level 4")
+            end
+          end
+        end
+
+        assert_selector("[role=menu]") do |level1|
+          level1.assert_selector("[role='menuitem']", text: "Level 2")
+          level1.assert_selector("[role=menu]") do |level2|
+            level2.assert_selector("[role=menuitem]", text: "Level 3")
+            level2.assert_selector("[role=menu]") do |level3|
+              level3.assert_selector("[role=menuitem]", text: "Level 4")
+            end
+          end
+        end
+      end
+
       def test_renders_individual_items_inside_groups_when_at_least_one_group
         render_preview(:with_items_and_groups)
 
