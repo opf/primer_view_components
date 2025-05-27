@@ -1154,6 +1154,20 @@ module Alpha
       refute_selector "li [aria-checked=true]"
     end
 
+    def test_sub_menu_opens_on_click
+      visit_preview(:sub_menus)
+
+      click_on_invoker_button
+
+      refute_selector("[role=menuitem]", text: "Paste plain text")
+      click_on_third_item
+      assert_selector("[role=menuitem]", text: "Paste plain text")
+
+      refute_selector("[role=menuitem]", text: "Current clipboard")
+      click_on_fourth_item(level: 2)
+      assert_selector("[role=menuitem]", text: "Current clipboard")
+    end
+
     def test_sub_menu_opens_on_right_arrow
       visit_preview(:sub_menus)
 
