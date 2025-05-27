@@ -16,7 +16,7 @@ module Primer
 
         attr_reader :menu_id, :anchor_side, :anchor_align, :list, :preload, :src, :select_variant
 
-        delegate :items, to: :@list
+        delegate :items, :acts_as_form_input?, to: :@list
 
         alias preload? preload
 

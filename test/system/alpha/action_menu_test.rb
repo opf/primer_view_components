@@ -1031,12 +1031,46 @@ module Alpha
       assert_selector "[aria-checked=true]", text: "broccolinisoup"
     end
 
+    def test_multi_select_items_checked_in_sub_menu
+      visit_preview(:multiple_select, nest_in_sub_menu: true)
+
+      click_on_invoker_button
+      click_on_first_item
+      click_on_second_item(level: 2)
+      click_on_third_item(level: 2)
+
+      # clicking item closes menu, so checked item is hidden
+      assert_selector "[aria-checked=true]", text: "jonrohan"
+      assert_selector "[aria-checked=true]", text: "broccolinisoup"
+    end
+
     def test_multi_select_items_checked_via_keyboard_enter
       visit_preview(:multiple_select)
 
       open_menu_via_keyboard
 
       # select first item
+      activate_via_enter(expect_focus_change: false)
+
+      assert_selector "[aria-checked=true]", text: "langermank"
+
+      # select second item
+      arrow_down_to("jonrohan")
+      activate_via_enter(expect_focus_change: false)
+
+      assert_selector "[aria-checked=true]", text: "langermank"
+      assert_selector "[aria-checked=true]", text: "jonrohan"
+    end
+
+    def test_multi_select_items_checked_via_keyboard_enter_in_sub_menu
+      visit_preview(:multiple_select, nest_in_sub_menu: true)
+
+      open_menu_via_keyboard
+
+      # select first item
+      activate_via_enter(expect_focus_change: true)
+
+      # select first item in sub-menu
       activate_via_enter(expect_focus_change: false)
 
       assert_selector "[aria-checked=true]", text: "langermank"
@@ -1067,6 +1101,25 @@ module Alpha
       assert_selector "[aria-checked=true]", text: "jonrohan"
     end
 
+    def test_multi_select_items_checked_via_keyboard_space_in_sub_menu
+      visit_preview(:multiple_select, nest_in_sub_menu: true)
+
+      open_menu_via_keyboard
+      click_on_first_item
+
+      # select first item in sub-menu
+      activate_via_space(expect_focus_change: false)
+
+      assert_selector "[aria-checked=true]", text: "langermank"
+
+      # select second item
+      arrow_down_to("jonrohan")
+      activate_via_space(expect_focus_change: false)
+
+      assert_selector "[aria-checked=true]", text: "langermank"
+      assert_selector "[aria-checked=true]", text: "jonrohan"
+    end
+
     def test_multi_select_items_can_be_unchecked
       visit_preview(:multiple_select)
 
@@ -1079,6 +1132,23 @@ module Alpha
 
       click_on_second_item
       click_on_third_item
+
+      refute_selector "[aria-checked=true]"
+    end
+
+    def test_multi_select_items_can_be_unchecked_in_sub_menu
+      visit_preview(:multiple_select, nest_in_sub_menu: true)
+
+      click_on_invoker_button
+      click_on_first_item
+      click_on_second_item(level: 2)
+      click_on_third_item(level: 2)
+
+      assert_selector "[aria-checked=true]", text: "jonrohan"
+      assert_selector "[aria-checked=true]", text: "broccolinisoup"
+
+      click_on_second_item(level: 2)
+      click_on_third_item(level: 2)
 
       refute_selector "[aria-checked=true]"
     end

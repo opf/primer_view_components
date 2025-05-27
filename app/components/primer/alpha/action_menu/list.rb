@@ -11,6 +11,8 @@ module Primer
 
         attr_reader :items
 
+        delegate :acts_as_form_input?, to: :@list
+
         # @param system_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::Alpha::ActionList) %>
         def initialize(**system_arguments)
           @items = []

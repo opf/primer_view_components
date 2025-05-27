@@ -4,7 +4,7 @@ module Primer
   module Alpha
     class ActionMenu
       class SubMenuItem < ::Primer::Alpha::ActionList::Item
-        delegate :with_item, :with_sub_menu_item, :with_group, to: :@sub_menu
+        delegate :with_item, :with_avatar_item, :with_sub_menu_item, :with_group, to: :@sub_menu
 
         def initialize(content_arguments: {}, **system_arguments)
           @menu_id = self.class.generate_id

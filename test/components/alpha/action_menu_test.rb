@@ -251,6 +251,30 @@ module Primer
 
         assert_selector("button[aria-haspopup='true'] .Button-label", text: "Menu")
       end
+
+      def test_disallows_sub_menus_in_single_select_mode
+        err = assert_raises do
+          render_inline(Primer::Alpha::ActionMenu.new(menu_id: "foo", select_variant: :single)) do |menu|
+            menu.with_sub_menu_item(label: "foo")
+          end
+        end
+
+        assert_equal "Sub-menus are not supported in single-select mode", err.message
+      end
+
+      def test_disallows_sub_menus_as_form_inputs
+        err = assert_raises do
+          render_inline(Primer::Alpha::ActionMenu.new(
+            menu_id: "foo",
+            select_variant: :single,
+            form_arguments: { builder: :builder, name: "name" }
+          )) do |menu|
+            menu.with_sub_menu_item(label: "foo")
+          end
+        end
+
+        assert_equal "ActionMenus with sub-menus are not supported as form inputs", err.message
+      end
     end
   end
 end
