@@ -134,6 +134,13 @@ module Primer
         refute_selector ".ActionListItem .avatar.circle"
       end
 
+      def test_avatar_items_appear_in_sub_menus
+        render_preview(:multiple_select, params: { nest_in_sub_menu: true })
+
+        assert_selector ".ActionListItem .avatar"
+        refute_selector ".ActionListItem .avatar.circle"
+      end
+
       def test_renders_groups
         render_preview(:with_groups)
 
