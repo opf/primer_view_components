@@ -138,9 +138,9 @@ module Alpha
       counter = 0
 
       loop do
-        current_element = page.evaluate_script("document.activeElement")
-        break if current_element.find(".ActionListItem-label")&.text == label
+        break if page.evaluate_script("document.activeElement?.querySelector('.ActionListItem-label')?.textContent?.trim()") == label
         keyboard.type(:down)
+        sleep 0.1
 
         counter += 1
 
@@ -1152,6 +1152,36 @@ module Alpha
 
       click_on_item_by_id("hidden")
       refute_selector "li [aria-checked=true]"
+    end
+
+    def test_sub_menu_opens_on_right_arrow
+      visit_preview(:sub_menus)
+
+      open_menu_via_keyboard
+      arrow_down_to("Paste special")
+
+      refute_selector("[role=menuitem]", text: "Paste plain text")
+      keyboard.type(:right)
+      assert_selector("[role=menuitem]", text: "Paste plain text")
+
+      arrow_down_to("Paste from")
+
+      refute_selector("[role=menuitem]", text: "Current clipboard")
+      keyboard.type(:right)
+      assert_selector("[role=menuitem]", text: "Current clipboard")
+    end
+
+    def test_sub_menu_closes_on_left_arrow
+      visit_preview(:sub_menus)
+
+      open_menu_via_keyboard
+      arrow_down_to("Paste special")
+
+      keyboard.type(:right)
+      assert_selector("[role=menuitem]", text: "Paste plain text")
+
+      keyboard.type(:left)
+      refute_selector("[role=menuitem]", text: "Paste plain text")
     end
 
     def test_hide_item_via_js_api

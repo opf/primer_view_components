@@ -1,4 +1,5 @@
-<div style="text-align: center">
+<%# Center the invoker button to give left-appearing sub-menus enough space %>
+<div style="<%= sub_menu_anchor_side.to_s.include?("left") ? "text-align: center" : "" %>">
   <%= render(Primer::Alpha::ActionMenu.new(anchor_align: anchor_align, anchor_side: anchor_side)) do |menu| %>
     <% menu.with_show_button { "Edit" } %>
     <% menu.with_item(label: "Cut") %>
