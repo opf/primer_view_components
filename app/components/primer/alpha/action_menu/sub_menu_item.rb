@@ -3,6 +3,8 @@
 module Primer
   module Alpha
     class ActionMenu
+      # This component is part of <%= link_to_component(Primer::Alpha::ActionMenu) %> and should not be
+      # used as a standalone component.
       class SubMenuItem < ::Primer::Alpha::ActionList::Item
         def initialize(content_arguments: {}, form_arguments: {}, **system_arguments)
           # We extract form_arguments from system_arguments here to avoid passing them to the

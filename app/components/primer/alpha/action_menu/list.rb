@@ -13,7 +13,7 @@ module Primer
 
         delegate :acts_as_form_input?, to: :@list
 
-        # @param system_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::Alpha::ActionList) %>
+        # @param system_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::Alpha::ActionMenu::ListWrapper) %>
         def initialize(**system_arguments)
           @items = []
           @has_group = false
