@@ -301,6 +301,15 @@ export class ActionMenuElement extends HTMLElement {
         item.click()
       }
 
+      const subMenu = this.#subMenuForItem(item)
+
+      if (subMenu) {
+        // Prevent submitting a form when clicking on sub-menu items
+        event.preventDefault()
+        subMenu.showPopover()
+        return
+      }
+
       this.#handleItemActivated(item)
 
       return
@@ -403,11 +412,6 @@ export class ActionMenuElement extends HTMLElement {
   }
 
   #handleItemActivated(item: HTMLElement) {
-    if (this.#subMenuForItem(item)) {
-      // Let the anchored-position logic take over and open the sub-menu
-      return
-    }
-
     // Hide popover after current event loop to prevent changes in focus from
     // altering the target of the event. Not doing this specifically affects
     // <a> tags. It causes the event to be sent to the currently focused element

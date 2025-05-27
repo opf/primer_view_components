@@ -53,10 +53,6 @@ module Primer
         end
 
         def with_sub_menu_item(**system_arguments, &block)
-          if acts_as_form_input?
-            raise ArgumentError, "ActionMenus with sub-menus are not supported as form inputs"
-          end
-
           if select_variant == :single
             raise ArgumentError, "Sub-menus are not supported in single-select mode"
           end

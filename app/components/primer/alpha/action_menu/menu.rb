@@ -14,7 +14,7 @@ module Primer
           DEFAULT_SELECT_VARIANT
         ].freeze
 
-        attr_reader :menu_id, :anchor_side, :anchor_align, :list, :preload, :src, :select_variant
+        attr_reader :menu_id, :anchor_side, :anchor_align, :list, :preload, :src, :select_variant, :form_arguments
 
         delegate :items, :acts_as_form_input?, to: :@list
 
@@ -50,6 +50,7 @@ module Primer
           @anchor_align = anchor_align
 
           @select_variant = fetch_or_fallback(SELECT_VARIANT_OPTIONS, select_variant, DEFAULT_SELECT_VARIANT)
+          @form_arguments = form_arguments
 
           overlay_arguments[:data] = merge_data(
             overlay_arguments, data: {
@@ -85,7 +86,7 @@ module Primer
 
         # Adds a new item to the list.
         #
-      # @param system_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::Alpha::ActionList::Item) %>.
+        # @param system_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::Alpha::ActionList::Item) %>.
         def with_item(**system_arguments, &block)
           @list.with_item(**system_arguments, &block)
         end
@@ -94,6 +95,7 @@ module Primer
           @list.with_item(
             component_klass: SubMenuItem,
             select_variant: select_variant,
+            form_arguments: form_arguments,
             **system_arguments,
             &block
           )

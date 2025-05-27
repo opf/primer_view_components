@@ -342,8 +342,9 @@ module Primer
 
       # @label Multiple select form
       #
-      def multiple_select_form(route_format: :html)
-        render_with_template(locals: { route_format: route_format })
+      # @param nest_in_sub_menu toggle
+      def multiple_select_form(route_format: :html, nest_in_sub_menu: false)
+        render_with_template(locals: { route_format: route_format, nest_in_sub_menu: nest_in_sub_menu })
       end
 
       # @label With disabled items
