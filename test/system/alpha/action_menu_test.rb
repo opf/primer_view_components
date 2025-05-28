@@ -138,9 +138,9 @@ module Alpha
       counter = 0
 
       loop do
-        current_element = page.evaluate_script("document.activeElement")
-        break if current_element.find(".ActionListItem-label")&.text == label
+        break if page.evaluate_script("document.activeElement?.querySelector('.ActionListItem-label')?.textContent?.trim()") == label
         keyboard.type(:down)
+        sleep 0.1
 
         counter += 1
 
@@ -161,23 +161,6 @@ module Alpha
 
       click_on_invoker_button
       click_on_first_item
-
-      assert_selector("action-menu button[aria-controls]", text: "Menu")
-    end
-
-    def test_sub_menu_dynamic_labels
-      visit_preview(:single_select_with_internal_label, nest_in_sub_menu: true)
-      assert_selector("action-menu button[aria-controls]", text: "Menu: Quote reply")
-
-      click_on_invoker_button
-      click_on_first_item
-      click_on_first_item(level: 2)
-
-      assert_selector("action-menu button[aria-controls]", text: "Menu: Copy link")
-
-      click_on_invoker_button
-      click_on_first_item
-      click_on_first_item(level: 2)
 
       assert_selector("action-menu button[aria-controls]", text: "Menu")
     end
@@ -756,6 +739,26 @@ module Alpha
       assert_equal %w[fast_forward recursive ours], response["value"]
     end
 
+    def test_multiple_select_form_submission_in_sub_menu
+      visit_preview(:multiple_select_form, route_format: :json, nest_in_sub_menu: true)
+
+      click_on_invoker_button
+      click_on_first_item
+      click_on_first_item(level: 2)
+      click_on_second_item(level: 2)
+
+      # close the menus to reveal the submit button
+      keyboard.type(:escape, :escape)
+
+      find("input[type=submit]").click
+
+      # for some reason the JSON response is wrapped in HTML, I have no idea why
+      response = JSON.parse(find("pre").text)
+
+      # "ours" is pre-selected
+      assert_equal %w[fast_forward recursive ours], response["value"]
+    end
+
     def test_multiple_select_form_uses_label_if_no_value_provided
       visit_preview(:multiple_select_form, route_format: :json)
 
@@ -812,18 +815,6 @@ module Alpha
       assert_equal "group-by-repository", response["value"]
     end
 
-    def test_sub_menu_single_select_items_can_submit_forms
-      visit_preview(:single_select_form_items, route_format: :json, nest_in_sub_menu: true)
-
-      click_on_invoker_button
-      click_on_first_item
-      click_on_first_item(level: 2)
-
-      # for some reason the JSON response is wrapped in HTML, I have no idea why
-      response = JSON.parse(find("pre").text)
-      assert_equal "group-by-repository", response["value"]
-    end
-
     def test_single_select_items_can_submit_forms_on_enter
       visit_preview(:single_select_form_items, route_format: :json)
 
@@ -837,44 +828,12 @@ module Alpha
       assert_equal "group-by-repository", response["value"]
     end
 
-    def test_sub_menu_single_select_items_can_submit_forms_on_enter
-      visit_preview(:single_select_form_items, route_format: :json, nest_in_sub_menu: true)
-
-      open_menu_via_keyboard
-
-      # "click" first item
-      arrow_down_to("Sub-menu")
-      activate_via_enter
-      arrow_down_to("Repository")
-      activate_via_enter
-
-      # for some reason the JSON response is wrapped in HTML, I have no idea why
-      response = JSON.parse(find("pre").text)
-      assert_equal "group-by-repository", response["value"]
-    end
-
     def test_single_select_items_can_submit_forms_on_keydown_space
       visit_preview(:single_select_form_items, route_format: :json)
 
       open_menu_via_keyboard
 
       # "click" first item
-      activate_via_space
-
-      # for some reason the JSON response is wrapped in HTML, I have no idea why
-      response = JSON.parse(find("pre").text)
-      assert_equal "group-by-repository", response["value"]
-    end
-
-    def test_sub_menu_single_select_items_can_submit_forms_on_keydown_space
-      visit_preview(:single_select_form_items, route_format: :json, nest_in_sub_menu: true)
-
-      open_menu_via_keyboard
-
-      # "click" first item
-      arrow_down_to("Sub-menu")
-      activate_via_space
-      arrow_down_to("Repository")
       activate_via_space
 
       # for some reason the JSON response is wrapped in HTML, I have no idea why
@@ -1031,12 +990,46 @@ module Alpha
       assert_selector "[aria-checked=true]", text: "broccolinisoup"
     end
 
+    def test_multi_select_items_checked_in_sub_menu
+      visit_preview(:multiple_select, nest_in_sub_menu: true)
+
+      click_on_invoker_button
+      click_on_first_item
+      click_on_second_item(level: 2)
+      click_on_third_item(level: 2)
+
+      # clicking item closes menu, so checked item is hidden
+      assert_selector "[aria-checked=true]", text: "jonrohan"
+      assert_selector "[aria-checked=true]", text: "broccolinisoup"
+    end
+
     def test_multi_select_items_checked_via_keyboard_enter
       visit_preview(:multiple_select)
 
       open_menu_via_keyboard
 
       # select first item
+      activate_via_enter(expect_focus_change: false)
+
+      assert_selector "[aria-checked=true]", text: "langermank"
+
+      # select second item
+      arrow_down_to("jonrohan")
+      activate_via_enter(expect_focus_change: false)
+
+      assert_selector "[aria-checked=true]", text: "langermank"
+      assert_selector "[aria-checked=true]", text: "jonrohan"
+    end
+
+    def test_multi_select_items_checked_via_keyboard_enter_in_sub_menu
+      visit_preview(:multiple_select, nest_in_sub_menu: true)
+
+      open_menu_via_keyboard
+
+      # select first item
+      activate_via_enter(expect_focus_change: true)
+
+      # select first item in sub-menu
       activate_via_enter(expect_focus_change: false)
 
       assert_selector "[aria-checked=true]", text: "langermank"
@@ -1067,6 +1060,25 @@ module Alpha
       assert_selector "[aria-checked=true]", text: "jonrohan"
     end
 
+    def test_multi_select_items_checked_via_keyboard_space_in_sub_menu
+      visit_preview(:multiple_select, nest_in_sub_menu: true)
+
+      open_menu_via_keyboard
+      click_on_first_item
+
+      # select first item in sub-menu
+      activate_via_space(expect_focus_change: false)
+
+      assert_selector "[aria-checked=true]", text: "langermank"
+
+      # select second item
+      arrow_down_to("jonrohan")
+      activate_via_space(expect_focus_change: false)
+
+      assert_selector "[aria-checked=true]", text: "langermank"
+      assert_selector "[aria-checked=true]", text: "jonrohan"
+    end
+
     def test_multi_select_items_can_be_unchecked
       visit_preview(:multiple_select)
 
@@ -1079,6 +1091,23 @@ module Alpha
 
       click_on_second_item
       click_on_third_item
+
+      refute_selector "[aria-checked=true]"
+    end
+
+    def test_multi_select_items_can_be_unchecked_in_sub_menu
+      visit_preview(:multiple_select, nest_in_sub_menu: true)
+
+      click_on_invoker_button
+      click_on_first_item
+      click_on_second_item(level: 2)
+      click_on_third_item(level: 2)
+
+      assert_selector "[aria-checked=true]", text: "jonrohan"
+      assert_selector "[aria-checked=true]", text: "broccolinisoup"
+
+      click_on_second_item(level: 2)
+      click_on_third_item(level: 2)
 
       refute_selector "[aria-checked=true]"
     end
@@ -1123,6 +1152,50 @@ module Alpha
 
       click_on_item_by_id("hidden")
       refute_selector "li [aria-checked=true]"
+    end
+
+    def test_sub_menu_opens_on_click
+      visit_preview(:sub_menus)
+
+      click_on_invoker_button
+
+      refute_selector("[role=menuitem]", text: "Paste plain text")
+      click_on_third_item
+      assert_selector("[role=menuitem]", text: "Paste plain text")
+
+      refute_selector("[role=menuitem]", text: "Current clipboard")
+      click_on_fourth_item(level: 2)
+      assert_selector("[role=menuitem]", text: "Current clipboard")
+    end
+
+    def test_sub_menu_opens_on_right_arrow
+      visit_preview(:sub_menus)
+
+      open_menu_via_keyboard
+      arrow_down_to("Paste special")
+
+      refute_selector("[role=menuitem]", text: "Paste plain text")
+      keyboard.type(:right)
+      assert_selector("[role=menuitem]", text: "Paste plain text")
+
+      arrow_down_to("Paste from")
+
+      refute_selector("[role=menuitem]", text: "Current clipboard")
+      keyboard.type(:right)
+      assert_selector("[role=menuitem]", text: "Current clipboard")
+    end
+
+    def test_sub_menu_closes_on_left_arrow
+      visit_preview(:sub_menus)
+
+      open_menu_via_keyboard
+      arrow_down_to("Paste special")
+
+      keyboard.type(:right)
+      assert_selector("[role=menuitem]", text: "Paste plain text")
+
+      keyboard.type(:left)
+      refute_selector("[role=menuitem]", text: "Paste plain text")
     end
 
     def test_hide_item_via_js_api

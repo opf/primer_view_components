@@ -134,6 +134,13 @@ module Primer
         refute_selector ".ActionListItem .avatar.circle"
       end
 
+      def test_avatar_items_appear_in_sub_menus
+        render_preview(:multiple_select, params: { nest_in_sub_menu: true })
+
+        assert_selector ".ActionListItem .avatar"
+        refute_selector ".ActionListItem .avatar.circle"
+      end
+
       def test_renders_groups
         render_preview(:with_groups)
 
@@ -155,6 +162,27 @@ module Primer
           menu.assert_selector("ul[role=group]", count: 3) do |group|
             group.assert_selector("li[role=none]") do |item|
               item.assert_selector "button[role=menuitem]"
+            end
+          end
+        end
+      end
+
+      def test_renders_sub_menus_in_sub_menus
+        render_inline Primer::Alpha::ActionMenu.new(menu_id: "foo") do |component|
+          component.with_show_button { "Trigger" }
+          component.with_sub_menu_item(label: "Level 2") do |level2|
+            level2.with_sub_menu_item(label: "Level 3") do |level3|
+              level3.with_item(label: "Level 4")
+            end
+          end
+        end
+
+        assert_selector("[role=menu]") do |level1|
+          level1.assert_selector("[role='menuitem']", text: "Level 2")
+          level1.assert_selector("[role=menu]") do |level2|
+            level2.assert_selector("[role=menuitem]", text: "Level 3")
+            level2.assert_selector("[role=menu]") do |level3|
+              level3.assert_selector("[role=menuitem]", text: "Level 4")
             end
           end
         end
@@ -229,6 +257,16 @@ module Primer
         render_preview(:single_select_with_internal_label)
 
         assert_selector("button[aria-haspopup='true'] .Button-label", text: "Menu")
+      end
+
+      def test_disallows_sub_menus_in_single_select_mode
+        err = assert_raises do
+          render_inline(Primer::Alpha::ActionMenu.new(menu_id: "foo", select_variant: :single)) do |menu|
+            menu.with_sub_menu_item(label: "foo")
+          end
+        end
+
+        assert_equal "Sub-menus are not supported in single-select mode", err.message
       end
     end
   end

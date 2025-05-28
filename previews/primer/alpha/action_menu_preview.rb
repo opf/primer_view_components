@@ -172,10 +172,9 @@ module Primer
 
       # @label Multiple select
       #
-      def multiple_select
-        render(Primer::Alpha::ActionMenu.new(select_variant: :multiple)) do |menu|
-          menu.with_show_button { "Menu" }
-
+      # @param nest_in_sub_menu toggle
+      def multiple_select(nest_in_sub_menu: false)
+        content = -> (menu) {
           menu.with_avatar_item(
             src: "https://avatars.githubusercontent.com/u/18661030?v=4",
             username: "langermank",
@@ -202,6 +201,18 @@ module Primer
             avatar_arguments: { shape: :square },
             item_id: :armagan
           )
+        }
+
+        render(Primer::Alpha::ActionMenu.new(select_variant: :multiple)) do |menu|
+          menu.with_show_button { "Menu" }
+
+          if nest_in_sub_menu
+            menu.with_sub_menu_item(label: "Sub-menu") do |sub_menu|
+              content.call(sub_menu)
+            end
+          else
+            content.call(menu)
+          end
         end
       end
 
@@ -331,8 +342,9 @@ module Primer
 
       # @label Multiple select form
       #
-      def multiple_select_form(route_format: :html)
-        render_with_template(locals: { route_format: route_format })
+      # @param nest_in_sub_menu toggle
+      def multiple_select_form(route_format: :html, nest_in_sub_menu: false)
+        render_with_template(locals: { route_format: route_format, nest_in_sub_menu: nest_in_sub_menu })
       end
 
       # @label With disabled items

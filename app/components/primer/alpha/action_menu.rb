@@ -174,10 +174,41 @@ module Primer
       delegate :preload, :preload?, :list, to: :@primary_menu
       delegate :with_show_button, :with_item, :items, :with_divider, :with_avatar_item, :with_group, :with_sub_menu_item, to: :@primary_menu
 
+      # @!parse
+      #   # Adds an item to the menu.
+      #   #
+      #   # @param system_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::Alpha::ActionList) %>'s `item` slot.
+      #   def with_item(**system_arguments)
+      #   end
+      #
+      #   # Adds an avatar item to the menu.
+      #   #
+      #   # @param system_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::Alpha::ActionList) %>'s `item` slot.
+      #   def with_avatar_item(**system_arguments)
+      #   end
+      #
+      #   # Adds a divider to the list. Dividers visually separate items.
+      #   #
+      #   # @param system_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::Alpha::ActionList::Divider) %>.
+      #   def with_divider(**system_arguments)
+      #   end
+      #
+      #   # Adds a group to the menu. Groups are a logical set of items with a header.
+      #   #
+      #   # @param system_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::Alpha::ActionMenu::Group) %>.
+      #   def with_group(**system_arguments)
+      #   end
+      #
+      #   # Gets the list of configured menu items, which includes regular items, avatar items, groups, and dividers.
+      #   #
+      #   # @return [Array<ViewComponent::Slot>]
+      #   def items
+      #   end
+
       # @param system_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::Alpha::ActionMenu::PrimaryMenu) %>.
-      def initialize(**overlay_arguments)
+      def initialize(**system_arguments)
         @primary_menu = PrimaryMenu.allocate
-        @system_arguments = @primary_menu.send(:initialize, **overlay_arguments)
+        @system_arguments = @primary_menu.send(:initialize, **system_arguments)
 
         @system_arguments[:tag] = :"action-menu"
         @system_arguments[:preload] = true if @primary_menu.preload?
