@@ -80,17 +80,6 @@ module Primer
             evaluate_block(button, &block)
           end
         end
-
-        # Adds a sub-menu to the menu.
-        #
-        # @param system_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::Alpha::ActionMenu::SubMenuItem) %>.
-        def with_sub_menu_item(**system_arguments)
-          if select_variant == :single
-            raise ArgumentError, "Sub-menus are not supported in single-select mode"
-          end
-
-          super
-        end
       end
     end
   end
