@@ -208,6 +208,24 @@ module Primer
         end
       end
 
+      # @label With tab panels
+      #
+      def tab_panels
+        render(Primer::OpenProject::PageHeader.new) do |header|
+          header.with_title { "Hello" }
+          header.with_breadcrumbs([{ href: "/foo", text: "Foo" }, { href: "/bar", text: "Bar" }, "Baz"])
+          header.with_description { "Last updated 5 minutes ago by XYZ." }
+          header.with_tab_panels(label: "label") do |panels|
+            Array.new(3) do |i|
+              panels.with_tab(selected: i.zero?, id: "tab-#{i + 1}") do |tab|
+                tab.with_panel { "Panel #{i + 1}" }
+                tab.with_text { "Tab #{i + 1}" }
+              end
+            end
+          end
+        end
+      end
+
       # @label With a SegmentedControl
       def segmented_control
         render(Primer::OpenProject::PageHeader.new) do |component|

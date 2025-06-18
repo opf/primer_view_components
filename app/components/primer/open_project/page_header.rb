@@ -220,14 +220,23 @@ module Primer
       # Optional tabs nav at the bottom of the page header
       #
       # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
-      renders_one :tab_nav, lambda { |**system_arguments, &block|
-        @system_arguments[:classes] = class_names(@system_arguments[:classes], "PageHeader--withTabNav")
+      renders_one :tabs, types: {
+        nav: {
+          renders: lambda { |**system_arguments, &block|
+            tab_navigation_options(**system_arguments)
 
-        system_arguments = deny_tag_argument(**system_arguments)
-        system_arguments[:tag] = :div
-        system_arguments[:classes] = class_names(system_arguments[:classes], "PageHeader-tabNav")
+            Primer::Alpha::TabNav.new(**system_arguments, &block)
+          },
+          as: :tab_nav
+        },
+        panels: {
+          renders: lambda { |**system_arguments, &block|
+            tab_navigation_options(**system_arguments)
 
-        Primer::Alpha::TabNav.new(**system_arguments, &block)
+            Primer::Alpha::TabPanels.new(**system_arguments, &block)
+          },
+          as: :tab_panels
+        },
       }
 
       # @param mobile_menu_label [String] The tooltip label of the mobile menu
@@ -327,6 +336,14 @@ module Primer
           @mobile_action = component.new(**system_arguments.deep_merge(mobile_options))
           @mobile_action_block = block
         end
+      end
+
+      def tab_navigation_options(**system_arguments)
+        @system_arguments[:classes] = class_names(@system_arguments[:classes], "PageHeader--withTabNav")
+
+        system_arguments = deny_tag_argument(**system_arguments)
+        system_arguments[:tag] = :div
+        system_arguments[:classes] = class_names(system_arguments[:classes], "PageHeader-tabNav")
       end
     end
   end

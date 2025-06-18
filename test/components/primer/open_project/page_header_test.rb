@@ -234,6 +234,26 @@ class PrimerOpenProjectPageHeaderTest < Minitest::Test
     assert_selector(".PageHeader-tabNav .tabnav-tab")
   end
 
+  def test_renders_tab_panels
+    render_inline(Primer::OpenProject::PageHeader.new) do |header|
+      header.with_title { "Hello" }
+      header.with_breadcrumbs(breadcrumb_elements)
+      header.with_tab_panels(label: "label") do |nav|
+        Array.new(3) do |i|
+          panels.with_tab(selected: i.zero?, id: "tab-#{i + 1}") do |tab|
+            tab.with_panel { "Panel #{i + 1}" }
+            tab.with_text { "Tab #{i + 1}" }
+          end
+        end
+      end
+    end
+
+    assert_selector(".PageHeader.PageHeader--withTabNav")
+    assert_selector(".PageHeader-tabNavBar")
+    assert_selector(".PageHeader-tabNav")
+    assert_selector(".PageHeader-tabNav #panel-tab-1", text: "Panel 1")
+  end
+
   def test_renders_segmented_control
     render_inline(Primer::OpenProject::PageHeader.new) do |header|
       header.with_title { "Hello" }
