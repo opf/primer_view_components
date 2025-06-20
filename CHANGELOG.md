@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.70.2
+
+### Patch Changes
+
+- [#3558](https://github.com/primer/view_components/pull/3558) [`9cdefbb`](https://github.com/opf/primer_view_components/commit/9cdefbb65bf44c5dd494b60b636166155687e956) Thanks [@myabc](https://github.com/myabc)! - Make `ToolTipElement` `for` an observed attribute
+
 ## 0.70.1
 
 ### Patch Changes
