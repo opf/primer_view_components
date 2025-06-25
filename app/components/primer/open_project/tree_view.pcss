@@ -143,6 +143,10 @@
     text-decoration-color: var(--control-fgColor-rest);
   }
 
+  & :has(.TreeViewItemContent[aria-disabled=true]) {
+    cursor: not-allowed;
+  }
+
   & .TreeViewItemContent {
     display: flex;
     height: 100%;
@@ -207,6 +211,47 @@
           clip-path: none;
         }
       }
+    }
+
+    &[aria-disabled='true'] {
+      pointer-events: none;
+
+      & .TreeViewItemContentText {
+        color: var(--control-fgColor-disabled);
+      }
+
+      & .TreeViewItemVisual {
+        fill: var(--control-fgColor-disabled);
+
+        & svg {
+          fill: var(--control-fgColor-disabled);
+        }
+      }
+
+      & .FormControl-checkbox {
+        @media (hover: hover) {
+          &:hover {
+            cursor: not-allowed;
+          }
+        }
+      }
+
+      @media (hover: hover) {
+        &:hover {
+          cursor: not-allowed;
+          background-color: transparent;
+        }
+      }
+    }
+
+    & ::highlight(primer-filterable-tree-view-search-results) {
+      background-color: yellow;
+      color: black;
+    }
+
+    & mark {
+      background-color: yellow;
+      color: black;
     }
   }
 
