@@ -1,5 +1,6 @@
 .breadcrumb-item {
-  display: inline-block;
+  display: inline; /* Fix wrapping alignment */
+  margin-left: -0.35em;
   list-style: none;
   max-width: 100%;
 
@@ -13,6 +14,10 @@
     border-right: 0.1em solid var(--borderColor-neutral-emphasis);
     transform: rotate(15deg) translateY(0.0625em);
   }
+}
+
+.breadcrumb-item:first-child {
+  margin-left: 0;
 }
 
 .breadcrumb-item-selected,
