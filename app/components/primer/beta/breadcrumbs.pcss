@@ -1,6 +1,5 @@
 .breadcrumb-item {
-  display: inline; /* Fix wrapping alignment */
-  margin-left: -0.35em;
+  display: inline-block;
   list-style: none;
   max-width: 100%;
 
@@ -8,16 +7,12 @@
     display: inline-block;
     height: 0.8em;
     /* stylelint-disable-next-line primer/spacing */
-    margin: 0 0.5em;
+    margin: 0 0.15em 0 0.5em;
     content: '';
     /* stylelint-disable-next-line primer/borders */
     border-right: 0.1em solid var(--borderColor-neutral-emphasis);
     transform: rotate(15deg) translateY(0.0625em);
   }
-}
-
-.breadcrumb-item:first-child {
-  margin-left: 0;
 }
 
 .breadcrumb-item-selected,
