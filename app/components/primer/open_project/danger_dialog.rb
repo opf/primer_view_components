@@ -40,7 +40,11 @@ module Primer
 
         check_box_id = "#{dialog_id}-check_box"
 
-        Primer::OpenProject::DangerDialog::ConfirmationCheckBox.new(check_box_id: check_box_id, check_box_name: @check_box_name, **system_arguments)
+        Primer::OpenProject::DangerDialog::ConfirmationCheckBox.new(
+          confirm_button_id: @confirm_button_id,
+          check_box_id: check_box_id,
+          check_box_name: @check_box_name,
+          **system_arguments)
       }
 
       # Optional additional details, such as grid displaying a list of items to be deleted
@@ -80,6 +84,7 @@ module Primer
         @form_wrapper = FormWrapper.new(**form_arguments)
         @dialog_id = id.to_s
 
+        @confirm_button_id = "#{@dialog_id}-confirm-button"
         @confirm_button_text = confirm_button_text
         @cancel_button_text = cancel_button_text
 
