@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-rails_version = (ENV["RAILS_VERSION"] || "7.2.2.1").to_s
+rails_version = (ENV["RAILS_VERSION"] || "7.2.2.2").to_s
 
 gem "rake", "~> 13.3"
 gem "rack-cors"
@@ -37,7 +37,7 @@ gem "puma", "~> 6.6.1"
 gem "bootsnap", ">= 1.4.2", require: false
 
 gem "openproject-primer_view_components", path: "../"
-gem "view_component", "4.0.2"
+gem "view_component", "~> 4.0.2"
 gem "lookbook", "~> 2.3.13" unless rails_version.to_f < 7
 
 gem "vite_rails", "~> 3.0"
