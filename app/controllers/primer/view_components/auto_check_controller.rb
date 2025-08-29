@@ -8,7 +8,7 @@ module Primer
       def error
         render partial: "primer/view_components/auto_check/error_message",
           locals: { input_value: params[:value] },
-          status: :unprocessable_entity,
+          status: :unprocessable_content,
           formats: :html
       end
 
@@ -33,7 +33,7 @@ module Primer
             status: :ok,
             formats: :html
         else
-          render status: :unprocessable_entity, plain: "Random error!"
+          render status: :unprocessable_content, plain: "Random error!"
         end
       end
     end
