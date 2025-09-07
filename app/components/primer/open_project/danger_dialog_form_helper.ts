@@ -33,11 +33,11 @@ class DangerDialogFormHelperElement extends HTMLElement {
 
     if (this.liveRegion) {
       const message = enabled
-          ? this.getAttribute("data-confirmation-live-message-checked")
-          : this.getAttribute("data-confirmation-live-message-unchecked")
+          ? this.getAttribute('data-confirmation-live-message-checked')
+          : this.getAttribute('data-confirmation-live-message-unchecked')
 
-      this.liveRegion.textContent = ""
-      this.liveRegion.textContent = message || ""
+      this.liveRegion.textContent = ''
+      this.liveRegion.textContent = message || ''
     }
   }
 
