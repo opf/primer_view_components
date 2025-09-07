@@ -3,7 +3,10 @@
     <% dialog.with_header(close_label: I18n.t("button_close")) %>
   <% end %>
 
-  <danger-dialog-form-helper>
+  <danger-dialog-form-helper
+    data-confirmation-live-message-checked="<%= @confirmation_live_message_checked %>"
+    data-confirmation-live-message-unchecked="<%= @confirmation_live_message_unchecked %>">
+
     <%= render(@form_wrapper) do %>
       <scrollable-region data-labelled-by="<%= labelledby %>">
         <%= render(Primer::Alpha::Dialog::Body.new) do %>
@@ -15,9 +18,26 @@
         <% end %>
       </scrollable-region>
       <%= render(Primer::Alpha::Dialog::Footer.new(show_divider: false)) do %>
-        <%= render(Primer::Beta::Button.new(data: { "close-dialog-id": dialog_id })) { @cancel_button_text } %>
-        <%= render(Primer::Beta::Button.new(type: (@form_wrapper.shows_form? ? :submit : :button), scheme: :danger, aria: { describedby: "#{dialog_id}-check_box" }, data: { "submit-dialog-id": dialog_id })) { @confirm_button_text } %>
+        <%= render(Primer::Beta::Button.new(
+          data: { "close-dialog-id": dialog_id }
+        )) { @cancel_button_text } %>
+
+        <%= render(Primer::Beta::Button.new(
+          type: (@form_wrapper.shows_form? ? :submit : :button),
+          scheme: :danger,
+          disabled: true,
+          aria: { describedby: "#{dialog_id}-check_box" },
+          data: {
+            "submit-dialog-id": dialog_id,
+            target: "danger-dialog-form-helper.submitButton"
+          }
+        )) { @confirm_button_text } %>
       <% end %>
+
+      <div class="sr-only"
+           aria-live="assertive"
+           aria-atomic="true"
+           data-target="danger-dialog-form-helper.liveRegion"></div>
     <% end %>
   </danger-dialog-form-helper>
 <% end %>
