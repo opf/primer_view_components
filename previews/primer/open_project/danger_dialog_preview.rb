@@ -40,6 +40,8 @@ module Primer
       # @param confirm_button_text [String]
       # @param cancel_button_text [String]
       # @param check_box_text [String]
+      # @param live_message_checked [String]
+      # @param live_message_unchecked [String]
       def playground(
         icon: :"alert",
         icon_color: :danger,
@@ -47,15 +49,23 @@ module Primer
         show_additional_details: false,
         confirm_button_text: "Understood",
         cancel_button_text: "NO!",
-        check_box_text: "I understand that this deletion cannot be reversed"
+        check_box_text: "I understand that this deletion cannot be reversed",
+        live_message_checked: "Checkbox checked — you can proceed.",
+        live_message_unchecked: "Please check the confirmation box to continue."
       )
-        render_with_template(locals: { icon: icon,
-                                       icon_color: icon_color,
-                                       show_description: show_description,
-                                       show_additional_details: show_additional_details,
-                                       confirm_button_text: confirm_button_text,
-                                       cancel_button_text: cancel_button_text,
-                                       check_box_text: check_box_text })
+        render_with_template(
+          locals: {
+            icon: icon,
+            icon_color: icon_color,
+            show_description: show_description,
+            show_additional_details: show_additional_details,
+            confirm_button_text: confirm_button_text,
+            cancel_button_text: cancel_button_text,
+            check_box_text: check_box_text,
+            live_message_checked: live_message_checked,
+            live_message_unchecked: live_message_unchecked
+          }
+        )
       end
 
       # @label With form using FormBuilder
@@ -96,6 +106,24 @@ module Primer
       def with_form_test(route_format: :html)
         render_with_template(locals: { route_format: route_format })
       end
+
+      # @label With confirmation checkbox and custom live messages
+      # @snapshot interactive
+      def with_confirmation_check_box_and_live_messages
+        render(Primer::OpenProject::DangerDialog.new(
+          title: "Delete dialog",
+          confirmation_live_message_checked: "You checked the box — deletion is now possible.",
+          confirmation_live_message_unchecked: "You must check the box to enable deletion."
+        )) do |dialog|
+          dialog.with_show_button { "Click me" }
+          dialog.with_confirmation_message do |message|
+            message.with_heading(tag: :h2) { "Permanently delete this item?" }
+            message.with_description_content("This action is irreversible. Proceed with caution.")
+          end
+          dialog.with_confirmation_check_box_content("I understand that this deletion cannot be reversed")
+        end
+      end
+
     end
   end
 end
