@@ -32,10 +32,7 @@ class DangerDialogFormHelperElement extends HTMLElement {
     this.submitButton.disabled = !enabled
 
     if (this.liveRegion) {
-      const message = enabled
-          ? this.getAttribute('data-confirmation-live-message-checked')
-          : this.getAttribute('data-confirmation-live-message-unchecked')
-
+      const message = enabled ? this.getAttribute('data-confirmation-live-message-checked') : this.getAttribute('data-confirmation-live-message-unchecked')
       this.liveRegion.textContent = ''
       this.liveRegion.textContent = message || ''
     }
