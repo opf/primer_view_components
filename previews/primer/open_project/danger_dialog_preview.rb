@@ -123,7 +123,6 @@ module Primer
           dialog.with_confirmation_check_box_content("I understand that this deletion cannot be reversed")
         end
       end
-
     end
   end
 end

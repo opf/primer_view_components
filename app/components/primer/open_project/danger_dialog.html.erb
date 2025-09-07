@@ -17,23 +17,8 @@
           <%= confirmation_check_box %>
         <% end %>
       </scrollable-region>
-      <%= render(Primer::Alpha::Dialog::Footer.new(show_divider: false)) do %>
-        <%= render(Primer::Beta::Button.new(
-          data: { "close-dialog-id": dialog_id }
-        )) { @cancel_button_text } %>
-
-        <%= render(Primer::Beta::Button.new(
-          type: (@form_wrapper.shows_form? ? :submit : :button),
-          scheme: :danger,
-          disabled: true,
-          aria: { describedby: "#{dialog_id}-check_box" },
-          data: {
-            "submit-dialog-id": dialog_id,
-            target: "danger-dialog-form-helper.submitButton"
-          }
-        )) { @confirm_button_text } %>
-      <% end %>
-
+      <%= render(Primer::Beta::Button.new(data: { "close-dialog-id": dialog_id })) { @cancel_button_text } %>
+      <%= render(Primer::Beta::Button.new(type: (@form_wrapper.shows_form? ? :submit : :button), scheme: :danger, aria: { describedby: "#{dialog_id}-check_box" }, data: { "submit-dialog-id": dialog_id })) { @confirm_button_text } %>
       <div class="sr-only"
            aria-live="assertive"
            aria-atomic="true"
