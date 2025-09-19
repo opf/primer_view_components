@@ -8,4 +8,4 @@
   - text: I understand that this deletion cannot be reversed
   - button "Cancel"
   - button "Delete permanently" [disabled]
-  - text: Please check the confirmation box to proceed.
+  - text: The button to proceed is now inactive. You need to tick the checkbox to continue.
