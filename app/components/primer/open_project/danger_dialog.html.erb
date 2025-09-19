@@ -4,8 +4,8 @@
   <% end %>
 
   <danger-dialog-form-helper
-    data-confirmation-live-message-checked="<%= @confirmation_live_message_checked %>"
-    data-confirmation-live-message-unchecked="<%= @confirmation_live_message_unchecked %>">
+    data-confirmation-live-message-checked="<%= I18n.t("danger_dialog.confirmation_live_message_checked") %>"
+    data-confirmation-live-message-unchecked="<%= I18n.t("danger_dialog.confirmation_live_message_unchecked") %>">
 
     <%= render(@form_wrapper) do %>
       <scrollable-region data-labelled-by="<%= labelledby %>">
