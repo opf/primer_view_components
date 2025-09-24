@@ -88,24 +88,35 @@ class IntegrationOpenProjectDangerDialogTest < System::TestCase
     click_button("Click me")
 
     assert_selector(".DangerDialog") do
-      live_region = find("[data-target='danger-dialog-form-helper.liveRegion']")
-
-      # Initially, checkbox is unchecked
-      assert_equal "Please check the confirmation box to proceed.", live_region.text
+      assert_selector("[data-target='danger-dialog-form-helper.liveRegion']")
 
       within(".DangerDialog") do
         # Check the checkbox
         check("I understand that this deletion cannot be reversed")
       end
 
+      # Delay a bit so that the liveRegion can update
+      sleep 1
+
+      live_region_text = page.evaluate_script(%Q|
+          document.querySelector("[data-target='danger-dialog-form-helper.liveRegion']")?.shadowRoot?.querySelector('#assertive')?.textContent ?? ""
+        |)
       # Live region updates when checked
-      assert_equal "Confirmation checkbox checked. You can now proceed.", live_region.text
+      assert_equal "The button to proceed is now active.", live_region_text
+
 
       # Uncheck to verify it toggles back
       within(".DangerDialog") do
         uncheck("I understand that this deletion cannot be reversed")
       end
-      assert_equal "Please check the confirmation box to proceed.", live_region.text
+
+      # Delay a bit so that the liveRegion can update
+      sleep 1
+
+      live_region_text = page.evaluate_script(%Q|
+          document.querySelector("[data-target='danger-dialog-form-helper.liveRegion']")?.shadowRoot?.querySelector('#assertive')?.textContent ?? ""
+        |)
+      assert_equal "The button to proceed is now inactive. You need to tick the checkbox to continue.", live_region_text
     end
   end
 end

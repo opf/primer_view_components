@@ -285,9 +285,7 @@ class PrimerOpenProjectDangerDialogTest < Minitest::Test
 
   def test_renders_live_region_for_confirmation_checkbox
     render_inline(Primer::OpenProject::DangerDialog.new(
-      title: "Danger confirmation action",
-      confirmation_live_message_checked: "Checkbox checked — you can proceed.",
-      confirmation_live_message_unchecked: "Please check the confirmation box to continue."
+      title: "Danger confirmation action"
     )) do |dialog|
       dialog.with_confirmation_message do |message|
         message.with_heading(tag: :h2) { "Danger" }
@@ -295,11 +293,7 @@ class PrimerOpenProjectDangerDialogTest < Minitest::Test
       dialog.with_confirmation_check_box { "I confirm this deletion" }
     end
 
-    # Check that the live region exists and is sr-only
-    assert_selector("div.sr-only[data-target='danger-dialog-form-helper.liveRegion']")
-
-    live_region = page.find_css("div.sr-only[data-target='danger-dialog-form-helper.liveRegion']").first
-    assert_equal "assertive", live_region.attributes["aria-live"].value
-    assert_equal "true", live_region.attributes["aria-atomic"].value
+    # Check that the live region exists
+    assert_selector("live-region[data-target='danger-dialog-form-helper.liveRegion']")
   end
 end
