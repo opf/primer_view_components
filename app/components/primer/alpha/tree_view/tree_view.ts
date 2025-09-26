@@ -3,6 +3,8 @@ import {SelectStrategy, TreeViewSubTreeNodeElement} from './tree_view_sub_tree_n
 import {useRovingTabIndex} from './tree_view_roving_tab_index'
 import type {TreeViewNodeType, TreeViewCheckedValue, TreeViewNodeInfo} from '../../shared_events'
 
+export type SelectVariant = 'none' | 'single' | 'multiple'
+
 @controller
 export class TreeViewElement extends HTMLElement {
   @target formInputContainer: HTMLElement
@@ -199,6 +201,19 @@ export class TreeViewElement extends HTMLElement {
 
     if (!activationSuccess) return
 
+    if (this.selectVariant(node) === 'single') {
+      const currentlyChecked = !this.getNodeCheckedValue(node)
+
+      // disallow unchecking checked item in single-select mode
+      if (!currentlyChecked) {
+        for (const el of this.activeNodes) {
+          this.uncheckAtPath(this.getNodePath(el))
+        }
+
+        this.checkAtPath(path)
+      }
+    }
+
     // navigate or trigger button, don't toggle
     if (!this.nodeHasNativeAction(node)) {
       this.toggleAtPath(path)
@@ -277,6 +292,10 @@ export class TreeViewElement extends HTMLElement {
 
   get currentNode(): HTMLLIElement | null {
     return this.querySelector('[aria-current=true]')
+  }
+
+  get activeNodes() {
+    return document.querySelectorAll('[aria-checked="true"]');
   }
 
   expandAtPath(path: string[]) {
@@ -419,6 +438,10 @@ export class TreeViewElement extends HTMLElement {
       checkedValue: newCheckedValue || checkedValue,
       previousCheckedValue: checkedValue,
     }
+  }
+
+  selectVariant(node: HTMLElement): SelectVariant {
+    return (node.getAttribute('data-select-variant') || 'none') as SelectVariant
   }
 }
 
