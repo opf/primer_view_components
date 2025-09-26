@@ -37,7 +37,7 @@ module Primer
       def reject_non_ajax_request
         return if request.headers["HTTP_REQUESTED_WITH"] == "XMLHttpRequest"
 
-        head :unprocessable_entity
+        head :unprocessable_content
       end
 
       def form_params
