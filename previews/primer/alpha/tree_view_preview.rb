@@ -185,7 +185,7 @@ module Primer
 
       # @label Form input
       #
-      # @param select_variant [Symbol] select [multiple, single, none]
+      # @param select_variant [Symbol] select [multiple, single]
       # @param expanded [Boolean] toggle
       def form_input(select_variant: :multiple, expanded: true)
         render_with_template(locals: {
