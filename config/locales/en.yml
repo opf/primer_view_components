@@ -18,6 +18,8 @@ en:
   label_title: "Title"
   label_loading: "Loading..."
   label_more: "More"
+  label_switch_on: "On"
+  label_switch_off: "Off"
 
   danger_dialog:
     confirmation_live_message_checked: "The button to proceed is now active."
