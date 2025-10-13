@@ -15,11 +15,13 @@ en:
     include_sub_items: "Include sub-items"
     no_results_text: "No results"
 
+  toggle_switch:
+    label_on: "On"
+    label_off: "Off"
+
   label_title: "Title"
   label_loading: "Loading..."
   label_more: "More"
-  label_switch_on: "On"
-  label_switch_off: "Off"
 
   danger_dialog:
     confirmation_live_message_checked: "The button to proceed is now active."
