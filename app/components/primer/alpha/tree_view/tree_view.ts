@@ -193,7 +193,6 @@ export class TreeViewElement extends HTMLElement {
     // behavior for these element types is user- or browser-defined
     if (!(node instanceof HTMLDivElement)) return
 
-    const path = this.getNodePath(node)
     const nodeInfo = this.infoFromNode(node, 'true')
 
     const checkSuccess = this.dispatchEvent(
