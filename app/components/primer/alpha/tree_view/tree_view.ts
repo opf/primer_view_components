@@ -193,6 +193,7 @@ export class TreeViewElement extends HTMLElement {
     // behavior for these element types is user- or browser-defined
     if (!(node instanceof HTMLDivElement)) return
 
+    const path = this.getNodePath(node)
     const nodeInfo = this.infoFromNode(node, 'true')
 
     const checkSuccess = this.dispatchEvent(
@@ -205,17 +206,10 @@ export class TreeViewElement extends HTMLElement {
 
     if (!checkSuccess) return
 
-    const currentlyChecked = this.getNodeCheckedValue(node) === 'true'
-
-    if (currentlyChecked) {
+    if (this.getNodeCheckedValue(node) === 'true') {
       this.setNodeCheckedValue(node, 'false')
     } else {
-      // Uncheck all other nodes first
-      for (const el of this.activeNodes) {
-        this.uncheckAtPath(this.getNodePath(el))
-      }
-
-      this.setNodeCheckedValue(node, 'true')
+      this.checkOnlyAtPath(path);
     }
 
     this.dispatchEvent(
