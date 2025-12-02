@@ -1,0 +1,75 @@
+<%= render Primer::BaseComponent.new(**@system_arguments) do %>
+  <% if required_form_arguments_given? %>
+    <span data-select-tree-panel-inputs="true">
+        <%= @form_builder.hidden_field(@input_name, multiple: multi_select?, skip_default_ids: true, value: @value) %>
+    </span>
+  <% end %>
+  <dialog-helper>
+    <%= show_button %>
+    <%= render(@dialog) do %>
+      <%= render Primer::Alpha::Dialog::Header.new(id: "#{@panel_id}-dialog", title: @title, show_divider: show_filter?) do |header| %>
+        <% if subtitle? %>
+          <% header.with_subtitle do %>
+            <%= subtitle %>
+          <% end %>
+        <% end %>
+        <% if show_filter? %>
+          <% header.with_filter do %>
+            <div data-target="select-tree-panel.bannerErrorElement" hidden>
+              <%= render Primer::Alpha::Banner.new(scheme: @banner_scheme, mb: 2) do %>
+                <% if error_content? %>
+                  <%= error_content %>
+                <% else %>
+                  <h2 class="f6 text-normal">Sorry, something went wrong.</h2>
+                <% end %>
+              <% end %>
+            </div>
+            <%= render(Primer::BaseComponent.new(
+              tag: :"remote-input",
+              aria: { owns: @body_id },
+              **(@fetch_strategy == :remote ? { src: @src } : {}),
+              data: {
+                target: "select-tree-panel.remoteInput"
+              }
+            )) do %>
+              <%= render(Primer::Alpha::TextField.new(
+                id: "#{@panel_id}-filter",
+                name: :filter,
+                label: "Filter",
+                type: :search,
+                leading_visual: { icon: :search },
+                leading_spinner: true,
+                autofocus: true,
+                visually_hide_label: true,
+                data: { target: "select-tree-panel.filterInputTextField" },
+                label_arguments: {
+                  position: :absolute
+                }
+              )) %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+      <%= render Primer::Alpha::Dialog::Body.new(p: 0) do %>
+        <focus-group direction="vertical" mnemonics retain>
+          <live-region data-target="select-tree-panel.liveRegion"></live-region>
+          <%= render(Primer::BaseComponent.new(
+            tag: :div,
+            data: {
+              fetch_strategy: @fetch_strategy,
+              target: "select-tree-panel.list"
+            }
+          )) do %>
+            <div id="<%= @body_id %>">
+              <%= render(@tree) %>
+            </div>
+            <div data-target="select-tree-panel.noResults" class="SelectTreePanel-emptyPanel" hidden>
+              <h2 class="v-align-middle m-3 f5"><%= @no_results_label %></h2>
+            </div>
+          <% end %>
+        </focus-group>
+      <% end %>
+      <%= footer %>
+    <% end %>
+  </dialog-helper>
+<% end %>
