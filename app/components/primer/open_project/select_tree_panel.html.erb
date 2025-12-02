@@ -15,6 +15,20 @@
         <% end %>
         <% if show_filter? %>
           <% header.with_filter do %>
+                <%= render(Primer::Alpha::TextField.new(
+                  id: "#{@panel_id}-filter",
+                  name: :filter,
+                  label: "Filter",
+                  type: :search,
+                  leading_visual: { icon: :search },
+                  leading_spinner: true,
+                  autofocus: true,
+                  visually_hide_label: true,
+                  data: { target: "select-tree-panel.filterInputTextField" },
+                  label_arguments: {
+                    position: :absolute
+                  }
+                )) %>
             <div data-target="select-tree-panel.bannerErrorElement" hidden>
               <%= render Primer::Alpha::Banner.new(scheme: @banner_scheme, mb: 2) do %>
                 <% if error_content? %>
@@ -24,29 +38,6 @@
                 <% end %>
               <% end %>
             </div>
-            <%= render(Primer::BaseComponent.new(
-              tag: :"remote-input",
-              aria: { owns: @body_id },
-              **(@fetch_strategy == :remote ? { src: @src } : {}),
-              data: {
-                target: "select-tree-panel.remoteInput"
-              }
-            )) do %>
-              <%= render(Primer::Alpha::TextField.new(
-                id: "#{@panel_id}-filter",
-                name: :filter,
-                label: "Filter",
-                type: :search,
-                leading_visual: { icon: :search },
-                leading_spinner: true,
-                autofocus: true,
-                visually_hide_label: true,
-                data: { target: "select-tree-panel.filterInputTextField" },
-                label_arguments: {
-                  position: :absolute
-                }
-              )) %>
-            <% end %>
           <% end %>
         <% end %>
       <% end %>
@@ -56,20 +47,36 @@
           <%= render(Primer::BaseComponent.new(
             tag: :div,
             data: {
-              fetch_strategy: @fetch_strategy,
               target: "select-tree-panel.list"
             }
           )) do %>
             <div id="<%= @body_id %>">
-              <%= render(@tree) %>
+              <%= render(@tree_view) %>
             </div>
             <div data-target="select-tree-panel.noResults" class="SelectTreePanel-emptyPanel" hidden>
-              <h2 class="v-align-middle m-3 f5"><%= @no_results_label %></h2>
+              <%= render(Primer::Alpha::TreeView.new) do |tree| %>
+                <% tree.with_leaf(**@no_results_node_arguments) %>
+              <% end %>
             </div>
           <% end %>
         </focus-group>
       <% end %>
-      <%= footer %>
+      <% if footer? %>
+        <%= footer %>
+      <% elsif !hide_filter_mode_control? || !hide_include_sub_items_check_box? %>
+        <%= render(Primer::Alpha::Dialog::Footer.new(show_divider: true)) do %>
+          <%= render(Primer::Alpha::Stack.new(direction: :horizontal, align: :end, gap: :condensed)) do %>
+            <%= render(Primer::Alpha::StackItem.new(grow: true, hidden: hide_filter_mode_control?)) do %>
+              <%= render(@filter_mode_control) %>
+            <% end %>
+            <%= render(Primer::Alpha::StackItem.new(hidden: hide_include_sub_items_check_box?)) do %>
+              <%= render(@include_sub_items_check_box) do |input| %>
+                <% input.merge_input_arguments!(form: "") %>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
     <% end %>
   </dialog-helper>
 <% end %>

@@ -19,45 +19,7 @@ module Primer
 
       include Utils
 
-      # The component that should be used to render the list of items in the body of a SelectTreePanel.
-      class ItemList < Primer::Alpha::TreeView
-        include Utils
-
-        # @param system_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::Alpha::TreeView) %>.
-        def initialize(**system_arguments)
-          raise_if_role_given!(**system_arguments)
-          select_variant = system_arguments.delete(:select_variant) || Primer::Alpha::ActionList::DEFAULT_SELECT_VARIANT
-
-          super(
-            p: 2,
-            role: "listbox",
-            aria_selection_variant: select_variant == :single ? :selected : :checked,
-            select_variant: select_variant == :multiple ? :multiple_checkbox : :single,
-            **system_arguments
-          )
-        end
-
-        def with_sub_tree(**system_arguments)
-          raise_if_role_given!(**system_arguments)
-          super
-        end
-
-        def with_leaf(**system_arguments)
-          raise_if_role_given!(**system_arguments)
-          super
-        end
-      end
-
       status :open_project
-
-      DEFAULT_PRELOAD = false
-
-      DEFAULT_FETCH_STRATEGY = :remote
-      FETCH_STRATEGIES = [
-        DEFAULT_FETCH_STRATEGY,
-        :eventually_local,
-        :local
-      ]
 
       DEFAULT_SELECT_VARIANT = :single
       SELECT_VARIANT_OPTIONS = [
@@ -71,8 +33,6 @@ module Primer
         DEFAULT_BANNER_SCHEME,
         :warning
       ].freeze
-
-
 
       # The unique ID of the panel.
       #
@@ -94,18 +54,6 @@ module Primer
       # @return [Symbol]
       attr_reader :banner_scheme
 
-      # <%= one_of(Primer::Alpha::SelectTreePanel::FETCH_STRATEGIES) %>
-      #
-      # @return [Symbol]
-      attr_reader :fetch_strategy
-
-      # Whether to preload search results when the page loads. If this option is false, results are loaded when the panel is opened.
-      #
-      # @return [Boolean]
-      attr_reader :preload
-
-      alias preload? preload
-
       # Whether or not to show the filter input.
       #
       # @return [Boolean]
@@ -117,16 +65,17 @@ module Primer
       # @param id [String] The unique ID of the panel.
       # @param size [Symbol] The size of the panel. <%= one_of(Primer::Alpha::Overlay::SIZE_OPTIONS) %>
       # @param select_variant [Symbol] <%= one_of(Primer::Alpha::SelectTreePanel::SELECT_VARIANT_OPTIONS) %>
-      # @param fetch_strategy [Symbol] <%= one_of(Primer::Alpha::SelectTreePanel::FETCH_STRATEGIES) %>
-      # @param no_results_label [String] The label to display when no results are found.
-      # @param preload [Boolean] Whether to preload search results when the page loads. If this option is false, results are loaded when the panel is opened.
+      # @param no_results_node_arguments [Hash] Arguments that will be passed to a <%= link_to_component(Primer::Alpha::TreeView::LeafNode) %> component that appears when no items match the filter criteria.
       # @param dynamic_label [Boolean] Whether or not to display the text of the currently selected item in the show button.
       # @param dynamic_label_prefix [String] If provided, the prefix is prepended to the dynamic label and displayed in the show button.
       # @param dynamic_aria_label_prefix [String] If provided, the prefix is prepended to the dynamic label and set as the value of the `aria-label` attribute on the show button.
       # @param body_id [String] The unique ID of the panel body. If not provided, the body ID will be set to the panel ID with a "-body" suffix.
-      # @param tree_arguments [Hash] Arguments to pass to the underlying <%= link_to_component(Primer::Alpha::TreeView) %> component. Only has an effect for the local fetch strategy.
+      # @param tree_view_arguments [Hash] Arguments to pass to the underlying <%= link_to_component(Primer::Alpha::TreeView) %> component. Only has an effect for the local fetch strategy.
       # @param form_arguments [Hash] Form arguments. Supported for all fetch strategies.
       # @param show_filter [Boolean] Whether or not to show the filter input.
+      # @param filter_input_arguments [Hash] Arguments that will be passed to the <%= link_to_component(Primer::Alpha::TextField) %> component.
+      # @param filter_mode_control_arguments [Hash] Arguments that will be passed to the <%= link_to_component(Primer::Alpha::SegmentedControl) %> component.
+      # @param include_sub_items_check_box_arguments [Hash] Arguments that will be passed to the <%= link_to_component(Primer::Alpha::CheckBox) %> component.
       # @param open_on_load [Boolean] Open the panel when the page loads.
       # @param anchor_align [Symbol] The anchor alignment of the Overlay. <%= one_of(Primer::Alpha::Overlay::ANCHOR_ALIGN_OPTIONS) %>
       # @param anchor_side [Symbol] The side to anchor the Overlay to. <%= one_of(Primer::Alpha::Overlay::ANCHOR_SIDE_OPTIONS) %>
@@ -139,16 +88,17 @@ module Primer
         id: self.class.generate_id,
         size: :small,
         select_variant: DEFAULT_SELECT_VARIANT,
-        fetch_strategy: DEFAULT_FETCH_STRATEGY,
-        no_results_label: "No results found",
-        preload: DEFAULT_PRELOAD,
+        no_results_node_arguments: Primer::OpenProject::FilterableTreeView::DEFAULT_NO_RESULTS_NODE_ARGUMENTS.dup,
         dynamic_label: false,
         dynamic_label_prefix: nil,
         dynamic_aria_label_prefix: nil,
         body_id: nil,
-        tree_arguments: {},
+        tree_view_arguments: {},
         form_arguments: {},
         show_filter: true,
+        filter_input_arguments: Primer::OpenProject::FilterableTreeView::DEFAULT_FILTER_INPUT_ARGUMENTS.dup,
+        filter_mode_control_arguments: Primer::OpenProject::FilterableTreeView::DEFAULT_FILTER_MODE_CONTROL_ARGUMENTS.dup,
+        include_sub_items_check_box_arguments: Primer::OpenProject::FilterableTreeView::DEFAULT_INCLUDE_SUB_ITEMS_CHECK_BOX_ARGUMENTS.dup,
         open_on_load: false,
         anchor_align: Primer::Alpha::Overlay::DEFAULT_ANCHOR_ALIGN,
         anchor_side: Primer::Alpha::Overlay::DEFAULT_ANCHOR_SIDE,
@@ -161,10 +111,7 @@ module Primer
 
         @panel_id = id
         @body_id = body_id || "#{@panel_id}-body"
-        @preload = fetch_or_fallback_boolean(preload, DEFAULT_PRELOAD)
         @select_variant = fetch_or_fallback(SELECT_VARIANT_OPTIONS, select_variant, DEFAULT_SELECT_VARIANT)
-        @fetch_strategy = fetch_or_fallback(FETCH_STRATEGIES, fetch_strategy, DEFAULT_FETCH_STRATEGY)
-        @no_results_label = no_results_label
         @show_filter = show_filter
         @dynamic_label = dynamic_label
         @dynamic_label_prefix = dynamic_label_prefix
@@ -176,7 +123,7 @@ module Primer
         @value = form_arguments[:value]
         @input_name = form_arguments[:name]
 
-        @tree_form_arguments = {}
+        @tree_view_form_arguments = {}
 
         if loading_description.present?
           @loading_description_id = "#{@panel_id}-loading-description"
@@ -194,7 +141,7 @@ module Primer
 
         @system_arguments[:data] = merge_data(
           system_arguments, {
-            data: { select_variant: @select_variant, fetch_strategy: @fetch_strategy, open_on_load: open_on_load }.tap do |data|
+            data: { select_variant: @select_variant, open_on_load: open_on_load }.tap do |data|
               data[:dynamic_label] = dynamic_label if dynamic_label
               data[:dynamic_label_prefix] = dynamic_label_prefix if dynamic_label_prefix.present?
               data[:dynamic_aria_label_prefix] = dynamic_aria_label_prefix if dynamic_aria_label_prefix.present?
@@ -217,9 +164,9 @@ module Primer
           style: "position: absolute;",
         )
 
-        @tree = Primer::OpenProject::SelectTreePanel::ItemList.new(
-          **tree_arguments,
-          form_arguments: @tree_form_arguments,
+        @tree_view = Primer::Alpha::TreeView.new(
+          **tree_view_arguments,
+          form_arguments: @tree_view_form_arguments,
           id: "#{@panel_id}-list",
           select_variant: @select_variant,
           aria: {
@@ -227,33 +174,24 @@ module Primer
           }
         )
 
-        return if @show_filter || @fetch_strategy != :remote
-        return if shouldnt_raise_error?
-
-        raise(
-          "Hiding the filter input with a remote fetch strategy is not permitted, "\
-          "since such a combinaton of options will cause the component to only "\
-          "fetch items from the server once when the panel opens for the first time; "\
-          "this is what the `:eventually_local` fetch strategy is designed to do. "\
-          "Consider passing `show_filter: true` or use the `:eventually_local` fetch "\
-          "strategy instead."
+        @filter_mode_control_arguments = filter_mode_control_arguments.reverse_merge(Primer::OpenProject::FilterableTreeView::DEFAULT_FILTER_MODE_CONTROL_ARGUMENTS)
+        @filter_mode_control_arguments[:data] = merge_data(
+          @filter_mode_control_arguments, {
+            data: { target: "select-tree-panel.filterModeControlList" }
+          }
         )
+        @filter_mode_control = Primer::Alpha::SegmentedControl.new(**@filter_mode_control_arguments)
+
+        @include_sub_items_check_box_arguments = include_sub_items_check_box_arguments.reverse_merge(Primer::OpenProject::FilterableTreeView::DEFAULT_INCLUDE_SUB_ITEMS_CHECK_BOX_ARGUMENTS)
+        @include_sub_items_check_box_arguments[:data] = merge_data(
+          @include_sub_items_check_box_arguments, {
+            data: { target: "elect-tree-panel.includeSubItemsCheckBox" }
+          }
+        )
+        @include_sub_items_check_box = Primer::Alpha::CheckBox.new(**@include_sub_items_check_box_arguments)
+
+        @no_results_node_arguments = no_results_node_arguments
       end
-
-      # @!parse
-      #   # Adds an item to the list. Note that this method only has an effect for the local fetch strategy.
-      #   #
-      #   # @param system_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::Alpha::TreeView) %>'s `item` slot.
-      #   def with_item(**system_arguments)
-      #   end
-      #
-      #   # Adds an avatar item to the list. Note that this method only has an effect for the local fetch strategy.
-      #
-      #   # @param system_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::Alpha::TreeView) %>'s `item` slot.
-      #   def with_avatar_item
-      #   end
-
-      delegate :with_sub_tree, :with_leaf, to: :@tree
 
       # Renders content in a footer region below the list of items.
       #
@@ -284,20 +222,85 @@ module Primer
         end
       }
 
-      # Customizable content for the error message that appears when items are fetched for the first time. This message
-      # appears in place of the list of items.
-      # For more information, see the [documentation regarding SelectTreePanel error messaging](/components/SelectTreePanel#errorwarning).
-      renders_one :preload_error_content
-
       # Customizable content for the error message that appears when items are fetched as the result of a filter
       # operation. This message appears as a banner above the previously fetched list of items.
       # For more information, see the [documentation regarding SelectTreePanel error messaging](/components/SelectTreePanel#errorwarning).
       renders_one :error_content
 
+      def with_default_filter_modes
+        Primer::OpenProject::FilterableTreeView::DEFAULT_FILTER_MODES.each do |name, system_arguments|
+          with_filter_mode(name: name, **system_arguments)
+        end
+      end
+
+      def with_filter_mode(name:, **system_arguments)
+        system_arguments[:data] = merge_data(
+          system_arguments, {
+            data: { name: name }
+          }
+        )
+
+        @filter_mode_control.with_item(**system_arguments)
+      end
+
+      def with_sub_tree(**system_arguments, &block)
+        system_arguments[:select_variant] ||= :multiple
+
+        if system_arguments[:select_variant] != :multiple && system_arguments[:select_variant] != :single
+          raise ArgumentError, "FilterableTreeView only supports `:multiple` or `:single` as select_variant"
+        end
+
+        if system_arguments[:select_variant] == :single
+          # In single selection, the include sub-items checkbox and the SegmentedControl make no sense
+          @include_sub_items_check_box_arguments[:hidden] = true
+          @include_sub_items_check_box_arguments[:checked] = false
+          @filter_mode_control_arguments[:hidden] = true
+        end
+
+        @tree_view.with_sub_tree(
+          sub_tree_component_klass: Primer::OpenProject::FilterableTreeView::SubTree,
+          **system_arguments,
+          select_strategy: :self,
+          &block
+        )
+      end
+
+      def with_leaf(**system_arguments, &block)
+        system_arguments[:select_variant] ||= :multiple
+
+        if system_arguments[:select_variant] != :multiple && system_arguments[:select_variant] != :single
+          raise ArgumentError, "FilterableTreeView only supports `:multiple` or `:single` as select_variant"
+        end
+
+        if system_arguments[:select_variant] == :single
+          # In single selection, the include sub-items checkbox and the SegmentedControl make no sense
+          @include_sub_items_check_box_arguments[:hidden] = true
+          @include_sub_items_check_box_arguments[:checked] = false
+          @filter_mode_control_arguments[:hidden] = true
+        end
+
+        @tree_view.with_leaf(
+          **system_arguments,
+          &block
+        )
+      end
+
       private
 
       def before_render
         content
+
+        if @filter_mode_control.present? && @filter_mode_control.items.empty?
+          with_default_filter_modes
+        end
+      end
+
+      def hide_filter_mode_control?
+        @filter_mode_control_arguments[:hidden]
+      end
+
+      def hide_include_sub_items_check_box?
+        @include_sub_items_check_box_arguments[:hidden]
       end
 
       def required_form_arguments_given?

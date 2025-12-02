@@ -1,12 +1,14 @@
 import {getAnchoredPosition} from '@primer/behaviors'
 import {controller, target} from '@github/catalyst'
-import {IncludeFragmentElement} from '@github/include-fragment-element'
 import type {PrimerTextFieldElement} from 'app/lib/primer/forms/primer_text_field'
 import type {AnchorAlignment, AnchorSide} from '@primer/behaviors'
 import type {LiveRegionElement} from '@primer/live-region-element'
 import '@primer/live-region-element'
 import '@oddbird/popover-polyfill'
 import {observeMutationsUntilConditionMet} from '../utils'
+import {TreeViewElement} from '../alpha/tree_view/tree_view'
+import {TreeViewSubTreeNodeElement} from '../alpha/tree_view/tree_view_sub_tree_node_element'
+import {SegmentedControlElement} from '../alpha/segmented_control'
 
 type SelectVariant = 'none' | 'single' | 'multiple' | null
 type SelectedItem = {
@@ -15,24 +17,27 @@ type SelectedItem = {
   inputName: string | null | undefined
 }
 
+type NodeState = {
+  checked: boolean
+  disabled: boolean
+}
+
 const validSelectors = ['[role="option"]']
 const menuItemSelectors = validSelectors.join(',')
 const visibleMenuItemSelectors = validSelectors.map(selector => `:not([hidden]) > ${selector}`).join(',')
 
 export type SelectTreePanelItem = HTMLLIElement
 
-enum FetchStrategy {
-  REMOTE,
-  EVENTUALLY_LOCAL,
-  LOCAL,
-}
-
 enum ErrorStateType {
   BODY,
   BANNER,
 }
 
-export type FilterFn = (item: SelectTreePanelItem, query: string) => boolean
+// This function is expected to return the following values:
+// 1. No match - return null
+// 2. Match but no highlights - empty array (i.e. when showing all selected nodes but empty query string)
+// 3. Match with highlights - non-empty array of Range objects
+export type FilterFn = (node: HTMLElement, query: string, filterMode?: string) => Range[] | null
 
 const updateWhenVisible = (() => {
   const anchors = new Set<SelectTreePanelElement>()
@@ -66,27 +71,36 @@ const updateWhenVisible = (() => {
 
 @controller
 export class SelectTreePanelElement extends HTMLElement {
-  @target includeFragment: IncludeFragmentElement
   @target dialog: HTMLDialogElement
   @target filterInputTextField: HTMLInputElement
-  @target remoteInput: HTMLElement
+  @target filterModeControlList: HTMLElement
   @target list: HTMLElement
   @target noResults: HTMLElement
-  @target fragmentErrorElement: HTMLElement
   @target bannerErrorElement: HTMLElement
   @target bodySpinner: HTMLElement
   @target liveRegion: LiveRegionElement
+  @target includeSubItemsCheckBox: HTMLInputElement
 
-  filterFn?: FilterFn
+  #filterFn?: FilterFn
 
   #dialogIntersectionObserver: IntersectionObserver
   #abortController: AbortController
+  #stateMap: Map<TreeViewSubTreeNodeElement, Map<HTMLElement, NodeState>> = new Map()
+
   #originalLabel = ''
   #inputName = ''
   #selectedItems: Map<string, SelectedItem> = new Map()
   #loadingDelayTimeoutId: number | null = null
   #loadingAnnouncementTimeoutId: number | null = null
   #hasLoadedData = false
+
+  get filterModeControl(): SegmentedControlElement | null {
+    return this.filterModeControlList.closest('segmented-control')
+  }
+
+  get treeView(): TreeViewElement | null {
+    return this.list.querySelector('tree-view')
+  }
 
   get open(): boolean {
     return this.dialog.open
@@ -185,36 +199,19 @@ export class SelectTreePanelElement extends HTMLElement {
 
   connectedCallback() {
     const {signal} = (this.#abortController = new AbortController())
+
+    this.addEventListener('treeViewNodeChecked', this, {signal})
+    this.addEventListener('itemActivated', this, {signal})
+
     this.addEventListener('keydown', this, {signal})
     this.addEventListener('click', this, {signal})
     this.addEventListener('mousedown', this, {signal})
     this.addEventListener('input', this, {signal})
-    this.addEventListener('remote-input-success', this, {signal})
-    this.addEventListener('remote-input-error', this, {signal})
-    this.addEventListener('loadstart', this, {signal})
+
     this.#setDynamicLabel()
     this.#updateInput()
     this.#softDisableItems()
     updateWhenVisible(this)
-
-    observeMutationsUntilConditionMet(
-      this,
-      () => Boolean(this.remoteInput),
-      () => {
-        this.remoteInput.addEventListener('loadstart', this, {signal})
-        this.remoteInput.addEventListener('loadend', this, {signal})
-      },
-    )
-
-    observeMutationsUntilConditionMet(
-      this,
-      () => Boolean(this.includeFragment),
-      () => {
-        this.includeFragment.addEventListener('include-fragment-replaced', this, {signal})
-        this.includeFragment.addEventListener('error', this, {signal})
-        this.includeFragment.addEventListener('loadend', this, {signal})
-      },
-    )
 
     this.#dialogIntersectionObserver = new IntersectionObserver(entries => {
       for (const entry of entries) {
@@ -232,10 +229,7 @@ export class SelectTreePanelElement extends HTMLElement {
           this.dialog.setAttribute('data-ready', 'true')
 
           this.updateAnchorPosition()
-
-          if (this.#fetchStrategy === FetchStrategy.LOCAL) {
-            this.#updateItemVisibility()
-          }
+          //this.#updateItemVisibility()
         }
       }
     })
@@ -253,16 +247,14 @@ export class SelectTreePanelElement extends HTMLElement {
       },
     )
 
-    if (this.#fetchStrategy === FetchStrategy.LOCAL) {
-      observeMutationsUntilConditionMet(
-        this,
-        () => this.items.length > 0,
-        () => {
-          this.#updateItemVisibility()
-          this.#updateInput()
-        },
-      )
-    }
+    // observeMutationsUntilConditionMet(
+    //   this,
+    //   () => this.items.length > 0,
+    //   () => {
+    //     this.#updateItemVisibility()
+    //     this.#updateInput()
+    //   },
+    // )
   }
 
   disconnectedCallback() {
@@ -281,38 +273,34 @@ export class SelectTreePanelElement extends HTMLElement {
   // If there is an active item in single-select mode, set its tabindex to 0. Otherwise, set the
   // first visible item's tabindex to 0. All other items should have a tabindex of -1.
   #updateTabIndices() {
-    let setZeroTabIndex = false
+    const setZeroTabIndex = false
 
     if (this.selectVariant === 'single') {
-      for (const item of this.items) {
-        const itemContent = this.#getItemContent(item)
-        if (!itemContent) continue
-
-        if (!this.isItemHidden(item) && this.isItemChecked(item) && !setZeroTabIndex) {
-          itemContent.setAttribute('tabindex', '0')
-          setZeroTabIndex = true
-        } else {
-          itemContent.setAttribute('tabindex', '-1')
-        }
-
-        // <li> elements should not themselves be tabbable
-        item.removeAttribute('tabindex')
-      }
+      // for (const item of this.items) {
+      //   const itemContent = this.#getItemContent(item)
+      //   if (!itemContent) continue
+      //   if (!this.isItemHidden(item) && this.isItemChecked(item) && !setZeroTabIndex) {
+      //     itemContent.setAttribute('tabindex', '0')
+      //     setZeroTabIndex = true
+      //   } else {
+      //     itemContent.setAttribute('tabindex', '-1')
+      //   }
+      //   // <li> elements should not themselves be tabbable
+      //   item.removeAttribute('tabindex')
+      // }
     } else {
-      for (const item of this.items) {
-        const itemContent = this.#getItemContent(item)
-        if (!itemContent) continue
-
-        itemContent.setAttribute('tabindex', '-1')
-
-        // <li> elements should not themselves be tabbable
-        item.removeAttribute('tabindex')
-      }
+      //for (const item of this.items) {
+      // const itemContent = this.#getItemContent(item)
+      // if (!itemContent) continue
+      // itemContent.setAttribute('tabindex', '-1')
+      // // <li> elements should not themselves be tabbable
+      // item.removeAttribute('tabindex')
+      //}
     }
 
-    if (!setZeroTabIndex && this.#firstItem) {
-      this.#getItemContent(this.#firstItem)?.setAttribute('tabindex', '0')
-    }
+    // if (!setZeroTabIndex && this.#firstItem) {
+    //   this.#getItemContent(this.#firstItem)?.setAttribute('tabindex', '0')
+    // }
   }
 
   // returns true if activation was prevented
@@ -353,48 +341,6 @@ export class SelectTreePanelElement extends HTMLElement {
     return (event instanceof MouseEvent && event.type === 'click') || this.#isAnchorActivationViaSpace(event)
   }
 
-  #checkSelectedItems() {
-    for (const item of this.items) {
-      const itemContent = this.#getItemContent(item)
-      if (!itemContent) continue
-
-      const value = itemContent.getAttribute('data-value')
-
-      if (value) {
-        if (this.#selectedItems.has(value)) {
-          itemContent.setAttribute(this.ariaSelectionType, 'true')
-        }
-      }
-    }
-
-    this.#updateInput()
-  }
-
-  #addSelectedItem(item: SelectTreePanelItem) {
-    const itemContent = this.#getItemContent(item)
-    if (!itemContent) return
-
-    const value = itemContent.getAttribute('data-value')
-
-    if (value) {
-      this.#selectedItems.set(value, {
-        value,
-        label: itemContent.querySelector('.ActionListItem-label')?.textContent?.trim(),
-        inputName: itemContent.getAttribute('data-input-name'),
-      })
-    }
-  }
-
-  #removeSelectedItem(item: SelectTreePanelItem) {
-    const itemContent = this.#getItemContent(item)
-    if (!itemContent) return
-
-    const value = itemContent.getAttribute('data-value')
-    if (value) {
-      this.#selectedItems.delete(value)
-    }
-  }
-
   #setTextFieldLoadingSpinnerTimer() {
     if (!this.#filterInputTextFieldElement) return
     if (this.#loadingDelayTimeoutId) clearTimeout(this.#loadingDelayTimeoutId)
@@ -412,11 +358,6 @@ export class SelectTreePanelElement extends HTMLElement {
   handleEvent(event: Event) {
     if (event.target === this.filterInputTextField) {
       this.#handleSearchFieldEvent(event)
-      return
-    }
-
-    if (event.target === this.remoteInput) {
-      this.#handleRemoteInputEvent(event)
       return
     }
 
@@ -510,7 +451,7 @@ export class SelectTreePanelElement extends HTMLElement {
       // We then click it manually to navigate.
       if (this.#isAnchorActivationViaSpace(event)) {
         event.preventDefault()
-        this.#getItemContent(item)?.click()
+        //this.#getItemContent(item)?.click()
       }
 
       this.#handleItemActivated(item)
@@ -531,237 +472,338 @@ export class SelectTreePanelElement extends HTMLElement {
         this.hide()
       }
     }
+  }
 
-    // The include fragment will have been removed from the DOM by the time
-    // the include-fragment-replaced event has been dispatched, so we have to
-    // check for the type of the event target manually, since this.includeFragment
-    // will be null.
-    if (event.target instanceof IncludeFragmentElement) {
-      this.#handleIncludeFragmentEvent(event)
+  set filterFn(newFn: FilterFn) {
+    this.#filterFn = newFn
+  }
+
+  get filterFn(): FilterFn {
+    if (this.#filterFn) {
+      return this.#filterFn
+    } else {
+      return this.defaultFilterFn
     }
   }
 
-  #handleIncludeFragmentEvent(event: Event) {
-    switch (event.type) {
-      case 'include-fragment-replaced': {
-        this.#updateItemVisibility()
-        break
-      }
+  defaultFilterFn(node: HTMLElement, query: string, filterMode?: string): Range[] | null {
+    const ranges = []
 
-      case 'loadstart': {
-        this.#toggleIncludeFragmentElements(false)
-        break
-      }
+    if (query.length > 0) {
+      const lowercaseQuery = query.toLowerCase()
+      const treeWalker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT)
+      let currentNode = treeWalker.nextNode()
 
-      case 'loadend': {
-        this.#filterInputTextFieldElement?.hideLeadingSpinner()
-        this.dispatchEvent(new CustomEvent('loadend'))
-        break
-      }
+      while (currentNode) {
+        const lowercaseNodeText = currentNode.textContent?.toLocaleLowerCase() || ''
+        let startIndex = 0
 
-      case 'error': {
-        this.#toggleIncludeFragmentElements(true)
+        while (startIndex < lowercaseNodeText.length) {
+          const index = lowercaseNodeText.indexOf(lowercaseQuery, startIndex)
+          if (index === -1) break
 
-        const errorElement = this.fragmentErrorElement
-        // check if the errorElement is visible in the dom
-        if (errorElement && !errorElement.hasAttribute('hidden')) {
-          this.liveRegion.announceFromElement(errorElement, {politeness: 'assertive'})
+          const range = new Range()
+          range.setStart(currentNode, index)
+          range.setEnd(currentNode, index + lowercaseQuery.length)
+          ranges.push(range)
+
+          startIndex = index + lowercaseQuery.length
         }
-        throw new Error((event as CustomEvent).detail.error)
+
+        currentNode = treeWalker.nextNode()
       }
     }
-  }
 
-  #toggleIncludeFragmentElements(showError: boolean) {
-    for (const el of this.includeFragment.querySelectorAll('[data-show-on-error]')) {
-      if (el instanceof HTMLElement) el.hidden = !showError
+    if (ranges.length === 0 && query.length > 0) {
+      return null
     }
-    for (const el of this.includeFragment.querySelectorAll('[data-hide-on-error]')) {
-      if (el instanceof HTMLElement) el.hidden = showError
-    }
-  }
 
-  #handleRemoteInputEvent(event: Event) {
-    switch (event.type) {
-      case 'remote-input-success': {
-        this.#clearErrorState()
-        this.#updateItemVisibility()
-        this.#checkSelectedItems()
-        break
-      }
-
-      case 'remote-input-error': {
-        this.bodySpinner?.setAttribute('hidden', '')
-
-        if (this.includeFragment || this.visibleItems.length === 0) {
-          this.#setErrorState(ErrorStateType.BODY)
-        } else {
-          this.#setErrorState(ErrorStateType.BANNER)
+    switch (filterMode) {
+      case 'selected': {
+        // Only match nodes that have been checked
+        if (this.treeView?.getNodeCheckedValue(node) !== 'false') {
+          return ranges
         }
 
         break
       }
 
-      case 'loadstart': {
-        if (!this.#performFilteringLocally()) {
-          this.#clearErrorState()
-          this.bodySpinner?.removeAttribute('hidden')
-
-          if (this.bodySpinner) break
-          this.#setTextFieldLoadingSpinnerTimer()
-        }
-
-        break
-      }
-
-      case 'loadend': {
-        this.#filterInputTextFieldElement?.hideLeadingSpinner()
-        if (this.#loadingAnnouncementTimeoutId) clearTimeout(this.#loadingAnnouncementTimeoutId)
-        if (this.#loadingDelayTimeoutId) clearTimeout(this.#loadingDelayTimeoutId)
-        this.dispatchEvent(new CustomEvent('loadend'))
-        break
+      case 'all': {
+        return ranges
       }
     }
+
+    return null
   }
 
-  #defaultFilterFn(item: HTMLElement, query: string) {
-    const text = (item.getAttribute('data-filter-string') || item.textContent || '').toLowerCase()
-    return text.indexOf(query.toLowerCase()) > -1
+  #handleFilterModeEvent(event: Event) {
+    if (event.type !== 'itemActivated') return
+
+    this.#applyFilterOptions()
   }
 
   #handleSearchFieldEvent(event: Event) {
-    if (event.type === 'keydown') {
-      const key = (event as KeyboardEvent).key
-
-      if (key === 'Enter') {
-        const item = this.visibleItems[0] as HTMLLIElement | null
-
-        if (item) {
-          const itemContent = this.#getItemContent(item)
-          if (itemContent) itemContent.click()
-        }
-      } else if (key === 'ArrowDown') {
-        const item = (this.focusableItem || this.#getItemContent(this.visibleItems[0])) as HTMLLIElement
-
-        if (item) {
-          item.focus()
-          event.preventDefault()
-        }
-      } else if (key === 'Home') {
-        const item = this.visibleItems[0] as HTMLLIElement | null
-
-        if (item) {
-          const itemContent = this.#getItemContent(item)
-          if (itemContent) itemContent.focus()
-          event.preventDefault()
-        }
-      } else if (key === 'End') {
-        if (this.visibleItems.length > 0) {
-          const item = this.visibleItems[this.visibleItems.length - 1] as HTMLLIElement
-          const itemContent = this.#getItemContent(item)
-          if (itemContent) itemContent.focus()
-          event.preventDefault()
-        }
-      }
-    }
-
     if (event.type !== 'input') return
 
-    // remote-input-element does not trigger another loadstart event if a request is
-    // already in-flight, so we use the input event on the text field to reset the
-    // loading spinner timer instead
-    if (!this.bodySpinner && !this.#performFilteringLocally()) {
-      this.#setTextFieldLoadingSpinnerTimer()
-    }
+    this.#applyFilterOptions()
+  }
 
-    if (this.#fetchStrategy === FetchStrategy.LOCAL || this.#fetchStrategy === FetchStrategy.EVENTUALLY_LOCAL) {
-      if (this.includeFragment) {
-        this.includeFragment.refetch()
-        return
-      }
+  #handleIncludeSubItemsCheckBoxEvent(event: Event) {
+    if (!this.treeView) return
+    if (event.type !== 'input') return
 
-      this.#updateItemVisibility()
+    this.#applyFilterOptions()
+
+    if (this.includeSubItemsCheckBox.checked) {
+      this.#includeSubItems()
+    } else {
+      this.#restoreAllNodeStates()
     }
   }
 
-  #updateItemVisibility() {
-    if (!this.list) return
+  // Automatically checks all children of checked nodes, including leaf nodes and sub-trees. It does so
+  // by finding the set of shallowest checked sub-tree nodes, i.e. the set of checked sub-tree nodes with
+  // the lowest level value. It then saves their node state, disables them, and checks all their children.
+  // Rather than storing child node information for every checked sub-tree regardless of depth, finding
+  // the set of shallowest sub-tree nodes allows the component to store the minimum amount of node
+  // information and simplifies the process of restoring it later.
+  #includeSubItems() {
+    if (!this.treeView) return
 
-    let atLeastOneResult = false
+    for (const subTree of this.treeView.rootSubTreeNodes()) {
+      for (const checkedSubTree of this.eachShallowestCheckedSubTree(subTree)) {
+        this.#includeSubItemsUnder(checkedSubTree)
+      }
+    }
+  }
 
-    if (this.#performFilteringLocally()) {
-      const query = this.filterInputTextField?.value ?? ''
-      const filter = this.filterFn || this.#defaultFilterFn
+  // Records the state of all the nodes in the given sub-tree. Node state includes whether or not the
+  // node is checked, and whether or not it is disabled. Or at least, that's what it included when this
+  // comment was first written. Check the members of the NodeState type above for up-to-date info.
+  #includeSubItemsUnder(subTree: TreeViewSubTreeNodeElement) {
+    if (!this.treeView) return
 
-      for (const item of this.items) {
-        if (filter(item, query)) {
-          this.#showItem(item)
-          atLeastOneResult = true
+    const descendantStates: Map<HTMLElement, NodeState> = new Map()
+
+    for (const node of subTree.eachDescendantNode()) {
+      descendantStates.set(node as HTMLElement, {
+        checked: this.treeView.getNodeCheckedValue(node) === 'true',
+        disabled: this.treeView.getNodeDisabledValue(node),
+      })
+
+      this.treeView.setNodeCheckedValue(node, 'true')
+      this.treeView.setNodeDisabledValue(node, true)
+    }
+
+    this.#stateMap.set(subTree, descendantStates)
+  }
+
+  get filterMode(): string | null {
+    const current = this.filterModeControl?.current
+
+    if (current) {
+      return current.getAttribute('data-name')
+    } else {
+      return null
+    }
+  }
+
+  get queryString(): string {
+    return this.filterInputTextField.value
+  }
+
+  /* This function does quite a bit. It's responsible for showing and hiding nodes that match the filter
+   * criteria, disabling nodes under certain conditions, and rendering highlights for node text that
+   * matches the query string. The filter criteria are as follows:
+   *
+   * 1. A free-form query string from a text input field.
+   * 2. A SegmentedControl with two options:
+   *    1. The "Selected" option causes the component to only show checked nodes, provided they also
+   *       satisfy the other filter criteria described here.
+   *    2. The "All" option causes the component to show all nodes, provided they also satisfy the other
+   *       filter criteria described here.
+   *
+   * Whether or not a node matches is determined by a filter function with a `FilterFn` signature. The
+   * component defines a default filter function, but a user-defined one can also be provided. The filter
+   * function is expected to return an array of `Range` objects which #applyFilterOptions uses to highlight
+   * node text that matches the query string. The default filter function identifies matching node text by
+   * looking for an exact substring match, operating on a lowercased version of both the query string and
+   * the node text. For an exact description of the expected return values of the filter function, please
+   * see the FilterFn type above.
+   *
+   * It should be noted that the returned `Range` objects must have starting and ending values that refer
+   * to offsets inside the same text node. Not adhering to this rule may lead to undefined behavior.
+   *
+   * Applying the filter criteria can have the following effects on individual nodes:
+   *
+   * 1. Hidden: Nodes are hidden if:
+   *    1. The filter function returns null.
+   * 2. Disabled: Nodes are disabled if:
+   *    1. The node is a child of a checked parent and the "Include sub-items" check box is checked.
+   * 4. Expanded: Sub-tree nodes are expanded if:
+   *    1. For at least one of the node's children, including descendants, the filter function returns a
+   *       truthy value.
+   */
+  #applyFilterOptions() {
+    if (!this.treeView) return
+
+    this.#removeHighlights()
+
+    const query = this.queryString
+    const mode = this.filterMode || undefined
+    const generation = window.crypto.randomUUID()
+    const filterRangesCache: Map<Element, Range[] | null> = new Map()
+
+    const expandAncestors = (...ancestors: TreeViewSubTreeNodeElement[]) => {
+      for (const ancestor of ancestors) {
+        ancestor.expand()
+        ancestor.removeAttribute('hidden')
+        ancestor.setAttribute('data-generation', generation)
+
+        if (cachedFilterFn(ancestor.node, query, mode)) {
+          ancestor.node.removeAttribute('aria-disabled')
         } else {
-          this.#hideItem(item)
+          ancestor.node.setAttribute('aria-disabled', 'true')
         }
       }
-    } else {
-      atLeastOneResult = this.items.length > 0
     }
 
-    this.#updateTabIndices()
-    this.#maybeAnnounce()
+    // This function is called in the loop below for both leaf  nodes and sub-tree nodes to determine
+    // if they match, and subsequently whether or not to hide them. However, it serves a secondary purpose
+    // as well in that it remembers the range information returned by the filter function so it can be
+    // used to highlight matching ranges later.
+    const cachedFilterFn = (node: HTMLElement, queryStr: string, filterMode?: string): boolean => {
+      if (!filterRangesCache.has(node)) {
+        filterRangesCache.set(node, this.filterFn(node, queryStr, filterMode))
+      }
 
-    for (const item of this.items) {
-      const itemContent = this.#getItemContent(item)
-      if (!itemContent) continue
+      return filterRangesCache.get(node)! !== null
+    }
 
-      const value = itemContent.getAttribute('data-value')
-      if (this.#hasLoadedData) {
-        if (value && !this.#selectedItems.has(value)) {
-          itemContent.setAttribute(this.ariaSelectionType, 'false')
+    /* We iterate depth-first here in order to be able to examine the most deeply nested leaf nodes
+     * before their parents. This enables us to easily hide the parent if none of its children match.
+     * To handle expanding and collapsing ancestors, the algorithm iterates over the provided ancestor
+     * chain, expanding "upwards" to the root.
+     *
+     * Using this technique does mean it's possible to iterate over the same ancestor multiple times.
+     * For example, consider two nodes that share the same ancestor. Node A contains matching children,
+     * but node B does not. The algorithm below will visit node A first and expand it and all its
+     * ancestors. Next, the algorithm will visit node B and collapse all its ancestors. To avoid this,
+     * the algorithm attaches a random "generation ID" to each node visited. If the generation ID
+     * matches when visiting a particular node, we know that node has already been visited and should
+     * not be hidden or collapsed.
+     */
+    for (const [leafNodes, ancestors] of this.eachDescendantDepthFirst(this.list, 1, [])) {
+      const parent: TreeViewSubTreeNodeElement | undefined = ancestors[ancestors.length - 1]
+      let atLeastOneLeafMatches = false
+
+      for (const leafNode of leafNodes) {
+        if (cachedFilterFn(leafNode, query, mode)) {
+          leafNode.closest('li')?.removeAttribute('hidden')
+          atLeastOneLeafMatches = true
+        } else {
+          leafNode.closest('li')?.setAttribute('hidden', 'hidden')
         }
-      } else if (value && !this.#selectedItems.has(value) && this.isItemChecked(item)) {
-        this.#addSelectedItem(item)
+      }
+
+      if (atLeastOneLeafMatches) {
+        expandAncestors(...ancestors)
+      } else {
+        if (parent) {
+          if (cachedFilterFn(parent.node, query, mode)) {
+            // sub-tree matched, so expand ancestors
+            expandAncestors(...ancestors)
+          } else {
+            // this node has already been marked by the current generation and is therefore
+            // a shared ancestor - don't collapse or hide it
+            if (parent.getAttribute('data-generation') !== generation) {
+              parent.collapse()
+              parent.setAttribute('hidden', 'hidden')
+            }
+          }
+        }
       }
     }
 
-    this.#hasLoadedData = true
+    // convert range map into a 1-dimensional array with no nulls so it can be given to
+    // #applyHighlights (and therefore CSS.highlights.set) more easily
+    const allRanges = Array.from(filterRangesCache.values())
+      .flat()
+      .filter(r => r !== null)
 
-    if (!this.noResults) return
-
-    if (this.#inErrorState()) {
-      this.noResults.setAttribute('hidden', '')
-      return
-    }
-
-    if (atLeastOneResult) {
-      this.noResults.setAttribute('hidden', '')
-      // TODO can we change this to search for `@panelId-list`
-      this.list?.querySelector('.ActionListWrap')?.removeAttribute('hidden')
-    } else {
-      this.list?.querySelector('.ActionListWrap')?.setAttribute('hidden', '')
+    if (allRanges.length === 0 && query.length > 0) {
+      this.list.setAttribute('hidden', 'hidden')
       this.noResults.removeAttribute('hidden')
+    } else {
+      this.list.removeAttribute('hidden')
+      this.noResults.setAttribute('hidden', 'hidden')
+
+      this.#applyHighlights(allRanges)
+    }
+  }
+
+  #applyHighlights(ranges: Range[]) {
+    // Attempt to use the new-ish custom highlight API:
+    // https://developer.mozilla.org/en-US/docs/Web/API/CSS_Custom_Highlight_API
+    if (CSS.highlights) {
+      CSS.highlights.set('primer-filterable-tree-view-search-results', new Highlight(...ranges))
+    } else {
+      this.#applyManualHighlights(ranges)
+    }
+  }
+
+  #applyManualHighlights(ranges: Range[]) {
+    const textNode = ranges[0].startContainer
+    const parent = textNode.parentNode!
+    const originalText = textNode.textContent!
+    const fragments = []
+    let lastIndex = 0
+
+    for (const {startOffset, endOffset} of ranges) {
+      // text before the highlight
+      if (startOffset > lastIndex) {
+        fragments.push(document.createTextNode(originalText.slice(lastIndex, startOffset)))
+      }
+
+      // highlighted text
+      const mark = document.createElement('mark')
+      mark.textContent = originalText.slice(startOffset, endOffset)
+      fragments.push(mark)
+
+      lastIndex = endOffset
+    }
+
+    // remaining text after the last highlight
+    if (lastIndex < originalText.length) {
+      fragments.push(document.createTextNode(originalText.slice(lastIndex)))
+    }
+
+    // replace original text node with our text + <mark> elements
+    for (const frag of fragments.reverse()) {
+      parent.insertBefore(frag, textNode.nextSibling)
+    }
+
+    parent.removeChild(textNode)
+  }
+
+  #removeHighlights() {
+    // quick-and-dirty way of ignoring any existing <mark> elements and restoring
+    // the original text
+    for (const mark of this.querySelectorAll('mark')) {
+      if (!mark.parentElement) continue
+      mark.parentElement.replaceChildren(mark.parentElement.textContent!)
     }
   }
 
   #inErrorState(): boolean {
-    if (this.fragmentErrorElement && !this.fragmentErrorElement.hasAttribute('hidden')) {
-      return true
-    }
-
     if (!this.bannerErrorElement) return false
 
     return !this.bannerErrorElement.hasAttribute('hidden')
   }
 
   #setErrorState(type: ErrorStateType) {
-    let errorElement = this.fragmentErrorElement
-
-    if (type === ErrorStateType.BODY && this.fragmentErrorElement) {
-      this.fragmentErrorElement.removeAttribute('hidden')
-      this.bannerErrorElement.setAttribute('hidden', '')
-    } else {
-      errorElement = this.bannerErrorElement
-      this.bannerErrorElement?.removeAttribute('hidden')
-      this.fragmentErrorElement?.setAttribute('hidden', '')
-    }
+    const errorElement = this.bannerErrorElement
+    this.bannerErrorElement?.removeAttribute('hidden')
 
     // check if the errorElement is visible in the dom
     if (errorElement && !errorElement.hasAttribute('hidden')) {
@@ -771,45 +813,26 @@ export class SelectTreePanelElement extends HTMLElement {
   }
 
   #clearErrorState() {
-    this.fragmentErrorElement?.setAttribute('hidden', '')
     this.bannerErrorElement.setAttribute('hidden', '')
   }
 
   #maybeAnnounce() {
-    if (this.open && this.list) {
-      const items = this.visibleItems
-
-      if (items.length > 0) {
-        const instructions = 'tab for results'
-        this.liveRegion.announce(`${items.length} result${items.length === 1 ? '' : 's'} ${instructions}`)
-      } else {
-        const noResultsEl = this.noResults
-        if (noResultsEl) {
-          this.liveRegion.announceFromElement(noResultsEl)
-        }
-      }
-    }
-  }
-
-  get #fetchStrategy(): FetchStrategy {
-    if (!this.list) return FetchStrategy.REMOTE
-
-    switch (this.list.getAttribute('data-fetch-strategy')) {
-      case 'local':
-        return FetchStrategy.LOCAL
-      case 'eventually_local':
-        return FetchStrategy.EVENTUALLY_LOCAL
-      default:
-        return FetchStrategy.REMOTE
-    }
+    // if (this.open && this.list) {
+    //   const items = this.visibleItems
+    //   if (items.length > 0) {
+    //     const instructions = 'tab for results'
+    //     this.liveRegion.announce(`${items.length} result${items.length === 1 ? '' : 's'} ${instructions}`)
+    //   } else {
+    //     const noResultsEl = this.noResults
+    //     if (noResultsEl) {
+    //       this.liveRegion.announceFromElement(noResultsEl)
+    //     }
+    //   }
+    // }
   }
 
   get #filterInputTextFieldElement(): PrimerTextFieldElement | null {
     return this.filterInputTextField?.closest('primer-text-field') as PrimerTextFieldElement | null
-  }
-
-  #performFilteringLocally(): boolean {
-    return this.#fetchStrategy === FetchStrategy.LOCAL || this.#fetchStrategy === FetchStrategy.EVENTUALLY_LOCAL
   }
 
   #handleInvokerActivated(event: Event) {
@@ -826,12 +849,12 @@ export class SelectTreePanelElement extends HTMLElement {
   }
 
   #handleDialogItemActivated(event: Event, dialog: HTMLElement) {
-    this.querySelector<HTMLElement>('.ActionListWrap')!.style.display = 'none'
+    this.querySelector<HTMLElement>('.TreeViewRootUlStyles')!.style.display = 'none'
     const dialog_controller = new AbortController()
     const {signal} = dialog_controller
     const handleDialogClose = () => {
       dialog_controller.abort()
-      this.querySelector<HTMLElement>('.ActionListWrap')!.style.display = ''
+      this.querySelector<HTMLElement>('.TreeViewRootUlStyles')!.style.display = ''
       if (this.open) {
         this.hide()
       }
@@ -866,68 +889,67 @@ export class SelectTreePanelElement extends HTMLElement {
     // interfere with events fired by menu items whose behavior is specified outside the library.
     if (this.selectVariant !== 'multiple' && this.selectVariant !== 'single') return
 
-    const currentlyChecked = this.isItemChecked(item)
-    const checked = !currentlyChecked
+    //const currentlyChecked = this.isItemChecked(item)
+    //const checked = !currentlyChecked
 
-    const activationSuccess = this.dispatchEvent(
-      new CustomEvent('beforeItemActivated', {
-        bubbles: true,
-        cancelable: true,
-        detail: {
-          item,
-          checked,
-          value: this.#getItemContent(item)?.getAttribute('data-value'),
-        },
-      }),
-    )
+    // const activationSuccess = this.dispatchEvent(
+    //   new CustomEvent('beforeItemActivated', {
+    //     bubbles: true,
+    //     cancelable: true,
+    //     detail: {
+    //       item,
+    //       checked,
+    //       value: this.#getItemContent(item)?.getAttribute('data-value'),
+    //     },
+    //   }),
+    // )
 
-    if (!activationSuccess) return
+    // if (!activationSuccess) return
 
-    const itemContent = this.#getItemContent(item)
+    // const itemContent = this.#getItemContent(item)
 
-    if (this.selectVariant === 'single') {
-      // Don't check anything if we have an href
-      if (itemContent?.getAttribute('href')) return
+    // if (this.selectVariant === 'single') {
+    //   // Don't check anything if we have an href
+    //   if (itemContent?.getAttribute('href')) return
 
-      // disallow unchecking checked item in single-select mode
-      if (!currentlyChecked) {
-        for (const el of this.items) {
-          this.#getItemContent(el)?.setAttribute(this.ariaSelectionType, 'false')
-        }
+    //   // disallow unchecking checked item in single-select mode
+    //   if (!currentlyChecked) {
+    //     // for (const el of this.items) {
+    //     //   this.#getItemContent(el)?.setAttribute(this.ariaSelectionType, 'false')
+    //     // }
 
-        this.#selectedItems.clear()
+    //     this.#selectedItems.clear()
 
-        if (checked) {
-          this.#addSelectedItem(item)
-          itemContent?.setAttribute(this.ariaSelectionType, 'true')
-        }
+    //     if (checked) {
+    //       this.#addSelectedItem(item)
+    //       itemContent?.setAttribute(this.ariaSelectionType, 'true')
+    //     }
 
-        this.#setDynamicLabel()
-      }
-    } else {
-      // multi-select mode allows unchecking a checked item
-      itemContent?.setAttribute(this.ariaSelectionType, `${checked}`)
+    //     this.#setDynamicLabel()
+    //   }
+    // } else {
+    //   // multi-select mode allows unchecking a checked item
+    //   itemContent?.setAttribute(this.ariaSelectionType, `${checked}`)
 
-      if (checked) {
-        this.#addSelectedItem(item)
-      } else {
-        this.#removeSelectedItem(item)
-      }
-    }
+    //   if (checked) {
+    //     this.#addSelectedItem(item)
+    //   } else {
+    //     this.#removeSelectedItem(item)
+    //   }
 
     this.#updateInput()
     this.#updateTabIndices()
 
-    this.dispatchEvent(
-      new CustomEvent('itemActivated', {
-        bubbles: true,
-        detail: {
-          item,
-          checked,
-          value: this.#getItemContent(item)?.getAttribute('data-value'),
-        },
-      }),
-    )
+    // this.dispatchEvent(
+    //   new CustomEvent('itemActivated', {
+    //     bubbles: true,
+    //     detail: {
+    //       item,
+    //       checked,
+    //       value: this.#getItemContent(item)?.getAttribute('data-value'),
+    //     },
+    //   }),
+    // )
   }
 
   show() {
@@ -985,7 +1007,6 @@ export class SelectTreePanelElement extends HTMLElement {
       }
     } else if (this.selectVariant !== 'none') {
       // multiple select variant
-      const isRemoteInput = !!this.querySelector('[data-select-panel-inputs=true]')
       const inputList =
         this.querySelector('[data-select-panel-inputs=true]') ?? this.querySelector('[data-list-inputs=true]')
       if (!inputList) return
@@ -996,121 +1017,86 @@ export class SelectTreePanelElement extends HTMLElement {
         this.#inputName ||= (inputs[0] as HTMLInputElement).name
       }
 
-      for (const selectedItem of this.selectedItems) {
-        const newInput = document.createElement('input')
-        newInput.setAttribute(`${isRemoteInput ? 'data-select-panel-input' : 'data-list-input'}`, 'true')
-        newInput.type = 'hidden'
-        newInput.autocomplete = 'off'
-        newInput.name = selectedItem.inputName || this.#inputName
-        newInput.value = (selectedItem.value || selectedItem.label || '').trim()
+      // for (const selectedItem of this.selectedItems) {
+      //   const newInput = document.createElement('input')
+      //   newInput.setAttribute(`${isRemoteInput ? 'data-select-panel-input' : 'data-list-input'}`, 'true')
+      //   newInput.type = 'hidden'
+      //   newInput.autocomplete = 'off'
+      //   newInput.name = selectedItem.inputName || this.#inputName
+      //   newInput.value = (selectedItem.value || selectedItem.label || '').trim()
 
-        inputList.append(newInput)
-      }
+      //   inputList.append(newInput)
+      // }
 
-      for (const input of inputs) {
-        input.remove()
-      }
+      // for (const input of inputs) {
+      //   input.remove()
+      // }
     }
   }
 
-  get #firstItem(): SelectTreePanelItem | null {
-    return (this.querySelector(visibleMenuItemSelectors)?.parentElement || null) as SelectTreePanelItem | null
+  #restoreNodeState(subTree: TreeViewSubTreeNodeElement) {
+    if (!this.treeView) return
+    if (!this.#stateMap.has(subTree)) return
+
+    const descendantStates = this.#stateMap.get(subTree)!
+
+    for (const [element, state] of descendantStates.entries()) {
+      let node = element
+
+      if (element instanceof TreeViewSubTreeNodeElement) {
+        node = element.node
+      }
+
+      this.treeView.setNodeCheckedValue(node, state.checked ? 'true' : 'false')
+      this.treeView.setNodeDisabledValue(node, state.disabled)
+    }
+
+    // once node state has been restored, there's no reason to keep it around - it will be saved
+    // again if this sub-tree gets checked
+    this.#stateMap.delete(subTree)
   }
 
-  get visibleItems(): SelectTreePanelItem[] {
-    return Array.from(this.querySelectorAll(visibleMenuItemSelectors)).map(
-      element => element.parentElement! as SelectTreePanelItem,
+  // Revert all nodes back to their saved state, i.e. from before we automatically checked and disabled
+  // everything.
+  #restoreAllNodeStates() {
+    for (const subTree of this.#stateMap.keys()) {
+      this.#restoreNodeState(subTree)
+    }
+  }
+
+  // Iterates over the nodes in the given sub-tree in depth-first order, yielding a list of leaf nodes
+  // and an array of ancestor nodes. It uses the aria-level information attached to each node to determine
+  // the next level of the tree to visit.
+  *eachDescendantDepthFirst(
+    node: HTMLElement,
+    level: number,
+    ancestry: TreeViewSubTreeNodeElement[],
+  ): Generator<[NodeListOf<HTMLElement>, TreeViewSubTreeNodeElement[]]> {
+    for (const subTreeItem of node.querySelectorAll<HTMLElement>(
+      `[role=treeitem][data-node-type='sub-tree'][aria-level='${level}']`,
+    )) {
+      const subTree = subTreeItem.closest('tree-view-sub-tree-node') as TreeViewSubTreeNodeElement
+      yield* this.eachDescendantDepthFirst(subTree, level + 1, [...ancestry, subTree])
+    }
+
+    const leafNodes = node.querySelectorAll<HTMLElement>(
+      `[role=treeitem][data-node-type='leaf'][aria-level='${level}']`,
     )
+
+    yield [leafNodes, ancestry]
   }
 
-  get items(): SelectTreePanelItem[] {
-    return Array.from(this.querySelectorAll(menuItemSelectors)).map(
-      element => element.parentElement! as SelectTreePanelItem,
-    )
-  }
-
-  get focusableItem(): HTMLElement | undefined {
-    for (const item of this.items) {
-      const itemContent = this.#getItemContent(item)
-      if (!itemContent) continue
-      if (itemContent.getAttribute('tabindex') === '0') {
-        return itemContent
-      }
+  // Yields only the shallowest (i.e. lowest depth) sub-tree nodes that are checked, i.e. does not
+  // visit a sub-tree's children if that sub-tree is checked.
+  *eachShallowestCheckedSubTree(root: TreeViewSubTreeNodeElement): Generator<TreeViewSubTreeNodeElement> {
+    if (this.treeView?.getNodeCheckedValue(root.node) === 'true') {
+      yield root
+      return // do not descend further
     }
-  }
 
-  getItemById(itemId: string): SelectTreePanelItem | null {
-    return this.querySelector(`li[data-item-id="${itemId}"`)
-  }
-
-  isItemDisabled(item: SelectTreePanelItem | null): boolean {
-    if (item) {
-      return item.classList.contains('ActionListItem--disabled')
-    } else {
-      return false
+    for (const childSubTree of root.eachDirectDescendantSubTreeNode()) {
+      yield* this.eachShallowestCheckedSubTree(childSubTree)
     }
-  }
-
-  disableItem(item: SelectTreePanelItem | null) {
-    if (item) {
-      item.classList.add('ActionListItem--disabled')
-      this.#getItemContent(item)!.setAttribute('aria-disabled', 'true')
-    }
-  }
-
-  enableItem(item: SelectTreePanelItem | null) {
-    if (item) {
-      item.classList.remove('ActionListItem--disabled')
-      this.#getItemContent(item)!.removeAttribute('aria-disabled')
-    }
-  }
-
-  isItemHidden(item: SelectTreePanelItem | null): boolean {
-    if (item) {
-      return item.hasAttribute('hidden')
-    } else {
-      return false
-    }
-  }
-
-  #hideItem(item: SelectTreePanelItem | null) {
-    if (item) {
-      item.setAttribute('hidden', 'hidden')
-    }
-  }
-
-  #showItem(item: SelectTreePanelItem | null) {
-    if (item) {
-      item.removeAttribute('hidden')
-    }
-  }
-
-  isItemChecked(item: SelectTreePanelItem | null) {
-    if (item) {
-      return this.#getItemContent(item)!.getAttribute(this.ariaSelectionType) === 'true'
-    } else {
-      return false
-    }
-  }
-
-  checkItem(item: SelectTreePanelItem | null) {
-    if (item && (this.selectVariant === 'single' || this.selectVariant === 'multiple')) {
-      if (!this.isItemChecked(item)) {
-        this.#handleItemActivated(item)
-      }
-    }
-  }
-
-  uncheckItem(item: SelectTreePanelItem | null) {
-    if (item && (this.selectVariant === 'single' || this.selectVariant === 'multiple')) {
-      if (this.isItemChecked(item)) {
-        this.#handleItemActivated(item)
-      }
-    }
-  }
-
-  #getItemContent(item: SelectTreePanelItem): HTMLElement | null {
-    return item.querySelector('.ActionListContent')
   }
 }
 
