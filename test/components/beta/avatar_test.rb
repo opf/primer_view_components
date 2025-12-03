@@ -127,6 +127,130 @@ class PrimerBetaAvatarTest < Minitest::Test
     end
   end
 
+  def test_renders_svg_fallback_when_src_is_nil
+    render_inline(Primer::Beta::Avatar.new(src: nil, alt: "OpenProject Admin"))
+
+    assert_selector("img.avatar[src^='data:image/svg+xml;base64,']")
+  end
+
+  def test_renders_svg_fallback_when_src_is_blank
+    render_inline(Primer::Beta::Avatar.new(src: "", alt: "OpenProject Admin"))
+
+    assert_selector("img.avatar[src^='data:image/svg+xml;base64,']")
+  end
+
+  def test_fallback_generates_initials_from_full_name
+    render_inline(Primer::Beta::Avatar.new(alt: "OpenProject Admin"))
+
+    # Decode the base64 SVG and check it contains "OA"
+    img = page.find("img.avatar")
+    svg_data = img["src"].sub("data:image/svg+xml;base64,", "")
+    svg_content = Base64.decode64(svg_data)
+
+    assert_includes(svg_content, "OA")
+  end
+
+  def test_fallback_generates_single_initial_from_single_name
+    render_inline(Primer::Beta::Avatar.new(alt: "John"))
+
+    img = page.find("img.avatar")
+    svg_data = img["src"].sub("data:image/svg+xml;base64,", "")
+    svg_content = Base64.decode64(svg_data)
+
+    # Check for "J" in the text element (accounting for whitespace)
+    assert_match(/<text[^>]*>\s*J\s*<\/text>/, svg_content)
+  end
+
+  def test_fallback_generates_consistent_color_with_unique_id
+    # Generate SVG twice with same parameters
+    component1 = Primer::Beta::Avatar.new(alt: "Test User", unique_id: 123)
+    component2 = Primer::Beta::Avatar.new(alt: "Test User", unique_id: 123)
+
+    render_inline(component1)
+    svg1 = page.find("img.avatar")["src"]
+
+    # Re-render with new component
+    render_inline(component2)
+    svg2 = page.find("img.avatar")["src"]
+
+    # SVG data should be identical
+    assert_equal(svg1, svg2)
+  end
+
+  def test_fallback_generates_different_colors_for_different_unique_ids
+    # Generate SVGs with different unique_ids
+    component1 = Primer::Beta::Avatar.new(alt: "Test User", unique_id: 123)
+    component2 = Primer::Beta::Avatar.new(alt: "Test User", unique_id: 456)
+
+    render_inline(component1)
+    svg1 = page.find("img.avatar")["src"]
+
+    # Re-render with different unique_id
+    render_inline(component2)
+    svg2 = page.find("img.avatar")["src"]
+
+    # SVG data should be different (different colors)
+    refute_equal(svg1, svg2)
+  end
+
+  def test_fallback_respects_size_parameter
+    render_inline(Primer::Beta::Avatar.new(alt: "Test User", size: 40))
+
+    img = page.find("img.avatar")
+    svg_data = img["src"].sub("data:image/svg+xml;base64,", "")
+    svg_content = Base64.decode64(svg_data)
+
+    # Check SVG has correct dimensions
+    assert_includes(svg_content, 'width="40"')
+    assert_includes(svg_content, 'height="40"')
+  end
+
+  def test_fallback_respects_circle_shape
+    render_inline(Primer::Beta::Avatar.new(alt: "Test User", shape: :circle, size: 20))
+
+    img = page.find("img.avatar")
+    svg_data = img["src"].sub("data:image/svg+xml;base64,", "")
+    svg_content = Base64.decode64(svg_data)
+
+    # Circle should have rx="10" (50% of size)
+    assert_includes(svg_content, 'rx="10')
+  end
+
+  def test_fallback_respects_square_shape
+    render_inline(Primer::Beta::Avatar.new(alt: "Test User", shape: :square, size: 20))
+
+    img = page.find("img.avatar")
+    svg_data = img["src"].sub("data:image/svg+xml;base64,", "")
+    svg_content = Base64.decode64(svg_data)
+
+    # Square should have smaller border radius
+    assert_includes(svg_content, 'rx="2.5"')
+  end
+
+  def test_fallback_with_href_wrapper
+    render_inline(Primer::Beta::Avatar.new(alt: "Test User", href: "#test"))
+
+    assert_selector("a.avatar[href='#test']") do
+      assert_selector("img[src^='data:image/svg+xml;base64,']")
+    end
+  end
+
+  def test_raises_when_both_src_and_alt_are_missing
+    error = assert_raises(ArgumentError) do
+      render_inline(Primer::Beta::Avatar.new(src: nil, alt: nil))
+    end
+
+    assert_includes(error.message, "`src` or `alt` is required")
+  end
+
+  def test_raises_when_both_src_and_alt_are_blank
+    error = assert_raises(ArgumentError) do
+      render_inline(Primer::Beta::Avatar.new(src: "", alt: ""))
+    end
+
+    assert_includes(error.message, "`src` or `alt` is required")
+  end
+
   def test_status
     assert_component_state(Primer::Beta::Avatar, :beta)
   end
