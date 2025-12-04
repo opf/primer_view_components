@@ -99,7 +99,7 @@ module Primer
       # @label Fallback default
       # @snapshot
       def fallback_default
-        render(Primer::Beta::Avatar.new(alt: "OpenProject Admin", unique_id: 1))
+        render(Primer::Beta::Avatar.new(alt: "OpenProject Admin", unique_id: 4))
       end
 
       # @label Fallback single name

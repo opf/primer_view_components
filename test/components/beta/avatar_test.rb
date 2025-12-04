@@ -251,6 +251,23 @@ class PrimerBetaAvatarTest < Minitest::Test
     assert_includes(error.message, "`src` or `alt` is required")
   end
 
+  def test_fallback_wrapped_in_catalyst_controller
+    render_inline(Primer::Beta::Avatar.new(src: nil, alt: "Test User", unique_id: 123))
+
+    # Should be wrapped in avatar-fallback element with data attributes
+    assert_selector("avatar-fallback[data-unique-id='123'][data-alt-text='Test User']") do
+      assert_selector("img.avatar[src^='data:image/svg+xml']")
+    end
+  end
+
+  def test_real_image_not_wrapped_in_catalyst_controller
+    render_inline(Primer::Beta::Avatar.new(src: "https://example.com/avatar.png", alt: "Test"))
+
+    # Real images should NOT be wrapped
+    refute_selector("avatar-fallback")
+    assert_selector("img.avatar[src='https://example.com/avatar.png']")
+  end
+
   def test_status
     assert_component_state(Primer::Beta::Avatar, :beta)
   end

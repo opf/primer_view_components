@@ -62,19 +62,33 @@ module Primer
         @system_arguments[:classes] = class_names(
           system_arguments[:classes],
           "avatar",
-          "avatar-small" => size < SMALL_THRESHOLD,
-          "circle" => shape == DEFAULT_SHAPE,
+          "avatar-small" => @size < SMALL_THRESHOLD,
+          "circle" => @shape == DEFAULT_SHAPE,
           "lh-0" => href # Addresses an overflow issue with linked avatars
         )
       end
 
       def call
-        if @href
-          render(Primer::Beta::Link.new(href: @href, classes: @system_arguments[:classes])) do
-            render(Primer::BaseComponent.new(**@system_arguments.except(:classes))) { content }
+        avatar_element =
+          if @href
+            render(Primer::Beta::Link.new(href: @href, classes: @system_arguments[:classes])) do
+              render(Primer::BaseComponent.new(**@system_arguments.except(:classes))) { content }
+            end
+          else
+            render(Primer::BaseComponent.new(**@system_arguments)) { content }
           end
+
+        # Wrap in Catalyst controller for client-side color correction (only for fallback SVGs)
+        if @system_arguments[:src]&.start_with?("data:image/svg+xml")
+          render(Primer::BaseComponent.new(
+            tag: :"avatar-fallback",
+            data: {
+              unique_id: @unique_id,
+              alt_text: @alt
+            }
+          )) { avatar_element }
         else
-          render(Primer::BaseComponent.new(**@system_arguments)) { content }
+          avatar_element
         end
       end
 
@@ -129,6 +143,15 @@ module Primer
         "hsl(#{value_hash(text)}, 50%, 30%)"
       end
 
+      # Mimics OP Core's string hash function to ensure consistent color generation
+      #
+      # Note: Due to differences in integer overflow handling between JavaScript and Ruby,
+      #  the generated hash values differ, hence the color correction in the TS component.
+      #
+      # @see https://github.com/opf/openproject/blob/1b6eb3f9e45c3bdb05ce49d2cbe92995b87b4df5/frontend/src/app/shared/components/colors/colors.service.ts#L19-L26
+      #
+      # @param value [String] The input string
+      # @return [Integer] A hash value between 0 and 359
       def value_hash(value)
         return 0 if value.blank?
 
