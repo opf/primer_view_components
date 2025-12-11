@@ -20,6 +20,7 @@ module Primer
         )
 
         wrap_classes = [
+          "FormControl-input-baseWrap",
           "FormControl-input-wrap",
           INPUT_WRAP_SIZE[input.size],
           { "FormControl-input-wrap--trailingAction": @input.show_clear_button? },
