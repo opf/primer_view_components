@@ -4,10 +4,6 @@ on:
   release:
     types: [published]
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 permissions:
   id-token: write # Required for OIDC
   contents: read
@@ -19,7 +15,7 @@ jobs:
     if: ${{ github.event_name == 'release' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -57,7 +53,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           # This makes Actions fetch all Git history so that Changesets can generate changelogs with the correct commits
           fetch-depth: 0
@@ -92,7 +88,7 @@ jobs:
   release-canary:
     name: Canary
     if: ${{ github.repository == 'opf/primer_view_components' && github.ref_name != 'main' && github.ref_name != 'changeset-release/main' && github.event_name == 'push' }}
-    uses: primer/.github/.github/workflows/release_canary.yml@v2.4.0
+    uses: ./.github/workflows/release_canary.yml
     with:
       install: npm i
     secrets:
@@ -101,6 +97,6 @@ jobs:
   release-candidate:
     name: Candidate
     if: ${{ github.repository == 'opf/primer_view_components' && github.ref_name == 'changeset-release/main' && github.event_name == 'push' }}
-    uses: primer/.github/.github/workflows/release_candidate.yml@v2.4.0
+    uses: ./.github/workflows/release_candidate.yml
     secrets:
       gh_token: ${{ secrets.GITHUB_TOKEN }}
