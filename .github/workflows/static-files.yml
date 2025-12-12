@@ -1,6 +1,7 @@
 name: Generate static files
 
 on:
+  workflow_dispatch:
   push:
 
 jobs:
