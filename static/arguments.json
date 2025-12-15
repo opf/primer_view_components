@@ -4032,6 +4032,12 @@
         "description": "The URL to link to. If used, component will be wrapped by an `<a>` tag."
       },
       {
+        "name": "tooltip",
+        "type": "String",
+        "default": "`nil`",
+        "description": "Tooltip text to display on hover when href is provided."
+      },
+      {
         "name": "system_arguments",
         "type": "Hash",
         "default": "N/A",
@@ -4064,6 +4070,12 @@
         "type": "Boolean",
         "default": "`false`",
         "description": "Whether to add a tooltip to the stack or not."
+      },
+      {
+        "name": "disable_expand",
+        "type": "Boolean",
+        "default": "`false`",
+        "description": "Whether to disable the expand behavior on hover. If true, avatars will not expand."
       },
       {
         "name": "body_arguments",

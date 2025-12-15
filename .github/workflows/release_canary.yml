@@ -1,18 +1,64 @@
 name: Release
+
 on:
-  push:
-    branches-ignore:
-      - 'main'
-      - 'dependabot/**'
-      - 'changeset-release/**'
+  workflow_call:
+    inputs:
+      install:
+        type: string
+        required: false
+        default: npm ci
+      node_version:
+        type: number
+        required: false
+        default: 24
+    secrets:
+      gh_token:
+        required: true
 
 jobs:
   release-canary:
-    name: npm
-    if: ${{ github.repository == 'opf/primer_view_components' }}
-    uses: primer/.github/.github/workflows/release_canary.yml@v2.2.1
-    with:
-      install: npm i
-    secrets:
-      gh_token: ${{ secrets.GITHUB_TOKEN }}
-      npm_token: ${{ secrets.NPM_AUTH_TOKEN_SHARED }}
+    name: Canary
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          # This makes Actions fetch all Git history so that Changesets can generate changelogs with the correct commits
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ inputs.node_version }}
+
+      - name: Install dependencies
+        run: ${{ inputs.install }}
+
+      - name: Build
+        run: npm run build --if-present
+
+      - name: Publish canary release
+        run: |
+          echo "$( jq '.version = "0.0.0"' package.json )" > package.json
+          echo -e "---\n$( jq .name package.json ): patch\n---\n\nFake entry to force publishing" > .changeset/force-snapshot-release.md
+          npx changeset version --snapshot
+          npx changeset publish --tag canary
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+
+      - name: Output canary version
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const package = require(`${process.env.GITHUB_WORKSPACE}/package.json`)
+            github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
+              state: 'success',
+              context: `Published ${package.name}`,
+              description: package.version,
+              target_url: `https://unpkg.com/${package.name}@${package.version}/`
+            })
+      - name: Upload Versions
+        uses: ./.github/actions/upload-versions
