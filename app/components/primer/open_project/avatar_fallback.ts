@@ -1,4 +1,4 @@
-import { attr, controller } from '@github/catalyst'
+import {attr, controller} from '@github/catalyst'
 
 @controller
 export class AvatarFallbackElement extends HTMLElement {
@@ -6,10 +6,7 @@ export class AvatarFallbackElement extends HTMLElement {
   @attr altText = ''
 
   connectedCallback() {
-    if (!this.uniqueId || !this.altText) {
-      console.warn('AvatarFallbackElement: uniqueId and altText attributes are required for proper fallback rendering')
-      return
-    }
+    if (!this.uniqueId || !this.altText) return
 
     const fallbackSvg = this.querySelector('svg[role="img"]')
     if (!fallbackSvg) return
@@ -69,5 +66,3 @@ export class AvatarFallbackElement extends HTMLElement {
     return hash % 360
   }
 }
-
-// Custom element registration is handled automatically by the @controller decorator
