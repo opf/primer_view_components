@@ -11,47 +11,16 @@ export class AvatarFallbackElement extends HTMLElement {
     const fallbackSvg = this.querySelector('svg[role="img"]')
     if (!fallbackSvg) return
 
-    // Extract initials from alt text
-    const initials = this.extractInitials(this.altText)
-
     // Generate consistent color based on uniqueId and altText (hash must match OP Core)
     const text = `${this.uniqueId}${this.altText}`
     const hue = this.valueHash(text)
     const color = `hsl(${hue}, 50%, 30%)`
 
-    // Set background color on rect element and initials on text element
+    // Set background color on rect element
     const rectElement = fallbackSvg.querySelector('rect')
-    const textElement = fallbackSvg.querySelector('text')
-
     if (rectElement) {
       rectElement.setAttribute('fill', color)
     }
-
-    if (textElement) {
-      textElement.textContent = initials
-    }
-  }
-
-  /*
-   * Extracts initials from a name string (first letter + last letter of last word)
-   * @param name - The name to extract initials from
-   * @returns The initials (1-2 characters)
-   */
-  private extractInitials(name: string): string {
-    if (!name) return ''
-
-    const trimmed = name.trim()
-    if (!trimmed) return ''
-
-    const first = trimmed.charAt(0).toUpperCase()
-
-    const lastSpace = trimmed.lastIndexOf(' ')
-    if (lastSpace > 0 && lastSpace < trimmed.length - 1) {
-      const last = trimmed.charAt(lastSpace + 1).toUpperCase()
-      return `${first}${last}`
-    }
-
-    return first
   }
 
   /*

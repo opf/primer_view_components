@@ -5,9 +5,10 @@ module Primer
     # OpenProject-specific Avatar component that extends Primer::Beta::Avatar
     # to support fallback rendering with initials when no image source is provided.
     #
-    # When `src` is nil, this component renders a minimal SVG placeholder that is
-    # enhanced client-side by the AvatarFallbackElement web component to display
-    # initials with a consistent color based on the user's unique_id.
+    # When `src` is nil, this component renders an SVG with initials extracted from
+    # the alt text. The AvatarFallbackElement web component then enhances it client-side
+    # by applying a consistent background color based on the user's unique_id (using the
+    # same hash function as OP Core for consistency).
     #
     # This component follows the "extension over mutation" pattern - it extends
     # Primer::Beta::Avatar without modifying its interface, ensuring compatibility
@@ -73,14 +74,33 @@ module Primer
         )
       end
 
+      def extract_initials(name)
+        return "" if name.blank?
+
+        chars = name.chars
+        first = chars[0]&.upcase || ""
+
+        last_space = name.rindex(" ")
+        if last_space && last_space < name.length - 1
+          last = name[last_space + 1]&.upcase || ""
+          "#{first}#{last}"
+        else
+          first
+        end
+      end
+
       def render_fallback
+        initials = extract_initials(@alt)
+
         svg_content = content_tag(
           :svg,
           safe_join([
-            tag.rect(width: "100%", height: "100%", fill: "currentColor"),
+            # Use a neutral dark gray as default to minimize flicker in both light/dark modes
+            # JS will replace with the hashed color (hsl(hue, 50%, 30%))
+            tag.rect(width: "100%", height: "100%", fill: "hsl(0, 0%, 35%)"),
             content_tag(
               :text,
-              nil,
+              initials,
               x: "50%",
               y: "50%",
               "text-anchor": "middle",
