@@ -1,0 +1,14 @@
+/* Fallback avatar styling for div-based avatars */
+div.avatar[role="img"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+  line-height: 1;
+  user-select: none;
+  text-transform: uppercase;
+  /* Font size is calculated in Ruby as 45% of avatar size (min 8px) and set via inline style */
+  /* Background color is set client-side by avatar-fallback element based on hash */
+}

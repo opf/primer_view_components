@@ -97,25 +97,6 @@ module Primer
           component.with_avatar(src: Primer::ExampleImage::BASE64_SRC, alt: "@kittenuser", href: "primer.style")
         end
       end
-
-      # @label With fallback avatars
-      # @snapshot
-      def with_fallback_avatars
-        render(Primer::Beta::AvatarStack.new) do |component|
-          component.with_avatar(src: nil, alt: "Alice Johnson", unique_id: 1)
-          component.with_avatar(src: nil, alt: "Bob Smith", unique_id: 2)
-          component.with_avatar(src: nil, alt: "Charlie Brown", unique_id: 3)
-        end
-      end
-
-      # @label Mixed (image and fallback)
-      def mixed_avatars
-        render(Primer::Beta::AvatarStack.new) do |component|
-          component.with_avatar(src: Primer::ExampleImage::BASE64_SRC, alt: "@kittenuser")
-          component.with_avatar(src: nil, alt: "Alice Johnson", unique_id: 10)
-          component.with_avatar(src: nil, alt: "Bob Smith", unique_id: 20)
-        end
-      end
       #
       # @!endgroup
     end

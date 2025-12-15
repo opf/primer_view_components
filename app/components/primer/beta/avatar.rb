@@ -27,154 +27,38 @@ module Primer
 
       SIZE_OPTIONS = [16, DEFAULT_SIZE, SMALL_THRESHOLD, 32, 40, 48, 64, 80].freeze
 
-      # @see
-      #   - https://primer.style/foundations/typography/
-      #   - https://github.com/primer/css/blob/main/src/support/variables/typography.scss
-      FONT_STACK = "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'"
-
-      # @param src [String] The source url of the avatar image. If nil/blank, generates an SVG with initials from alt text.
-      # @param alt [String] Passed through to alt on img tag. Used to generate initials when src is nil/blank.
+      # @param src [String] The source url of the avatar image.
+      # @param alt [String] Passed through to alt on img tag.
       # @param size [Integer] <%= one_of(Primer::Beta::Avatar::SIZE_OPTIONS) %>
       # @param shape [Symbol] Shape of the avatar. <%= one_of(Primer::Beta::Avatar::SHAPE_OPTIONS) %>
       # @param href [String] The URL to link to. If used, component will be wrapped by an `<a>` tag.
-      # @param unique_id [String, Integer] Optional unique identifier for generating consistent avatar colors across renders.
       # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
-      def initialize(src: nil, alt: nil, size: DEFAULT_SIZE, shape: DEFAULT_SHAPE, href: nil, unique_id: nil, **system_arguments)
+      def initialize(src:, alt: nil, size: DEFAULT_SIZE, shape: DEFAULT_SHAPE, href: nil, **system_arguments)
         @href = href
-        @unique_id = unique_id
-        @shape = fetch_or_fallback(SHAPE_OPTIONS, shape, DEFAULT_SHAPE)
-        @alt = alt
-        @size = fetch_or_fallback(SIZE_OPTIONS, size, DEFAULT_SIZE)
-
-        # Validate that either src or alt is provided
-        validate_src_or_alt(src, alt)
-
         @system_arguments = deny_tag_argument(**system_arguments)
         @system_arguments[:tag] = :img
+        @system_arguments[:src] = src
         @system_arguments[:alt] = alt
-        @system_arguments[:size] = @size
-        @system_arguments[:height] = @size
-        @system_arguments[:width] = @size
-
-        # Generate SVG fallback if src is nil/blank (must happen after @size is set)
-        @system_arguments[:src] = src.presence || generate_fallback_svg
+        @system_arguments[:size] = fetch_or_fallback(SIZE_OPTIONS, size, DEFAULT_SIZE)
+        @system_arguments[:height] = @system_arguments[:size]
+        @system_arguments[:width] = @system_arguments[:size]
 
         @system_arguments[:classes] = class_names(
           system_arguments[:classes],
           "avatar",
-          "avatar-small" => @size < SMALL_THRESHOLD,
-          "circle" => @shape == DEFAULT_SHAPE,
+          "avatar-small" => size < SMALL_THRESHOLD,
+          "circle" => shape == DEFAULT_SHAPE,
           "lh-0" => href # Addresses an overflow issue with linked avatars
         )
       end
 
       def call
-        avatar_element =
-          if @href
-            render(Primer::Beta::Link.new(href: @href, classes: @system_arguments[:classes])) do
-              render(Primer::BaseComponent.new(**@system_arguments.except(:classes))) { content }
-            end
-          else
-            render(Primer::BaseComponent.new(**@system_arguments)) { content }
+        if @href
+          render(Primer::Beta::Link.new(href: @href, classes: @system_arguments[:classes])) do
+            render(Primer::BaseComponent.new(**@system_arguments.except(:classes))) { content }
           end
-
-        # Wrap the avatar in an <avatar-fallback> custom element if the source
-        # is an SVG data URI (for client-side color correction)
-        if @system_arguments[:src]&.start_with?("data:image/svg+xml")
-          render(Primer::BaseComponent.new(
-            tag: :"avatar-fallback",
-            data: {
-              unique_id: @unique_id,
-              alt_text: @alt
-            }
-          )) { avatar_element }
         else
-          avatar_element
-        end
-      end
-
-      private
-
-      def validate_src_or_alt(src, alt)
-        return if src.present? || alt.present?
-
-        raise ArgumentError, "`src` or `alt` is required." unless Rails.env.production?
-      end
-
-      def generate_fallback_svg
-        require "base64"
-        require "cgi"
-
-        initials = extract_initials(@alt)
-        color = generate_avatar_color
-        font_size = calculate_font_size
-        radius = calculate_border_radius
-
-        svg = <<~SVG.strip
-          <svg xmlns="http://www.w3.org/2000/svg" width="#{@size}" height="#{@size}" viewBox="0 0 #{@size} #{@size}">
-            <rect width="#{@size}" height="#{@size}" fill="#{color}" rx="#{radius}" ry="#{radius}"/>
-            <text x="50%" y="50%" text-anchor="middle" dy="0.35em" fill="white" font-size="#{font_size}" font-weight="600" font-family="#{FONT_STACK}">
-              #{CGI.escapeHTML(initials)}
-            </text>
-          </svg>
-        SVG
-
-        "data:image/svg+xml;base64,#{Base64.strict_encode64(svg)}"
-      end
-
-      def extract_initials(name)
-        return "" if name.blank?
-
-        chars = name.chars
-        first = chars[0]&.upcase || ""
-
-        last_space = name.rindex(" ")
-        if last_space && last_space < name.length - 1
-          last = name[last_space + 1]&.upcase || ""
-          "#{first}#{last}"
-        else
-          first
-        end
-      end
-
-      def generate_avatar_color
-        # Generate consistent color based on unique_id and name
-        # Works for both light and dark themes with good contrast
-        text = [@unique_id, @alt].compact.join("")
-        "hsl(#{value_hash(text)}, 50%, 30%)"
-      end
-
-      # Mimics OP Core's string hash function to ensure consistent color generation
-      #
-      # Note: Due to differences in integer overflow handling between JavaScript and Ruby,
-      #  the generated hash values differ, hence the color correction in the TS component.
-      #
-      # @see AvatarFallbackElement#valueHash in app/components/primer/beta/avatar_fallback.ts
-      #
-      # @param value [String] The input string
-      # @return [Integer] A hash value between 0 and 359
-      def value_hash(value)
-        return 0 if value.blank?
-
-        hash = 0
-        value.to_s.each_char do |char|
-          hash = char.ord + ((hash << 5) - hash)
-        end
-        hash % 360
-      end
-
-      def calculate_font_size
-        # Font size is 45% of avatar size for good readability, with a minimum of 8px
-        [(@size * 0.45).round, 8].max
-      end
-
-      def calculate_border_radius
-        if @shape == DEFAULT_SHAPE
-          # Circle: 50% border radius
-          @size / 2.0
-        else
-          # Square: Use Primer's small border radius (approximately 6px equivalent)
-          [@size * 0.125, 6].min
+          render(Primer::BaseComponent.new(**@system_arguments)) { content }
         end
       end
     end

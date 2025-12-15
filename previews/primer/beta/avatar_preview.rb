@@ -93,43 +93,6 @@ module Primer
       end
       #
       # @!endgroup
-
-      # @!group Fallback (SVG with initials)
-      #
-      # @label Fallback default
-      # @snapshot
-      def fallback_default
-        render(Primer::Beta::Avatar.new(alt: "OpenProject Admin", unique_id: 4))
-      end
-
-      # @label Fallback single name
-      # @snapshot
-      def fallback_single_name
-        render(Primer::Beta::Avatar.new(alt: "John", unique_id: 2))
-      end
-
-      # @label Fallback multiple users
-      def fallback_multiple
-        render_with_template(locals: {})
-      end
-
-      # @label Fallback sizes
-      def fallback_sizes
-        render_with_template(locals: {})
-      end
-
-      # @label Fallback square shape
-      # @snapshot
-      def fallback_square
-        render(Primer::Beta::Avatar.new(alt: "OpenProject Org", unique_id: 100, shape: :square))
-      end
-
-      # @label Fallback as link
-      def fallback_as_link
-        render(Primer::Beta::Avatar.new(alt: "Jane Doe", unique_id: 3, href: "#"))
-      end
-      #
-      # @!endgroup
     end
   end
 end
