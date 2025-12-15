@@ -5962,6 +5962,217 @@
     ]
   },
   {
+    "name": "avatar_with_fallback",
+    "component": "OpenProject::AvatarWithFallback",
+    "status": "beta",
+    "lookup_path": "primer/open_project/avatar_with_fallback",
+    "examples": [
+      {
+        "preview_path": "primer/open_project/avatar_with_fallback/playground",
+        "name": "playground",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_with_fallback/default",
+        "name": "default",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_with_fallback/with_image",
+        "name": "with_image",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_with_fallback/fallback_default",
+        "name": "fallback_default",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_with_fallback/fallback_single_name",
+        "name": "fallback_single_name",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_with_fallback/fallback_multiple",
+        "name": "fallback_multiple",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_with_fallback/fallback_sizes",
+        "name": "fallback_sizes",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_with_fallback/fallback_square",
+        "name": "fallback_square",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_with_fallback/fallback_as_link",
+        "name": "fallback_as_link",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "avatar_stack",
+    "component": "OpenProject::AvatarStack",
+    "status": "beta",
+    "lookup_path": "primer/open_project/avatar_stack",
+    "examples": [
+      {
+        "preview_path": "primer/open_project/avatar_stack/playground",
+        "name": "playground",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_stack/default",
+        "name": "default",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_stack/with_fallback_avatars",
+        "name": "with_fallback_avatars",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_stack/mixed_avatars",
+        "name": "mixed_avatars",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_stack/align_right_with_fallbacks",
+        "name": "align_right_with_fallbacks",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_stack/with_tooltip_and_fallbacks",
+        "name": "with_tooltip_and_fallbacks",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      }
+    ]
+  },
+  {
     "name": "overlay",
     "component": "Overlay",
     "status": "alpha",

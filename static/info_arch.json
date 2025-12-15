@@ -18710,6 +18710,348 @@
     "subcomponents": []
   },
   {
+    "fully_qualified_name": "Primer::OpenProject::AvatarStack",
+    "description": "OpenProject-specific AvatarStack that extends Primer::Beta::AvatarStack\nto support avatar fallbacks with initials.\n\nUses a different slot name (avatar_with_fallbacks) to avoid conflicts with the parent's avatars slot.",
+    "accessibility_docs": null,
+    "is_form_component": false,
+    "is_published": true,
+    "requires_js": false,
+    "component": "OpenProject::AvatarStack",
+    "status": "beta",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectAvatarStack",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/avatar_stack.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/avatar_stack/default/",
+    "parameters": [
+      {
+        "name": "tag",
+        "type": "Symbol",
+        "default": "`:div`",
+        "description": "One of `:div` or `:span`."
+      },
+      {
+        "name": "align",
+        "type": "Symbol",
+        "default": "`:left`",
+        "description": "One of `:left` or `:right`."
+      },
+      {
+        "name": "tooltipped",
+        "type": "Boolean",
+        "default": "`false`",
+        "description": "Whether to add a tooltip to the stack or not."
+      },
+      {
+        "name": "disable_expand",
+        "type": "Boolean",
+        "default": "`false`",
+        "description": "Whether to disable the expand behavior on hover. If true, avatars will not expand."
+      },
+      {
+        "name": "body_arguments",
+        "type": "Hash",
+        "default": "`{}`",
+        "description": "Parameters to add to the Body. If `tooltipped` is set, has the same arguments as {{#link_to_component}}Primer::Tooltip{{/link_to_component}}. The default tag is `:div` but can be changed using `tag:` to one of `:div` or `:span`."
+      },
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "{{link_to_system_arguments_docs}}"
+      }
+    ],
+    "slots": [
+      {
+        "name": "avatar_with_fallbacks",
+        "description": "Required list of stacked avatars with fallback support.",
+        "parameters": [
+          {
+            "name": "kwargs",
+            "type": "Hash",
+            "default": "N/A",
+            "description": "The same arguments as {{#link_to_component}}Primer::OpenProject::AvatarWithFallback{{/link_to_component}}."
+          }
+        ]
+      }
+    ],
+    "methods": [
+      {
+        "name": "avatars",
+        "description": "Required list of stacked avatars with fallback support.\nAlias avatar_with_fallbacks as avatars for use in the template",
+        "parameters": [
+          {
+            "name": "kwargs",
+            "type": "Hash",
+            "default": "N/A",
+            "description": "The same arguments as {{#link_to_component}}Primer::OpenProject::AvatarWithFallback{{/link_to_component}}."
+          }
+        ],
+        "return_types": []
+      }
+    ],
+    "previews": [
+      {
+        "preview_path": "primer/open_project/avatar_stack/playground",
+        "name": "playground",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_stack/default",
+        "name": "default",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_stack/with_fallback_avatars",
+        "name": "with_fallback_avatars",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_stack/mixed_avatars",
+        "name": "mixed_avatars",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_stack/align_right_with_fallbacks",
+        "name": "align_right_with_fallbacks",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_stack/with_tooltip_and_fallbacks",
+        "name": "with_tooltip_and_fallbacks",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      }
+    ],
+    "subcomponents": []
+  },
+  {
+    "fully_qualified_name": "Primer::OpenProject::AvatarWithFallback",
+    "description": "OpenProject-specific Avatar component that extends Primer::Beta::Avatar\nto support fallback rendering with initials when no image source is provided.\n\nWhen `src` is nil, this component renders a minimal SVG placeholder that is\nenhanced client-side by the AvatarFallbackElement web component to display\ninitials with a consistent color based on the user's unique_id.\n\nThis component follows the \"extension over mutation\" pattern - it extends\nPrimer::Beta::Avatar without modifying its interface, ensuring compatibility\nwith upstream changes.",
+    "accessibility_docs": null,
+    "is_form_component": false,
+    "is_published": true,
+    "requires_js": false,
+    "component": "OpenProject::AvatarWithFallback",
+    "status": "beta",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectAvatarWithFallback",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/avatar_with_fallback.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/avatar_with_fallback/default/",
+    "parameters": [
+      {
+        "name": "src",
+        "type": "String",
+        "default": "`nil`",
+        "description": "The source url of the avatar image. When nil, renders a fallback with initials."
+      },
+      {
+        "name": "alt",
+        "type": "String",
+        "default": "`nil`",
+        "description": "Alt text for the avatar. Used for accessibility and to generate initials when src is nil."
+      },
+      {
+        "name": "size",
+        "type": "Integer",
+        "default": "`20`",
+        "description": "One of `16`, `20`, `24`, `32`, `40`, `48`, `64`, or `80`."
+      },
+      {
+        "name": "shape",
+        "type": "Symbol",
+        "default": "`:circle`",
+        "description": "Shape of the avatar. One of `:circle` or `:square`."
+      },
+      {
+        "name": "href",
+        "type": "String",
+        "default": "`nil`",
+        "description": "The URL to link to. If used, component will be wrapped by an `<a>` tag."
+      },
+      {
+        "name": "unique_id",
+        "type": "String, Integer",
+        "default": "`nil`",
+        "description": "Unique identifier for generating consistent avatar colors across renders."
+      },
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "{{link_to_system_arguments_docs}}"
+      }
+    ],
+    "slots": [],
+    "methods": [],
+    "previews": [
+      {
+        "preview_path": "primer/open_project/avatar_with_fallback/playground",
+        "name": "playground",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_with_fallback/default",
+        "name": "default",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_with_fallback/with_image",
+        "name": "with_image",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_with_fallback/fallback_default",
+        "name": "fallback_default",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_with_fallback/fallback_single_name",
+        "name": "fallback_single_name",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_with_fallback/fallback_multiple",
+        "name": "fallback_multiple",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_with_fallback/fallback_sizes",
+        "name": "fallback_sizes",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_with_fallback/fallback_square",
+        "name": "fallback_square",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_with_fallback/fallback_as_link",
+        "name": "fallback_as_link",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      }
+    ],
+    "subcomponents": []
+  },
+  {
     "fully_qualified_name": "Primer::OpenProject::BorderBox::CollapsibleHeader",
     "description": "A component to be used inside Primer::Beta::BorderBox.\nIt will toggle the visibility of the complete Box body",
     "accessibility_docs": null,

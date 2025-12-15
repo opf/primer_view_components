@@ -5718,6 +5718,104 @@
     ]
   },
   {
+    "component": "OpenProject::AvatarStack",
+    "status": "beta",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectAvatarStack",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/avatar_stack.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/avatar_stack/default/",
+    "parameters": [
+      {
+        "name": "tag",
+        "type": "Symbol",
+        "default": "`:div`",
+        "description": "One of `:div` or `:span`."
+      },
+      {
+        "name": "align",
+        "type": "Symbol",
+        "default": "`:left`",
+        "description": "One of `:left` or `:right`."
+      },
+      {
+        "name": "tooltipped",
+        "type": "Boolean",
+        "default": "`false`",
+        "description": "Whether to add a tooltip to the stack or not."
+      },
+      {
+        "name": "disable_expand",
+        "type": "Boolean",
+        "default": "`false`",
+        "description": "Whether to disable the expand behavior on hover. If true, avatars will not expand."
+      },
+      {
+        "name": "body_arguments",
+        "type": "Hash",
+        "default": "`{}`",
+        "description": "Parameters to add to the Body. If `tooltipped` is set, has the same arguments as [Tooltip](/components/tooltip). The default tag is `:div` but can be changed using `tag:` to one of `:div` or `:span`."
+      },
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "[System arguments](/system-arguments)"
+      }
+    ]
+  },
+  {
+    "component": "OpenProject::AvatarWithFallback",
+    "status": "beta",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectAvatarWithFallback",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/avatar_with_fallback.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/avatar_with_fallback/default/",
+    "parameters": [
+      {
+        "name": "src",
+        "type": "String",
+        "default": "`nil`",
+        "description": "The source url of the avatar image. When nil, renders a fallback with initials."
+      },
+      {
+        "name": "alt",
+        "type": "String",
+        "default": "`nil`",
+        "description": "Alt text for the avatar. Used for accessibility and to generate initials when src is nil."
+      },
+      {
+        "name": "size",
+        "type": "Integer",
+        "default": "`20`",
+        "description": "One of `16`, `20`, `24`, `32`, `40`, `48`, `64`, or `80`."
+      },
+      {
+        "name": "shape",
+        "type": "Symbol",
+        "default": "`:circle`",
+        "description": "Shape of the avatar. One of `:circle` or `:square`."
+      },
+      {
+        "name": "href",
+        "type": "String",
+        "default": "`nil`",
+        "description": "The URL to link to. If used, component will be wrapped by an `<a>` tag."
+      },
+      {
+        "name": "unique_id",
+        "type": "String, Integer",
+        "default": "`nil`",
+        "description": "Unique identifier for generating consistent avatar colors across renders."
+      },
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "[System arguments](/system-arguments)"
+      }
+    ]
+  },
+  {
     "component": "OpenProject::BorderBox::CollapsibleHeader",
     "status": "open_project",
     "a11y_reviewed": false,
