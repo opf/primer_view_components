@@ -18873,7 +18873,7 @@
   },
   {
     "fully_qualified_name": "Primer::OpenProject::AvatarWithFallback",
-    "description": "OpenProject-specific Avatar component that extends Primer::Beta::Avatar\nto support fallback rendering with initials when no image source is provided.\n\nWhen `src` is nil, this component renders a minimal SVG placeholder that is\nenhanced client-side by the AvatarFallbackElement web component to display\ninitials with a consistent color based on the user's unique_id.\n\nThis component follows the \"extension over mutation\" pattern - it extends\nPrimer::Beta::Avatar without modifying its interface, ensuring compatibility\nwith upstream changes.",
+    "description": "OpenProject-specific Avatar component that extends Primer::Beta::Avatar\nto support fallback rendering with initials when no image source is provided.\n\nWhen `src` is nil, this component renders an SVG with initials extracted from\nthe alt text. The AvatarFallbackElement web component then enhances it client-side\nby applying a consistent background color based on the user's unique_id (using the\nsame hash function as OP Core for consistency).\n\nThis component follows the \"extension over mutation\" pattern - it extends\nPrimer::Beta::Avatar without modifying its interface, ensuring compatibility\nwith upstream changes.",
     "accessibility_docs": null,
     "is_form_component": false,
     "is_published": true,
