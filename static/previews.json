@@ -5962,6 +5962,92 @@
     ]
   },
   {
+    "name": "avatar_stack",
+    "component": "OpenProject::AvatarStack",
+    "status": "beta",
+    "lookup_path": "primer/open_project/avatar_stack",
+    "examples": [
+      {
+        "preview_path": "primer/open_project/avatar_stack/playground",
+        "name": "playground",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_stack/default",
+        "name": "default",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_stack/with_fallback_avatars",
+        "name": "with_fallback_avatars",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_stack/mixed_avatars",
+        "name": "mixed_avatars",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_stack/align_right_with_fallbacks",
+        "name": "align_right_with_fallbacks",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_stack/with_tooltip_and_fallbacks",
+        "name": "with_tooltip_and_fallbacks",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      }
+    ]
+  },
+  {
     "name": "avatar_with_fallback",
     "component": "OpenProject::AvatarWithFallback",
     "status": "beta",
@@ -6074,92 +6160,6 @@
       {
         "preview_path": "primer/open_project/avatar_with_fallback/fallback_as_link",
         "name": "fallback_as_link",
-        "snapshot": "false",
-        "skip_rules": {
-          "wont_fix": [
-            "region"
-          ],
-          "will_fix": [
-            "color-contrast"
-          ]
-        }
-      }
-    ]
-  },
-  {
-    "name": "avatar_stack",
-    "component": "OpenProject::AvatarStack",
-    "status": "beta",
-    "lookup_path": "primer/open_project/avatar_stack",
-    "examples": [
-      {
-        "preview_path": "primer/open_project/avatar_stack/playground",
-        "name": "playground",
-        "snapshot": "false",
-        "skip_rules": {
-          "wont_fix": [
-            "region"
-          ],
-          "will_fix": [
-            "color-contrast"
-          ]
-        }
-      },
-      {
-        "preview_path": "primer/open_project/avatar_stack/default",
-        "name": "default",
-        "snapshot": "true",
-        "skip_rules": {
-          "wont_fix": [
-            "region"
-          ],
-          "will_fix": [
-            "color-contrast"
-          ]
-        }
-      },
-      {
-        "preview_path": "primer/open_project/avatar_stack/with_fallback_avatars",
-        "name": "with_fallback_avatars",
-        "snapshot": "true",
-        "skip_rules": {
-          "wont_fix": [
-            "region"
-          ],
-          "will_fix": [
-            "color-contrast"
-          ]
-        }
-      },
-      {
-        "preview_path": "primer/open_project/avatar_stack/mixed_avatars",
-        "name": "mixed_avatars",
-        "snapshot": "false",
-        "skip_rules": {
-          "wont_fix": [
-            "region"
-          ],
-          "will_fix": [
-            "color-contrast"
-          ]
-        }
-      },
-      {
-        "preview_path": "primer/open_project/avatar_stack/align_right_with_fallbacks",
-        "name": "align_right_with_fallbacks",
-        "snapshot": "false",
-        "skip_rules": {
-          "wont_fix": [
-            "region"
-          ],
-          "will_fix": [
-            "color-contrast"
-          ]
-        }
-      },
-      {
-        "preview_path": "primer/open_project/avatar_stack/with_tooltip_and_fallbacks",
-        "name": "with_tooltip_and_fallbacks",
         "snapshot": "false",
         "skip_rules": {
           "wont_fix": [

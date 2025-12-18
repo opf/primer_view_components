@@ -18777,15 +18777,8 @@
     "methods": [
       {
         "name": "avatars",
-        "description": "Required list of stacked avatars with fallback support.\nAlias avatar_with_fallbacks as avatars for use in the template",
-        "parameters": [
-          {
-            "name": "kwargs",
-            "type": "Hash",
-            "default": "N/A",
-            "description": "The same arguments as {{#link_to_component}}Primer::OpenProject::AvatarWithFallback{{/link_to_component}}."
-          }
-        ],
+        "description": "Alias avatar_with_fallbacks as avatars for use in the template",
+        "parameters": [],
         "return_types": []
       }
     ],

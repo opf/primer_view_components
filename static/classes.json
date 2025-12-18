@@ -96,7 +96,8 @@
     "Primer::Beta::AvatarStack"
   ],
   "AvatarStack-body": [
-    "Primer::Beta::AvatarStack"
+    "Primer::Beta::AvatarStack",
+    "Primer::OpenProject::AvatarStack"
   ],
   "Banner": [
     "Primer::Alpha::Banner"
