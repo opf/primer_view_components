@@ -27,51 +27,65 @@ module Primer
       # @param unique_id [String, Integer] Unique identifier for generating consistent avatar colors across renders.
       # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
       def initialize(src: nil, alt: nil, size: DEFAULT_SIZE, shape: DEFAULT_SHAPE, href: nil, unique_id: nil, **system_arguments)
+        require_src_or_alt_arguments(src, alt)
+
         @unique_id = unique_id
-        @src = src
+        @use_fallback = src.blank?
+        final_src = @use_fallback ? generate_fallback_svg(alt, size) : src
 
-        if src.present?
-          super(src: src, alt: alt, size: size, shape: shape, href: href, **system_arguments)
-        else
-          @alt = alt
-          @href = href
-          @size = fetch_or_fallback(SIZE_OPTIONS, size, DEFAULT_SIZE)
-          @shape = fetch_or_fallback(SHAPE_OPTIONS, shape, DEFAULT_SHAPE)
-          @system_arguments = deny_tag_argument(**system_arguments)
-
-          validate_src_or_alt(nil, alt)
-        end
+        super(src: final_src, alt: alt, size: size, shape: shape, href: href, **system_arguments)
       end
 
       def call
-        if @src.present?
-          super
+        if @use_fallback
+          render(Primer::BaseComponent.new(
+            tag: :"avatar-fallback",
+            data: {
+              unique_id: @unique_id,
+              alt_text: @system_arguments[:alt]
+            }
+          )) { super }
         else
-          render_fallback
+          super
         end
       end
 
       private
 
-      def validate_src_or_alt(src, alt)
+      def require_src_or_alt_arguments(src, alt)
         return if src.present? || alt.present?
 
         raise ArgumentError, "`src` or `alt` is required"
       end
 
-      def fallback_font_size
-        # Calculate font size for initials (45% of avatar size, min 8px)
-        [(@size * 0.45).round, 8].max
-      end
-
-      def fallback_avatar_classes
-        class_names(
-          @system_arguments[:classes],
-          "avatar",
-          "avatar-#{@size}",
-          "avatar-small" => @size < SMALL_THRESHOLD,
-          "circle" => @shape == DEFAULT_SHAPE
+      def generate_fallback_svg(alt, size)
+        svg_content = content_tag(
+          :svg,
+          safe_join([
+            # Use a neutral dark gray as default to minimize flicker in both light/dark modes
+            # JS will replace with the hashed color (hsl(hue, 50%, 30%))
+            tag.rect(width: "100%", height: "100%", fill: "hsl(0, 0%, 35%)"),
+            content_tag(
+              :text,
+              extract_initials(alt),
+              x: "50%",
+              y: "50%",
+              "text-anchor": "middle",
+              "dominant-baseline": "central",
+              fill: "white",
+              "font-size": fallback_font_size(size),
+              "font-weight": "600",
+              "font-family": FONT_STACK,
+              style: "user-select: none; text-transform: uppercase;"
+            )
+          ]),
+          xmlns: "http://www.w3.org/2000/svg",
+          width: size,
+          height: size,
+          viewBox: "0 0 #{size} #{size}",
         )
+
+        "data:image/svg+xml;base64,#{Base64.strict_encode64(svg_content)}"
       end
 
       def extract_initials(name)
@@ -89,50 +103,9 @@ module Primer
         end
       end
 
-      def render_fallback
-        initials = extract_initials(@alt)
-
-        svg_content = content_tag(
-          :svg,
-          safe_join([
-            # Use a neutral dark gray as default to minimize flicker in both light/dark modes
-            # JS will replace with the hashed color (hsl(hue, 50%, 30%))
-            tag.rect(width: "100%", height: "100%", fill: "hsl(0, 0%, 35%)"),
-            content_tag(
-              :text,
-              initials,
-              x: "50%",
-              y: "50%",
-              "text-anchor": "middle",
-              "dominant-baseline": "central",
-              fill: "white",
-              "font-size": fallback_font_size,
-              "font-weight": "600",
-              "font-family": FONT_STACK,
-              style: "user-select: none; text-transform: uppercase;"
-            )
-          ]),
-          width: @size,
-          height: @size,
-          viewBox: "0 0 #{@size} #{@size}",
-          role: "img",
-          "aria-label": @alt,
-          class: fallback_avatar_classes
-        )
-
-        render(Primer::BaseComponent.new(
-          tag: :"avatar-fallback",
-          data: {
-            unique_id: @unique_id,
-            alt_text: @alt
-          }
-        )) do
-          render(Primer::ConditionalWrapper.new(
-            condition: @href.present?,
-            component: Primer::Beta::Link,
-            **(@href.present? ? { href: @href } : {})
-          )) { svg_content }
-        end
+      def fallback_font_size(size)
+        # Font size is 45% of avatar size for good readability, with a minimum of 8px
+        [(size * 0.45).round, 8].max
       end
     end
   end

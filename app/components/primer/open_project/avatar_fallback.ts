@@ -1,4 +1,4 @@
-import {attr, controller} from '@github/catalyst'
+import { attr, controller } from '@github/catalyst'
 
 @controller
 export class AvatarFallbackElement extends HTMLElement {
@@ -8,19 +8,15 @@ export class AvatarFallbackElement extends HTMLElement {
   connectedCallback() {
     if (!this.uniqueId || !this.altText) return
 
-    const fallbackSvg = this.querySelector('svg[role="img"]')
-    if (!fallbackSvg) return
+    const img = this.querySelector('img[src^="data:image/svg+xml"]')
+    if (!img) return
 
     // Generate consistent color based on uniqueId and altText (hash must match OP Core)
     const text = `${this.uniqueId}${this.altText}`
     const hue = this.valueHash(text)
     const color = `hsl(${hue}, 50%, 30%)`
 
-    // Set background color on rect element
-    const rectElement = fallbackSvg.querySelector('rect')
-    if (rectElement) {
-      rectElement.setAttribute('fill', color)
-    }
+    this.updateSvgColor(img as HTMLImageElement, color)
   }
 
   /*
@@ -33,5 +29,15 @@ export class AvatarFallbackElement extends HTMLElement {
       hash = value.charCodeAt(i) + ((hash << 5) - hash)
     }
     return hash % 360
+  }
+
+  private updateSvgColor(img: HTMLImageElement, color: string) {
+    const dataUri = img.src
+    const base64 = dataUri.replace('data:image/svg+xml;base64,', '')
+    const svg = atob(base64)
+
+    const updatedSvg = svg.replace(/fill="hsl\([^"]+\)"/, `fill="${color}"`)
+
+    img.src = `data:image/svg+xml;base64,${btoa(updatedSvg)}`
   }
 }

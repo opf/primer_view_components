@@ -2,7 +2,7 @@
 
 module Primer
   module OpenProject
-    # @label OpenProject Avatar
+    # @label OpenProject AvatarWithFallback
     class AvatarWithFallbackPreview < ViewComponent::Preview
       # @label Playground
       #

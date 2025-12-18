@@ -13,18 +13,8 @@ module Primer
       renders_many :avatar_with_fallbacks, "Primer::OpenProject::AvatarWithFallback"
 
       # Alias avatar_with_fallbacks as avatars for use in the template
-      alias_method :avatars, :avatar_with_fallbacks
-
-      def before_render
-        @system_arguments[:classes] = class_names(
-          @system_arguments[:classes],
-          "AvatarStack--two" => avatar_with_fallbacks.size == 2,
-          "AvatarStack--three-plus" => avatar_with_fallbacks.size > 2
-        )
-      end
-
-      def render?
-        avatar_with_fallbacks.any?
+      def avatars
+        avatar_with_fallbacks
       end
     end
   end

@@ -15,20 +15,18 @@ class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
   def test_renders_fallback_when_src_is_nil
     render_inline(Primer::OpenProject::AvatarWithFallback.new(src: nil, alt: "OpenProject Admin"))
 
-    # Should render avatar-fallback element wrapping a svg[role="img"]
+    # Should render avatar-fallback element wrapping an img with base64 SVG data URI
     assert_selector("avatar-fallback[data-alt-text='OpenProject Admin']") do
-      assert_selector("svg.avatar[role='img'][aria-label='OpenProject Admin']")
+      assert_selector("img.avatar[src^='data:image/svg+xml;base64,']")
     end
-    refute_selector("img")
   end
 
   def test_renders_fallback_when_src_is_blank
     render_inline(Primer::OpenProject::AvatarWithFallback.new(src: "", alt: "OpenProject Admin"))
 
     assert_selector("avatar-fallback[data-alt-text='OpenProject Admin']") do
-      assert_selector("svg.avatar[role='img']")
+      assert_selector("img.avatar[src^='data:image/svg+xml;base64,']")
     end
-    refute_selector("img")
   end
 
   def test_defaults_to_size_20
@@ -40,7 +38,7 @@ class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
   def test_fallback_defaults_to_size_20
     render_inline(Primer::OpenProject::AvatarWithFallback.new(src: nil, alt: "Test User"))
 
-    assert_selector("svg.avatar.avatar-20")
+    assert_selector("img.avatar[src^='data:image/svg+xml;base64,']")
   end
 
   def test_falls_back_when_size_isn_t_valid
@@ -60,7 +58,7 @@ class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
   def test_fallback_defaults_to_circle_avatar
     render_inline(Primer::OpenProject::AvatarWithFallback.new(src: nil, alt: "Test User"))
 
-    assert_selector("svg.avatar.circle")
+    assert_selector("img.avatar.circle[src^='data:image/svg+xml;base64,']")
   end
 
   def test_adds_small_modifier_when_size_is_less_than_threshold
@@ -72,7 +70,7 @@ class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
   def test_fallback_adds_small_modifier_when_size_is_less_than_threshold
     render_inline(Primer::OpenProject::AvatarWithFallback.new(src: nil, alt: "Test User", size: Primer::OpenProject::AvatarWithFallback::SMALL_THRESHOLD - 4))
 
-    assert_selector("svg.avatar.avatar-small")
+    assert_selector("img.avatar.avatar-small[src^='data:image/svg+xml;base64,']")
   end
 
   def test_sets_size_height_and_width
@@ -84,7 +82,8 @@ class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
   def test_fallback_sets_correct_size_class
     render_inline(Primer::OpenProject::AvatarWithFallback.new(src: nil, alt: "Test User", size: 40))
 
-    assert_selector("svg.avatar.avatar-40")
+    # Size is set via attributes, not a dedicated class
+    assert_selector("img.avatar[size='40'][height='40'][width='40'][src^='data:image/svg+xml;base64,']")
   end
 
   def test_squared_avatar
@@ -97,7 +96,7 @@ class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
   def test_fallback_squared_avatar
     render_inline(Primer::OpenProject::AvatarWithFallback.new(src: nil, alt: "Test User", shape: :square))
 
-    assert_selector("svg.avatar")
+    assert_selector("img.avatar[src^='data:image/svg+xml;base64,']")
     refute_selector(".circle")
   end
 
@@ -114,9 +113,10 @@ class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
   def test_fallback_renders_link_wrapper
     render_inline(Primer::OpenProject::AvatarWithFallback.new(src: nil, alt: "Test User", href: "#test"))
 
+    # When href is provided, the avatar class is on the <a> tag, not the <img>
     assert_selector("avatar-fallback") do
-      assert_selector("a[href='#test']") do
-        assert_selector("svg.avatar[role='img']")
+      assert_selector("a.avatar[href='#test']") do
+        assert_selector("img[src^='data:image/svg+xml;base64,']")
       end
     end
   end
@@ -126,7 +126,7 @@ class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
 
     # Should have data attributes for client-side processing
     assert_selector("avatar-fallback[data-unique-id='123'][data-alt-text='Test User']") do
-      assert_selector("svg.avatar[role='img']")
+      assert_selector("img.avatar[src^='data:image/svg+xml;base64,']")
     end
   end
 
@@ -135,7 +135,7 @@ class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
 
     # Should still render, just without unique_id data attribute
     assert_selector("avatar-fallback[data-alt-text='Test User']") do
-      assert_selector("svg.avatar[role='img']")
+      assert_selector("img.avatar[src^='data:image/svg+xml;base64,']")
     end
   end
 
@@ -148,7 +148,7 @@ class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
   def test_fallback_adds_custom_classes
     render_inline(Primer::OpenProject::AvatarWithFallback.new(src: nil, alt: "Test User", classes: "custom-class"))
 
-    assert_selector("svg.avatar.custom-class")
+    assert_selector("img.avatar.custom-class[src^='data:image/svg+xml;base64,']")
   end
 
   def test_raises_when_both_src_and_alt_are_missing
