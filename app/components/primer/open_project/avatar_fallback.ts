@@ -1,4 +1,4 @@
-import { attr, controller } from '@github/catalyst'
+import {attr, controller} from '@github/catalyst'
 
 @controller
 export class AvatarFallbackElement extends HTMLElement {
