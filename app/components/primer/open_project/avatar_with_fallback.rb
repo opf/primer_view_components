@@ -37,17 +37,16 @@ module Primer
       end
 
       def call
-        if @use_fallback
-          render(Primer::BaseComponent.new(
+        render(
+          Primer::ConditionalWrapper.new(
+            condition: @use_fallback,
             tag: :"avatar-fallback",
             data: {
               unique_id: @unique_id,
               alt_text: @system_arguments[:alt]
             }
-          )) { super }
-        else
-          super
-        end
+          )
+        ) { super }
       end
 
       private
