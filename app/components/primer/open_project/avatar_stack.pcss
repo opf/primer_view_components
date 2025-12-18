@@ -1,0 +1,36 @@
+/* OpenProject AvatarStack - styles for avatar-fallback wrapper elements */
+
+.AvatarStack-body {
+  /* Make avatar-fallback invisible to layout - inner img acts as direct child */
+  & avatar-fallback {
+    display: contents;
+  }
+
+  /*
+   * Z-index stacking for avatars inside avatar-fallback wrappers.
+   * The base CSS uses .avatar:first-child/:last-child but those selectors
+   * don't match when .avatar is inside avatar-fallback (not a direct child).
+   */
+  & avatar-fallback:first-child .avatar {
+    z-index: 3;
+  }
+
+  & avatar-fallback:nth-child(2) .avatar {
+    z-index: 2;
+  }
+
+  /* Hide 4th+ wrapped avatars */
+  & avatar-fallback:nth-child(n + 4) {
+    display: none;
+    opacity: 0;
+  }
+
+  /* Show all on hover/focus */
+  &:hover:not([data-disable-expand]),
+  &:focus-within:not([data-disable-expand]) {
+    & avatar-fallback:nth-child(n + 4) {
+      display: contents;
+      opacity: 1;
+    }
+  }
+}
