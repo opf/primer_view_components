@@ -167,6 +167,14 @@ class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
     assert_includes(error.message, "`src` or `alt` is required")
   end
 
+  def test_fallback_with_single_word_name
+    render_inline(Primer::OpenProject::AvatarWithFallback.new(src: nil, alt: "Alice"))
+
+    assert_selector("avatar-fallback") do
+      assert_selector("img.avatar[src^='data:image/svg+xml;base64,']")
+    end
+  end
+
   def test_status
     assert_component_state(Primer::OpenProject::AvatarWithFallback, :beta)
   end
