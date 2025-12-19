@@ -1,0 +1,82 @@
+<%= render Primer::BaseComponent.new(**@system_arguments) do %>
+  <% if required_form_arguments_given? %>
+    <span data-select-tree-panel-inputs="true">
+        <%= @form_builder.hidden_field(@input_name, multiple: multi_select?, skip_default_ids: true, value: @value) %>
+    </span>
+  <% end %>
+  <dialog-helper>
+    <%= show_button %>
+    <%= render(@dialog) do %>
+      <%= render Primer::Alpha::Dialog::Header.new(id: "#{@panel_id}-dialog", title: @title, show_divider: show_filter?) do |header| %>
+        <% if subtitle? %>
+          <% header.with_subtitle do %>
+            <%= subtitle %>
+          <% end %>
+        <% end %>
+        <% if show_filter? %>
+          <% header.with_filter do %>
+                <%= render(Primer::Alpha::TextField.new(
+                  id: "#{@panel_id}-filter",
+                  name: :filter,
+                  label: "Filter",
+                  type: :search,
+                  leading_visual: { icon: :search },
+                  leading_spinner: true,
+                  autofocus: true,
+                  visually_hide_label: true,
+                  data: { target: "select-tree-panel.filterInputTextField" },
+                  label_arguments: {
+                    position: :absolute
+                  }
+                )) %>
+            <div data-target="select-tree-panel.bannerErrorElement" hidden>
+              <%= render Primer::Alpha::Banner.new(scheme: @banner_scheme, mb: 2) do %>
+                <% if error_content? %>
+                  <%= error_content %>
+                <% else %>
+                  <h2 class="f6 text-normal">Sorry, something went wrong.</h2>
+                <% end %>
+              <% end %>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+      <%= render Primer::Alpha::Dialog::Body.new(p: 0) do %>
+        <focus-group direction="vertical" mnemonics retain>
+          <live-region data-target="select-tree-panel.liveRegion"></live-region>
+          <%= render(Primer::BaseComponent.new(
+            tag: :div,
+            data: {
+              target: "select-tree-panel.list"
+            }
+          )) do %>
+            <div id="<%= @body_id %>">
+              <%= render(@tree_view) %>
+            </div>
+            <div data-target="select-tree-panel.noResults" class="SelectTreePanel-emptyPanel" hidden>
+              <%= render(Primer::Alpha::TreeView.new) do |tree| %>
+                <% tree.with_leaf(**@no_results_node_arguments) %>
+              <% end %>
+            </div>
+          <% end %>
+        </focus-group>
+      <% end %>
+      <% if footer? %>
+        <%= footer %>
+      <% elsif !hide_filter_mode_control? || !hide_include_sub_items_check_box? %>
+        <%= render(Primer::Alpha::Dialog::Footer.new(show_divider: true)) do %>
+          <%= render(Primer::Alpha::Stack.new(direction: :horizontal, align: :end, gap: :condensed)) do %>
+            <%= render(Primer::Alpha::StackItem.new(grow: true, hidden: hide_filter_mode_control?)) do %>
+              <%= render(@filter_mode_control) %>
+            <% end %>
+            <%= render(Primer::Alpha::StackItem.new(hidden: hide_include_sub_items_check_box?)) do %>
+              <%= render(@include_sub_items_check_box) do |input| %>
+                <% input.merge_input_arguments!(form: "") %>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  </dialog-helper>
+<% end %>
