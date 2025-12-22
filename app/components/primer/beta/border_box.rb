@@ -71,8 +71,9 @@ module Primer
       }
 
       # @param padding [Symbol] <%= one_of(Primer::Beta::BorderBox::PADDING_MAPPINGS.keys) %>
+      # @param list_arguments [Hash] <%= link_to_system_arguments_docs %>
       # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
-      def initialize(padding: DEFAULT_PADDING, **system_arguments)
+      def initialize(padding: DEFAULT_PADDING, list_arguments: {}, **system_arguments)
         list_id = system_arguments.delete(:list_id)
 
         @system_arguments = deny_tag_argument(**system_arguments)
@@ -84,9 +85,10 @@ module Primer
         )
 
         @system_arguments[:system_arguments_denylist] = { [:p, :pt, :pb, :pr, :pl] => PADDING_SUGGESTION }
-        @list_arguments = { tag: :ul }
+        @list_arguments = deny_tag_argument(**list_arguments)
+        @list_arguments[:tag] = :ul
         @list_arguments[:id] = list_id if list_id
-        @list_arguments[:classes] = "Box-list"
+        @list_arguments[:classes] = class_names("Box-list", @list_arguments[:classes])
       end
 
       def render?
@@ -98,9 +100,10 @@ module Primer
       def before_render
         return unless header
 
-        @list_arguments[:aria] = {
-          labelledby: header.id
-        }
+        @list_arguments[:aria] = merge_aria(
+          @list_arguments,
+          { aria: { labelledby: header.id } }
+        )
       end
     end
   end
