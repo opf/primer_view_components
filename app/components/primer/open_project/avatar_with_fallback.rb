@@ -14,6 +14,8 @@ module Primer
     # Primer::Beta::Avatar without modifying its interface, ensuring compatibility
     # with upstream changes.
     class AvatarWithFallback < Primer::Beta::Avatar
+      status :open_project
+
       # @see
       #   - https://primer.style/foundations/typography/
       #   - https://github.com/primer/css/blob/main/src/support/variables/typography.scss
