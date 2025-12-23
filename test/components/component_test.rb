@@ -53,6 +53,10 @@ class PrimerComponentTest < Minitest::Test
     [Primer::OpenProject::FlexLayout, {}, proc { |component|
       component.with_row { "Foo" }
     }],
+    [Primer::OpenProject::AvatarWithFallback, { src: "https://github.com/github.png", alt: "github" }],
+    [Primer::OpenProject::AvatarStack, {}, lambda do |component|
+      component.with_avatar_with_fallback(src: "https://github.com/github.png", alt: "github")
+    end],
     [Primer::OpenProject::DragHandle, {}],
     [Primer::OpenProject::BorderGrid, {}, proc { |component|
       component.with_row { "Foo" }

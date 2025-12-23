@@ -139,6 +139,8 @@
   "Primer::IconButton": "",
   "Primer::LayoutComponent": "",
   "Primer::Navigation::TabComponent": "",
+  "Primer::OpenProject::AvatarStack": "",
+  "Primer::OpenProject::AvatarWithFallback": "",
   "Primer::OpenProject::BorderBox::CollapsibleHeader": "",
   "Primer::OpenProject::BorderGrid": "",
   "Primer::OpenProject::BorderGrid::Cell": "",
