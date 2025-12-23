@@ -176,6 +176,6 @@ class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
   end
 
   def test_status
-    assert_component_state(Primer::OpenProject::AvatarWithFallback, :beta)
+    assert_component_state(Primer::OpenProject::AvatarWithFallback, :open_project)
   end
 end

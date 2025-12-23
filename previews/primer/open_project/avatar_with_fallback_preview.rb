@@ -2,11 +2,11 @@
 
 module Primer
   module OpenProject
-    # @label OpenProject AvatarWithFallback
+    # @label AvatarWithFallback
     class AvatarWithFallbackPreview < ViewComponent::Preview
       # @label Playground
       #
-      # @param size [Integer] select [16, 20, 24, 32, 40, 48, 80]
+      # @param size [Integer] select [16, 20, 24, 32, 40, 48, 64, 80]
       # @param shape [Symbol] select [circle, square]
       # @param href [String] text
       # @param with_src [Boolean] toggle

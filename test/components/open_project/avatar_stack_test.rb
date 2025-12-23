@@ -63,6 +63,6 @@ class PrimerOpenProjectAvatarStackTest < Minitest::Test
   end
 
   def test_status
-    assert_component_state(Primer::OpenProject::AvatarStack, :beta)
+    assert_component_state(Primer::OpenProject::AvatarStack, :open_project)
   end
 end
