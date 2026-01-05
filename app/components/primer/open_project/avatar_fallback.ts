@@ -6,6 +6,8 @@ export class AvatarFallbackElement extends HTMLElement {
   @attr altText = ''
 
   connectedCallback() {
+    // If either uniqueId or altText is missing, skip color customization so the SVG
+    // keeps its default gray fill defined in the source and no color override is applied.
     if (!this.uniqueId || !this.altText) return
 
     const img = this.querySelector('img[src^="data:image/svg+xml"]')
@@ -34,10 +36,14 @@ export class AvatarFallbackElement extends HTMLElement {
   private updateSvgColor(img: HTMLImageElement, color: string) {
     const dataUri = img.src
     const base64 = dataUri.replace('data:image/svg+xml;base64,', '')
-    const svg = atob(base64)
 
-    const updatedSvg = svg.replace(/fill="hsl\([^"]+\)"/, `fill="${color}"`)
-
-    img.src = `data:image/svg+xml;base64,${btoa(updatedSvg)}`
+    try {
+      const svg = atob(base64)
+      const updatedSvg = svg.replace(/fill="hsl\([^"]+\)"/, `fill="${color}"`)
+      img.src = `data:image/svg+xml;base64,${btoa(updatedSvg)}`
+    } catch {
+      // If the SVG data is malformed or not valid base64, skip updating the color
+      // to avoid breaking the component.
+    }
   }
 }
