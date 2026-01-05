@@ -10,7 +10,7 @@ export class AvatarFallbackElement extends HTMLElement {
     // keeps its default gray fill defined in the source and no color override is applied.
     if (!this.uniqueId || !this.altText) return
 
-    const img = this.querySelector('img[src^="data:image/svg+xml"]')
+    const img = this.querySelector<HTMLImageElement>('img[src^="data:image/svg+xml"]')
     if (!img) return
 
     // Generate consistent color based on uniqueId and altText (hash must match OP Core)
@@ -18,7 +18,7 @@ export class AvatarFallbackElement extends HTMLElement {
     const hue = this.valueHash(text)
     const color = `hsl(${hue}, 50%, 30%)`
 
-    this.updateSvgColor(img as HTMLImageElement, color)
+    this.updateSvgColor(img, color)
   }
 
   /*
