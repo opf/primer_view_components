@@ -77,7 +77,7 @@ jobs:
           bundle install
 
       # Use the primer GitHub App for authentication.
-      # See: https://github.com/organizations/primer/settings/apps/primer
+      # See: https://github.com/organizations/opf/settings/apps/openproject-primer-view-components
       - name: Get App Token
         uses: actions/create-github-app-token@v2
         id: get-access-token
