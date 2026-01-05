@@ -85,6 +85,8 @@ jobs:
           app-id: ${{ vars.PRIMER_APP_ID_SHARED }}
           owner: opf
           private-key: ${{ secrets.PRIMER_APP_PRIVATE_KEY_SHARED }}
+          repositories: |
+            primer_view_components
 
       - name: Create release pull request or publish to npm
         id: changesets
