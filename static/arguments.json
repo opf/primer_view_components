@@ -5719,7 +5719,7 @@
   },
   {
     "component": "OpenProject::AvatarStack",
-    "status": "beta",
+    "status": "open_project",
     "a11y_reviewed": false,
     "short_name": "OpenProjectAvatarStack",
     "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/avatar_stack.rb",
@@ -5765,7 +5765,7 @@
   },
   {
     "component": "OpenProject::AvatarWithFallback",
-    "status": "beta",
+    "status": "open_project",
     "a11y_reviewed": false,
     "short_name": "OpenProjectAvatarWithFallback",
     "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/avatar_with_fallback.rb",
