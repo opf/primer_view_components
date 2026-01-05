@@ -90,7 +90,8 @@ module Primer
       end
 
       def extract_initials(name)
-        return "" if name.blank?
+        name = name.to_s.strip
+        return "" if name.empty?
 
         chars = name.chars
         first = chars[0]&.upcase || ""
