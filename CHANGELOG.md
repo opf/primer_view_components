@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 0.79.0
+
+### Minor Changes
+
+- [#3776](https://github.com/primer/view_components/pull/3776) [`edc480f`](https://github.com/opf/primer_view_components/commit/edc480fe8ac9352fa5584488e9f6d3887fe088d2) Thanks [@TylerJDev](https://github.com/TylerJDev)! - AvatarStack: Adds support for individual tooltips on AvatarStack component, avatars.
+
+- [#387](https://github.com/opf/primer_view_components/pull/387) [`9f3c2aa`](https://github.com/opf/primer_view_components/commit/9f3c2aaca356ba77542b7da4d22eacc6722f9bac) Thanks [@akabiru](https://github.com/akabiru)! - Add `Primer::OpenProject::AvatarWithFallback` component with client-side fallback rendering. When no image src is provided, renders an embedded SVG with user initials and consistent colors generated client-side by the AvatarFallbackElement web component. Extends `Primer::Beta::Avatar` without modifying upstream behavior.
+
+- [#3740](https://github.com/primer/view_components/pull/3740) [`ccf3d94`](https://github.com/opf/primer_view_components/commit/ccf3d94b557a909965062885b5db9e48b2a63e3d) Thanks [@sarahkemi](https://github.com/sarahkemi)! - Add `disable_expand` param to AvatarStack for React component parity
+
 ## 0.78.1
 
 ### Patch Changes
