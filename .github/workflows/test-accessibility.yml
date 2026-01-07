@@ -18,7 +18,7 @@ concurrency:
 jobs:
   accessibility:
     name: Accessibility
-    runs-on: ubuntu-latest-8-cores
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - uses: ruby/setup-ruby@v1
