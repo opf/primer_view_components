@@ -8,8 +8,27 @@ class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
   def test_renders_image_avatar_with_src
     render_inline(Primer::OpenProject::AvatarWithFallback.new(src: "https://github.com/github.png", alt: "github"))
 
-    assert_selector("img.avatar")
-    refute_selector("avatar-fallback")
+    # Always wrapped in avatar-fallback for 404 error handling
+    assert_selector("avatar-fallback[data-fallback-src^='data:image/svg+xml;base64,']") do
+      assert_selector("img.avatar[src='https://github.com/github.png']")
+    end
+  end
+
+  def test_image_avatar_error_handling_setup
+    render_inline(Primer::OpenProject::AvatarWithFallback.new(src: "https://example.com/avatar.png", alt: "Alice Johnson", unique_id: 123))
+
+    # Original src is preserved (client-side JS handles error -> fallback swap)
+    assert_selector("avatar-fallback[data-unique-id='123'][data-alt-text='Alice Johnson']") do
+      assert_selector("img.avatar[src='https://example.com/avatar.png']")
+    end
+
+    # Verify fallback SVG is available and contains correct initials
+    fallback_wrapper = page.find("avatar-fallback")
+    fallback_src = fallback_wrapper["data-fallback-src"]
+
+    assert fallback_src.start_with?("data:image/svg+xml;base64,")
+    svg_content = Base64.decode64(fallback_src.sub("data:image/svg+xml;base64,", ""))
+    assert_includes svg_content, ">AJ<", "Fallback SVG should contain initials 'AJ'"
   end
 
   def test_renders_fallback_when_src_is_nil
