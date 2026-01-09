@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require "net/http"
+require "uri"
+
 module Primer
   module OpenProject
     # OpenProject-specific Avatar component that extends Primer::Beta::Avatar
@@ -15,6 +18,18 @@ module Primer
     # with upstream changes.
     class AvatarWithFallback < Primer::Beta::Avatar
       status :open_project
+
+      # Set to false to disable server-side URL validation (useful for tests)
+      mattr_accessor :validate_urls, default: true
+
+      # Allowlist of trusted avatar hosts for server-side validation.
+      # Only these hosts will be checked via HEAD request to avoid SSRF vulnerabilities.
+      ALLOWED_AVATAR_HOSTS = %w[
+        gravatar.com
+        www.gravatar.com
+        secure.gravatar.com
+        avatars.githubusercontent.com
+      ].freeze
 
       # @see
       #   - https://primer.style/foundations/typography/
@@ -33,7 +48,7 @@ module Primer
 
         @unique_id = unique_id
         @fallback_svg = generate_fallback_svg(alt, size)
-        final_src = src.blank? ? @fallback_svg : src
+        final_src = resolve_src(src)
 
         super(src: final_src, alt: alt, size: size, shape: shape, href: href, **system_arguments)
       end
@@ -57,6 +72,36 @@ module Primer
         return if src.present? || alt.present?
 
         raise ArgumentError, "`src` or `alt` is required"
+      end
+
+      def resolve_src(src)
+        return @fallback_svg if src.blank?
+
+        if validate_urls && allowed_host?(src) && !url_accessible?(src)
+          return @fallback_svg
+        end
+
+        src
+      end
+
+      def allowed_host?(url)
+        uri = URI.parse(url)
+        ALLOWED_AVATAR_HOSTS.include?(uri.host&.downcase)
+      rescue URI::InvalidURIError
+        false
+      end
+
+      def url_accessible?(url)
+        uri = URI.parse(url)
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = uri.scheme == "https"
+        http.open_timeout = 2
+        http.read_timeout = 2
+
+        response = http.head(uri.request_uri)
+        response.is_a?(Net::HTTPSuccess)
+      rescue StandardError
+        false
       end
 
       def generate_fallback_svg(alt, size)

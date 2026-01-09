@@ -1,0 +1,8 @@
+<div class="d-flex gap-3 flex-items-center">
+  <p class="color-fg-muted">Gravatar URLs are validated server-side. Broken URLs render fallback immediately (no flicker):</p>
+</div>
+<div class="d-flex gap-3 flex-items-center mt-2">
+  <%= render(Primer::OpenProject::AvatarWithFallback.new(src: "https://gravatar.com/avatar/nonexistent-alice", alt: "Alice Johnson", unique_id: 10)) %>
+  <%= render(Primer::OpenProject::AvatarWithFallback.new(src: "https://gravatar.com/avatar/nonexistent-bob", alt: "Bob Smith", unique_id: 20)) %>
+  <%= render(Primer::OpenProject::AvatarWithFallback.new(src: "https://secure.gravatar.com/avatar/nonexistent-charlie", alt: "Charlie Brown", unique_id: 30)) %>
+</div>
