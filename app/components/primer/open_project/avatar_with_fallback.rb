@@ -36,7 +36,7 @@ module Primer
       #   - https://github.com/primer/css/blob/main/src/support/variables/typography.scss
       FONT_STACK = "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'"
 
-      # @param src [String] The source url of the avatar image. When nil, or broken URL it renders a fallback with initials.
+      # @param src [String] The source url of the avatar image. When nil or a broken URL, it renders a fallback with initials.
       # @param alt [String] Alt text for the avatar. Used for accessibility and to generate initials when src is nil.
       # @param size [Integer] <%= one_of(Primer::Beta::Avatar::SIZE_OPTIONS) %>
       # @param shape [Symbol] Shape of the avatar. <%= one_of(Primer::Beta::Avatar::SHAPE_OPTIONS) %>
@@ -95,6 +95,7 @@ module Primer
         uri = URI.parse(url)
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = uri.scheme == "https"
+        http.verify_mode = OpenSSL::SSL::VERIFY_PEER if http.use_ssl
         http.open_timeout = 2
         http.read_timeout = 2
 

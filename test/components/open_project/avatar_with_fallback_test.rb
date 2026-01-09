@@ -6,6 +6,16 @@ require "webmock/minitest"
 class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
   include Primer::ComponentTestHelpers
 
+  def setup
+    # Store original value to restore after each test
+    @original_validate_urls = Primer::OpenProject::AvatarWithFallback.validate_urls
+  end
+
+  def teardown
+    # Restore original value to prevent test pollution
+    Primer::OpenProject::AvatarWithFallback.validate_urls = @original_validate_urls
+  end
+
   def test_renders_image_avatar_with_src
     render_inline(Primer::OpenProject::AvatarWithFallback.new(src: "https://github.com/github.png", alt: "github"))
 
@@ -34,8 +44,9 @@ class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
 
   def test_skips_validation_for_non_allowlisted_hosts
     Primer::OpenProject::AvatarWithFallback.validate_urls = true
-    # url_accessible? should NOT be called for non-allowlisted hosts
-    Primer::OpenProject::AvatarWithFallback.any_instance.expects(:url_accessible?).never
+    
+    # Stub the request - it should not be made for non-allowlisted hosts
+    stub = stub_request(:head, "https://example.com/avatar.png")
 
     render_inline(Primer::OpenProject::AvatarWithFallback.new(src: "https://example.com/avatar.png", alt: "Test User", unique_id: 43))
 
@@ -43,6 +54,9 @@ class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
     assert_selector("avatar-fallback") do
       assert_selector("img.avatar[src='https://example.com/avatar.png']")
     end
+    
+    # Verify no HTTP request was made
+    assert_not_requested stub
   end
 
   def test_handles_invalid_uri_in_allowed_host_check
