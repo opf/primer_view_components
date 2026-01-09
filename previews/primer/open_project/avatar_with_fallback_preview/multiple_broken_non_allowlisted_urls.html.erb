@@ -1,5 +1,5 @@
 <div class="d-flex gap-3 flex-items-center">
-  <p class="color-fg-muted">Absolute URLs are validated server-side. Broken URLs render fallback immediately (no flicker):</p>
+  <p class="color-fg-muted">Non-allowlisted URLs skip server-side validation (SSRF protection). Client-side JS handles errors (may flicker):</p>
 </div>
 <div class="d-flex gap-3 flex-items-center mt-2">
   <%= render(Primer::OpenProject::AvatarWithFallback.new(src: "https://example.com/missing/alice.png", alt: "Alice Johnson", unique_id: 10)) %>
