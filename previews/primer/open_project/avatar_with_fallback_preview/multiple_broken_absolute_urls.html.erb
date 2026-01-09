@@ -1,0 +1,8 @@
+<div class="d-flex gap-3 flex-items-center">
+  <p class="color-fg-muted">Absolute URLs are validated server-side. Broken URLs render fallback immediately (no flicker):</p>
+</div>
+<div class="d-flex gap-3 flex-items-center mt-2">
+  <%= render(Primer::OpenProject::AvatarWithFallback.new(src: "https://example.com/missing/alice.png", alt: "Alice Johnson", unique_id: 10)) %>
+  <%= render(Primer::OpenProject::AvatarWithFallback.new(src: "https://example.com/missing/bob.png", alt: "Bob Smith", unique_id: 20)) %>
+  <%= render(Primer::OpenProject::AvatarWithFallback.new(src: "https://invalid-domain-12345.com/avatar.png", alt: "Charlie Brown", unique_id: 30)) %>
+</div>
