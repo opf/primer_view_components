@@ -1699,6 +1699,12 @@
     "GeneratedSlotMethods": "Primer::OpenProject::AvatarStack::GeneratedSlotMethods"
   },
   "Primer::OpenProject::AvatarWithFallback": {
+    "ALLOWED_AVATAR_HOSTS": [
+      "gravatar.com",
+      "www.gravatar.com",
+      "secure.gravatar.com",
+      "avatars.githubusercontent.com"
+    ],
     "FONT_STACK": "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'",
     "GeneratedSlotMethods": "Primer::OpenProject::AvatarWithFallback::GeneratedSlotMethods"
   },
