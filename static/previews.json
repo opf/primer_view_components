@@ -1633,6 +1633,71 @@
             "color-contrast"
           ]
         }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_with_fallback/broken_gravatar_url",
+        "name": "broken_gravatar_url",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_with_fallback/multiple_broken_gravatar_urls",
+        "name": "multiple_broken_gravatar_urls",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_with_fallback/broken_non_allowlisted_url",
+        "name": "broken_non_allowlisted_url",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_with_fallback/broken_relative_url",
+        "name": "broken_relative_url",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_with_fallback/multiple_broken_non_allowlisted_urls",
+        "name": "multiple_broken_non_allowlisted_urls",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
       }
     ]
   },
