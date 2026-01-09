@@ -22,6 +22,15 @@ module Primer
       # Set to false to disable server-side URL validation (useful for tests)
       mattr_accessor :validate_urls, default: true
 
+      # Allowlist of trusted avatar hosts for server-side validation.
+      # Only these hosts will be checked via HEAD request to avoid SSRF vulnerabilities.
+      ALLOWED_AVATAR_HOSTS = %w[
+        gravatar.com
+        www.gravatar.com
+        secure.gravatar.com
+        avatars.githubusercontent.com
+      ].freeze
+
       # @see
       #   - https://primer.style/foundations/typography/
       #   - https://github.com/primer/css/blob/main/src/support/variables/typography.scss
@@ -68,15 +77,18 @@ module Primer
       def resolve_src(src)
         return @fallback_svg if src.blank?
 
-        if validate_urls
-          return @fallback_svg if absolute_url?(src) && !url_accessible?(src)
+        if validate_urls && allowed_host?(src) && !url_accessible?(src)
+          return @fallback_svg
         end
 
         src
       end
 
-      def absolute_url?(url)
-        url.to_s.match?(%r{\Ahttps?://}i)
+      def allowed_host?(url)
+        uri = URI.parse(url)
+        ALLOWED_AVATAR_HOSTS.include?(uri.host&.downcase)
+      rescue URI::InvalidURIError
+        false
       end
 
       def url_accessible?(url)

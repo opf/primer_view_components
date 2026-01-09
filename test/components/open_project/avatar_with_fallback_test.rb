@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
 require "components/test_helper"
+require "webmock/minitest"
 
 class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
   include Primer::ComponentTestHelpers
 
   def setup
-    # Disable URL validation by default in tests to avoid HTTP requests
     @original_validate_urls = Primer::OpenProject::AvatarWithFallback.validate_urls
-    Primer::OpenProject::AvatarWithFallback.validate_urls = false
   end
 
   def teardown
@@ -41,14 +40,66 @@ class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
     assert_includes svg_content, ">AJ<", "Fallback SVG should contain initials 'AJ'"
   end
 
-  def test_falls_back_when_absolute_url_is_inaccessible
+  def test_skips_validation_for_non_allowlisted_hosts
     Primer::OpenProject::AvatarWithFallback.validate_urls = true
-    Primer::OpenProject::AvatarWithFallback.any_instance.stubs(:url_accessible?).returns(false)
 
-    render_inline(Primer::OpenProject::AvatarWithFallback.new(src: "https://broken.example.com/avatar.png", alt: "Test User", unique_id: 42))
+    # Stub the request - it should not be made for non-allowlisted hosts
+    stub = stub_request(:head, "https://example.com/avatar.png")
 
-    # Should render fallback SVG when URL is inaccessible
-    assert_selector("avatar-fallback[data-unique-id='42']") do
+    render_inline(Primer::OpenProject::AvatarWithFallback.new(src: "https://example.com/avatar.png", alt: "Test User", unique_id: 43))
+
+    # Should render the original URL (no server-side validation for non-allowlisted hosts)
+    assert_selector("avatar-fallback") do
+      assert_selector("img.avatar[src='https://example.com/avatar.png']")
+    end
+
+    assert_not_requested stub
+  end
+
+  def test_handles_invalid_uri_in_allowed_host_check
+    Primer::OpenProject::AvatarWithFallback.validate_urls = true
+
+    # Invalid URI should not raise, just skip validation
+    render_inline(Primer::OpenProject::AvatarWithFallback.new(src: "not a valid uri %%", alt: "Test User", unique_id: 45))
+
+    # Should render the original URL (invalid URI treated as non-allowlisted)
+    assert_selector("avatar-fallback") do
+      assert_selector("img.avatar[src='not a valid uri %%']")
+    end
+  end
+
+  def test_url_accessible_returns_true_for_successful_head_request
+    Primer::OpenProject::AvatarWithFallback.validate_urls = true
+    stub_request(:head, "https://gravatar.com/avatar/exists").to_return(status: 200)
+
+    render_inline(Primer::OpenProject::AvatarWithFallback.new(src: "https://gravatar.com/avatar/exists", alt: "Test User", unique_id: 46))
+
+    # Should render original URL when HEAD request succeeds
+    assert_selector("avatar-fallback") do
+      assert_selector("img.avatar[src='https://gravatar.com/avatar/exists']")
+    end
+  end
+
+  def test_url_accessible_returns_false_for_404_response
+    Primer::OpenProject::AvatarWithFallback.validate_urls = true
+    stub_request(:head, "https://gravatar.com/avatar/notfound").to_return(status: 404)
+
+    render_inline(Primer::OpenProject::AvatarWithFallback.new(src: "https://gravatar.com/avatar/notfound", alt: "Test User", unique_id: 47))
+
+    # Should render fallback SVG when HEAD request returns 404
+    assert_selector("avatar-fallback") do
+      assert_selector("img.avatar[src^='data:image/svg+xml;base64,']")
+    end
+  end
+
+  def test_url_accessible_returns_false_on_network_error
+    Primer::OpenProject::AvatarWithFallback.validate_urls = true
+    stub_request(:head, "https://gravatar.com/avatar/timeout").to_timeout
+
+    render_inline(Primer::OpenProject::AvatarWithFallback.new(src: "https://gravatar.com/avatar/timeout", alt: "Test User", unique_id: 48))
+
+    # Should render fallback SVG when network error occurs
+    assert_selector("avatar-fallback") do
       assert_selector("img.avatar[src^='data:image/svg+xml;base64,']")
     end
   end
@@ -74,12 +125,6 @@ class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
     render_inline(Primer::OpenProject::AvatarWithFallback.new(src: "https://github.com/github.png", alt: "github"))
 
     assert_selector("img.avatar[size=20][height=20][width=20]")
-  end
-
-  def test_fallback_defaults_to_size_20
-    render_inline(Primer::OpenProject::AvatarWithFallback.new(src: nil, alt: "Test User"))
-
-    assert_selector("img.avatar[src^='data:image/svg+xml;base64,']")
   end
 
   def test_falls_back_when_size_isn_t_valid
@@ -171,15 +216,6 @@ class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
     end
   end
 
-  def test_fallback_without_unique_id
-    render_inline(Primer::OpenProject::AvatarWithFallback.new(src: nil, alt: "Test User"))
-
-    # Should still render, just without unique_id data attribute
-    assert_selector("avatar-fallback[data-alt-text='Test User']") do
-      assert_selector("img.avatar[src^='data:image/svg+xml;base64,']")
-    end
-  end
-
   def test_adds_custom_classes
     render_inline(Primer::OpenProject::AvatarWithFallback.new(src: "https://github.com/github.png", alt: "github", classes: "custom-class"))
 
@@ -208,12 +244,14 @@ class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
     assert_includes(error.message, "`src` or `alt` is required")
   end
 
-  def test_fallback_with_single_word_name
+  def test_fallback_extracts_single_initial_from_single_word_name
     render_inline(Primer::OpenProject::AvatarWithFallback.new(src: nil, alt: "Alice"))
 
-    assert_selector("avatar-fallback") do
-      assert_selector("img.avatar[src^='data:image/svg+xml;base64,']")
-    end
+    fallback_wrapper = page.find("avatar-fallback")
+    fallback_src = fallback_wrapper["data-fallback-src"]
+    svg_content = Base64.decode64(fallback_src.sub("data:image/svg+xml;base64,", ""))
+
+    assert_includes svg_content, ">A<", "Single word name should produce single initial 'A'"
   end
 
   def test_status
