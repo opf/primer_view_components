@@ -5,6 +5,16 @@ require "components/test_helper"
 class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
   include Primer::ComponentTestHelpers
 
+  def setup
+    # Disable URL validation by default in tests to avoid HTTP requests
+    @original_validate_urls = Primer::OpenProject::AvatarWithFallback.validate_urls
+    Primer::OpenProject::AvatarWithFallback.validate_urls = false
+  end
+
+  def teardown
+    Primer::OpenProject::AvatarWithFallback.validate_urls = @original_validate_urls
+  end
+
   def test_renders_image_avatar_with_src
     render_inline(Primer::OpenProject::AvatarWithFallback.new(src: "https://github.com/github.png", alt: "github"))
 
@@ -29,6 +39,18 @@ class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
     assert fallback_src.start_with?("data:image/svg+xml;base64,")
     svg_content = Base64.decode64(fallback_src.sub("data:image/svg+xml;base64,", ""))
     assert_includes svg_content, ">AJ<", "Fallback SVG should contain initials 'AJ'"
+  end
+
+  def test_falls_back_when_absolute_url_is_inaccessible
+    Primer::OpenProject::AvatarWithFallback.validate_urls = true
+    Primer::OpenProject::AvatarWithFallback.any_instance.stubs(:url_accessible?).returns(false)
+
+    render_inline(Primer::OpenProject::AvatarWithFallback.new(src: "https://broken.example.com/avatar.png", alt: "Test User", unique_id: 42))
+
+    # Should render fallback SVG when URL is inaccessible
+    assert_selector("avatar-fallback[data-unique-id='42']") do
+      assert_selector("img.avatar[src^='data:image/svg+xml;base64,']")
+    end
   end
 
   def test_renders_fallback_when_src_is_nil
