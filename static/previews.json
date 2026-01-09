@@ -1633,6 +1633,32 @@
             "color-contrast"
           ]
         }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_with_fallback/broken_image_404",
+        "name": "broken_image_404",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/avatar_with_fallback/multiple_broken_images",
+        "name": "multiple_broken_images",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
       }
     ]
   },
