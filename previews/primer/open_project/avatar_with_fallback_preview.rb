@@ -66,6 +66,26 @@ module Primer
       end
       #
       # @!endgroup
+
+      # @!group Error Handling (404 Fallback)
+      #
+      # @label Broken image (404)
+      # @snapshot
+      def broken_image_404
+        # Uses a non-existent URL - will trigger error handler and show fallback SVG
+        render(Primer::OpenProject::AvatarWithFallback.new(
+          src: "/non-existent-avatar.png",
+          alt: "User With Missing Avatar",
+          unique_id: 42
+        ))
+      end
+
+      # @label Multiple broken images
+      def multiple_broken_images
+        render_with_template(locals: {})
+      end
+      #
+      # @!endgroup
     end
   end
 end

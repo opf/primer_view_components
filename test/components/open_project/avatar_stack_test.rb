@@ -41,7 +41,8 @@ class PrimerOpenProjectAvatarStackTest < Minitest::Test
       assert_selector(".AvatarStack-body") do
         # 2 img tags total: 1 with remote src, 1 with data URI fallback
         assert_selector("img.avatar", count: 2)
-        assert_selector("avatar-fallback", count: 1)
+        # All avatars wrapped in avatar-fallback for 404 error handling
+        assert_selector("avatar-fallback", count: 2)
         assert_selector("img.avatar[src^='data:image/svg+xml;base64,']", count: 1)
       end
     end
