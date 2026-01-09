@@ -69,37 +69,49 @@ module Primer
 
       # @!group Error Handling (404 Fallback)
       #
-      # @label Broken absolute URL (server-side fallback)
+      # @label Broken Gravatar (server-side, no flicker)
       # @snapshot
-      def broken_absolute_url
-        # Absolute URLs are validated server-side via HEAD request
+      def broken_gravatar_url
+        # Gravatar URLs are in the allowlist - validated server-side via HEAD request
         # If inaccessible, fallback SVG is rendered immediately (no flicker)
         render(Primer::OpenProject::AvatarWithFallback.new(
-          src: "https://example.com/non-existent-avatar.png",
-          alt: "User With Missing Avatar",
+          src: "https://gravatar.com/avatar/nonexistent123",
+          alt: "User With Missing Gravatar",
           unique_id: 42
         ))
       end
 
-      # @label Multiple broken absolute URLs (server-side)
-      def multiple_broken_absolute_urls
+      # @label Multiple broken Gravatars (server-side)
+      def multiple_broken_gravatar_urls
         render_with_template(locals: {})
+      end
+
+      # @label Broken non-allowlisted URL (client-side fallback)
+      # @snapshot
+      def broken_non_allowlisted_url
+        # Non-allowlisted hosts skip server-side validation (SSRF protection)
+        # Client-side JS handles the error and swaps to fallback SVG (may flicker)
+        render(Primer::OpenProject::AvatarWithFallback.new(
+          src: "https://example.com/non-existent-avatar.png",
+          alt: "User With Missing Avatar",
+          unique_id: 43
+        ))
       end
 
       # @label Broken relative URL (client-side fallback)
       # @snapshot
       def broken_relative_url
         # Relative URLs cannot be validated server-side (no host context)
-        # Client-side JS handles the error and swaps to fallback SVG
+        # Client-side JS handles the error and swaps to fallback SVG (may flicker)
         render(Primer::OpenProject::AvatarWithFallback.new(
           src: "/non-existent-avatar.png",
           alt: "User With Missing Avatar",
-          unique_id: 43
+          unique_id: 44
         ))
       end
 
-      # @label Multiple broken relative URLs (client-side)
-      def multiple_broken_relative_urls
+      # @label Multiple broken non-allowlisted URLs (client-side)
+      def multiple_broken_non_allowlisted_urls
         render_with_template(locals: {})
       end
       #

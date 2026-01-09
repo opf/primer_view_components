@@ -5,15 +5,6 @@ require "components/test_helper"
 class PrimerOpenProjectAvatarStackTest < Minitest::Test
   include Primer::ComponentTestHelpers
 
-  def setup
-    @original_validate_urls = Primer::OpenProject::AvatarWithFallback.validate_urls
-    Primer::OpenProject::AvatarWithFallback.validate_urls = false
-  end
-
-  def teardown
-    Primer::OpenProject::AvatarWithFallback.validate_urls = @original_validate_urls
-  end
-
   def test_renders_with_image_avatars
     render_inline(Primer::OpenProject::AvatarStack.new) do |component|
       component.with_avatar_with_fallback(src: "https://github.com/github.png", alt: "@github")

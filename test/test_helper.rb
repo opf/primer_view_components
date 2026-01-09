@@ -32,5 +32,8 @@ require "primer/view_components"
 
 require File.expand_path("../demo/config/environment.rb", __dir__)
 
+# Disable server-side URL validation in tests to avoid HTTP requests
+Primer::OpenProject::AvatarWithFallback.validate_urls = false
+
 # used by SelectPanel
 Mime::Type.register "text/fragment+html", :html_fragment
