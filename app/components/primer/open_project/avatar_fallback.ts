@@ -6,19 +6,32 @@ export class AvatarFallbackElement extends HTMLElement {
   @attr altText = ''
   @attr fallbackSrc = ''
 
+  private img?: HTMLImageElement
+  private boundErrorHandler?: () => void
+
   connectedCallback() {
-    const img = this.querySelector<HTMLImageElement>('img')
-    if (!img) return
+    this.img = this.querySelector<HTMLImageElement>('img') ?? undefined
+    if (!this.img) return
+
+    this.boundErrorHandler = () => this.handleImageError(this.img!)
 
     // Handle image load errors (404, network failure, etc.)
-    img.addEventListener('error', () => this.handleImageError(img))
+    this.img.addEventListener('error', this.boundErrorHandler)
 
     // Check if image already failed (error event fired before listener attached)
-    if (this.isImageBroken(img)) {
-      this.handleImageError(img)
-    } else if (this.isFallbackImage(img)) {
-      this.applyColor(img)
+    if (this.isImageBroken(this.img)) {
+      this.handleImageError(this.img)
+    } else if (this.isFallbackImage(this.img)) {
+      this.applyColor(this.img)
     }
+  }
+
+  disconnectedCallback() {
+    if (this.boundErrorHandler && this.img) {
+      this.img.removeEventListener('error', this.boundErrorHandler)
+    }
+    this.boundErrorHandler = undefined
+    this.img = undefined
   }
 
   private isImageBroken(img: HTMLImageElement): boolean {
