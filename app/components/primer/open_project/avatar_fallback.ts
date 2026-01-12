@@ -4,16 +4,57 @@ import {attr, controller} from '@github/catalyst'
 export class AvatarFallbackElement extends HTMLElement {
   @attr uniqueId = ''
   @attr altText = ''
+  @attr fallbackSrc = ''
+
+  private img: HTMLImageElement | null = null
+  private boundErrorHandler?: () => void
 
   connectedCallback() {
+    this.img = this.querySelector<HTMLImageElement>('img') ?? null
+    if (!this.img) return
+
+    this.boundErrorHandler = () => this.handleImageError(this.img!)
+
+    // Handle image load errors (404, network failure, etc.)
+    this.img.addEventListener('error', this.boundErrorHandler)
+
+    // Check if image already failed (error event fired before listener attached)
+    if (this.isImageBroken(this.img)) {
+      this.handleImageError(this.img)
+    } else if (this.isFallbackImage(this.img)) {
+      this.applyColor(this.img)
+    }
+  }
+
+  disconnectedCallback() {
+    if (this.boundErrorHandler && this.img) {
+      this.img.removeEventListener('error', this.boundErrorHandler)
+    }
+    this.boundErrorHandler = undefined
+    this.img = null
+  }
+
+  private isImageBroken(img: HTMLImageElement): boolean {
+    // Image is broken if loading completed but no actual image data loaded
+    // Skip check for data URIs (fallback SVGs) as they're always valid
+    return img.complete && img.naturalWidth === 0 && !img.src.startsWith('data:')
+  }
+
+  private handleImageError(img: HTMLImageElement) {
+    // Prevent infinite loop if fallback also fails
+    if (this.isFallbackImage(img)) return
+
+    if (this.fallbackSrc) {
+      img.src = this.fallbackSrc
+      this.applyColor(img)
+    }
+  }
+
+  private applyColor(img: HTMLImageElement) {
     // If either uniqueId or altText is missing, skip color customization so the SVG
     // keeps its default gray fill defined in the source and no color override is applied.
     if (!this.uniqueId || !this.altText) return
 
-    const img = this.querySelector<HTMLImageElement>('img[src^="data:image/svg+xml"]')
-    if (!img) return
-
-    // Generate consistent color based on uniqueId and altText (hash must match OP Core)
     const text = `${this.uniqueId}${this.altText}`
     const hue = this.valueHash(text)
     const color = `hsl(${hue}, 50%, 30%)`
@@ -45,5 +86,9 @@ export class AvatarFallbackElement extends HTMLElement {
       // If the SVG data is malformed or not valid base64, skip updating the color
       // to avoid breaking the component.
     }
+  }
+
+  private isFallbackImage(img: HTMLImageElement): boolean {
+    return img.src === this.fallbackSrc
   }
 }
