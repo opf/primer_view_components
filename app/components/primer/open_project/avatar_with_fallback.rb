@@ -5,14 +5,12 @@ module Primer
     # OpenProject-specific Avatar component that extends Primer::Beta::Avatar
     # to support fallback rendering with initials when no image source is provided.
     #
-    # When `src` is nil, this component renders an SVG with initials extracted from
-    # the alt text. The AvatarFallbackElement web component then enhances it client-side
-    # by applying a consistent background color based on the user's unique_id (using the
-    # same hash function as OP Core for consistency).
+    # Uses a "fallback first" pattern for flicker-free loading:
+    # 1. Always renders fallback SVG as initial <img> src (visible immediately)
+    # 2. Client-side JS test-loads the real URL in background
+    # 3. On success, swaps to real image; on failure, fallback stays visible
     #
-    # This component follows the "extension over mutation" pattern - it extends
-    # Primer::Beta::Avatar without modifying its interface, ensuring compatibility
-    # with upstream changes.
+    # This approach is inspired by OpenProject's Angular PrincipalRendererService.
     class AvatarWithFallback < Primer::Beta::Avatar
       status :open_project
 
@@ -21,8 +19,8 @@ module Primer
       #   - https://github.com/primer/css/blob/main/src/support/variables/typography.scss
       FONT_STACK = "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'"
 
-      # @param src [String] The source url of the avatar image. When nil or a broken URL, it renders a fallback with initials.
-      # @param alt [String] Alt text for the avatar. Used for accessibility and to generate initials when src is nil.
+      # @param src [String] The source url of the avatar image. JS will test-load and swap on success.
+      # @param alt [String] Alt text for the avatar. Used for accessibility and to generate initials.
       # @param size [Integer] <%= one_of(Primer::Beta::Avatar::SIZE_OPTIONS) %>
       # @param shape [Symbol] Shape of the avatar. <%= one_of(Primer::Beta::Avatar::SHAPE_OPTIONS) %>
       # @param href [String] The URL to link to. If used, component will be wrapped by an `<a>` tag.
@@ -32,10 +30,11 @@ module Primer
         require_src_or_alt_arguments(src, alt)
 
         @unique_id = unique_id
+        @avatar_src = src.presence
         @fallback_svg = generate_fallback_svg(alt, size)
-        final_src = src.blank? ? @fallback_svg : src
 
-        super(src: final_src, alt: alt, size: size, shape: shape, href: href, **system_arguments)
+        # Always render fallback first - JS will swap to real image on successful load
+        super(src: @fallback_svg, alt: alt, size: size, shape: shape, href: href, **system_arguments)
       end
 
       def call
@@ -45,7 +44,7 @@ module Primer
             data: {
               unique_id: @unique_id,
               alt_text: @system_arguments[:alt],
-              fallback_src: @fallback_svg
+              avatar_src: @avatar_src
             }
           )
         ) { super }
