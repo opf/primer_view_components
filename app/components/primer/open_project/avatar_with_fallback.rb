@@ -86,19 +86,16 @@ module Primer
 
       def allowed_host?(url)
         uri = URI.parse(url)
-        ALLOWED_AVATAR_HOSTS.include?(uri.host&.downcase)
+        uri.scheme == "https" && ALLOWED_AVATAR_HOSTS.include?(uri.host&.downcase)
       rescue URI::InvalidURIError
         false
       end
 
       def url_accessible?(url)
         uri = URI.parse(url)
-        http = Net::HTTP.new(uri.host, uri.port)
-        http.use_ssl = uri.scheme == "https"
-        http.open_timeout = 2
-        http.read_timeout = 2
-
-        response = http.head(uri.request_uri)
+        response = Net::HTTP.start(uri.host, uri.port, use_ssl: true, open_timeout: 2, read_timeout: 2) do |http|
+          http.head(uri.request_uri)
+        end
         response.is_a?(Net::HTTPSuccess)
       rescue StandardError
         false
