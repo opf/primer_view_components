@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.79.1
+
+### Patch Changes
+
+- [#396](https://github.com/opf/primer_view_components/pull/396) [`be01160`](https://github.com/opf/primer_view_components/commit/be01160d8c5d08214366829768e29bbc7c1994cf) Thanks [@akabiru](https://github.com/akabiru)! - Handle 404 errors in AvatarWithFallback with client-side fallback
+
 ## 0.79.0
 
 ### Minor Changes
