@@ -293,7 +293,7 @@ module Primer
       def set_action_arguments(system_arguments, scheme: nil)
         system_arguments[:ml] ||= 2
         system_arguments[:display] = %i[none flex]
-        system_arguments[:size] = :medium
+        system_arguments[:size] ||= :medium
         system_arguments[:scheme] = scheme unless scheme.nil?
         system_arguments[:classes] = class_names(
           system_arguments[:classes],
