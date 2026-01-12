@@ -6,11 +6,11 @@ export class AvatarFallbackElement extends HTMLElement {
   @attr altText = ''
   @attr fallbackSrc = ''
 
-  private img?: HTMLImageElement
+  private img: HTMLImageElement | null = null
   private boundErrorHandler?: () => void
 
   connectedCallback() {
-    this.img = this.querySelector<HTMLImageElement>('img') ?? undefined
+    this.img = this.querySelector<HTMLImageElement>('img') ?? null
     if (!this.img) return
 
     this.boundErrorHandler = () => this.handleImageError(this.img!)
@@ -31,7 +31,7 @@ export class AvatarFallbackElement extends HTMLElement {
       this.img.removeEventListener('error', this.boundErrorHandler)
     }
     this.boundErrorHandler = undefined
-    this.img = undefined
+    this.img = null
   }
 
   private isImageBroken(img: HTMLImageElement): boolean {
