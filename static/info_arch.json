@@ -18882,13 +18882,13 @@
         "name": "src",
         "type": "String",
         "default": "`nil`",
-        "description": "The source url of the avatar image. JS will test-load and swap on success."
+        "description": "The source URL of the avatar image. When provided, JavaScript will test-load it in the background and swap to it on success. When nil or blank, only the fallback SVG is displayed."
       },
       {
         "name": "alt",
         "type": "String",
         "default": "`nil`",
-        "description": "Alt text for the avatar. Used for accessibility and to generate initials."
+        "description": "Alt text for the avatar. Used for accessibility and to generate initials for the fallback SVG."
       },
       {
         "name": "size",
