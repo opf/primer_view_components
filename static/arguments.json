@@ -5775,13 +5775,13 @@
         "name": "src",
         "type": "String",
         "default": "`nil`",
-        "description": "The source url of the avatar image. When nil or a broken URL, it renders a fallback with initials."
+        "description": "The source url of the avatar image. JS will test-load and swap on success."
       },
       {
         "name": "alt",
         "type": "String",
         "default": "`nil`",
-        "description": "Alt text for the avatar. Used for accessibility and to generate initials when src is nil."
+        "description": "Alt text for the avatar. Used for accessibility and to generate initials."
       },
       {
         "name": "size",
