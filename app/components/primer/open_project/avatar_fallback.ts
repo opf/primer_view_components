@@ -16,6 +16,7 @@ import {controller} from '@github/catalyst'
 @controller
 export class AvatarFallbackElement extends HTMLElement {
   private img: HTMLImageElement | null = null
+  private testImage: HTMLImageElement | null = null
 
   connectedCallback() {
     this.img = this.querySelector<HTMLImageElement>('img') ?? null
@@ -35,6 +36,11 @@ export class AvatarFallbackElement extends HTMLElement {
   }
 
   disconnectedCallback() {
+    // Clean up test image and its event handler to prevent memory leaks
+    if (this.testImage) {
+      this.testImage.onload = null
+      this.testImage = null
+    }
     this.img = null
   }
 
@@ -44,9 +50,9 @@ export class AvatarFallbackElement extends HTMLElement {
    * On failure, does nothing - fallback stays visible.
    */
   private testLoadImage(url: string) {
-    const testImage = new Image()
+    this.testImage = new Image()
 
-    testImage.onload = () => {
+    this.testImage.onload = () => {
       // Success - swap to real image
       if (this.img) {
         this.img.src = url
@@ -54,7 +60,7 @@ export class AvatarFallbackElement extends HTMLElement {
     }
 
     // On error: do nothing, fallback stays visible (no flicker)
-    testImage.src = url
+    this.testImage.src = url
   }
 
   private applyColor(img: HTMLImageElement, uniqueId: string, altText: string) {

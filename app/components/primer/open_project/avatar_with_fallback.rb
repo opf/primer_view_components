@@ -19,8 +19,8 @@ module Primer
       #   - https://github.com/primer/css/blob/main/src/support/variables/typography.scss
       FONT_STACK = "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'"
 
-      # @param src [String] The source url of the avatar image. JS will test-load and swap on success.
-      # @param alt [String] Alt text for the avatar. Used for accessibility and to generate initials.
+      # @param src [String] The source URL of the avatar image. When provided, JavaScript will test-load it in the background and swap to it on success. When nil or blank, only the fallback SVG is displayed.
+      # @param alt [String] Alt text for the avatar. Used for accessibility and to generate initials for the fallback SVG.
       # @param size [Integer] <%= one_of(Primer::Beta::Avatar::SIZE_OPTIONS) %>
       # @param shape [Symbol] Shape of the avatar. <%= one_of(Primer::Beta::Avatar::SHAPE_OPTIONS) %>
       # @param href [String] The URL to link to. If used, component will be wrapped by an `<a>` tag.
