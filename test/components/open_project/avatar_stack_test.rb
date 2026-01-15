@@ -12,7 +12,10 @@ class PrimerOpenProjectAvatarStackTest < Minitest::Test
 
     assert_selector("div.AvatarStack") do
       assert_selector(".AvatarStack-body") do
-        assert_selector("img.avatar", count: 1)
+        # Fallback-first pattern: img shows fallback SVG, real URL in data-avatar-src for JS
+        assert_selector("avatar-fallback[data-avatar-src='https://github.com/github.png']") do
+          assert_selector("img.avatar[src^='data:image/svg+xml;base64,']", count: 1)
+        end
       end
     end
   end
@@ -39,11 +42,14 @@ class PrimerOpenProjectAvatarStackTest < Minitest::Test
 
     assert_selector("div.AvatarStack") do
       assert_selector(".AvatarStack-body") do
-        # 2 img tags total: 1 with remote src, 1 with data URI fallback
+        # 2 img tags total, both with data URI fallback initially (fallback-first pattern)
         assert_selector("img.avatar", count: 2)
         # All avatars wrapped in avatar-fallback for 404 error handling
         assert_selector("avatar-fallback", count: 2)
-        assert_selector("img.avatar[src^='data:image/svg+xml;base64,']", count: 1)
+        # Both start with fallback SVG; JS swaps to real URL on successful load
+        assert_selector("img.avatar[src^='data:image/svg+xml;base64,']", count: 2)
+        # One has a real URL for JS to test-load
+        assert_selector("avatar-fallback[data-avatar-src='https://github.com/github.png']", count: 1)
       end
     end
   end

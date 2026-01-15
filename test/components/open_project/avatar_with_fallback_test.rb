@@ -5,37 +5,39 @@ require "components/test_helper"
 class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
   include Primer::ComponentTestHelpers
 
-  def test_renders_image_avatar_with_src
+  # "Fallback First" pattern tests:
+  # - img.src is ALWAYS the fallback SVG initially
+  # - data-avatar-src contains the real URL for JS to test-load
+  # - JS swaps to real image only on successful load
+
+  def test_renders_fallback_first_with_real_url_in_data_attribute
     render_inline(Primer::OpenProject::AvatarWithFallback.new(src: "https://github.com/github.png", alt: "github"))
 
-    # Always wrapped in avatar-fallback for 404 error handling
-    assert_selector("avatar-fallback[data-fallback-src^='data:image/svg+xml;base64,']") do
-      assert_selector("img.avatar[src='https://github.com/github.png']")
+    # Image always shows fallback SVG first
+    assert_selector("avatar-fallback[data-avatar-src='https://github.com/github.png']") do
+      assert_selector("img.avatar[src^='data:image/svg+xml;base64,']")
     end
   end
 
-  def test_image_avatar_error_handling_setup
+  def test_preserves_unique_id_and_alt_text_for_client_side_processing
     render_inline(Primer::OpenProject::AvatarWithFallback.new(src: "https://example.com/avatar.png", alt: "Alice Johnson", unique_id: 123))
 
-    # Original src is preserved (client-side JS handles error -> fallback swap)
-    assert_selector("avatar-fallback[data-unique-id='123'][data-alt-text='Alice Johnson']") do
-      assert_selector("img.avatar[src='https://example.com/avatar.png']")
+    assert_selector("avatar-fallback[data-unique-id='123'][data-alt-text='Alice Johnson'][data-avatar-src='https://example.com/avatar.png']") do
+      assert_selector("img.avatar[src^='data:image/svg+xml;base64,']")
     end
 
-    # Verify fallback SVG is available and contains correct initials
+    # Verify fallback SVG contains correct initials
     fallback_wrapper = page.find("avatar-fallback")
-    fallback_src = fallback_wrapper["data-fallback-src"]
-
-    assert fallback_src.start_with?("data:image/svg+xml;base64,")
-    svg_content = Base64.decode64(fallback_src.sub("data:image/svg+xml;base64,", ""))
+    img = fallback_wrapper.find("img")
+    svg_content = Base64.decode64(img["src"].sub("data:image/svg+xml;base64,", ""))
     assert_includes svg_content, ">AJ<", "Fallback SVG should contain initials 'AJ'"
   end
 
   def test_renders_fallback_when_src_is_nil
     render_inline(Primer::OpenProject::AvatarWithFallback.new(src: nil, alt: "OpenProject Admin"))
 
-    # Should render avatar-fallback element wrapping an img with base64 SVG data URI
-    assert_selector("avatar-fallback[data-alt-text='OpenProject Admin']") do
+    # No data-avatar-src when src is nil
+    assert_selector("avatar-fallback[data-alt-text='OpenProject Admin']:not([data-avatar-src])") do
       assert_selector("img.avatar[src^='data:image/svg+xml;base64,']")
     end
   end
@@ -43,7 +45,8 @@ class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
   def test_renders_fallback_when_src_is_blank
     render_inline(Primer::OpenProject::AvatarWithFallback.new(src: "", alt: "OpenProject Admin"))
 
-    assert_selector("avatar-fallback[data-alt-text='OpenProject Admin']") do
+    # No data-avatar-src when src is blank
+    assert_selector("avatar-fallback[data-alt-text='OpenProject Admin']:not([data-avatar-src])") do
       assert_selector("img.avatar[src^='data:image/svg+xml;base64,']")
     end
   end
@@ -101,7 +104,6 @@ class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
   def test_fallback_sets_correct_size_class
     render_inline(Primer::OpenProject::AvatarWithFallback.new(src: nil, alt: "Test User", size: 40))
 
-    # Size is set via attributes, not a dedicated class
     assert_selector("img.avatar[size='40'][height='40'][width='40'][src^='data:image/svg+xml;base64,']")
   end
 
@@ -132,7 +134,6 @@ class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
   def test_fallback_renders_link_wrapper
     render_inline(Primer::OpenProject::AvatarWithFallback.new(src: nil, alt: "Test User", href: "#test"))
 
-    # When href is provided, the avatar class is on the <a> tag, not the <img>
     assert_selector("avatar-fallback") do
       assert_selector("a.avatar[href='#test']") do
         assert_selector("img[src^='data:image/svg+xml;base64,']")
@@ -143,7 +144,6 @@ class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
   def test_fallback_with_unique_id_in_data_attribute
     render_inline(Primer::OpenProject::AvatarWithFallback.new(src: nil, alt: "Test User", unique_id: 123))
 
-    # Should have data attributes for client-side processing
     assert_selector("avatar-fallback[data-unique-id='123'][data-alt-text='Test User']") do
       assert_selector("img.avatar[src^='data:image/svg+xml;base64,']")
     end
@@ -189,9 +189,10 @@ class PrimerOpenProjectAvatarWithFallbackTest < Minitest::Test
   def test_fallback_with_single_word_name
     render_inline(Primer::OpenProject::AvatarWithFallback.new(src: nil, alt: "Alice"))
 
-    assert_selector("avatar-fallback") do
-      assert_selector("img.avatar[src^='data:image/svg+xml;base64,']")
-    end
+    img = page.find("img.avatar")
+    svg_content = Base64.decode64(img["src"].sub("data:image/svg+xml;base64,", ""))
+
+    assert_includes svg_content, ">A<", "Single word name should produce single initial 'A'"
   end
 
   def test_status
