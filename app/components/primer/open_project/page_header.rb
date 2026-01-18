@@ -291,9 +291,17 @@ module Primer
       private
 
       def set_action_arguments(system_arguments, scheme: nil)
+        requested_size = system_arguments.key?(:size) ? system_arguments[:size] : :medium
+        @page_header_action_size ||= requested_size
+
+        if requested_size != @page_header_action_size
+          raise ArgumentError,
+                "PageHeader actions must all use the same size. Set the same `size:` for every action (or omit it to use :medium everywhere)."
+        end
+
         system_arguments[:ml] ||= 2
         system_arguments[:display] = %i[none flex]
-        system_arguments[:size] ||= :medium
+        system_arguments[:size] = requested_size
         system_arguments[:scheme] = scheme unless scheme.nil?
         system_arguments[:classes] = class_names(
           system_arguments[:classes],
