@@ -328,6 +328,23 @@ class PrimerOpenProjectPageHeaderTest < Minitest::Test
     assert_selector(".PageHeader--noBreadcrumb")
   end
 
+  def test_raises_if_actions_have_different_sizes
+    err = assert_raises ArgumentError do
+      render_inline(Primer::OpenProject::PageHeader.new) do |header|
+        header.with_title { "Hello" }
+        header.with_breadcrumbs(nil)
+
+        header.with_action_button(mobile_icon: "star", mobile_label: "Star", size: :small) { "Small" }
+        header.with_action_button(mobile_icon: "pencil", mobile_label: "Edit", size: :medium) { "Medium" }
+      end
+    end
+
+    assert_equal(
+      "PageHeader actions must all use the same size. Set the same `size:` for every action (or omit it to use :medium everywhere).",
+      err.message
+    )
+  end
+
   private
 
   def breadcrumb_elements
