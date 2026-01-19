@@ -340,7 +340,7 @@ class PrimerOpenProjectPageHeaderTest < Minitest::Test
     end
 
     assert_equal(
-      "PageHeader actions must all use the same size. Set the same `size:` for every action (or omit it to use :medium everywhere).",
+      "PageHeader button actions must all use the same size. Set the same `size:` for every button-like action (or omit it to use :medium everywhere).",
       err.message
     )
   end
