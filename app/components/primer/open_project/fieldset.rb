@@ -2,7 +2,7 @@
 
 module Primer
   module OpenProject
-    class FieldsetComponent < Primer::Component
+    class Fieldset < Primer::Component
       attr_reader :legend_text
 
       renders_one :legend, ->(**system_arguments) {

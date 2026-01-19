@@ -1,0 +1,12 @@
+<%# preview: FieldsetComponentPreview#default %>
+<%# N.B. This is an unstyled component! %>
+<%= render(Primer::OpenProject::Fieldset.new) do |component| %>
+  <% component.with_legend(font_size: 4) do %>
+    Account details
+  <% end %>
+
+  <div class="d-flex flex-column gap-2 mt-2">
+    <label for="username">Username</label>
+    <input type="text" id="username" autocomplete="username" placeholder="@myxyz">
+  </div>
+<% end %>
