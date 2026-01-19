@@ -151,6 +151,8 @@
   "Primer::OpenProject::DragHandle": "open_project",
   "Primer::OpenProject::FeedbackDialog": "open_project",
   "Primer::OpenProject::FeedbackMessage": "open_project",
+  "Primer::OpenProject::Fieldset": "alpha",
+  "Primer::OpenProject::Fieldset::LegendComponent": "alpha",
   "Primer::OpenProject::FilterableTreeView": "alpha",
   "Primer::OpenProject::FilterableTreeView::SubTree": "alpha",
   "Primer::OpenProject::FlexLayout": "open_project",

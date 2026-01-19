@@ -4372,6 +4372,40 @@
     ]
   },
   {
+    "name": "fieldset",
+    "component": "OpenProject::Fieldset",
+    "status": "alpha",
+    "lookup_path": "primer/open_project/fieldset",
+    "examples": [
+      {
+        "preview_path": "primer/open_project/fieldset/default",
+        "name": "default",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/fieldset/with_legend_text",
+        "name": "with_legend_text",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      }
+    ]
+  },
+  {
     "name": "file_tree_view",
     "component": "FileTreeView",
     "status": "alpha",
