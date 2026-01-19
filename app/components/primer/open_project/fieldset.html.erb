@@ -1,0 +1,8 @@
+<% unless legend? %>
+  <% with_legend { @legend_text } # set the default %>
+<% end %>
+
+<%= render(Primer::BaseComponent.new(**@system_arguments)) do %>
+  <%= legend %>
+  <%= content %>
+<% end %>
