@@ -5107,7 +5107,7 @@
   {
     "name": "inline_message",
     "component": "OpenProject::InlineMessage",
-    "status": "open_project",
+    "status": "alpha",
     "lookup_path": "primer/open_project/inline_message",
     "examples": [
       {

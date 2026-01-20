@@ -20579,7 +20579,7 @@
     "is_published": true,
     "requires_js": false,
     "component": "OpenProject::InlineMessage",
-    "status": "open_project",
+    "status": "alpha",
     "a11y_reviewed": false,
     "short_name": "OpenProjectInlineMessage",
     "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/inline_message.rb",
