@@ -9,7 +9,7 @@ module Primer
       end
 
       # @label Playground
-      # @param scheme [Symbol] select [warning, success]
+      # @param scheme [Symbol] select [warning, critical, unavailable, success]
       # @param size [Symbol] select [small, medium]
       def playground(
         scheme: :warning,
