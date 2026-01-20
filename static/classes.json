@@ -352,6 +352,12 @@
   "FormControl-warning": [
     "Primer::Alpha::TextField"
   ],
+  "InlineMessage": [
+    "Primer::OpenProject::InlineMessage"
+  ],
+  "InlineMessageIcon": [
+    "Primer::OpenProject::InlineMessage"
+  ],
   "InputGroup": [
     "Primer::OpenProject::InputGroup"
   ],
