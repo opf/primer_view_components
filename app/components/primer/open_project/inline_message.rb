@@ -16,7 +16,7 @@ module Primer
         unavailable: :alert
       }.freeze
       private_constant :SCHEME_ICON_MAPPINGS
-      SCHEME_OPTIONS = SCHEME_ICON_MAPPINGS.keys
+      SCHEME_OPTIONS = SCHEME_ICON_MAPPINGS.keys.freeze
 
       SCHEME_SMALL_ICON_MAPPINGS = {
         warning: :"alert-fill",
