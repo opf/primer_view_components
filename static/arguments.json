@@ -6222,7 +6222,7 @@
   },
   {
     "component": "OpenProject::InlineMessage",
-    "status": "alpha",
+    "status": "open_project",
     "a11y_reviewed": false,
     "short_name": "OpenProjectInlineMessage",
     "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/inline_message.rb",
