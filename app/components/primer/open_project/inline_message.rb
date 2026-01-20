@@ -28,8 +28,8 @@ module Primer
       DEFAULT_SIZE = :medium
       SIZE_OPTIONS = [:small, DEFAULT_SIZE].freeze
 
-      # @param scheme [Symbol] <%= one_of(SCHEME_OPTIONS) %>
-      # @param size [Symbol] <%= one_of(SIZE_OPTIONS) %>
+      # @param scheme [Symbol] <%= one_of(Primer::OpenProject::InlineMessage::SCHEME_OPTIONS) %>
+      # @param size [Symbol] <%= one_of(Primer::OpenProject::InlineMessage::SIZE_OPTIONS) %>
       # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
       def initialize(scheme:, size: DEFAULT_SIZE, **system_arguments) # rubocop:disable Lint/MissingSuper
         resolved_scheme = fetch_or_fallback(SCHEME_OPTIONS, scheme)
