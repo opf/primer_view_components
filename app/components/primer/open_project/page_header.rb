@@ -311,17 +311,14 @@ module Primer
       end
 
       def enforce_consistent_button_size!(system_arguments)
-        size = system_arguments.key?(:size) ? system_arguments[:size] : DEFAULT_BUTTON_ACTION_SIZE
+        size = system_arguments.fetch(:size, DEFAULT_BUTTON_ACTION_SIZE)
         @page_header_button_action_size ||= size
-
-        if size != @page_header_button_action_size
+        unless size == @page_header_button_action_size
           raise ArgumentError,
                 "PageHeader button actions must all use the same size. " \
                   "Set the same `size:` for every button-like action (or omit it to use #{DEFAULT_BUTTON_ACTION_SIZE.inspect} everywhere)."
         end
-
-        system_arguments[:size] = size
-        system_arguments
+        system_arguments.merge(size: @page_header_button_action_size)
       end
 
       def create_mobile_alternatives(component, mobile_icon, mobile_label, scheme, **system_arguments, &block)
