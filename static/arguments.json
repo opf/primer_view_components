@@ -6060,7 +6060,7 @@
   },
   {
     "component": "OpenProject::Fieldset",
-    "status": "alpha",
+    "status": "open_project",
     "a11y_reviewed": false,
     "short_name": "OpenProjectFieldset",
     "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/fieldset.rb",
@@ -6088,7 +6088,7 @@
   },
   {
     "component": "OpenProject::Fieldset::Legend",
-    "status": "alpha",
+    "status": "open_project",
     "a11y_reviewed": false,
     "short_name": "OpenProjectFieldsetLegend",
     "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/fieldset/legend_component.rb",
