@@ -12,6 +12,7 @@ class PrimerComponentTest < Minitest::Test
       component.with_title { "Hello world" }
       component.with_collapsible_content { "Collapse me!" }
     }],
+    [Primer::OpenProject::Fieldset, { legend_text: "My legend" }, proc { "Content" }],
     [Primer::OpenProject::BorderBox::CollapsibleHeader, { box: Primer::Beta::BorderBox.new }, proc { |component|
       component.with_title { "Hello world" }
     }],
