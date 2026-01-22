@@ -3,6 +3,8 @@
 module Primer
   module OpenProject
     class Fieldset < Primer::Component
+      status :open_project
+
       attr_reader :legend_text
 
       renders_one :legend, ->(**system_arguments) {
@@ -30,6 +32,8 @@ module Primer
       end
 
       class LegendComponent < Primer::Component
+        status :open_project
+
         attr_reader :text
 
         def initialize(text: nil, visually_hide_legend: false, **system_arguments) # rubocop:disable Lint/MissingSuper
