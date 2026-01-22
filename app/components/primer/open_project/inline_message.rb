@@ -9,6 +9,8 @@ module Primer
     # is designed to be used "inline", e.g. table cells, and in places
     # where a Banner component might be overkill.
     class InlineMessage < Primer::Component
+      status :open_project
+
       SCHEME_ICON_MAPPINGS = {
         warning: :alert,
         critical: :alert,
