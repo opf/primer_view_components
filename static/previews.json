@@ -4374,7 +4374,7 @@
   {
     "name": "fieldset",
     "component": "OpenProject::Fieldset",
-    "status": "alpha",
+    "status": "open_project",
     "lookup_path": "primer/open_project/fieldset",
     "examples": [
       {
