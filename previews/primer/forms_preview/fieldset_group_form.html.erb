@@ -1,0 +1,47 @@
+<%
+  fieldset_group_form = Class.new(ApplicationForm) do
+    form do |f|
+      f.text_field(
+        name: :ultimate_answer,
+        label: "Ultimate answer",
+        required: true,
+        caption: "The answer to life, the universe, and everything"
+      )
+
+      f.fieldset_group(
+        title: "Delivery preferences",
+        caption: "These settings affect how we contact you",
+        layout: :default
+      ) do |g|
+        g.select_list(
+          name: :window,
+          label: "Delivery window",
+          include_blank: true
+        ) do |window_list|
+          window_list.option(label: "Morning", value: "morning")
+          window_list.option(label: "Afternoon", value: "afternoon")
+          window_list.option(label: "Evening", value: "evening")
+        end
+
+        g.check_box(name: :leave_at_door, label: "Leave at the door")
+        g.text_area(
+          name: :instructions,
+          label: "Instructions",
+          caption: "Anything the courier should know?"
+        )
+      end
+
+      f.text_field(
+        name: :hours,
+        label: "hours",
+        type: :number,
+        required: true,
+        trailing_visual: { text: { text: "min" } }
+      )
+    end
+  end
+%>
+
+<%= primer_form_with(url: "/foo") do |f| %>
+  <%= render(fieldset_group_form.new(f)) %>
+<% end %>

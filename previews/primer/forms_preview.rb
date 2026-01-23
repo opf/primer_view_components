@@ -12,6 +12,9 @@ module Primer
     def custom_width_fields_form; end
 
     # @snapshot
+    def fieldset_group_form; end
+
+    # @snapshot
     def text_field_and_checkbox_form; end
 
     # @snapshot

@@ -2,6 +2,10 @@
 
 module Primer
   module OpenProject
+    # A low-level component for building fieldsets with unopinionated styling.
+    #
+    # This component is not designed to be used directly, but rather a primitive for
+    # authors of other components and form controls.
     class Fieldset < Primer::Component
       status :open_project
 

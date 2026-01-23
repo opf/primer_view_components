@@ -5,6 +5,9 @@ module Primer
     module Dsl
       # :nodoc:
       class FieldsetGroupInput < Input
+        include Primer::Forms::Dsl::InputMethods
+        include InputMethods
+
         attr_reader :builder, :form, :system_arguments
 
         def initialize(builder:, form:, **system_arguments)
