@@ -46,14 +46,12 @@ class PrimerOpenProjectFieldsetTest < Minitest::Test
       "Fieldset content"
     end
 
-    assert_no_selector("fieldset")
-    assert_no_text("Fieldset content")
+    refute_component_rendered
   end
 
   def test_renders_nothing_without_content
     render_inline(Primer::OpenProject::Fieldset.new(legend_text: "My legend"))
 
-    assert_no_selector("fieldset")
-    assert_no_text("My legend")
+    refute_component_rendered
   end
 end
