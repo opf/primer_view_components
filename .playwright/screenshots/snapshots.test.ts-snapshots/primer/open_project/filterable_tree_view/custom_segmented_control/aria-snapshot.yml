@@ -3,7 +3,7 @@
     - button "Teacher"
   - listitem:
     - button "All"
-- checkbox "Include sub-items": "1"
+- checkbox "Include sub-items"
 - text: Include sub-items Filter
 - searchbox "Filter"
 - button "Clear"
