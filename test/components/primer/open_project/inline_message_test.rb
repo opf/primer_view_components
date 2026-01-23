@@ -2,7 +2,7 @@
 
 require "components/test_helper"
 
-class PrimerOpenProjectInlineMESSAGETest < Minitest::Test
+class PrimerOpenProjectInlineMessageTest < Minitest::Test
   include Primer::ComponentTestHelpers
 
   def test_renders_with_content
