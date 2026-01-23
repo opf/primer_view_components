@@ -6059,6 +6059,43 @@
     ]
   },
   {
+    "component": "OpenProject::Fieldset",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectFieldset",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/fieldset.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/fieldset/default/",
+    "parameters": [
+      {
+        "name": "legend_text",
+        "type": "String",
+        "default": "`nil`",
+        "description": "A legend should be short and concise. The String will also be read by assistive technology."
+      },
+      {
+        "name": "visually_hide_legend",
+        "type": "Boolean",
+        "default": "`false`",
+        "description": "Controls if the legend is visible. If `true`, screen reader only text will be added."
+      },
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "[System arguments](/system-arguments)"
+      }
+    ]
+  },
+  {
+    "component": "OpenProject::Fieldset::Legend",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectFieldsetLegend",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/fieldset/legend_component.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/fieldset/legend/default/",
+    "parameters": []
+  },
+  {
     "component": "OpenProject::FilterableTreeView",
     "status": "alpha",
     "a11y_reviewed": false,

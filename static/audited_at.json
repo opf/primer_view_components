@@ -151,6 +151,8 @@
   "Primer::OpenProject::DragHandle": "",
   "Primer::OpenProject::FeedbackDialog": "",
   "Primer::OpenProject::FeedbackMessage": "",
+  "Primer::OpenProject::Fieldset": "",
+  "Primer::OpenProject::Fieldset::LegendComponent": "",
   "Primer::OpenProject::FilterableTreeView": "",
   "Primer::OpenProject::FilterableTreeView::SubTree": "",
   "Primer::OpenProject::FlexLayout": "",

@@ -19,6 +19,10 @@ module Primer
         def group(**options, &block)
           add_input InputGroup.new(builder: @builder, form: @form, **options, &block)
         end
+
+        def fieldset_group(**options, &block)
+          add_input FieldsetGroupInput.new(builder: @builder, form: @form, **options, &block)
+        end
       end
     end
   end

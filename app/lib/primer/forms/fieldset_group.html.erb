@@ -1,0 +1,10 @@
+<%= render(Primer::BaseComponent.new(**@system_arguments)) do %>
+  <%= render(Primer::OpenProject::Fieldset.new(**@fieldset_arguments)) do %>
+    <%=
+      render(Primer::Beta::Subhead.new) do |component|
+        component.with_heading(**@heading_arguments).with_content(@title)
+      end
+    %>
+    <%= render(Primer::Forms::Group.new(**@group_arguments)) %>
+  <% end %>
+<% end %>

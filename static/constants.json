@@ -1751,6 +1751,13 @@
   "Primer::OpenProject::FeedbackMessage": {
     "GeneratedSlotMethods": "Primer::OpenProject::FeedbackMessage::GeneratedSlotMethods"
   },
+  "Primer::OpenProject::Fieldset": {
+    "GeneratedSlotMethods": "Primer::OpenProject::Fieldset::GeneratedSlotMethods",
+    "LegendComponent": "Primer::OpenProject::Fieldset::LegendComponent"
+  },
+  "Primer::OpenProject::Fieldset::LegendComponent": {
+    "GeneratedSlotMethods": "Primer::OpenProject::Fieldset::LegendComponent::GeneratedSlotMethods"
+  },
   "Primer::OpenProject::FilterableTreeView": {
     "DEFAULT_FILTER_INPUT_ARGUMENTS": {
       "name": "filter",
