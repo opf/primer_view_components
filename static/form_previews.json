@@ -21,7 +21,7 @@
       {
         "preview_path": "primer/forms/fieldset_group_form",
         "name": "fieldset_group_form",
-        "snapshot": "false"
+        "snapshot": "true"
       },
       {
         "preview_path": "primer/forms/text_field_and_checkbox_form",

@@ -20081,7 +20081,7 @@
   },
   {
     "fully_qualified_name": "Primer::OpenProject::Fieldset",
-    "description": "",
+    "description": "A low-level component for building fieldsets with unopinionated styling.\n\nThis component is not designed to be used directly, but rather a primitive for\nauthors of other components and form controls.",
     "accessibility_docs": null,
     "is_form_component": false,
     "is_published": true,
@@ -20127,47 +20127,7 @@
         "return_types": []
       }
     ],
-    "previews": [
-      {
-        "preview_path": "primer/open_project/fieldset/default",
-        "name": "default",
-        "snapshot": "true",
-        "skip_rules": {
-          "wont_fix": [
-            "region"
-          ],
-          "will_fix": [
-            "color-contrast"
-          ]
-        }
-      },
-      {
-        "preview_path": "primer/open_project/fieldset/playground",
-        "name": "playground",
-        "snapshot": "false",
-        "skip_rules": {
-          "wont_fix": [
-            "region"
-          ],
-          "will_fix": [
-            "color-contrast"
-          ]
-        }
-      },
-      {
-        "preview_path": "primer/open_project/fieldset/with_legend_text",
-        "name": "with_legend_text",
-        "snapshot": "false",
-        "skip_rules": {
-          "wont_fix": [
-            "region"
-          ],
-          "will_fix": [
-            "color-contrast"
-          ]
-        }
-      }
-    ],
+    "previews": [],
     "subcomponents": []
   },
   {
