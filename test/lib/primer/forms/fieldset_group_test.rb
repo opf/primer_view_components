@@ -48,35 +48,12 @@ class Primer::Forms::FieldsetGroupTest < Minitest::Test
       end
     end
 
-    assert_selector "h3##{heading_id}", text: "Ultimate answers"
     assert_selector "section", text: "Ultimate answers"
     assert_selector "fieldset"
-
-    # no `within` needed
-    assert_selector "fieldset input[type='checkbox']", count: 3
-  end
-
-  def test_renders_heading_and_wires_up_aria_labelledby
-    heading_id = "fieldset-group-heading"
-    inputs = [DummyInputComponent.new(hidden: false, type: :text)]
-
-    render_in_view_context do
-      primer_form_with(url: "/foo") do |f|
-        render(
-          Primer::Forms::FieldsetGroup.new(
-            title: "Foobar",
-            inputs: inputs,
-            builder: f,
-            form: Object.new,
-            heading_arguments: { id: heading_id }
-          )
-        )
-      end
-    end
-
+    assert_selector "h3##{heading_id}", text: "Ultimate answers"
     assert_selector "section[aria-labelledby='#{heading_id}']"
-    assert_selector "h3##{heading_id}", text: "Foobar"
     assert_selector "fieldset[aria-labelledby='#{heading_id}']"
+    assert_selector "fieldset input[type='checkbox']", count: 3
   end
 
   def test_hides_wrapper_when_all_inputs_are_hidden
