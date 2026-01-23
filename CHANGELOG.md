@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 0.80.0
+
+### Minor Changes
+
+- [#403](https://github.com/opf/primer_view_components/pull/403) [`f6a5bf3`](https://github.com/opf/primer_view_components/commit/f6a5bf38192a37dfe474558a0bc63f1e5e5b91e8) Thanks [@bsatarnejad](https://github.com/bsatarnejad)! - [70200] Create inline message component
+
+- [#404](https://github.com/opf/primer_view_components/pull/404) [`a2724da`](https://github.com/opf/primer_view_components/commit/a2724dadd17e1b663d9e195edaf20edf2272a3bc) Thanks [@bsatarnejad](https://github.com/bsatarnejad)! - [70200] Create fieldset component
+
+### Patch Changes
+
+- [#401](https://github.com/opf/primer_view_components/pull/401) [`7323388`](https://github.com/opf/primer_view_components/commit/7323388e6c9b15191f22c69b63b3da5f8a1257f4) Thanks [@bsatarnejad](https://github.com/bsatarnejad)! - Allow PageHeader actions to accept an explicitly provided size
+
 ## 0.79.1
 
 ### Patch Changes
