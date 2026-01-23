@@ -6221,6 +6221,34 @@
     ]
   },
   {
+    "component": "OpenProject::InlineMessage",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectInlineMessage",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/inline_message.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/inline_message/default/",
+    "parameters": [
+      {
+        "name": "scheme",
+        "type": "Symbol",
+        "default": "N/A",
+        "description": "One of `:critical`, `:success`, `:unavailable`, or `:warning`."
+      },
+      {
+        "name": "size",
+        "type": "Symbol",
+        "default": "`:medium`",
+        "description": "One of `:medium` or `:small`."
+      },
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "[System arguments](/system-arguments)"
+      }
+    ]
+  },
+  {
     "component": "OpenProject::InputGroup",
     "status": "open_project",
     "a11y_reviewed": false,

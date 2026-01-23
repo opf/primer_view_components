@@ -1,0 +1,5 @@
+<%= render(Primer::OpenProject::InlineMessage.new(scheme: scheme, size: size)) do %>
+  <%= render(Primer::Beta::Text.new(tag: :p)) do %>
+    <%= render(Primer::Beta::Text.new(tag: :strong).with_content("It is an inline message")) %>
+  <% end %>
+<% end %>

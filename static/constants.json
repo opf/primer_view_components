@@ -1810,6 +1810,20 @@
   "Primer::OpenProject::Heading": {
     "GeneratedSlotMethods": "Primer::OpenProject::Heading::GeneratedSlotMethods"
   },
+  "Primer::OpenProject::InlineMessage": {
+    "DEFAULT_SIZE": "medium",
+    "GeneratedSlotMethods": "Primer::OpenProject::InlineMessage::GeneratedSlotMethods",
+    "SCHEME_OPTIONS": [
+      "warning",
+      "critical",
+      "success",
+      "unavailable"
+    ],
+    "SIZE_OPTIONS": [
+      "small",
+      "medium"
+    ]
+  },
   "Primer::OpenProject::InputGroup": {
     "DEFAULT_INPUT_WIDTH": "auto",
     "GeneratedSlotMethods": "Primer::OpenProject::InputGroup::GeneratedSlotMethods",

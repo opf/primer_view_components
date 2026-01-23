@@ -5105,6 +5105,40 @@
     ]
   },
   {
+    "name": "inline_message",
+    "component": "OpenProject::InlineMessage",
+    "status": "open_project",
+    "lookup_path": "primer/open_project/inline_message",
+    "examples": [
+      {
+        "preview_path": "primer/open_project/inline_message/default",
+        "name": "default",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/inline_message/playground",
+        "name": "playground",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      }
+    ]
+  },
+  {
     "name": "input_group",
     "component": "OpenProject::InputGroup",
     "status": "open_project",

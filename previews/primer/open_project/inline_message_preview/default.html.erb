@@ -1,0 +1,5 @@
+<%= render(Primer::OpenProject::InlineMessage.new(scheme: :warning, size: :small)) do %>
+  <%= render(Primer::Beta::Text.new(tag: :p)) do %>
+    <%= render(Primer::Beta::Text.new(tag: :strong).with_content("Warning message")) %>
+  <% end %>
+<% end %>

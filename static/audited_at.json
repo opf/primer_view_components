@@ -157,6 +157,7 @@
   "Primer::OpenProject::GridLayout": "",
   "Primer::OpenProject::GridLayout::Area": "",
   "Primer::OpenProject::Heading": "",
+  "Primer::OpenProject::InlineMessage": "",
   "Primer::OpenProject::InputGroup": "",
   "Primer::OpenProject::PageHeader": "",
   "Primer::OpenProject::PageHeader::Dialog": "",
