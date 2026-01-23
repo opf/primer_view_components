@@ -1,43 +1,36 @@
 <%
   fieldset_group_form = Class.new(ApplicationForm) do
     form do |f|
-      f.text_field(
-        name: :ultimate_answer,
-        label: "Ultimate answer",
-        required: true,
-        caption: "The answer to life, the universe, and everything"
-      )
-
       f.fieldset_group(
         title: "Delivery preferences",
-        caption: "These settings affect how we contact you",
-        layout: :default
+        caption: "These settings affect how we contact you"
       ) do |g|
+        g.text_field(
+          name: :ultimate_answer,
+          label: "Ultimate answer",
+          required: true,
+          caption: "The answer to life, the universe, and everything"
+        )
+
         g.select_list(
           name: :window,
           label: "Delivery window",
           include_blank: true
-        ) do |window_list|
-          window_list.option(label: "Morning", value: "morning")
-          window_list.option(label: "Afternoon", value: "afternoon")
-          window_list.option(label: "Evening", value: "evening")
+        ) do |list|
+          list.option(label: "Morning", value: "morning")
+          list.option(label: "Afternoon", value: "afternoon")
+          list.option(label: "Evening", value: "evening")
         end
 
-        g.check_box(name: :leave_at_door, label: "Leave at the door")
-        g.text_area(
-          name: :instructions,
-          label: "Instructions",
-          caption: "Anything the courier should know?"
+        g.text_field(
+          name: :hours,
+          label: "Hours",
+          type: :number,
+          required: true,
+          trailing_visual: { text: { text: "min" } },
+          input_width: :xsmall
         )
       end
-
-      f.text_field(
-        name: :hours,
-        label: "hours",
-        type: :number,
-        required: true,
-        trailing_visual: { text: { text: "min" } }
-      )
     end
   end
 %>
