@@ -20,8 +20,7 @@ class PrimerOpenProjectInlineMessageTest < Minitest::Test
       " "
     end
 
-    assert_no_selector(".InlineMessage")
-    assert_no_text("Important Message")
+    refute_component_rendered
   end
 
   def test_default_size_warning_scheme
