@@ -25,6 +25,8 @@ module Primer
       DEFAULT_PARENT_LINK_DISPLAY = [:block, :none].freeze
       BREADCRUMB_TRUNCATE_AT = 200
 
+      DEFAULT_BUTTON_ACTION_SIZE = :medium
+
       STATE_DEFAULT = :show
       STATE_EDIT = :edit
       STATE_OPTIONS = [STATE_DEFAULT, STATE_EDIT].freeze
@@ -68,6 +70,7 @@ module Primer
           system_arguments[:icon] = icon
           system_arguments[:"aria-label"] ||= label
           system_arguments = set_action_arguments(system_arguments, scheme: scheme)
+          system_arguments = enforce_consistent_button_size!(system_arguments)
 
           component = Primer::Beta::IconButton
           create_mobile_alternatives(component, mobile_icon, label, scheme, **system_arguments, &block)
@@ -78,6 +81,7 @@ module Primer
           deny_tag_argument(**system_arguments)
 
           system_arguments = set_action_arguments(system_arguments, scheme: scheme)
+          system_arguments = enforce_consistent_button_size!(system_arguments)
 
           component = Primer::Beta::Button
           create_mobile_alternatives(component, mobile_icon, mobile_label, scheme, **system_arguments, &block)
@@ -88,6 +92,7 @@ module Primer
           deny_tag_argument(**system_arguments)
 
           system_arguments = set_action_arguments(system_arguments, scheme: DEFAULT_ACTION_SCHEME)
+          system_arguments = enforce_consistent_button_size!(system_arguments)
 
           component = Primer::OpenProject::ZenModeButton
           create_mobile_alternatives(component, mobile_icon, mobile_label, DEFAULT_ACTION_SCHEME, **system_arguments, &block)
@@ -120,6 +125,7 @@ module Primer
 
             system_arguments[:button_arguments] ||= {}
             system_arguments[:button_arguments] = set_action_arguments(system_arguments[:button_arguments])
+            system_arguments[:button_arguments] = enforce_consistent_button_size!(system_arguments[:button_arguments])
 
             # Add the options individually to the mobile menu in the template
             @desktop_menu_block = block
@@ -138,6 +144,7 @@ module Primer
             system_arguments[:button_arguments] ||= {}
             system_arguments[:button_arguments][:id] = "dialog-show-#{system_arguments[:dialog_arguments][:id]}"
             system_arguments[:button_arguments] = set_action_arguments(system_arguments[:button_arguments])
+            system_arguments[:button_arguments] = enforce_consistent_button_size!(system_arguments[:button_arguments])
 
             component = Primer::OpenProject::PageHeader::Dialog
             create_mobile_alternatives(component, mobile_icon, mobile_label, :default, **system_arguments, &block)
@@ -293,7 +300,6 @@ module Primer
       def set_action_arguments(system_arguments, scheme: nil)
         system_arguments[:ml] ||= 2
         system_arguments[:display] = %i[none flex]
-        system_arguments[:size] = :medium
         system_arguments[:scheme] = scheme unless scheme.nil?
         system_arguments[:classes] = class_names(
           system_arguments[:classes],
@@ -302,6 +308,17 @@ module Primer
 
         system_arguments[:id] ||= self.class.generate_id
         system_arguments
+      end
+
+      def enforce_consistent_button_size!(system_arguments)
+        size = system_arguments.fetch(:size, DEFAULT_BUTTON_ACTION_SIZE)
+        @page_header_button_action_size ||= size
+        unless size == @page_header_button_action_size
+          raise ArgumentError,
+                "PageHeader button actions must all use the same size. " \
+                  "Set the same `size:` for every button-like action (or omit it to use #{DEFAULT_BUTTON_ACTION_SIZE.inspect} everywhere)."
+        end
+        system_arguments.merge(size: @page_header_button_action_size)
       end
 
       def create_mobile_alternatives(component, mobile_icon, mobile_label, scheme, **system_arguments, &block)
