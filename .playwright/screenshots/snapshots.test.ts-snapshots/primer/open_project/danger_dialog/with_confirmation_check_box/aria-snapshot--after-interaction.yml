@@ -4,7 +4,7 @@
   - button "Close"
   - heading "Permanently delete this item?" [level=2]
   - paragraph: This action is not reversible. Please proceed with caution.
-  - checkbox "I understand that this deletion cannot be reversed": "1"
+  - checkbox "I understand that this deletion cannot be reversed"
   - text: I understand that this deletion cannot be reversed
   - button "Cancel"
   - button "Delete permanently" [disabled]

@@ -1,10 +1,13 @@
 - navigation "Breadcrumb":
   - list:
     - listitem:
-      - link "Grandparent"
+      - link "Grandparent":
+        - /url: /foo
     - listitem:
-      - link "Parent"
+      - link "Parent":
+        - /url: /bar
     - listitem:
-      - link "Hello"
+      - link "Hello":
+        - /url: "#"
 - heading "Hello" [level=2]
 - text: Last updated 5 minutes ago by XYZ.
