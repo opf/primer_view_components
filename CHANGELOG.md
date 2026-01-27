@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.80.1
+
+### Patch Changes
+
+- [#400](https://github.com/opf/primer_view_components/pull/400) [`9ac633f`](https://github.com/opf/primer_view_components/commit/9ac633f17d66ceb4949eabaa577532a355da8c85) Thanks [@akabiru](https://github.com/akabiru)! - Fix flickering in AvatarWithFallback client-side fallback handling for broken avatar urls
+
 ## 0.80.0
 
 ### Minor Changes
