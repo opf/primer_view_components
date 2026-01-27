@@ -1,61 +1,74 @@
-import {attr, controller} from '@github/catalyst'
+import {controller} from '@github/catalyst'
 
+/**
+ * AvatarFallbackElement implements "fallback first" loading pattern:
+ * 1. Fallback SVG is rendered immediately as <img> src
+ * 2. Real avatar URL is test-loaded in background using new Image()
+ * 3. On success, swaps to real image; on failure, fallback stays visible
+ *
+ * This approach prevents flicker by never showing a broken image state.
+ * Inspired by OpenProject's Angular PrincipalRendererService.
+ *
+ * Note: We read attributes directly via getAttribute() instead of using @attr
+ * due to a Catalyst bug where @attr accessors aren't properly initialized
+ * when elements have pre-existing attribute values.
+ */
 @controller
 export class AvatarFallbackElement extends HTMLElement {
-  @attr uniqueId = ''
-  @attr altText = ''
-  @attr fallbackSrc = ''
-
   private img: HTMLImageElement | null = null
-  private boundErrorHandler?: () => void
+  private testImage: HTMLImageElement | null = null
 
   connectedCallback() {
     this.img = this.querySelector<HTMLImageElement>('img') ?? null
     if (!this.img) return
 
-    this.boundErrorHandler = () => this.handleImageError(this.img!)
+    const uniqueId = this.getAttribute('data-unique-id') || ''
+    const altText = this.getAttribute('data-alt-text') || ''
+    const avatarSrc = this.getAttribute('data-avatar-src') || ''
 
-    // Handle image load errors (404, network failure, etc.)
-    this.img.addEventListener('error', this.boundErrorHandler)
+    // Apply hashed color to fallback SVG immediately
+    this.applyColor(this.img, uniqueId, altText)
 
-    // Check if image already failed (error event fired before listener attached)
-    if (this.isImageBroken(this.img)) {
-      this.handleImageError(this.img)
-    } else if (this.isFallbackImage(this.img)) {
-      this.applyColor(this.img)
+    // Test-load real avatar URL in background
+    if (avatarSrc) {
+      this.testLoadImage(avatarSrc)
     }
   }
 
   disconnectedCallback() {
-    if (this.boundErrorHandler && this.img) {
-      this.img.removeEventListener('error', this.boundErrorHandler)
+    // Clean up test image and its event handler to prevent memory leaks
+    if (this.testImage) {
+      this.testImage.onload = null
+      this.testImage = null
     }
-    this.boundErrorHandler = undefined
     this.img = null
   }
 
-  private isImageBroken(img: HTMLImageElement): boolean {
-    // Image is broken if loading completed but no actual image data loaded
-    // Skip check for data URIs (fallback SVGs) as they're always valid
-    return img.complete && img.naturalWidth === 0 && !img.src.startsWith('data:')
-  }
+  /**
+   * Test-loads the real avatar URL in background.
+   * On success, swaps the visible img to the real URL.
+   * On failure, does nothing - fallback stays visible.
+   */
+  private testLoadImage(url: string) {
+    this.testImage = new Image()
 
-  private handleImageError(img: HTMLImageElement) {
-    // Prevent infinite loop if fallback also fails
-    if (this.isFallbackImage(img)) return
-
-    if (this.fallbackSrc) {
-      img.src = this.fallbackSrc
-      this.applyColor(img)
+    this.testImage.onload = () => {
+      // Success - swap to real image
+      if (this.img) {
+        this.img.src = url
+      }
     }
+
+    // On error: do nothing, fallback stays visible (no flicker)
+    this.testImage.src = url
   }
 
-  private applyColor(img: HTMLImageElement) {
+  private applyColor(img: HTMLImageElement, uniqueId: string, altText: string) {
     // If either uniqueId or altText is missing, skip color customization so the SVG
     // keeps its default gray fill defined in the source and no color override is applied.
-    if (!this.uniqueId || !this.altText) return
+    if (!uniqueId || !altText) return
 
-    const text = `${this.uniqueId}${this.altText}`
+    const text = `${uniqueId}${altText}`
     const hue = this.valueHash(text)
     const color = `hsl(${hue}, 50%, 30%)`
 
@@ -76,6 +89,8 @@ export class AvatarFallbackElement extends HTMLElement {
 
   private updateSvgColor(img: HTMLImageElement, color: string) {
     const dataUri = img.src
+    if (!dataUri.startsWith('data:image/svg+xml;base64,')) return
+
     const base64 = dataUri.replace('data:image/svg+xml;base64,', '')
 
     try {
@@ -86,9 +101,5 @@ export class AvatarFallbackElement extends HTMLElement {
       // If the SVG data is malformed or not valid base64, skip updating the color
       // to avoid breaking the component.
     }
-  }
-
-  private isFallbackImage(img: HTMLImageElement): boolean {
-    return img.src === this.fallbackSrc
   }
 }
