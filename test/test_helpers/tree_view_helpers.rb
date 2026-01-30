@@ -3,7 +3,7 @@
 module Primer
   module TreeViewHelpers
     def selector_for(*path)
-      "[role=treeitem][data-path='#{path.to_json}']"
+      "[role=treeitem][data-path='#{JSON.generate(path)}']"
     end
 
     def activate_at_path(*path)

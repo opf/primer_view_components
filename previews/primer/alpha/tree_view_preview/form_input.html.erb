@@ -7,6 +7,10 @@
       <% end %>
 
       <% tree.with_leaf(label: "action_menu.rb", select_variant: select_variant, value: 3) %>
+      <% tree.with_sub_tree(label: "Docs & legal requirements", select_variant: select_variant, value: 4) do |sub_tree| %>
+        <% sub_tree.with_leaf(label: "Readme.md", select_variant: select_variant, value: 5) %>
+        <% sub_tree.with_leaf(label: "Copyright.md", select_variant: select_variant, value: 6) %>
+      <% end %>
     <% end %>
 
     <%= render(Primer::Alpha::SubmitButton.new(name: :submit, label: "Submit")) %>

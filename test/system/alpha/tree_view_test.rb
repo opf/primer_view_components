@@ -885,5 +885,20 @@ module Alpha
 
       assert_equal "{\"path\":[\"src\",\"button.rb\"],\"value\":\"1\"}", response.dig("form_params", "folder_structure", 0)
     end
+
+    def test_single_select_with_special_character
+      visit_preview(:form_input, expanded: true, select_variant: :single, route_format: :json)
+
+      assert_path_checked "src", "button.rb"
+      activate_at_path("Docs & legal requirements")
+      assert_path_checked "Docs & legal requirements"
+
+      find("button[type=submit]").click
+
+      # for some reason the JSON response is wrapped in HTML, I have no idea why
+      response = JSON.parse(find("pre").text)
+
+      assert_equal "{\"path\":[\"Docs & legal requirements\"],\"value\":\"4\"}", response.dig("form_params", "folder_structure", 0)
+    end
   end
 end
