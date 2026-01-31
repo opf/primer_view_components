@@ -200,7 +200,8 @@ class ComponentSpecificSelectorsTest < Minitest::Test
     Primer::OpenProject::FilterableTreeView => [
       # Used, but not directly rendered by a preview
       "filterable-tree-view mark"
-    ]
+    ],
+    Primer::OpenProject::DataTable => []
   }.freeze
 
   # these test methods are created dynamically so we can see all failures for
