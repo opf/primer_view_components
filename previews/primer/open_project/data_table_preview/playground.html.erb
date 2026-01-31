@@ -1,0 +1,45 @@
+<%=
+  render(
+    Primer::OpenProject::DataTable.new(
+      data: rows,
+      cell_padding: cell_padding,
+      initial_sort_column: initial_sort_column,
+      initial_sort_direction: initial_sort_direction
+    )
+  ) do |data_table|
+%>
+  <% data_table.with_title(tag: :h2) { "Projects" } %>
+
+  <% if show_subtitle %>
+    <% data_table.with_subtitle { "Example data (Preview-only). No AR models required." } %>
+  <% end %>
+
+  <% data_table.with_column(
+       header: "Name",
+       field: :name,
+       row_header: true,
+       width: :grow_collapse,
+       sort_by: :ASC
+  ) %>
+
+  <% data_table.with_column(
+    header: "Status",
+    field: :status_code,
+    sort_by: :ASC
+  ) do |column| %>
+    <% column.with_cell do |row| %>
+      <%= render(Primer::Beta::Label.new) { row.status_code } %>
+    <% end %>
+  <% end %>
+
+  <% data_table.with_column(
+    header: "Created",
+    field: :created_at,
+    align: :end,
+    sort_by: :DESC
+  ) do |column| %>
+    <% column.with_cell do |row| %>
+      <%= row.created_at.strftime("%Y-%m-%d") %>
+    <% end %>
+  <% end %>
+<% end %>
