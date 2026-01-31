@@ -1,0 +1,227 @@
+/* Button reset */
+.TableSortButton {
+    margin: 0;
+    display: inline-flex;
+    padding: 0;
+    border: 0;
+    appearance: none;
+    background: none;
+    cursor: pointer;
+    text-align: start;
+    font: inherit;
+    color: inherit;
+    align-items: center;
+    column-gap: var(--base-size-8);
+}
+
+.TableSortButton::-moz-focus-inner {
+    border: 0;
+}
+
+/* Container ---------------------------------------------------------------- */
+.TableContainer {
+    display: grid;
+    grid-template-areas:
+    'title'
+    'subtitle'
+    'table';
+}
+
+/* TableTitle */
+.TableTitle {
+    margin: 0;
+    font-size: var(--text-body-size-medium);
+    font-weight: var(--base-text-weight-semibold);
+    line-height: var(--text-body-lineHeight-medium);
+    color: var(--fgColor-default);
+    grid-area: title;
+    align-self: center;
+}
+
+/* TableSubtitle */
+.TableSubtitle {
+    margin: 0;
+    font-size: var(--text-body-size-small);
+    font-weight: var(--base-text-weight-normal);
+    line-height: var(--text-title-lineHeight-small);
+    color: var(--fgColor-default);
+    grid-area: subtitle;
+}
+
+/* Spacing before the table */
+.TableTitle + .TableOverflowWrapper,
+.TableSubtitle + .TableOverflowWrapper {
+    margin-block-start: var(--base-size-8);
+}
+
+.TableOverflowWrapper {
+    grid-area: table;
+}
+
+/* Table -------------------------------------------------------------------- */
+.Table {
+    /* Default table styles */
+    --table-border-radius: var(--borderRadius-medium);
+    --table-cell-padding: var(--cell-padding-block, var(--base-size-8)) var(--cell-padding-inline, var(--base-size-12));
+
+    display: grid;
+    width: 100%;
+    font-size: var(--text-body-size-small);
+    line-height: var(--text-body-lineHeight-small);
+    border-spacing: 0;
+    /* stylelint-disable-next-line primer/borders */
+    border-collapse: separate;
+    background-color: var(--bgColor-default);
+    grid-area: table;
+    grid-template-columns: var(--grid-template-columns);
+}
+
+/* Density modes: condensed, normal, spacious */
+.Table:where([data-cell-padding='condensed']) {
+    --cell-padding-block: var(--base-size-4);
+    --cell-padding-inline: var(--base-size-8);
+}
+
+.Table:where([data-cell-padding='normal']) {
+    --cell-padding-block: var(--base-size-8);
+    --cell-padding-inline: var(--base-size-12);
+}
+
+.Table:where([data-cell-padding='spacious']) {
+    --cell-padding-block: var(--base-size-12);
+    --cell-padding-inline: var(--base-size-16);
+}
+
+/* Borders */
+.TableCell:first-child,
+.TableHeader:first-child {
+    border-inline-start: var(--borderWidth-thin) solid var(--borderColor-default);
+}
+
+.TableCell:last-child,
+.TableHeader:last-child {
+    border-inline-end: var(--borderWidth-thin) solid var(--borderColor-default);
+}
+
+.TableHeader,
+.TableCell {
+    display: flex;
+    /* stylelint-disable-next-line primer/spacing */
+    padding: var(--table-cell-padding);
+    text-align: start;
+    align-items: center;
+    border-block-end: var(--borderWidth-thin) solid var(--borderColor-default);
+}
+
+.TableHeader:where([data-cell-align='end']),
+.TableCell:where([data-cell-align='end']) {
+    display: flex;
+    text-align: end;
+    justify-content: flex-end;
+}
+
+.TableHeader[data-cell-align='end'] .TableSortButton {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.TableHead .TableRow:first-of-type .TableHeader {
+    border-block-start: var(--borderWidth-thin) solid var(--borderColor-default);
+}
+
+/* Border radius */
+/* stylelint-disable-next-line selector-max-specificity */
+.TableHead .TableRow:first-of-type .TableHeader:first-child {
+    /* stylelint-disable-next-line primer/borders */
+    border-top-left-radius: var(--table-border-radius);
+}
+
+/* stylelint-disable-next-line selector-max-specificity */
+.TableHead .TableRow:first-of-type .TableHeader:last-child {
+    /* stylelint-disable-next-line primer/borders */
+    border-top-right-radius: var(--table-border-radius);
+}
+
+/* stylelint-disable-next-line selector-max-compound-selectors,selector-max-specificity */
+.TableOverflowWrapper:last-child .Table .TableBody .TableRow:last-of-type .TableCell:first-child {
+    /* stylelint-disable-next-line primer/borders */
+    border-bottom-left-radius: var(--table-border-radius);
+}
+
+/* stylelint-disable-next-line selector-max-compound-selectors,selector-max-specificity */
+.TableOverflowWrapper:last-child .Table .TableBody .TableRow:last-of-type .TableCell:last-child {
+    /* stylelint-disable-next-line primer/borders */
+    border-bottom-right-radius: var(--table-border-radius);
+}
+
+/**
+ * Offset padding to make sure type aligns regardless of cell padding
+ * selection
+ */
+.TableRow > *:first-child {
+    padding-inline-start: var(--base-size-16);
+}
+
+.TableRow > *:last-child {
+    padding-inline-end: var(--base-size-16);
+}
+
+/* TableHeader */
+.TableHeader {
+    font-weight: var(--base-text-weight-semibold);
+    color: var(--fgColor-muted);
+    background-color: var(--bgColor-muted);
+    border-block-start: var(--borderWidth-thin) solid var(--borderColor-default);
+}
+
+.TableHeader:where([aria-sort='descending']),
+.TableHeader:where([aria-sort='ascending']) {
+    color: var(--fgColor-default);
+}
+
+/* Control visibility of sort icons */
+.TableSortIcon {
+    visibility: hidden;
+}
+
+/* The ASC icon is visible if the header is sortable and is hovered or focused */
+.TableHeader:hover .TableSortIcon--ascending,
+.TableHeader .TableSortButton:focus .TableSortIcon--ascending {
+    visibility: visible;
+}
+
+/* Each sort icon is visible if the TableHeader is currently in the corresponding sort state */
+.TableHeader[aria-sort='ascending'] .TableSortIcon--ascending,
+.TableHeader[aria-sort='descending'] .TableSortIcon--descending {
+    visibility: visible;
+}
+
+/* TableRow */
+.TableRow:hover .TableCell {
+    background-color: var(--control-transparent-bgColor-hover);
+}
+
+/* TableCell */
+.TableCell:where([scope='row']) {
+    display: flex;
+    font-weight: var(--base-text-weight-semibold);
+    color: var(--fgColor-default);
+    align-items: center;
+}
+
+/* Grid layout */
+.TableHead,
+.TableBody,
+.TableRow {
+    display: contents;
+}
+
+@supports (grid-template-columns: subgrid) {
+    .TableHead,
+    .TableBody,
+    .TableRow {
+        display: grid;
+        grid-template-columns: subgrid;
+        grid-column: -1 / 1;
+    }
+}
