@@ -18,6 +18,7 @@ module Primer
 
           @system_arguments = system_arguments
           @system_arguments[:classes] = class_names(
+            @system_arguments[:classes],
             "TableHeader"
           )
           @system_arguments[:aria] = merge_aria(
