@@ -1,91 +1,95 @@
-import {controller} from '@github/catalyst';
+import { controller } from "@github/catalyst"
 
 @controller
 export class DataTableElement extends HTMLElement {
 
   constructor() {
-    super();
+    super()
   }
 
   connectedCallback() {
-    sortTableByAriaSort(this.table);
+    sortTableByAriaSort(this.table)
   }
 
-  toggleSort(event:MouseEvent) {
-    const header = (event.target as Element).closest('th')!;
-    const ariaSort = header.getAttribute('aria-sort');
-    const sortAscendingIcon = header.querySelector('.TableSortIcon--ascending');
-    const sortDescendingIcon = header.querySelector('.TableSortIcon--descending');
+  toggleSort(event: MouseEvent) {
+    const header = (event.target as Element).closest("th")!
+    const ariaSort = header.getAttribute("aria-sort")
+    const sortAscendingIcon = header.querySelector(".TableSortIcon--ascending")
+    const sortDescendingIcon = header.querySelector(".TableSortIcon--descending")
 
-    if (ariaSort === 'descending') {
-      header.setAttribute('aria-sort', 'ascending');
-      sortAscendingIcon?.classList.remove('d-none');
-      sortDescendingIcon?.classList.add('d-none');
+    if (ariaSort === "descending") {
+      header.setAttribute("aria-sort", "ascending")
+      sortAscendingIcon?.classList.remove("d-none")
+      sortDescendingIcon?.classList.add("d-none")
     } else {
-      header.setAttribute('aria-sort', 'descending');
-      sortDescendingIcon?.classList.remove('d-none');
-      sortAscendingIcon?.classList.add('d-none');
+      header.setAttribute("aria-sort", "descending")
+      sortDescendingIcon?.classList.remove("d-none")
+      sortAscendingIcon?.classList.add("d-none")
     }
 
-    const siblings = Array.from(header.parentElement!.children)
-        .filter((el): el is HTMLElement => el !== header && el instanceof HTMLElement);
+    const siblings = Array.from(header.parentElement!.children).filter(
+        (el): el is HTMLElement => el !== header && el instanceof HTMLElement,
+    )
 
-    siblings.forEach(resetSort);
+    for (const sibling of siblings) {
+      resetSort(sibling)
+    }
 
-    sortTableByAriaSort(this.table);
+    sortTableByAriaSort(this.table)
   }
 
-  get table():HTMLTableElement {
-    return this.querySelector('table')!;
+  get table(): HTMLTableElement {
+    return this.querySelector("table")!
   }
 }
 
+function resetSort(th: HTMLElement) {
+  th.removeAttribute("aria-sort")
 
-function resetSort(th:HTMLElement) {
-  th.removeAttribute('aria-sort');
-  const sortAscendingIcon = th.querySelector('.TableSortIcon--ascending');
-  const sortDescendingIcon = th.querySelector('.TableSortIcon--descending');
-  sortAscendingIcon?.classList.remove('d-none');
-  sortDescendingIcon?.classList.add('d-none');
+  const sortAscendingIcon = th.querySelector(".TableSortIcon--ascending")
+  const sortDescendingIcon = th.querySelector(".TableSortIcon--descending")
+
+  sortAscendingIcon?.classList.remove("d-none")
+  sortDescendingIcon?.classList.add("d-none")
 }
-
 
 //if (!customElements.get('data-table')) {
 //  customElements.define('data-table', DataTableElement);
 //}
 
-function sortTableByAriaSort(table:HTMLTableElement) {
-  const headers = Array.from(table.querySelectorAll('thead th'));
-  const tbody = table.querySelector('tbody')!;
+function sortTableByAriaSort(table: HTMLTableElement) {
+  const headers = Array.from(table.querySelectorAll("thead th"))
+  const tbody = table.querySelector("tbody")!
 
-  const sortedHeader = headers.find(th =>
-      th.getAttribute('aria-sort') === 'ascending' ||
-      th.getAttribute('aria-sort') === 'descending'
-  );
+  const sortedHeader = headers.find(
+      th =>
+          th.getAttribute("aria-sort") === "ascending" ||
+          th.getAttribute("aria-sort") === "descending",
+  )
 
-  if (!sortedHeader) return;
+  if (!sortedHeader) return
 
-  const columnIndex = headers.indexOf(sortedHeader);
-  const direction = sortedHeader.getAttribute('aria-sort');
+  const columnIndex = headers.indexOf(sortedHeader)
+  const direction = sortedHeader.getAttribute("aria-sort")
 
-  const rows = Array.from(tbody.querySelectorAll('tr'));
+  const rows = Array.from(tbody.querySelectorAll("tr"))
 
   const sortedRows = rows.sort((a, b) => {
-    const aText = a.children[columnIndex].textContent?.trim() ?? '';
-    const bText = b.children[columnIndex].textContent?.trim() ?? '';
+    const aText = a.children[columnIndex].textContent?.trim() ?? ""
+    const bText = b.children[columnIndex].textContent?.trim() ?? ""
 
-    const aNum = parseFloat(aText);
-    const bNum = parseFloat(bText);
+    const aNum = parseFloat(aText)
+    const bNum = parseFloat(bText)
 
-    const valueA = isNaN(aNum) ? aText : aNum;
-    const valueB = isNaN(bNum) ? bText : bNum;
+    const valueA = Number.isNaN(aNum) ? aText : aNum
+    const valueB = Number.isNaN(bNum) ? bText : bNum
 
-    if (valueA < valueB) return direction === 'ascending' ? -1 : 1;
-    if (valueA > valueB) return direction === 'ascending' ? 1 : -1;
-    return 0;
-  });
+    if (valueA < valueB) return direction === "ascending" ? -1 : 1
+    if (valueA > valueB) return direction === "ascending" ? 1 : -1
+    return 0
+  })
 
-  tbody.append(...sortedRows);
+  tbody.append(...sortedRows)
 }
 
 declare global {
@@ -94,7 +98,7 @@ declare global {
   }
 }
 
-if (!window.customElements.get('data-table-element')) {
+if (!window.customElements.get("data-table-element")) {
   window.DataTableElement = DataTableElement
-  window.customElements.define('data-table-element', DataTableElement)
+  window.customElements.define("data-table-element", DataTableElement)
 }
