@@ -73,7 +73,7 @@ class PrimerComponentTest < Minitest::Test
     }, proc { |component|
       component.with_column(field: :subject, header: "Subject")
     }],
-    [Primer::OpenProject::Table::Table, {}, proc { |table|
+    [Primer::OpenProject::Table, {}, proc { |table|
       table.with_head do |thead|
         thead.with_row { |tr| tr.with_header { "Header" } }
       end

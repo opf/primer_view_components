@@ -3,7 +3,7 @@
   <%= subtitle %>
   <%= render(Primer::BaseComponent.new(**@wrapper_arguments)) do %>
     <data-table-element2>
-      <%= render(Primer::OpenProject::Table::Table.new(**@system_arguments)) do |table| %>
+      <%= render(Primer::OpenProject::Table.new(**@system_arguments)) do |table| %>
         <% table.with_head(classes: "TableHead") do |thead| %>
           <% thead.with_row(classes: "TableRow") do |tr| %>
             <% headers.each do |header| %>

@@ -2,7 +2,7 @@
 
 module Primer
   module OpenProject
-    module Table
+    class Table
       class ColGroup
         class Col < Primer::Component
           status :open_project

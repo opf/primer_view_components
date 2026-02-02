@@ -2,7 +2,7 @@
 
 module Primer
   module OpenProject
-    module Table
+    class Table
       class Foot < ::Primer::OpenProject::Table::RowGroup
         status :open_project
         renders_many :rows, ::Primer::OpenProject::Table::Row

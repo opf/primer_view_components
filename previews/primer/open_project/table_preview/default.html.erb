@@ -16,7 +16,7 @@
     }
 </style>
 <%=
-  render(Primer::OpenProject::Table::Table.new(data: { controller: "table-highlighting" })) do |table|
+  render(Primer::OpenProject::Table.new(data: { controller: "table-highlighting" })) do |table|
     table.with_caption { "Ice Cream Prices (Summer 2026)" }
 
     table.with_colgroup do |colgroup|

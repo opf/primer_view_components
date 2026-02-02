@@ -2,7 +2,7 @@
 
 module Primer
   module OpenProject
-    module Table
+    class Table
       class Header <  Primer::Component
         status :open_project
         DEFAULT_SCOPE = :col

@@ -2,7 +2,7 @@
 
 module Primer
   module OpenProject
-    module Table
+    class Table
       class HeaderRow < Row
         status :open_project
         alias :with_header :with_column_header

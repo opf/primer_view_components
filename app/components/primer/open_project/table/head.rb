@@ -2,7 +2,7 @@
 
 module Primer
   module OpenProject
-    module Table
+    class Table
       class Head < RowGroup
         status :open_project
         renders_many :rows, HeaderRow

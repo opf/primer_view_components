@@ -2,7 +2,7 @@
 
 module Primer
   module OpenProject
-    module Table
+    class Table
       class RowGroup < Primer::Component
         status :open_project
         def initialize(**system_arguments) # rubocop:disable Lint/MissingSuper

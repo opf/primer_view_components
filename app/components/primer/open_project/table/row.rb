@@ -2,7 +2,7 @@
 
 module Primer
   module OpenProject
-    module Table
+    class Table
       class Row < Primer::Component
         status :open_project
         renders_many :cells, types: {

@@ -18,7 +18,7 @@
 
 <%=
   render(
-    Primer::OpenProject::Table::Table.new(
+    Primer::OpenProject::Table.new(
       data: controller.present? ? { controller: controller } : {}
     )
   ) do |table|

@@ -6,7 +6,7 @@ class PrimerOpenProjectTableTableTest < Minitest::Test
   include Primer::ComponentTestHelpers
 
   def render_component(**kwargs, &block)
-    render_inline(Primer::OpenProject::Table::Table.new(**kwargs), &block)
+    render_inline(Primer::OpenProject::Table.new(**kwargs), &block)
   end
 
   def test_renders_table_with_head_and_body

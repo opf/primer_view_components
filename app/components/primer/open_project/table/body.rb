@@ -2,7 +2,7 @@
 
 module Primer
   module OpenProject
-    module Table
+    class Table
       class Body < ::Primer::OpenProject::Table::RowGroup
         renders_many :rows, ::Primer::OpenProject::Table::Row
         status :open_project

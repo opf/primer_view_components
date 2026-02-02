@@ -2,7 +2,7 @@
 
 module Primer
   module OpenProject
-    module Table
+    class Table
       class Cell < Primer::Component
         status :open_project
         attr_reader :text
