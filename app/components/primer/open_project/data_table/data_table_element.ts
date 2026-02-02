@@ -2,7 +2,6 @@ import { controller } from '@github/catalyst'
 
 @controller
 export class DataTableElement extends HTMLElement {
-
   constructor() {
     super()
   }
@@ -52,10 +51,6 @@ function resetSort(th: HTMLElement) {
   sortAscendingIcon?.classList.remove('d-none')
   sortDescendingIcon?.classList.add('d-none')
 }
-
-//if (!customElements.get('data-table')) {
-//  customElements.define('data-table', DataTableElement);
-//}
 
 function sortTableByAriaSort(table: HTMLTableElement) {
   const headers = Array.from(table.querySelectorAll('thead th'))
