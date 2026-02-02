@@ -10,7 +10,7 @@ export class DataTableElement extends HTMLElement {
     sortTableByAriaSort(this.table)
   }
 
-  toggleSort(event:MouseEvent) {
+  toggleSort(event: MouseEvent) {
     const header = (event.target as Element).closest('th')!
     const ariaSort = header.getAttribute('aria-sort')
     const sortAscendingIcon = header.querySelector('.TableSortIcon--ascending')
@@ -30,17 +30,19 @@ export class DataTableElement extends HTMLElement {
         (el): el is HTMLElement => el !== header && el instanceof HTMLElement,
     )
 
-    siblings.forEach(resetSort)
+    for (const sibling of siblings) {
+      resetSort(sibling)
+    }
 
     sortTableByAriaSort(this.table)
   }
 
-  get table():HTMLTableElement {
+  get table(): HTMLTableElement {
     return this.querySelector('table')!
   }
 }
 
-function resetSort(th:HTMLElement) {
+function resetSort(th: HTMLElement) {
   th.removeAttribute('aria-sort')
   const sortAscendingIcon = th.querySelector('.TableSortIcon--ascending')
   const sortDescendingIcon = th.querySelector('.TableSortIcon--descending')
@@ -48,18 +50,12 @@ function resetSort(th:HTMLElement) {
   sortDescendingIcon?.classList.add('d-none')
 }
 
-
-//if (!customElements.get('data-table')) {
-//  customElements.define('data-table', DataTableElement)
-//}
-
-function sortTableByAriaSort(table:HTMLTableElement) {
+function sortTableByAriaSort(table: HTMLTableElement) {
   const headers = Array.from(table.querySelectorAll('thead th'))
   const tbody = table.querySelector('tbody')!
 
   const sortedHeader = headers.find(th =>
-      th.getAttribute('aria-sort') === 'ascending' ||
-      th.getAttribute('aria-sort') === 'descending'
+      th.getAttribute('aria-sort') === 'ascending' || th.getAttribute('aria-sort') === 'descending'
   )
 
   if (!sortedHeader) return

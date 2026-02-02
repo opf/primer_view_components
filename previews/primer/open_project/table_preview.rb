@@ -2,6 +2,7 @@
 
 module Primer
   module OpenProject
+    # @component Primer::OpenProject::Table::Table
     class TablePreview < ViewComponent::Preview
       # @label Default
       # @snapshot
