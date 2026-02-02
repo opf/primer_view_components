@@ -241,6 +241,9 @@
   "ButtonGroup": [
     "Primer::Beta::ButtonGroup"
   ],
+  "ButtonReset": [
+    "Primer::OpenProject::DataTable"
+  ],
   "CollapsibleHeader": [
     "Primer::OpenProject::BorderBox::CollapsibleHeader"
   ],
@@ -679,6 +682,57 @@
   ],
   "Subhead-heading--medium": [
     "Primer::Beta::Subhead"
+  ],
+  "Table": [
+    "Primer::OpenProject::DataTable"
+  ],
+  "TableActions": [
+    "Primer::OpenProject::DataTable"
+  ],
+  "TableBody": [
+    "Primer::OpenProject::DataTable"
+  ],
+  "TableCell": [
+    "Primer::OpenProject::DataTable"
+  ],
+  "TableCellSkeleton": [
+    "Primer::OpenProject::DataTable"
+  ],
+  "TableCellSkeletonItem": [
+    "Primer::OpenProject::DataTable"
+  ],
+  "TableCellSkeletonItems": [
+    "Primer::OpenProject::DataTable"
+  ],
+  "TableContainer": [
+    "Primer::OpenProject::DataTable"
+  ],
+  "TableDivider": [
+    "Primer::OpenProject::DataTable"
+  ],
+  "TableHead": [
+    "Primer::OpenProject::DataTable"
+  ],
+  "TableHeader": [
+    "Primer::OpenProject::DataTable"
+  ],
+  "TableOverflowWrapper": [
+    "Primer::OpenProject::DataTable"
+  ],
+  "TableRow": [
+    "Primer::OpenProject::DataTable"
+  ],
+  "TableSortButton": [
+    "Primer::OpenProject::DataTable"
+  ],
+  "TableSortIcon": [
+    "Primer::OpenProject::DataTable"
+  ],
+  "TableSubtitle": [
+    "Primer::OpenProject::DataTable"
+  ],
+  "TableTitle": [
+    "Primer::OpenProject::DataTable"
   ],
   "TimelineItem": [
     "Primer::Beta::TimelineItem"
