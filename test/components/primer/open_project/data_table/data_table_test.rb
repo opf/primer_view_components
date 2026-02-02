@@ -99,4 +99,79 @@ class PrimerOpenProjectDataTableDataTableTest < Minitest::Test
     subtitle = page.find("div.TableSubtitle", text: "Workin' night and day")
     assert_selector("table[aria-describedby='#{subtitle[:id]}']")
   end
+
+  def test_renders_without_title_or_subtitle
+    render_component(data: @data) do |data_table|
+      data_table.with_column(field: :subject, header: "Subject")
+    end
+
+    assert_selector("table[role='table']")
+    assert_no_selector("h2")
+    assert_no_selector(".TableSubtitle")
+  end
+
+  def test_initial_sort_column_sets_sort_header
+    render_component(
+      data: @data,
+      initial_sort_column: :subject,
+      initial_sort_direction: :ASC
+    ) do |data_table|
+      data_table.with_column(
+        field: :subject,
+        header: "Subject",
+        sort_by: :ASC
+      )
+    end
+
+    assert_selector("th[aria-sort='ascending']")
+  end
+
+  def test_initial_sort_direction_without_column_uses_first_sortable_column
+    render_component(
+      data: @data,
+      initial_sort_direction: :DESC
+    ) do |data_table|
+      data_table.with_column(
+        field: :subject,
+        header: "Subject",
+        sort_by: :ASC
+      )
+    end
+
+    assert_selector("th[aria-sort='descending']")
+  end
+
+  def test_raises_for_invalid_initial_sort_column
+    assert_raises(ArgumentError) do
+      render_component(
+        data: @data,
+        initial_sort_column: :does_not_exist
+      ) do |data_table|
+        data_table.with_column(field: :subject, header: "Subject")
+      end
+    end
+  end
+
+  def test_raises_when_sort_column_is_not_sortable
+    assert_raises(ArgumentError) do
+      render_component(
+        data: @data,
+        initial_sort_column: :subject
+      ) do |data_table|
+        data_table.with_column(
+          field: :subject,
+          header: "Subject",
+          sort_by: nil
+        )
+      end
+    end
+  end
+
+  def test_sets_grid_template_columns_style
+    render_component(data: @data) do |data_table|
+      data_table.with_column(field: :subject, header: "Subject", width: :grow)
+    end
+
+    assert_selector("table[style*='--grid-template-columns']")
+  end
 end
