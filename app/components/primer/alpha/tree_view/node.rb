@@ -129,7 +129,7 @@ module Primer
             @content_arguments, {
             data: {
               value: value,
-              path: @path.to_json,
+              path: JSON.generate(@path),
               select_variant: @select_variant
             }
           }

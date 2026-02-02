@@ -9,7 +9,7 @@
   - [Table of Contents](#table-of-contents)
   - [Visual testing](#visual-testing)
     - [Prerequisites](#prerequisites)
-    - [Continous Integration](#continous-integration)
+    - [Continuous Integration](#continuous-integration)
   - [Other tests](#other-tests)
     - [System tests](#system-tests)
 
@@ -41,7 +41,7 @@ rendering the screenshots will match the browser in CI.
 
 Once you have the codespace open, make sure you're up to date with `script/setup`. Then you can run the `npx playwright test` command.
 
-### Continous Integration
+### Continuous Integration
 
 Playwright tests are included in the `Tests > Visual Regressions` jobs of the CI workflow.
 The results of the test run are uploaded at the end of the job and are available
@@ -55,7 +55,7 @@ When the workflow runs, it will check in screenshots of previews for visual diff
 
 ## Other tests
 
-Before running the whole test suite with: `script/test`, you must run `bundle exec rake docs:preview`.
+Before running the whole test suite with: `script/test`, you must run `script/test-setup` to start Vite and CSS builds in watch mode.
 
 Run a subset of tests by supplying arguments to `script/test`:
 
