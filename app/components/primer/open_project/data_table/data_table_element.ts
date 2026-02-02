@@ -28,7 +28,7 @@ export class DataTableElement extends HTMLElement {
 
     const siblings = [...header.parentElement!.children].filter(el => el !== header);
     siblings.forEach((sibling:HTMLElement) => {
-      resetSort(sibling);
+      resetSort(sibling as HTMLElement);
     });
 
     sortTableByAriaSort(this.table);
