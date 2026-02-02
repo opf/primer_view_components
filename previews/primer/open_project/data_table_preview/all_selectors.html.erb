@@ -1,0 +1,39 @@
+<%= render(Primer::OpenProject::DataTable.new(
+  data: rows,
+  cell_padding: cell_padding,
+  initial_sort_column: initial_sort_column,
+  initial_sort_direction: initial_sort_direction
+)) do |table| %>
+
+  <% table.with_title { "Projects" } %>
+
+  <% if show_subtitle %>
+    <% table.with_subtitle { "Workin' night and day" } %>
+  <% end %>
+
+  <% table.with_column(field: :name, header: "Name", sort_by: :ASC, row_header: true) %>
+  <% table.with_column(field: :status_code, header: "Status") %>
+  <% table.with_column(field: :created_at, header: "Created at") %>
+
+  <%# --- Force selectors required by test:component_css --- %>
+  <% if show_row_actions %>
+    <div class="TableActions">
+      <button type="button">Action</button>
+    </div>
+  <% end %>
+
+  <% if show_divider %>
+    <div class="TableDivider" aria-hidden="true"></div>
+  <% end %>
+
+  <% if show_skeleton %>
+    <div class="TableCellSkeleton" aria-hidden="true">
+      <div class="TableCellSkeletonItems">
+        <div class="TableCellSkeletonItem"></div>
+        <div class="TableCellSkeletonItem"></div>
+        <div class="TableCellSkeletonItem"></div>
+      </div>
+    </div>
+  <% end %>
+
+<% end %>
