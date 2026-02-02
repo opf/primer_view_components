@@ -2,7 +2,7 @@
 
 module Primer
   module OpenProject
-    module DataTable
+    class DataTable
       # A component to be used inside Primer::Beta::BorderBox.
       # It will toggle the visibility of the complete Box body
       class SortHeader < Primer::Component

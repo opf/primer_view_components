@@ -68,7 +68,7 @@ class PrimerComponentTest < Minitest::Test
       component.with_breadcrumbs([{ href: "/foo", text: "Foo" }, { href: "/bar", text: "Bar" }, "Baz"])
     }],
     [Primer::OpenProject::FilterableTreeView, {}],
-    [Primer::OpenProject::DataTable::DataTable, {
+    [Primer::OpenProject::DataTable, {
       data: [Data.define(:id, :subject).new(id: 1, subject: "Hello")]
     }, proc { |component|
       component.with_column(field: :subject, header: "Subject")

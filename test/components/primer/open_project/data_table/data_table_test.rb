@@ -16,7 +16,7 @@ class PrimerOpenProjectDataTableDataTableTest < Minitest::Test
   end
 
   def render_component(**kwargs, &block)
-    render_inline(Primer::OpenProject::DataTable::DataTable.new(**kwargs), &block)
+    render_inline(Primer::OpenProject::DataTable.new(**kwargs), &block)
   end
 
   #

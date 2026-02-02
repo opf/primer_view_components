@@ -2,7 +2,7 @@
 
 module Primer
   module OpenProject
-    # @component Primer::OpenProject::DataTable::DataTable
+    # @component Primer::OpenProject::DataTable
     class DataTablePreview < ViewComponent::Preview
       # @label Default
       # @snapshot
