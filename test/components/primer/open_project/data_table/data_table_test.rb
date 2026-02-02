@@ -174,4 +174,55 @@ class PrimerOpenProjectDataTableDataTableTest < Minitest::Test
 
     assert_selector("table[style*='--grid-template-columns']")
   end
+
+  def test_grid_template_uses_auto_width
+    render_component(data: @data) do |data_table|
+      data_table.with_column(field: :subject, header: "Subject", width: :auto)
+    end
+
+    style = page.find("table.Table")[:style]
+    assert_includes(style, "--grid-template-columns:")
+    assert_includes(style, "auto")
+  end
+
+  def test_grid_template_uses_grow_collapse_width
+    render_component(data: @data) do |data_table|
+      data_table.with_column(field: :subject, header: "Subject", width: :grow_collapse)
+    end
+
+    style = page.find("table.Table")[:style]
+    assert_includes(style, "minmax(0, 1fr)")
+  end
+
+  def test_grid_template_respects_min_and_max_width_numeric
+    render_component(data: @data) do |data_table|
+      data_table.with_column(
+        field: :subject,
+        header: "Subject",
+        min_width: 120,
+        max_width: 240
+      )
+    end
+
+    style = page.find("table.Table")[:style]
+    assert_includes(style, "minmax(120px, 240px)")
+  end
+
+  def test_grid_template_accepts_explicit_numeric_width
+    render_component(data: @data) do |data_table|
+      data_table.with_column(field: :subject, header: "Subject", width: 180)
+    end
+
+    style = page.find("table.Table")[:style]
+    assert_includes(style, "180px")
+  end
+
+  def test_grid_template_accepts_explicit_string_width
+    render_component(data: @data) do |data_table|
+      data_table.with_column(field: :subject, header: "Subject", width: "20rem")
+    end
+
+    style = page.find("table.Table")[:style]
+    assert_includes(style, "20rem")
+  end
 end

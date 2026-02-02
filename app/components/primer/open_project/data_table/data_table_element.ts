@@ -54,7 +54,11 @@ function sortTableByAriaSort(table: HTMLTableElement) {
   const headers = Array.from(table.querySelectorAll('thead th'))
   const tbody = table.querySelector('tbody')!
 
-  const sortedHeader = headers.find(th => th.getAttribute('aria-sort') === 'ascending' || th.getAttribute('aria-sort') === 'descending')
+  const sortedHeader = headers.find(
+    th =>
+      th.getAttribute('aria-sort') === 'ascending' ||
+      th.getAttribute('aria-sort') === 'descending',
+  )
 
   if (!sortedHeader) return
 

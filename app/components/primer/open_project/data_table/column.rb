@@ -38,7 +38,12 @@ module Primer
 
           @align = align
           @header = header
-          @width = fetch_or_fallback(COLUMN_WIDTH_OPTIONS, width) if width.present?
+          @width =
+            if width.is_a?(Numeric) || width.is_a?(String)
+              width
+            elsif width.present?
+              fetch_or_fallback(COLUMN_WIDTH_OPTIONS, width)
+            end
           @sort_by = sort_by
           @row_header = row_header
           @max_width = max_width
