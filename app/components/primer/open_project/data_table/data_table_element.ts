@@ -27,7 +27,7 @@ export class DataTableElement extends HTMLElement {
     }
 
     const siblings = Array.from(header.parentElement!.children).filter(
-        (el): el is HTMLElement => el !== header && el instanceof HTMLElement,
+      (el): el is HTMLElement => el !== header && el instanceof HTMLElement,
     )
 
     for (const sibling of siblings) {
@@ -54,9 +54,7 @@ function sortTableByAriaSort(table: HTMLTableElement) {
   const headers = Array.from(table.querySelectorAll('thead th'))
   const tbody = table.querySelector('tbody')!
 
-  const sortedHeader = headers.find(th =>
-      th.getAttribute('aria-sort') === 'ascending' || th.getAttribute('aria-sort') === 'descending'
-  )
+  const sortedHeader = headers.find(th => th.getAttribute('aria-sort') === 'ascending' || th.getAttribute('aria-sort') === 'descending')
 
   if (!sortedHeader) return
 
