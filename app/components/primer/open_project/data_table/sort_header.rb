@@ -12,6 +12,8 @@ module Primer
 
         ARIA_SORT_OPTIONS = { ASC: "ascending", DESC: "descending" }.freeze
 
+        # @param direction [Symbol] Specify the sort direction for the header. <%= one_of(DIRECTION_OPTIONS) %>
+        # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
         def initialize(direction: DEFAULT_DIRECTION, **system_arguments) # rubocop:disable Lint/MissingSuper
           @direction = fetch_or_fallback(DIRECTION_OPTIONS, direction, DEFAULT_DIRECTION)
           aria_sort = ARIA_SORT_OPTIONS.fetch(@direction, nil)
@@ -24,7 +26,7 @@ module Primer
           @system_arguments[:aria] = merge_aria(
             @system_arguments, { aria: { sort: aria_sort } }
           )
-          end
+        end
       end
     end
   end
