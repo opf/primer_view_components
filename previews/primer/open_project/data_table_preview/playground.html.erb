@@ -19,16 +19,14 @@
        field: :name,
        row_header: true,
        width: :grow_collapse,
-       sort_by: :ASC
-     )
+       sort_by: :ASC)
   %>
 
   <% data_table.with_column(
     header: "Status",
     field: :status_code,
     sort_by: :ASC
-  ) do |column|
-  %>
+  ) do |column| %>
     <% column.with_cell do |row| %>
       <%= render(Primer::Beta::Label.new) { row.status_code } %>
     <% end %>
@@ -39,8 +37,7 @@
     field: :created_at,
     align: :end,
     sort_by: :DESC
-  ) do |column|
-  %>
+  ) do |column| %>
     <% column.with_cell do |row| %>
       <%= row.created_at.strftime("%Y-%m-%d") %>
     <% end %>

@@ -27,10 +27,10 @@ export class DataTableElement extends HTMLElement {
       sortAscendingIcon?.classList.add('d-none');
     }
 
-    const siblings = [...header.parentElement!.children].filter(el => el !== header);
-    siblings.forEach((sibling:HTMLElement) => {
-      resetSort(sibling);
-    });
+    const siblings = Array.from(header.parentElement!.children)
+        .filter((el): el is HTMLElement => el !== header && el instanceof HTMLElement);
+
+    siblings.forEach(resetSort);
 
     sortTableByAriaSort(this.table);
   }
