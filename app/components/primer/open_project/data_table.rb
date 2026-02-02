@@ -41,18 +41,20 @@ module Primer
 
       renders_many :columns, Column
 
-      # @param data [Array, ActiveRecord::Relation] a collection of the rows which
-      #   will be rendered inside of the table
-      # @param cell_padding [Symbol] the amount of space that should be available
-      #   around the contents of a cell
-      # @param initial_sort_column [Symbol, Number] (CELL_PADDING_DEFAULT) id or
-      #   field of the column by which the table is sorted
-      #   <%= one_of(CELL_PADDING_OPTIONS) %>
-      # @param initial_sort_direction [Symbol] (:ASC or :NONE) the sort direction
-      #   that the table should be sorted by on the currently sorted column
-      #   %= one_of(DataTableComponent::SortHeaderComponent::DIRECTION_OPTIONS) %>
-      # @param html_data [Hash] HTML data attributes to be passed in
-      # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
+      # @param data [Array, ActiveRecord::Relation]
+      #   A collection of rows that will be rendered inside the table
+      # @param cell_padding [Symbol]
+      #   The amount of space around the contents of each cell.
+      #   Options: :condensed, :normal, :spacious
+      # @param initial_sort_column [Symbol, Number, nil]
+      #   ID or field of the column by which the table is initially sorted
+      # @param initial_sort_direction [Symbol, nil]
+      #   Sort direction for the initially sorted column.
+      #   Options: :ASC, :DESC
+      # @param html_data [Hash]
+      #   HTML data attributes to be passed to the table
+      # @param system_arguments [Hash]
+      #   System arguments passed to the root table element
       def initialize( # rubocop:disable Lint/MissingSuper
         data:,
         cell_padding: CELL_PADDING_DEFAULT,
