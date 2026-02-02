@@ -241,9 +241,6 @@
   "ButtonGroup": [
     "Primer::Beta::ButtonGroup"
   ],
-  "ButtonReset": [
-    "Primer::OpenProject::DataTable::DataTable"
-  ],
   "CollapsibleHeader": [
     "Primer::OpenProject::BorderBox::CollapsibleHeader"
   ],
@@ -606,8 +603,7 @@
     "Primer::OpenProject::SidePanel::Section"
   ],
   "SkeletonBox": [
-    "Primer::Alpha::SkeletonBox",
-    "Primer::OpenProject::SkeletonBox"
+    "Primer::Alpha::SkeletonBox"
   ],
   "Stack": [
     "Primer::Alpha::Stack"
@@ -684,57 +680,6 @@
   "Subhead-heading--medium": [
     "Primer::Beta::Subhead"
   ],
-  "Table": [
-    "Primer::OpenProject::DataTable::DataTable"
-  ],
-  "TableActions": [
-    "Primer::OpenProject::DataTable::DataTable"
-  ],
-  "TableBody": [
-    "Primer::OpenProject::DataTable::DataTable"
-  ],
-  "TableCell": [
-    "Primer::OpenProject::DataTable::DataTable"
-  ],
-  "TableCellSkeleton": [
-    "Primer::OpenProject::DataTable::DataTable"
-  ],
-  "TableCellSkeletonItem": [
-    "Primer::OpenProject::DataTable::DataTable"
-  ],
-  "TableCellSkeletonItems": [
-    "Primer::OpenProject::DataTable::DataTable"
-  ],
-  "TableContainer": [
-    "Primer::OpenProject::DataTable::DataTable"
-  ],
-  "TableDivider": [
-    "Primer::OpenProject::DataTable::DataTable"
-  ],
-  "TableHead": [
-    "Primer::OpenProject::DataTable::DataTable"
-  ],
-  "TableHeader": [
-    "Primer::OpenProject::DataTable::DataTable"
-  ],
-  "TableOverflowWrapper": [
-    "Primer::OpenProject::DataTable::DataTable"
-  ],
-  "TableRow": [
-    "Primer::OpenProject::DataTable::DataTable"
-  ],
-  "TableSortButton": [
-    "Primer::OpenProject::DataTable::DataTable"
-  ],
-  "TableSortIcon": [
-    "Primer::OpenProject::DataTable::DataTable"
-  ],
-  "TableSubtitle": [
-    "Primer::OpenProject::DataTable::DataTable"
-  ],
-  "TableTitle": [
-    "Primer::OpenProject::DataTable::DataTable"
-  ],
   "TimelineItem": [
     "Primer::Beta::TimelineItem"
   ],
@@ -799,20 +744,16 @@
     "Primer::Alpha::ToggleSwitch"
   ],
   "TreeItemSkeletonTextStyles": [
-    "Primer::Alpha::TreeView",
-    "Primer::OpenProject::TreeView"
+    "Primer::Alpha::TreeView"
   ],
   "TreeViewFailureMessage": [
-    "Primer::Alpha::TreeView",
-    "Primer::OpenProject::TreeView"
+    "Primer::Alpha::TreeView"
   ],
   "TreeViewRootUlStyles": [
-    "Primer::Alpha::TreeView",
-    "Primer::OpenProject::TreeView"
+    "Primer::Alpha::TreeView"
   ],
   "TreeViewSkeletonItemContainerStyle": [
-    "Primer::Alpha::TreeView",
-    "Primer::OpenProject::TreeView"
+    "Primer::Alpha::TreeView"
   ],
   "Truncate": [
     "Primer::Beta::Truncate"
