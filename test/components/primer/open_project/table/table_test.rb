@@ -2,7 +2,7 @@
 
 require "components/test_helper"
 
-class PrimerOpenProjectTableTableTest < Minitest::Test
+class PrimerOpenProjectTableTest < Minitest::Test
   include Primer::ComponentTestHelpers
 
   def render_component(**kwargs, &block)

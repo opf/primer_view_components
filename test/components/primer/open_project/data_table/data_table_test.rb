@@ -2,7 +2,7 @@
 
 require "components/test_helper"
 
-class PrimerOpenProjectDataTableDataTableTest < Minitest::Test
+class PrimerOpenProjectDataTableTest < Minitest::Test
   include Primer::ComponentTestHelpers
 
   def setup

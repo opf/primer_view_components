@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "ostruct"
 module Primer
   module OpenProject
     # @component Primer::OpenProject::DataTable
