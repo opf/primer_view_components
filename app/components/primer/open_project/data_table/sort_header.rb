@@ -12,8 +12,6 @@ module Primer
 
         ARIA_SORT_OPTIONS = { ASC: "ascending", DESC: "descending" }.freeze
 
-        # @param scheme [direction] Specify the sort direction for the TableHeader <%= one_of(DIRECTION_OPTIONS) %>
-        #
         def initialize(direction: DEFAULT_DIRECTION, **system_arguments) # rubocop:disable Lint/MissingSuper
           @direction = fetch_or_fallback(DIRECTION_OPTIONS, direction, DEFAULT_DIRECTION)
           aria_sort = ARIA_SORT_OPTIONS.fetch(@direction, nil)
