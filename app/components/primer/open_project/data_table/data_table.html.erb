@@ -1,4 +1,4 @@
-<%= render(Primer::Box.new(classes: "TableContainer")) do %>
+<%= render(Primer::Box.new(**@container_arguments)) do %>
   <%= title %>
   <%= subtitle %>
   <%= render(Primer::BaseComponent.new(**@wrapper_arguments)) do %>

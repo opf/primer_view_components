@@ -4,6 +4,7 @@ module Primer
   module OpenProject
     module Table
       class RowGroup < Primer::Component
+        status :open_project
         def initialize(**system_arguments) # rubocop:disable Lint/MissingSuper
           @system_arguments = system_arguments
           @system_arguments[:role] = :rowgroup

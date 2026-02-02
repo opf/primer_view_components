@@ -6,6 +6,7 @@ module Primer
       # A component to be used inside Primer::Beta::BorderBox.
       # It will toggle the visibility of the complete Box body
       class SortHeader < Primer::Component
+        status :open_project
         DEFAULT_DIRECTION = :ASC
         DIRECTION_OPTIONS = [DEFAULT_DIRECTION, :DESC, :NONE].freeze
 

@@ -4,6 +4,7 @@ module Primer
   module OpenProject
     module Table
       class Table < Primer::Component
+        status :open_project
         renders_one :caption, ::Primer::OpenProject::Table::Caption
 
         renders_many :cols, ::Primer::OpenProject::Table::ColGroup::Col

@@ -4,6 +4,7 @@ module Primer
   module OpenProject
     module DataTable
       class DataTable < Primer::Component
+        status :open_project
         Header = Data.define(:id, :column, :sortable, :sort_direction) do
           alias :sortable? :sortable
         end
@@ -67,11 +68,13 @@ module Primer
           @initial_sort_direction = initial_sort_direction
           @id = system_arguments[:id] ||= self.class.generate_id(base_name: "data-table")
 
+          @container_arguments = {}
+          @container_arguments[:classes] = class_names(system_arguments.delete(:classes), "TableContainer")
+          @container_arguments[:style] = system_arguments.delete(:style)
+
           @system_arguments = system_arguments
-          @system_arguments[:classes] = "Table"
-          @system_arguments[:data] = merge_data(
-            html_data, { data: { cell_padding: } }
-          )
+          @system_arguments[:classes] = class_names(@system_arguments[:classes], "Table")
+          @system_arguments[:data] = merge_data(html_data, { data: { cell_padding: } })
 
           @wrapper_arguments = { tag: :"scrollable-region" }
           @wrapper_arguments[:classes] = "TableOverflowWrapper"

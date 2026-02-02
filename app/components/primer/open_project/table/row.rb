@@ -4,6 +4,7 @@ module Primer
   module OpenProject
     module Table
       class Row < Primer::Component
+        status :open_project
         renders_many :cells, types: {
           column_header: {
             renders: ->(component_klass: Header, **system_arguments) {
