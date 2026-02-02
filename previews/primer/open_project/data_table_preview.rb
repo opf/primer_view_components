@@ -49,23 +49,6 @@ module Primer
         )
       end
 
-      # @label All selectors
-      # @snapshot
-      def all_selectors
-        render_with_template(
-          locals: {
-            rows: sample_rows,
-            cell_padding: :normal,
-            initial_sort_column: :name,
-            initial_sort_direction: :ASC,
-            show_subtitle: true,
-            show_row_actions: true,
-            show_divider: true,
-            show_skeleton: true
-          }
-        )
-      end
-
       private
 
       def sample_rows

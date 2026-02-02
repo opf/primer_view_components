@@ -195,6 +195,13 @@ class ComponentSpecificSelectorsTest < Minitest::Test
       ".SubHeader-filterInput_hiddenClearButton",
       ".SubHeader--emptyLeftPane",
       ".SubHeader--emptyLeftPane .SubHeader-middlePane"
+    ],
+    Primer::OpenProject::DataTable => [
+      ".TableActions",
+      ".TableDivider",
+      ".TableCellSkeleton",
+      ".TableCellSkeletonItems",
+      ".TableCellSkeletonItem"
     ]
   }.freeze
 
