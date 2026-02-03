@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.80.2
+
+### Patch Changes
+
+- [#408](https://github.com/opf/primer_view_components/pull/408) [`8f1c595`](https://github.com/opf/primer_view_components/commit/8f1c595bc1ae17674d1b19b7203e9bec7985ebc0) Thanks [@HDinger](https://github.com/HDinger)! - Support special characters in node names of Primer::Alpha::TreeView
+
 ## 0.80.1
 
 ### Patch Changes
