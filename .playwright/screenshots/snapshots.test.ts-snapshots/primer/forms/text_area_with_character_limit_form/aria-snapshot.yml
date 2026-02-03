@@ -1,0 +1,4 @@
+- text: Bio
+- textbox "Bio"
+- status
+- text: You can enter up to 100 characters Tell us about yourself
