@@ -1,0 +1,15 @@
+- region "Delivery preferences":
+  - group "Delivery preferences":
+    - text: Delivery preferences
+    - heading "Delivery preferences" [level=3]
+    - text: Ultimate answer
+    - textbox "Ultimate answer"
+    - text: The answer to life, the universe, and everything Delivery window
+    - combobox "Delivery window":
+      - option [selected]
+      - option "Morning"
+      - option "Afternoon"
+      - option "Evening"
+    - text: Hours
+    - spinbutton "Hours"
+    - text: min
