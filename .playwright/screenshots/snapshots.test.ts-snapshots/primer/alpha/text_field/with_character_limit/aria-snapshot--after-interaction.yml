@@ -1,0 +1,4 @@
+- text: Username
+- textbox "Username"
+- status
+- text: You can enter up to 10 characters

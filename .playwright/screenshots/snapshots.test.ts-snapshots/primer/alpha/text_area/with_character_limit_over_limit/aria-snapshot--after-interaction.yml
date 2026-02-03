@@ -1,0 +1,4 @@
+- text: Tell me about yourself
+- textbox "Tell me about yourself": This text is definitely over the limit.
+- status
+- text: You can enter up to 10 characters

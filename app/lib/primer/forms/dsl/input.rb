@@ -33,6 +33,9 @@ module Primer
         # @!macro [new] form_full_width_arguments
         #   @param full_width [Boolean] When set to `true`, the field will take up all the horizontal space allowed by its container. Defaults to `true`.
 
+        # @!macro [new] form_input_character_limit_arguments
+        #   @param character_limit [Number] Optional character limit for the input. If provided, a character counter will be displayed below the input.
+
         # @!macro [new] form_input_width_arguments
         #   @param input_width [Symbol] The width of the field. <%= one_of(Primer::Forms::Dsl::Input::INPUT_WIDTH_OPTIONS) %>
 
@@ -128,6 +131,7 @@ module Primer
 
           @ids = {}.tap do |id_map|
             id_map[:validation] = "validation-#{@base_id}" if supports_validation?
+            id_map[:character_limit_caption] = "character_limit-#{@base_id}" if character_limit?
             id_map[:caption] = "caption-#{@base_id}" if caption? || caption_template?
           end
 
@@ -211,6 +215,25 @@ module Primer
 
         def render_caption_template
           form.render_caption_template(caption_template_name)
+        end
+
+        def character_limit?
+          false
+        end
+
+        def character_limit_id
+          ids[:character_limit_caption]
+        end
+
+        def character_limit_target_prefix
+          case type
+          when :text_field
+            "primer-text-field"
+          when :text_area
+            "primer-text-area"
+          else
+            ""
+          end
         end
 
         def valid?
