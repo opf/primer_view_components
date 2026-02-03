@@ -1736,6 +1736,40 @@
   "Primer::OpenProject::DangerDialog::FormWrapper": {
     "GeneratedSlotMethods": "Primer::OpenProject::DangerDialog::FormWrapper::GeneratedSlotMethods"
   },
+  "Primer::OpenProject::DataTable": {
+    "CELL_PADDING_DEFAULT": "normal",
+    "CELL_PADDING_OPTIONS": [
+      "condensed",
+      "normal",
+      "spacious"
+    ],
+    "Cell": "Primer::OpenProject::DataTable::Cell",
+    "Column": "Primer::OpenProject::DataTable::Column",
+    "GeneratedSlotMethods": "Primer::OpenProject::DataTable::GeneratedSlotMethods",
+    "Header": "Primer::OpenProject::DataTable::Header",
+    "SortHeader": "Primer::OpenProject::DataTable::SortHeader"
+  },
+  "Primer::OpenProject::DataTable::Column": {
+    "COLUMN_WIDTH_OPTIONS": [
+      "grow",
+      "grow_collapse",
+      "auto"
+    ],
+    "GeneratedSlotMethods": "Primer::OpenProject::DataTable::Column::GeneratedSlotMethods"
+  },
+  "Primer::OpenProject::DataTable::SortHeader": {
+    "ARIA_SORT_OPTIONS": {
+      "ASC": "ascending",
+      "DESC": "descending"
+    },
+    "DEFAULT_DIRECTION": "ASC",
+    "DIRECTION_OPTIONS": [
+      "ASC",
+      "DESC",
+      "NONE"
+    ],
+    "GeneratedSlotMethods": "Primer::OpenProject::DataTable::SortHeader::GeneratedSlotMethods"
+  },
   "Primer::OpenProject::DragHandle": {
     "DEFAULT_SIZE": "small",
     "GeneratedSlotMethods": "Primer::OpenProject::DragHandle::GeneratedSlotMethods",
@@ -1963,6 +1997,63 @@
   },
   "Primer::OpenProject::SubHeader::SegmentedControl": {
     "GeneratedSlotMethods": "Primer::OpenProject::SubHeader::SegmentedControl::GeneratedSlotMethods"
+  },
+  "Primer::OpenProject::Table": {
+    "Body": "Primer::OpenProject::Table::Body",
+    "Caption": "Primer::OpenProject::Table::Caption",
+    "Cell": "Primer::OpenProject::Table::Cell",
+    "ColGroup": "Primer::OpenProject::Table::ColGroup",
+    "Foot": "Primer::OpenProject::Table::Foot",
+    "GeneratedSlotMethods": "Primer::OpenProject::Table::GeneratedSlotMethods",
+    "Head": "Primer::OpenProject::Table::Head",
+    "Header": "Primer::OpenProject::Table::Header",
+    "HeaderRow": "Primer::OpenProject::Table::HeaderRow",
+    "Row": "Primer::OpenProject::Table::Row",
+    "RowGroup": "Primer::OpenProject::Table::RowGroup"
+  },
+  "Primer::OpenProject::Table::Body": {
+    "GeneratedSlotMethods": "Primer::OpenProject::Table::Body::GeneratedSlotMethods"
+  },
+  "Primer::OpenProject::Table::Caption": {
+    "GeneratedSlotMethods": "Primer::OpenProject::Table::Caption::GeneratedSlotMethods"
+  },
+  "Primer::OpenProject::Table::Cell": {
+    "ALIGNMENT_OPTIONS": [
+      "start",
+      "end"
+    ],
+    "DEFAULT_ALIGNMENT": "start",
+    "GeneratedSlotMethods": "Primer::OpenProject::Table::Cell::GeneratedSlotMethods"
+  },
+  "Primer::OpenProject::Table::ColGroup": {
+    "Col": "Primer::OpenProject::Table::ColGroup::Col",
+    "GeneratedSlotMethods": "Primer::OpenProject::Table::ColGroup::GeneratedSlotMethods"
+  },
+  "Primer::OpenProject::Table::ColGroup::Col": {
+    "GeneratedSlotMethods": "Primer::OpenProject::Table::ColGroup::Col::GeneratedSlotMethods"
+  },
+  "Primer::OpenProject::Table::Foot": {
+    "GeneratedSlotMethods": "Primer::OpenProject::Table::Foot::GeneratedSlotMethods"
+  },
+  "Primer::OpenProject::Table::Head": {
+    "GeneratedSlotMethods": "Primer::OpenProject::Table::Head::GeneratedSlotMethods"
+  },
+  "Primer::OpenProject::Table::Header": {
+    "DEFAULT_SCOPE": "col",
+    "GeneratedSlotMethods": "Primer::OpenProject::Table::Header::GeneratedSlotMethods",
+    "SCOPE_OPTIONS": [
+      "col",
+      "row"
+    ]
+  },
+  "Primer::OpenProject::Table::HeaderRow": {
+    "GeneratedSlotMethods": "Primer::OpenProject::Table::HeaderRow::GeneratedSlotMethods"
+  },
+  "Primer::OpenProject::Table::Row": {
+    "GeneratedSlotMethods": "Primer::OpenProject::Table::Row::GeneratedSlotMethods"
+  },
+  "Primer::OpenProject::Table::RowGroup": {
+    "GeneratedSlotMethods": "Primer::OpenProject::Table::RowGroup::GeneratedSlotMethods"
   },
   "Primer::OpenProject::ZenModeButton": {
     "GeneratedSlotMethods": "Primer::OpenProject::ZenModeButton::GeneratedSlotMethods",

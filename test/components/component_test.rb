@@ -68,6 +68,19 @@ class PrimerComponentTest < Minitest::Test
       component.with_breadcrumbs([{ href: "/foo", text: "Foo" }, { href: "/bar", text: "Bar" }, "Baz"])
     }],
     [Primer::OpenProject::FilterableTreeView, {}],
+    [Primer::OpenProject::DataTable, {
+      data: [Data.define(:id, :subject).new(id: 1, subject: "Hello")]
+    }, proc { |component|
+      component.with_column(field: :subject, header: "Subject")
+    }],
+    [Primer::OpenProject::Table, {}, proc { |table|
+      table.with_head do |thead|
+        thead.with_row { |tr| tr.with_header { "Header" } }
+      end
+      table.with_body do |tbody|
+        tbody.with_row { |tr| tr.with_cell { "Cell" } }
+      end
+    }],
     [Primer::Alpha::SkeletonBox, {}],
     [Primer::Alpha::TreeView, {}],
     [Primer::Alpha::FileTreeView, {}],
@@ -254,6 +267,19 @@ class PrimerComponentTest < Minitest::Test
       "Primer::OpenProject::SidePanel::Section",
       "Primer::OpenProject::DangerDialog::FormWrapper",
       "Primer::OpenProject::FilterableTreeView::SubTree",
+      "Primer::OpenProject::DataTable::Column",
+      "Primer::OpenProject::DataTable::SortHeader",
+      "Primer::OpenProject::Table::Body",
+      "Primer::OpenProject::Table::Caption",
+      "Primer::OpenProject::Table::Cell",
+      "Primer::OpenProject::Table::ColGroup",
+      "Primer::OpenProject::Table::ColGroup::Col",
+      "Primer::OpenProject::Table::Foot",
+      "Primer::OpenProject::Table::Head",
+      "Primer::OpenProject::Table::Header",
+      "Primer::OpenProject::Table::HeaderRow",
+      "Primer::OpenProject::Table::Row",
+      "Primer::OpenProject::Table::RowGroup",
     ]
 
     primer_component_files = Dir.chdir("app/components") { Dir["**/*.rb"] }.reject { |p| p.include?("/experimental/") }
