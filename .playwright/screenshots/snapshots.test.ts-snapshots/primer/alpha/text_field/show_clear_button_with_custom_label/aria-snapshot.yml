@@ -1,0 +1,3 @@
+- text: Mon champ de texte
+- textbox "Mon champ de texte"
+- button "Effacer"

@@ -1,8 +1,10 @@
-- group:
+- group "City categories":
+  - text: City categories Select all that apply.
   - checkbox "Capital"
-  - text: Capital
+  - text: Capital The capital city
   - checkbox "Most-populous"
-  - text: Most-populous
+  - text: Most-populous The five most-populous cities
   - checkbox "Custom"
-  - text: Custom Custom cities
+  - text: Custom A custom list of cities Custom cities
   - textbox "Custom cities"
+  - text: A space-separated list of cities

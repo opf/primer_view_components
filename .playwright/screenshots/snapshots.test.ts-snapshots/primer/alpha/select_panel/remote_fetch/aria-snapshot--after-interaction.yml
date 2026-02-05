@@ -7,7 +7,7 @@
   - listbox "options":
     - option "Photon torpedo Starship-mounted missile"
     - option "Bat'leth The Klingon warrior's preferred means of achieving honor"
-    - option "Phaser The iconic handheld laser beam" [checked]
+    - option "Phaser The iconic handheld laser beam" [selected]
     - option "Lightsaber An elegant weapon for a more civilized age"
     - option "Proton pack Ghostbusting equipment"
     - option "Sonic screwdriver The Time Lord's multi-purpose tool"
