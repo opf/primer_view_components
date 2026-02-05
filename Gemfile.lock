@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    openproject-primer_view_components (0.80.2)
+    openproject-primer_view_components (0.81.0)
       actionview (>= 7.2.0)
       activesupport (>= 7.2.0)
       openproject-octicons (>= 19.30.1)
@@ -104,7 +104,7 @@ GEM
       concurrent-ruby (~> 1.1)
       webrick (~> 1.7)
       websocket-driver (>= 0.6, < 0.8)
-    ffi (1.17.3)
+    ffi (1.17.3-arm64-darwin)
     ffi (1.17.3-x86_64-linux-gnu)
     hashdiff (1.2.1)
     htmlbeautifier (1.4.3)

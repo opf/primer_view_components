@@ -1,5 +1,41 @@
 # CHANGELOG
 
+## 0.81.0
+
+### Minor Changes
+
+- [#3864](https://github.com/primer/view_components/pull/3864) [`5d6e909`](https://github.com/opf/primer_view_components/commit/5d6e9091133d6937c77377e63fe0715a8f87575f) Thanks [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Add `none` gap option to Stack component for parity with Primer React
+
+- [#3879](https://github.com/primer/view_components/pull/3879) [`c0db703`](https://github.com/opf/primer_view_components/commit/c0db7037adcafb04e5642703f049874be3083531) Thanks [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Allow localization of TextField clear button aria-label
+
+### Patch Changes
+
+- [#3878](https://github.com/primer/view_components/pull/3878) [`4e702c8`](https://github.com/opf/primer_view_components/commit/4e702c871ed1af3d5eb6236028ad97704996800d) Thanks [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Fix generated field ids to remove brackets
+
+- [#3898](https://github.com/primer/view_components/pull/3898) [`f9fd6c8`](https://github.com/opf/primer_view_components/commit/f9fd6c83c98ea95d79ae2d4857865e26d2b32667) Thanks [@joelhawksley](https://github.com/joelhawksley)! - Fix deprecation warning for Rails 9
+
+- [#3881](https://github.com/primer/view_components/pull/3881) [`536345e`](https://github.com/opf/primer_view_components/commit/536345e4569ca0ff89b32600470257fccadd60b0) Thanks [@llastflowers](https://github.com/llastflowers)! - Add unique ids on each textarea to fix announcement issues
+
+- [#3874](https://github.com/primer/view_components/pull/3874) [`5c2982d`](https://github.com/opf/primer_view_components/commit/5c2982d09e13c327d3c8face322f3185a827be45) Thanks [@llastflowers](https://github.com/llastflowers)! - Give inputs unique ids so that SR doesn't skip Label announcement
+
+- [#3892](https://github.com/primer/view_components/pull/3892) [`e187c55`](https://github.com/opf/primer_view_components/commit/e187c55eaf6b37d840bcc34446254b23c439e7fd) Thanks [@llastflowers](https://github.com/llastflowers)! - Add group label for checkboxes in CheckBoxWithNestedForm Lookbook story
+
+- [#3880](https://github.com/primer/view_components/pull/3880) [`2001888`](https://github.com/opf/primer_view_components/commit/2001888f9464a7d599252d8495ddcb812c0305e3) Thanks [@liuliu-dev](https://github.com/liuliu-dev)! - Fix overlapping issue in TabNav at narrow viewports.
+
+- [#3877](https://github.com/primer/view_components/pull/3877) [`f51244e`](https://github.com/opf/primer_view_components/commit/f51244eef26f70545cc4b4a6ec8d8ee3fba3c51a) Thanks [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Fix Primer::FormHelper compatibility with Rails 7+ config
+
+- [#3875](https://github.com/primer/view_components/pull/3875) [`6971d77`](https://github.com/opf/primer_view_components/commit/6971d773e3f0f574fd94d50a6bf7efa957a4bc7c) Thanks [@liuliu-dev](https://github.com/liuliu-dev)! - Fixed SelectPanel multiselect accessibility: Use `aria-selected` instead of `aria-checked` for listbox option items.
+
+- [#3866](https://github.com/primer/view_components/pull/3866) [`391e438`](https://github.com/opf/primer_view_components/commit/391e438715514c41c24648c7abeb27f18f72ed35) Thanks [@llastflowers](https://github.com/llastflowers)! - Make link distinguishable from surrounding text with underline styling
+
+- [#3899](https://github.com/primer/view_components/pull/3899) [`8d9ceef`](https://github.com/opf/primer_view_components/commit/8d9ceefe28d1ced522056e1f03475fb28ec48b91) Thanks [@llastflowers](https://github.com/llastflowers)! - Generate unique labels for all form control inputs in previews
+
+- [#3893](https://github.com/primer/view_components/pull/3893) [`024dc7e`](https://github.com/opf/primer_view_components/commit/024dc7e3647ec37253fde72d0d8c09caab512de6) Thanks [@liuliu-dev](https://github.com/liuliu-dev)! - Always use `aria-selected` for ActionList items with role="option".
+
+- [#413](https://github.com/opf/primer_view_components/pull/413) [`d342d8d`](https://github.com/opf/primer_view_components/commit/d342d8dc2d2739d122693b42e2b1b61aebee145b) Thanks [@HDinger](https://github.com/HDinger)! - Limit the max width of description texts in Primer::Beta::Blankslate
+
+- [#3867](https://github.com/primer/view_components/pull/3867) [`453041c`](https://github.com/opf/primer_view_components/commit/453041c579bb90e54e5075951b345d8f2037f4ef) Thanks [@llastflowers](https://github.com/llastflowers)! - Add SR announcement in Summary As Button story
+
 ## 0.80.2
 
 ### Patch Changes
@@ -480,7 +516,6 @@
 
 - [#234](https://github.com/opf/primer_view_components/pull/234) [`cdb335c`](https://github.com/opf/primer_view_components/commit/cdb335ce1d5caad3cde8d4ee945461516f229577) Thanks [@myabc](https://github.com/myabc)! - [#60588] Implementation of Danger Dialog, a generalised dialog for "potentially dangerous" actions such as item deletion.
   There are two variants:
-
   1. **the default (or "warning") variant**, requiring the user to click the dialog confirmation button to continue.
   2. **the second confirmation variant**, which requires the user to check a check box AND click confirm to continue with the operation.
 
@@ -771,7 +806,6 @@
 - [#2983](https://github.com/primer/view_components/pull/2983) [`5d68193`](https://github.com/opf/primer_view_components/commit/5d681938247c4a957d62b05c2560fef24195ff51) Thanks [@keithamus](https://github.com/keithamus)! - Ensure ActionMenu restores focus on close of a dialog, if a menu item opened that dialog
 
 - [#3010](https://github.com/primer/view_components/pull/3010) [`ebab85a`](https://github.com/opf/primer_view_components/commit/ebab85a3a3d2644079aaf495fd1e6689b89f713b) Thanks [@camertron](https://github.com/camertron)! - Fixes several SelectPanel bugs:
-
   1. If multiple server-rendered items are checked, the panel will only show one item checked.
   2. If no `data-value` attributes are provided, panels in single-select mode will allow multiple items to be checked.
 
@@ -1043,7 +1077,6 @@
 - [#105](https://github.com/opf/primer_view_components/pull/105) [`a4ab139`](https://github.com/opf/primer_view_components/commit/a4ab1393ef25f4f6f1f0a9bf3ef6e32cb301c5ec) Thanks [@HDinger](https://github.com/HDinger)! - Fine-tuning of PageHeader component (spacings, size, font-weight)
 
 - [#2751](https://github.com/primer/view_components/pull/2751) [`b1fef3c`](https://github.com/opf/primer_view_components/commit/b1fef3cf8ae547241b4d63fde81bc6c127fbd862) Thanks [@langermank](https://github.com/langermank)! - - Add `label_wrap` param to `Beta::Button`
-
   - Bug fix: text overflows in SegmentedControl instead of ellipses
 
 - [#2765](https://github.com/primer/view_components/pull/2765) [`1857983`](https://github.com/opf/primer_view_components/commit/1857983591752336d34133c83af3c8cfe232f1af) Thanks [@camertron](https://github.com/camertron)! - Fix issue preventing expansion and collapse of nav list items with tooltips
@@ -1071,7 +1104,6 @@
 ### Minor Changes
 
 - [#96](https://github.com/opf/primer_view_components/pull/96) [`f52bbfa`](https://github.com/opf/primer_view_components/commit/f52bbfafcba707bd24e76495e84dc9e5128b0284) Thanks [@HDinger](https://github.com/HDinger)! - \* Add support for Dialogs inside the Primer::OpenProject::PageHeader component
-
   - Limit the number of allowed actions to 5
 
 - [#69](https://github.com/opf/primer_view_components/pull/69) [`81bb4b7`](https://github.com/opf/primer_view_components/commit/81bb4b7f746da1e076d085387a4ef2000067b946) Thanks [@bsatarnejad](https://github.com/bsatarnejad)! - Add `Primer::OpenProject::ZenModeButton` component. By clicking on the button, screen will be in full-mode or back in normal-mode.
@@ -1107,7 +1139,6 @@
 - [#2603](https://github.com/primer/view_components/pull/2603) [`bbc1776`](https://github.com/opf/primer_view_components/commit/bbc1776b44e089516658aa76d2fec3724a4dccfc) Thanks [@langermank](https://github.com/langermank)! - Tooltip visual refresh to match Primer React
 
 - [#89](https://github.com/opf/primer_view_components/pull/89) [`0d06bec`](https://github.com/opf/primer_view_components/commit/0d06bec7224ad70c071586f5884b2ef8692237dc) Thanks [@HDinger](https://github.com/HDinger)! - Changes `Primer::OpenProject::PageHeader`:
-
   - Remove the `context_bar_actions` slot
   - Make `breadcrumbs` required
   - Remove the `parent_link` slot (will be derived automatically from the breadcrumb)
@@ -1127,7 +1158,6 @@
 - [#2627](https://github.com/primer/view_components/pull/2627) [`226481e`](https://github.com/opf/primer_view_components/commit/226481e51e8c459dcd6d2a49d57c5005a8103aff) Thanks [@camertron](https://github.com/camertron)! - Support `<select>` elements that allow selecting multiple values
 
 - [#2689](https://github.com/primer/view_components/pull/2689) [`a7f7dad`](https://github.com/opf/primer_view_components/commit/a7f7dad6170afc1dea1071639b5beb3aa20b7918) Thanks [@langermank](https://github.com/langermank)! - - Bug fix: inactive button colors
-
   - Bug fix: double border/box-shadow on popover and dropdown
   - Bug fix: text color for primary button in dark dimmed
 
@@ -1278,7 +1308,6 @@
 - [#2426](https://github.com/primer/view_components/pull/2426) [`78dd9dd`](https://github.com/opf/primer_view_components/commit/78dd9ddb70ee5ade30e243968c87364a80ff1325) Thanks [@camertron](https://github.com/camertron)! - Fix typo in argument passed to event listener in ToolTip
 
 - [#2379](https://github.com/primer/view_components/pull/2379) [`2c59c33`](https://github.com/opf/primer_view_components/commit/2c59c33bf54e392d743fbdd1076d06bff2151b42) Thanks [@mperrotti](https://github.com/mperrotti)! - Updates 'inactive' state for buttons based on feedback from the a11y team:
-
   - inactive buttons need to meet the color contrast ratio minimum
   - inactive buttons shouldn't have aria-disabled since they can still accept interactions such as:
     - hover/focus to show a tooltip
@@ -1362,7 +1391,6 @@
 - [#48](https://github.com/opf/primer_view_components/pull/48) [`102a2ee9`](https://github.com/opf/primer_view_components/commit/102a2ee9fe7b6a049906ca108607c38e3468d0ae) Thanks [@apfohl](https://github.com/apfohl)! - Added a "width" attribute to control how wide an input is rendered on screen.
 
   It is active for:
-
   - TextField
   - Select
 
@@ -1393,7 +1421,6 @@
 ### Minor Changes
 
 - [#2284](https://github.com/primer/view_components/pull/2284) [`374d10fd`](https://github.com/opf/primer_view_components/commit/374d10fd18e7371f49abf75dde135c3ed29fe33d) Thanks [@langermank](https://github.com/langermank)! - Update tooltip design
-
   - Removes caret
   - Decrease offset
   - Remove animation delay
@@ -1436,7 +1463,6 @@
 ### Minor Changes
 
 - [#36](https://github.com/opf/primer_view_components/pull/36) [`cfa8b633`](https://github.com/opf/primer_view_components/commit/cfa8b633d7718abdb6ca5a54389fff542951c4d4) Thanks [@HDinger](https://github.com/HDinger)! - - Add FlexLayout Component
-
   - Add GridLayout Component
 
     <!-- Changed components: Primer::OpenProject::FlexLayout, Primer::OpenProject::GridLayout -->
@@ -1464,7 +1490,6 @@
   <!-- Changed components: _none_ -->
 
 - [#2250](https://github.com/primer/view_components/pull/2250) [`66c4dd69`](https://github.com/opf/primer_view_components/commit/66c4dd6936b386caa42868beef9ea1b33f84b11b) Thanks [@langermank](https://github.com/langermank)! - - Improve contrast for icons in `invisible` button on hover in dark mode (within v8 colors)
-
   - Fix disabled button styles (v8 colors)
   - Bump Primitives to latest
 
@@ -1551,7 +1576,6 @@
 ### Minor Changes
 
 - [#22](https://github.com/opf/primer_view_components/pull/22) [`ebbe8d5e`](https://github.com/opf/primer_view_components/commit/ebbe8d5e8a616799b9c8b54c0f263a2f43720d1f) Thanks [@oliverguenther](https://github.com/oliverguenther)! -
-
   - Add OpenProject status for custom components
   - Add PageHeader component
 
