@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.81.1
+
+### Patch Changes
+
+- [#416](https://github.com/opf/primer_view_components/pull/416) [`50aecfd`](https://github.com/opf/primer_view_components/commit/50aecfdc9fe27c81fdbc2fceecea986f96e1e8e7) Thanks [@HDinger](https://github.com/HDinger)! - add localized default label to close button in Subheader filter input
+
 ## 0.81.0
 
 ### Minor Changes
