@@ -1,6 +1,7 @@
 en:
   button_back: "Back"
   button_cancel: "Cancel"
+  button_clear: "Clear"
   button_close: "Close"
   button_delete: "Delete"
   button_delete_permanently: "Delete permanently"
