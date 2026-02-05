@@ -2236,7 +2236,6 @@
 - [#1632](https://github.com/primer/view_components/pull/1632) [`7f1181be`](https://github.com/primer/view_components/commit/7f1181be49960337254db834e9b2b9a5fdb7b0b8) Thanks [@camertron](https://github.com/camertron)! - Improve performance of the deny\_\* methods
 
 * [#1625](https://github.com/primer/view_components/pull/1625) [`3af9bf5e`](https://github.com/primer/view_components/commit/3af9bf5e778bb1fe475ed7efda9fc1a5ed36d695) Thanks [@jonrohan](https://github.com/jonrohan)! - Deprecate components and moving to new namespace:
-
   - Primer::Dropdown moving to Primer::Alpha::Dropdown
   - Primer::Dropdown::Menu moving to Primer::Alpha::Dropdown::Menu
   - Primer::Dropdown::Menu::Item moving to Primer::Alpha::Dropdown::Menu::Item
@@ -3054,7 +3053,6 @@
   _Manuel Puyol_
 
 - Change spacing in `Blankslate`:
-
   - Between `description` and `primary_action` to `32px`.
   - Between `primary_action` and `secondary_action` to `16px`.
 
@@ -3412,7 +3410,6 @@
   _Manuel Puyol_
 
 - Linters can:
-
   - convert values with ERB interpolations.
   - autocorrect cases with custom classes.
 
@@ -3527,7 +3524,6 @@
   _Kate Higa_
 
 - Renames:
-
   - `Primer::AvatarStackComponent` to `Primer::Beta::AvatarStack`.
 
     _Manuel Puyol_
@@ -3569,7 +3565,6 @@
   _Kate Higa_
 
 - Renames:
-
   - `Primer::AutoComplete` to `Primer::Beta::AutoComplete`
   - `Primer::AutoComplete::Item` to `Primer::Beta::AutoComplete::Item`
   - `Primer::AvatarComponent` to `Primer::Beta::Avatar`
@@ -3713,7 +3708,6 @@
   _Kate Higa_
 
 - Renames:
-
   - `DropdownComponent` to `Dropdown`.
   - `Dropdown::MenuComponent` to `Dropdown::Menu`.
   - `Primer::ButtonMarketingComponent` to `Primer::Alpha::ButtonMarketing`.
@@ -4171,7 +4165,6 @@
   _Simon Taranto_
 
 - Update `LinkComponent`:
-
   - use `Link--muted` instead of `muted-link`.
   - accept `variant` and `underline` options.
   - accept `:span` as a tag.
@@ -4481,7 +4474,6 @@
 
 - Add support for box_shadow
 - Add components:
-
   - Popover
 
     _Sarah Vessels_
@@ -4503,7 +4495,6 @@
   _Joel Hawksley_
 
 - Add components:
-
   - Avatar
   - Blankslate
 
@@ -4524,7 +4515,6 @@
   _Manuel Puyol_
 
 - Add components:
-
   - BorderBox
   - Box
   - Breadcrumb

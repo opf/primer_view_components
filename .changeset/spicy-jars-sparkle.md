@@ -2,4 +2,4 @@
 "@openproject/primer-view-components": patch
 ---
 
-Add support for Ruby 4 in test suite.
+Add SR announcement in Summary As Button story
