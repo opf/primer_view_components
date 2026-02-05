@@ -86,6 +86,7 @@ module Primer
         system_arguments[:leading_visual] ||= { icon: :search }
         system_arguments[:visually_hide_label] ||= true
         system_arguments[:input_width] ||= :medium
+        system_arguments[:clear_button_label] ||= I18n.t(:button_clear)
 
         system_arguments[:data] ||= {}
         system_arguments[:data] = merge_data(
