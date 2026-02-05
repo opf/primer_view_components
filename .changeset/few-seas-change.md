@@ -2,4 +2,4 @@
 "@openproject/primer-view-components": patch
 ---
 
-Make AvatarStack accessible via keyboard navigation
+Fix deprecation warning for Rails 9

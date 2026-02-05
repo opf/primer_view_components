@@ -5,7 +5,7 @@
   - text: Filter
   - searchbox "Filter"
   - listbox "Menu options":
-    - option "Item 1" [checked]
+    - option "Item 1" [selected]
     - option "Item 2"
     - option "Item 3"
     - option "Item 4"

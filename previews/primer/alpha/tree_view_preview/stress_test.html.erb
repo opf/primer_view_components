@@ -1,0 +1,43 @@
+<div style="max-width: 400px">
+  <%= render(Primer::Alpha::TreeView.new) do |tree_view| %>
+    <% (1..100).each do %>
+      <% tree_view.with_sub_tree(label: "src", expanded: expanded, disabled: disabled, select_variant: select_variant, select_strategy: select_strategy) do |sub_tree| %>
+        <% sub_tree.with_leading_visual_icons(label: "Foobar") do |icons| %>
+          <% icons.with_expanded_icon(icon: :"file-directory-open-fill", color: :accent) %>
+          <% icons.with_collapsed_icon(icon: :"file-directory-fill", color: :accent) %>
+        <% end %>
+
+        <% sub_tree.with_sub_tree(label: "src", expanded: expanded, disabled: disabled, select_variant: select_variant, select_strategy: select_strategy) do |sub_tree2| %>
+          <% sub_tree2.with_leading_visual_icons(label: "Foobar") do |icons| %>
+            <% icons.with_expanded_icon(icon: :"file-directory-open-fill", color: :accent) %>
+            <% icons.with_collapsed_icon(icon: :"file-directory-fill", color: :accent) %>
+          <% end %>
+
+          <% sub_tree2.with_trailing_visual_icon(icon: :"diff-modified") unless select_variant == :single %>
+
+          <% sub_tree2.with_leaf(label: "button.rb", disabled: disabled, select_variant: select_variant) do |item| %>
+            <% item.with_leading_visual_icon(icon: :file) %>
+          <% end %>
+        <% end %>
+
+        <% tree_view.with_leaf(label: "action_menu.rb", disabled: disabled, select_variant: select_variant) do |item| %>
+          <% item.with_leading_visual_icon(icon: :file) %>
+        <% end %>
+
+        <% sub_tree.with_trailing_visual_icon(icon: :"diff-modified") unless select_variant == :single %>
+
+        <% sub_tree.with_leaf(label: "button.rb", disabled: disabled, select_variant: select_variant) do |item| %>
+          <% item.with_leading_visual_icon(icon: :file) %>
+        <% end %>
+
+        <% sub_tree.with_leaf(label: "icon_button.rb", current: true, disabled: disabled, select_variant: select_variant) do |item| %>
+          <% item.with_leading_visual_icon(icon: :file) %>
+        <% end %>
+      <% end %>
+
+      <% tree_view.with_leaf(label: "action_menu.rb", disabled: disabled, select_variant: select_variant) do |item| %>
+        <% item.with_leading_visual_icon(icon: :file) %>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

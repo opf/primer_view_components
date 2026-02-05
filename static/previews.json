@@ -5931,7 +5931,8 @@
         "snapshot": "true",
         "skip_rules": {
           "wont_fix": [
-            "region"
+            "region",
+            "label-title-only"
           ],
           "will_fix": [
             "color-contrast"
@@ -6254,19 +6255,6 @@
       {
         "preview_path": "primer/alpha/overlay/default",
         "name": "default",
-        "snapshot": "false",
-        "skip_rules": {
-          "wont_fix": [
-            "region"
-          ],
-          "will_fix": [
-            "color-contrast"
-          ]
-        }
-      },
-      {
-        "preview_path": "primer/alpha/overlay/menu_no_header",
-        "name": "menu_no_header",
         "snapshot": "false",
         "skip_rules": {
           "wont_fix": [
@@ -8705,6 +8693,19 @@
       {
         "preview_path": "primer/alpha/text_field/show_clear_button",
         "name": "show_clear_button",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/alpha/text_field/show_clear_button_with_custom_label",
+        "name": "show_clear_button_with_custom_label",
         "snapshot": "true",
         "skip_rules": {
           "wont_fix": [
