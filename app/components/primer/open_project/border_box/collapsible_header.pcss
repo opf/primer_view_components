@@ -37,6 +37,10 @@
     align-items: flex-start;
   }
 
+  .CollapsibleHeader[data-collapsed] .CollapsibleHeader-description {
+    display: none;
+  }
+
   .CollapsibleHeader-description {
     width: 100%;
   }
@@ -48,7 +52,7 @@
     align-items: flex-start;
   }
 
-  &[data-collapsed] .CollapsibleHeader-description {
+  &.CollapsibleHeader[data-collapsed] .CollapsibleHeader-description {
     display: none;
   }
 
