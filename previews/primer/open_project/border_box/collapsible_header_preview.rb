@@ -25,8 +25,8 @@ module Primer
             title: title,
             description: description,
             count: count,
-            collapsed: collapsed,
-            multi_line: multi_line
+            collapsed: coerce_bool(collapsed),
+            multi_line: coerce_bool(multi_line)
           })
         end
 
@@ -71,7 +71,7 @@ module Primer
               description: "This backlog is unique to this one-time meeting. You can drag items in and out to add or remove them from the meeting agenda.",
               count: nil,
               collapsed: false,
-              multi_line: multi_line
+              multi_line: coerce_bool(multi_line)
             }
           )
         end
@@ -87,9 +87,21 @@ module Primer
               description: "This backlog is unique to this one-time meeting. You can drag items in and out to add or remove them from the meeting agenda.",
               count: nil,
               collapsed: true,
-              multi_line: multi_line
+              multi_line: coerce_bool(multi_line)
             }
           )
+        end
+
+        private
+
+        # URL params are always strings; coerce to actual booleans before passing to the component.
+        def coerce_bool(value)
+          case value
+          when true, false then value
+          when "true" then true
+          when "false" then false
+          else false
+          end
         end
       end
     end

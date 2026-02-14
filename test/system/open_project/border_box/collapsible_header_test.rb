@@ -17,6 +17,15 @@ class IntegrationOpenProjectCollapsibleHeaderTest < System::TestCase
     assert_no_text("This backlog is unique to this one-time meeting. You can drag items in and out to add or remove them from the meeting agenda.")
   end
 
+  def test_description_visible_when_collapsed_and_single_line
+    visit_preview(:collapsed, module_prefix: "border_box", multi_line: false)
+
+    # In single-line mode, the description stays on the same row as the title
+    # and remains visible even when collapsed (contrast with multi_line: true)
+    assert_selector(".CollapsibleHeader-description", visible: true)
+    assert_text("This backlog is unique to this one-time meeting.")
+  end
+
   def test_click_behaviour
     visit_preview(:default, module_prefix: "border_box")
 
