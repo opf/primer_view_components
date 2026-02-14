@@ -13,30 +13,54 @@ class Primer::OpenProject::BorderBox::CollapsibleHeaderTest < Minitest::Test
     assert_selector("svg.octicon.octicon-chevron-down", visible: false)
   end
 
-  def test_does_not_render_without_box
+  def test_does_not_render_with_empty_title
     err = assert_raises ArgumentError do
       render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new)
     end
 
-    assert_equal "missing keyword: :box", err.message
-  end
-
-  def test_does_not_render_without_valid_box
-    err = assert_raises ArgumentError do
-      render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new(box: "Some component")) do |header|
-        header.with_title { "Test title" }
-      end
-    end
-
-    assert_equal "This component must be called inside the header of a `Primer::Beta::BorderBox`", err.message
-  end
-
-  def test_does_not_render_with_empty_title
-    err = assert_raises ArgumentError do
-      render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new(box: "Some component"))
-    end
-
     assert_equal "Title must be present", err.message
+  end
+
+  def test_collapsible_id_sets_aria_controls
+    render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new(
+      collapsible_id: "body-id list-id",
+      toggle_label: "Toggle backlog"
+    )) do |header|
+      header.with_title { "Backlog" }
+    end
+
+    assert_selector(".CollapsibleHeader-triggerArea[aria-controls='body-id list-id']")
+  end
+
+  def test_nil_collapsible_id_omits_aria_controls
+    render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new(
+      toggle_label: "Toggle backlog"
+    )) do |header|
+      header.with_title { "Backlog" }
+    end
+
+    assert_no_selector(".CollapsibleHeader-triggerArea[aria-controls]")
+  end
+
+  def test_toggle_label_sets_aria_label
+    render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new(
+      collapsible_id: "body-id",
+      toggle_label: "Toggle backlog"
+    )) do |header|
+      header.with_title { "Backlog" }
+    end
+
+    assert_selector(".CollapsibleHeader-triggerArea[aria-label='Toggle backlog']")
+  end
+
+  def test_toggle_label_defaults_to_i18n_string
+    render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new(
+      collapsible_id: "body-id"
+    )) do |header|
+      header.with_title { "Backlog" }
+    end
+
+    assert_selector(".CollapsibleHeader-triggerArea[aria-label='Toggle section']")
   end
 
   def test_renders_with_description

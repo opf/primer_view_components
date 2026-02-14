@@ -24,6 +24,9 @@ en:
   label_loading: "Loading..."
   label_more: "More"
 
+  collapsible_header:
+    toggle_label: "Toggle section"
+
   danger_dialog:
     confirmation_live_message_checked: "The button to proceed is now active."
     confirmation_live_message_unchecked: "The button to proceed is now inactive. You need to tick the checkbox to continue."

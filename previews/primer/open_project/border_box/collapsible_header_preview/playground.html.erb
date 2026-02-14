@@ -1,15 +1,16 @@
-<%= render(Primer::Beta::BorderBox.new) do |component| %>
+<%= render(Primer::Beta::BorderBox.new(list_id: "list-id")) do |component| %>
   <% component.with_header do %>
-    <%= render(Primer::OpenProject::BorderBox::CollapsibleHeader.new(box: component,
-                                                                     collapsed: collapsed)) do |header| %>
+    <%= render(Primer::OpenProject::BorderBox::CollapsibleHeader.new(collapsed: collapsed,
+                                                                     collapsible_id: "body-id list-id footer-id",
+                                                                     two_line: two_line)) do |header| %>
       <% header.with_title { title } %>
       <% header.with_count(count: count) %>
       <% header.with_description { description } %>
     <% end %>
   <% end %>
-  <% component.with_body { "Body" } %>
+  <% component.with_body(id: "body-id") { "Body" } %>
   <% component.with_row { "Row 1" } %>
   <% component.with_row { "Row 2" } %>
   <% component.with_row { "Row 3" } %>
-  <% component.with_footer { "Footer" } %>
+  <% component.with_footer(id: "footer-id") { "Footer" } %>
 <% end %>
