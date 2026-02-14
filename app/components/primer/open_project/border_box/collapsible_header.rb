@@ -40,6 +40,7 @@ module Primer
         # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
         renders_one :description, lambda { |**system_arguments|
           system_arguments[:color] ||= :subtle
+          system_arguments[:trim] = true
           system_arguments[:classes] = class_names(
             system_arguments[:classes],
             "CollapsibleHeader-description"
