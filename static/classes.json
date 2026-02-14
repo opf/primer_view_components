@@ -244,7 +244,7 @@
   "CollapsibleHeader": [
     "Primer::OpenProject::BorderBox::CollapsibleHeader"
   ],
-  "CollapsibleHeader--two-line": [
+  "CollapsibleHeader--multi-line": [
     "Primer::OpenProject::BorderBox::CollapsibleHeader"
   ],
   "CollapsibleHeader-description": [

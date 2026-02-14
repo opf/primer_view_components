@@ -12,21 +12,21 @@ module Primer
         # @param title [String]
         # @param description [String]
         # @param collapsed toggle
-        # @param two_line toggle
+        # @param multi_line toggle
         # @param count [Integer]
         def playground(
           title: "Backlog",
           description: "This backlog is unique to this one-time meeting. You can drag items in and out to add or remove them from the meeting agenda.",
           count: 42,
           collapsed: false,
-          two_line: true
+          multi_line: true
         )
           render_with_template(locals: {
             title: title,
             description: description,
             count: count,
             collapsed: collapsed,
-            two_line: two_line
+            multi_line: multi_line
           })
         end
 
@@ -40,7 +40,7 @@ module Primer
               description: nil,
               count: nil,
               collapsed: false,
-              two_line: true
+              multi_line: true
             }
           )
         end
@@ -55,7 +55,7 @@ module Primer
               description: nil,
               count: 42,
               collapsed: false,
-              two_line: true
+              multi_line: true
             }
           )
         end
@@ -70,7 +70,7 @@ module Primer
               description: "This backlog is unique to this one-time meeting. You can drag items in and out to add or remove them from the meeting agenda.",
               count: nil,
               collapsed: false,
-              two_line: true
+              multi_line: true
             }
           )
         end
@@ -85,7 +85,7 @@ module Primer
               description: "This backlog is unique to this one-time meeting. You can drag items in and out to add or remove them from the meeting agenda.",
               count: nil,
               collapsed: true,
-              two_line: true
+              multi_line: true
             }
           )
         end

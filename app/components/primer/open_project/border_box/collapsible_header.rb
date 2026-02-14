@@ -53,9 +53,9 @@ module Primer
         # @param collapsed [Boolean] Whether the header is collapsed on initial render.
         # @param collapsible_id [String] The id or ids of the elements that will be collapsed. This should include the BorderBox's list, body and footer. This will be required in future versions.
         # @param toggle_label [String] The aria label for the toggle control.
-        # @param two_line [Boolean] Whether the header always uses a two-line layout.
+        # @param multi_line [Boolean] Whether the description is on its own line and can wrap across multiple lines.
         # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
-        def initialize(id: self.class.generate_id, box: nil, collapsed: false, collapsible_id: nil, toggle_label: I18n.t("collapsible_header.toggle_label"), two_line: true, **system_arguments)
+        def initialize(id: self.class.generate_id, box: nil, collapsed: false, collapsible_id: nil, toggle_label: I18n.t("collapsible_header.toggle_label"), multi_line: true, **system_arguments)
           deprecation_warn("The `box:` param is deprecated and a no-op. It will be removed in a future version.") if box
           deprecation_warn("Omitting the `collapsible_id` param is deprecated. It will be required in a future version.") unless collapsible_id
 
@@ -70,7 +70,7 @@ module Primer
             system_arguments[:classes],
             "CollapsibleHeader",
             "CollapsibleHeader--collapsed" => @collapsed,
-            "CollapsibleHeader--two-line" => two_line
+            "CollapsibleHeader--multi-line" => multi_line
           )
 
           if @collapsed

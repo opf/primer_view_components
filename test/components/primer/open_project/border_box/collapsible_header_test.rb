@@ -21,6 +21,28 @@ class Primer::OpenProject::BorderBox::CollapsibleHeaderTest < Minitest::Test
     assert_equal "Title must be present", err.message
   end
 
+  def test_multi_line_applies_css_class
+    render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new(
+      collapsible_id: "body-id",
+      multi_line: true
+    )) do |header|
+      header.with_title { "Backlog" }
+    end
+
+    assert_selector(".CollapsibleHeader.CollapsibleHeader--multi-line")
+  end
+
+  def test_multi_line_false_omits_css_class
+    render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new(
+      collapsible_id: "body-id",
+      multi_line: false
+    )) do |header|
+      header.with_title { "Backlog" }
+    end
+
+    refute_selector(".CollapsibleHeader.CollapsibleHeader--multi-line")
+  end
+
   def test_collapsible_id_sets_aria_controls
     render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new(
       collapsible_id: "body-id list-id",

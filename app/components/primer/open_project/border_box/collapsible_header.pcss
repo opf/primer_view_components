@@ -21,7 +21,7 @@
 .CollapsibleHeader-triggerArea {
   cursor: pointer;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   column-gap: var(--stack-gap-normal);
   row-gap: var(--base-size-4);
@@ -36,9 +36,13 @@
     flex-direction: column;
     align-items: flex-start;
   }
+
+  .CollapsibleHeader-description {
+    width: 100%;
+  }
 }
 
-.CollapsibleHeader--two-line {
+.CollapsibleHeader--multi-line {
   .CollapsibleHeader-triggerArea {
     flex-direction: column;
     align-items: flex-start;
@@ -47,17 +51,26 @@
   &[data-collapsed] .CollapsibleHeader-description {
     display: none;
   }
+
+  .CollapsibleHeader-description {
+    overflow: visible;
+    text-overflow: initial;
+    white-space: normal;
+    width: 100%;
+  }
 }
 
 .CollapsibleHeader-title-line {
   display: flex;
   align-items: center;
   gap: var(--stack-gap-condensed);
-  flex: 1;
   min-width: fit-content;
 }
 
 .CollapsibleHeader-description {
-  display: inline;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }

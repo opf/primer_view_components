@@ -5866,10 +5866,10 @@
         "description": "The aria label for the toggle control."
       },
       {
-        "name": "two_line",
+        "name": "multi_line",
         "type": "Boolean",
         "default": "`true`",
-        "description": "Whether the header always uses a two-line layout."
+        "description": "Whether the description is on its own line and can wrap across multiple lines."
       },
       {
         "name": "system_arguments",
