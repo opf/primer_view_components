@@ -11,8 +11,8 @@ module Primer
         # @label Playground
         # @param title [String]
         # @param description [String]
-        # @param collapsed toggle
-        # @param multi_line toggle
+        # @param collapsed [Boolean] toggle
+        # @param multi_line [Boolean] toggle
         # @param count [Integer]
         def playground(
           title: "Backlog",
@@ -62,7 +62,8 @@ module Primer
 
         # @label With description text
         # @snapshot
-        def with_description
+        # @param multi_line [Boolean] toggle
+        def with_description(multi_line: true)
           render_with_template(
             template: "primer/open_project/border_box/collapsible_header_preview/playground",
             locals: {
@@ -70,14 +71,15 @@ module Primer
               description: "This backlog is unique to this one-time meeting. You can drag items in and out to add or remove them from the meeting agenda.",
               count: nil,
               collapsed: false,
-              multi_line: true
+              multi_line: multi_line
             }
           )
         end
 
         # @label Collapsed initially
         # @snapshot
-        def collapsed
+        # @param multi_line [Boolean] toggle
+        def collapsed(multi_line: true)
           render_with_template(
             template: "primer/open_project/border_box/collapsible_header_preview/playground",
             locals: {
@@ -85,7 +87,7 @@ module Primer
               description: "This backlog is unique to this one-time meeting. You can drag items in and out to add or remove them from the meeting agenda.",
               count: nil,
               collapsed: true,
-              multi_line: true
+              multi_line: multi_line
             }
           )
         end
