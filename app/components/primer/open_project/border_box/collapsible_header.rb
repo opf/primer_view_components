@@ -113,7 +113,9 @@ module Primer
         end
 
         def deprecation_warn(message)
-          ::Primer::ViewComponents.deprecation.warn(message) if !Rails.env.production?
+          return if Rails.env.production? || silence_deprecations?
+
+          ::Primer::ViewComponents.deprecation.warn(message)
         end
       end
     end
