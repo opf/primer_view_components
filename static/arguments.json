@@ -5860,12 +5860,6 @@
         "description": "The id or ids of the elements that will be collapsed. This should include the BorderBox's list, body and footer. This will be required in future versions."
       },
       {
-        "name": "toggle_label",
-        "type": "String",
-        "default": "`I18n.t(\"collapsible_header.toggle_label\")`",
-        "description": "The aria label for the toggle control."
-      },
-      {
         "name": "multi_line",
         "type": "Boolean",
         "default": "`true`",

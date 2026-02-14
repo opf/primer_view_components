@@ -57,16 +57,14 @@ module Primer
         # @param box [Primer::Beta::BorderBox] Deprecated. Previously used to reference the parent BorderBox.
         # @param collapsed [Boolean] Whether the header is collapsed on initial render.
         # @param collapsible_id [String] The id or ids of the elements that will be collapsed. This should include the BorderBox's list, body and footer. This will be required in future versions.
-        # @param toggle_label [String] The aria label for the toggle control.
         # @param multi_line [Boolean] Whether the description is on its own line and can wrap across multiple lines.
         # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
-        def initialize(id: self.class.generate_id, box: nil, collapsed: false, collapsible_id: nil, toggle_label: I18n.t("collapsible_header.toggle_label"), multi_line: true, **system_arguments)
+        def initialize(id: self.class.generate_id, box: nil, collapsed: false, collapsible_id: nil, multi_line: true, **system_arguments)
           deprecation_warn("The `box:` param is deprecated and a no-op. It will be removed in a future version.") if box
           deprecation_warn("Omitting the `collapsible_id` param is deprecated. It will be required in a future version.") unless collapsible_id
 
           @collapsed = collapsed
           @collapsible_id = collapsible_id
-          @toggle_label = toggle_label
 
           @system_arguments = deny_tag_argument(**system_arguments)
           @system_arguments[:tag] = :"collapsible-header"
@@ -93,7 +91,6 @@ module Primer
           @trigger_area_arguments[:tabindex] = 0
           @trigger_area_arguments[:classes] = "CollapsibleHeader-triggerArea"
           @trigger_area_arguments[:aria] = {
-            label: @toggle_label,
             controls: @collapsible_id,
             expanded: !@collapsed
           }

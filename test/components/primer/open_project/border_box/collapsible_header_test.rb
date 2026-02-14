@@ -65,8 +65,7 @@ class Primer::OpenProject::BorderBox::CollapsibleHeaderTest < Minitest::Test
 
   def test_collapsible_id_sets_aria_controls
     render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new(
-      collapsible_id: "body-id list-id",
-      toggle_label: "Toggle backlog"
+      collapsible_id: "body-id list-id"
     )) do |header|
       header.with_title { "Backlog" }
     end
@@ -75,34 +74,11 @@ class Primer::OpenProject::BorderBox::CollapsibleHeaderTest < Minitest::Test
   end
 
   def test_nil_collapsible_id_omits_aria_controls
-    render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new(
-      toggle_label: "Toggle backlog"
-    )) do |header|
+    render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new) do |header|
       header.with_title { "Backlog" }
     end
 
     assert_no_selector(".CollapsibleHeader-triggerArea[aria-controls]")
-  end
-
-  def test_toggle_label_sets_aria_label
-    render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new(
-      collapsible_id: "body-id",
-      toggle_label: "Toggle backlog"
-    )) do |header|
-      header.with_title { "Backlog" }
-    end
-
-    assert_selector(".CollapsibleHeader-triggerArea[aria-label='Toggle backlog']")
-  end
-
-  def test_toggle_label_defaults_to_i18n_string
-    render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new(
-      collapsible_id: "body-id"
-    )) do |header|
-      header.with_title { "Backlog" }
-    end
-
-    assert_selector(".CollapsibleHeader-triggerArea[aria-label='Toggle section']")
   end
 
   def test_renders_with_description
