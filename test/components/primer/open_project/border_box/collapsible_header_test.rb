@@ -21,6 +21,27 @@ class Primer::OpenProject::BorderBox::CollapsibleHeaderTest < Minitest::Test
     assert_equal "Title must be present", err.message
   end
 
+  def test_warns_when_box_param_passed
+    with_silence_deprecations(false) do
+      ::Primer::ViewComponents.deprecation.expects(:warn).with("The `box:` param is deprecated and a no-op. It will be removed in a future version.").once
+      render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new(
+        collapsible_id: "body-id",
+        box: Object.new
+      )) do |header|
+        header.with_title { "Backlog" }
+      end
+    end
+  end
+
+  def test_warns_when_collapsible_id_omitted
+    with_silence_deprecations(false) do
+      ::Primer::ViewComponents.deprecation.expects(:warn).with("Omitting the `collapsible_id` param is deprecated. It will be required in a future version.").once
+      render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new) do |header|
+        header.with_title { "Backlog" }
+      end
+    end
+  end
+
   def test_title_renders_with_default_heading_tag
     render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new(
       collapsible_id: "body-id"
