@@ -19224,6 +19224,12 @@
         "description": "Required title",
         "parameters": [
           {
+            "name": "tag",
+            "type": "Symbol",
+            "default": "N/A",
+            "description": "One of `:h1`, `:h2`, `:h3`, `:h4`, `:h5`, or `:h6`."
+          },
+          {
             "name": "system_arguments",
             "type": "Hash",
             "default": "N/A",

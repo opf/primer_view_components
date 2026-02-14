@@ -8,17 +8,21 @@ module Primer
       class CollapsibleHeader < Primer::Component
         status :open_project
 
+        TITLE_TAG_DEFAULT = :h3
+        TITLE_TAG_OPTIONS = [:h1, :h2, TITLE_TAG_DEFAULT, :h4, :h5, :h6].freeze
+
         # Required title
         #
+        # @param tag [Symbol] <%= one_of(Primer::OpenProject::BorderBox::CollapsibleHeader::TITLE_TAG_OPTIONS) %>
         # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
-        renders_one :title, lambda { |**system_arguments|
+        renders_one :title, lambda { |tag: TITLE_TAG_DEFAULT, **system_arguments|
           system_arguments[:classes] = class_names(
             system_arguments[:classes],
             "CollapsibleHeader-title",
             "Box-title"
           )
 
-          Primer::Beta::Text.new(**system_arguments)
+          Primer::Beta::Heading.new(tag: fetch_or_fallback(TITLE_TAG_OPTIONS, tag, TITLE_TAG_DEFAULT), **system_arguments)
         }
 
         # Optional count
