@@ -6013,6 +6013,18 @@
     "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/drag_handle/default/",
     "parameters": [
       {
+        "name": "size",
+        "type": "Symbol",
+        "default": "`:small`",
+        "description": "One of `:medium`, `:small`, or `:xsmall`."
+      },
+      {
+        "name": "label",
+        "type": "String",
+        "default": "`I18n.t(\"drag_handle.button_drag\")`",
+        "description": "String that can be read by assistive technology. A label should be short and concise. See the accessibility section for more information."
+      },
+      {
         "name": "system_arguments",
         "type": "Hash",
         "default": "N/A",
