@@ -13,30 +13,93 @@ class Primer::OpenProject::BorderBox::CollapsibleHeaderTest < Minitest::Test
     assert_selector("svg.octicon.octicon-chevron-down", visible: false)
   end
 
-  def test_does_not_render_without_box
+  def test_does_not_render_with_empty_title
     err = assert_raises ArgumentError do
       render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new)
     end
 
-    assert_equal "missing keyword: :box", err.message
+    assert_equal "Title must be present", err.message
   end
 
-  def test_does_not_render_without_valid_box
-    err = assert_raises ArgumentError do
-      render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new(box: "Some component")) do |header|
-        header.with_title { "Test title" }
+  def test_warns_when_box_param_passed
+    with_silence_deprecations(false) do
+      ::Primer::ViewComponents.deprecation.expects(:warn).with("The `box:` param is deprecated and a no-op. It will be removed in a future version.").once
+      render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new(
+        collapsible_id: "body-id",
+        box: Object.new
+      )) do |header|
+        header.with_title { "Backlog" }
       end
     end
-
-    assert_equal "This component must be called inside the header of a `Primer::Beta::BorderBox`", err.message
   end
 
-  def test_does_not_render_with_empty_title
-    err = assert_raises ArgumentError do
-      render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new(box: "Some component"))
+  def test_warns_when_collapsible_id_omitted
+    with_silence_deprecations(false) do
+      ::Primer::ViewComponents.deprecation.expects(:warn).with("Omitting the `collapsible_id` param is deprecated. It will be required in a future version.").once
+      render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new) do |header|
+        header.with_title { "Backlog" }
+      end
+    end
+  end
+
+  def test_title_renders_with_default_heading_tag
+    render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new(
+      collapsible_id: "body-id"
+    )) do |header|
+      header.with_title { "Backlog" }
     end
 
-    assert_equal "Title must be present", err.message
+    assert_selector("h3.CollapsibleHeader-title", text: "Backlog")
+  end
+
+  def test_title_tag_can_be_customized
+    render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new(
+      collapsible_id: "body-id"
+    )) do |header|
+      header.with_title(tag: :h2) { "Backlog" }
+    end
+
+    assert_selector("h2.CollapsibleHeader-title", text: "Backlog")
+  end
+
+  def test_multi_line_applies_css_class
+    render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new(
+      collapsible_id: "body-id",
+      multi_line: true
+    )) do |header|
+      header.with_title { "Backlog" }
+    end
+
+    assert_selector(".CollapsibleHeader.CollapsibleHeader--multi-line")
+  end
+
+  def test_multi_line_false_omits_css_class
+    render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new(
+      collapsible_id: "body-id",
+      multi_line: false
+    )) do |header|
+      header.with_title { "Backlog" }
+    end
+
+    refute_selector(".CollapsibleHeader.CollapsibleHeader--multi-line")
+  end
+
+  def test_collapsible_id_sets_aria_controls
+    render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new(
+      collapsible_id: "body-id list-id"
+    )) do |header|
+      header.with_title { "Backlog" }
+    end
+
+    assert_selector(".CollapsibleHeader-triggerArea[aria-controls='body-id list-id']")
+  end
+
+  def test_nil_collapsible_id_omits_aria_controls
+    render_inline(Primer::OpenProject::BorderBox::CollapsibleHeader.new) do |header|
+      header.with_title { "Backlog" }
+    end
+
+    assert_no_selector(".CollapsibleHeader-triggerArea[aria-controls]")
   end
 
   def test_renders_with_description

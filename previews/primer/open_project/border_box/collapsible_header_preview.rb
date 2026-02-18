@@ -11,19 +11,22 @@ module Primer
         # @label Playground
         # @param title [String]
         # @param description [String]
-        # @param collapsed toggle
+        # @param collapsed [Boolean] toggle
+        # @param multi_line [Boolean] toggle
         # @param count [Integer]
         def playground(
           title: "Backlog",
           description: "This backlog is unique to this one-time meeting. You can drag items in and out to add or remove them from the meeting agenda.",
           count: 42,
-          collapsed: false
+          collapsed: false,
+          multi_line: true
         )
           render_with_template(locals: {
             title: title,
             description: description,
             count: count,
-            collapsed: collapsed
+            collapsed: coerce_bool(collapsed),
+            multi_line: coerce_bool(multi_line)
           })
         end
 
@@ -36,7 +39,8 @@ module Primer
               title: "Backlog",
               description: nil,
               count: nil,
-              collapsed: false
+              collapsed: false,
+              multi_line: true
             }
           )
         end
@@ -50,37 +54,54 @@ module Primer
               title: "Backlog",
               description: nil,
               count: 42,
-              collapsed: false
+              collapsed: false,
+              multi_line: true
             }
           )
         end
 
         # @label With description text
         # @snapshot
-        def with_description
+        # @param multi_line [Boolean] toggle
+        def with_description(multi_line: true)
           render_with_template(
             template: "primer/open_project/border_box/collapsible_header_preview/playground",
             locals: {
               title: "Backlog",
               description: "This backlog is unique to this one-time meeting. You can drag items in and out to add or remove them from the meeting agenda.",
               count: nil,
-              collapsed: false
+              collapsed: false,
+              multi_line: coerce_bool(multi_line)
             }
           )
         end
 
         # @label Collapsed initially
         # @snapshot
-        def collapsed
+        # @param multi_line [Boolean] toggle
+        def collapsed(multi_line: true)
           render_with_template(
             template: "primer/open_project/border_box/collapsible_header_preview/playground",
             locals: {
               title: "Backlog",
               description: "This backlog is unique to this one-time meeting. You can drag items in and out to add or remove them from the meeting agenda.",
               count: nil,
-              collapsed: true
+              collapsed: true,
+              multi_line: coerce_bool(multi_line)
             }
           )
+        end
+
+        private
+
+        # URL params are always strings; coerce to actual booleans before passing to the component.
+        def coerce_bool(value)
+          case value
+          when true, false then value
+          when "true" then true
+          when "false" then false
+          else false
+          end
         end
       end
     end
