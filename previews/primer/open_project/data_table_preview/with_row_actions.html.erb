@@ -1,0 +1,60 @@
+<%=
+  render(
+    Primer::OpenProject::DataTable.new(
+      data: projects,
+      cell_padding: :spacious,
+      initial_sort_column: :name,
+      initial_sort_direction: :DESC
+    )
+  ) do |data_table|
+    data_table.with_title(tag: :h2) { "Projects" }
+    data_table.with_subtitle { "The latest projects in OpenProject" }
+
+    data_table.with_column(header: "Name", field: :name, row_header: true, width: :grow_collapse, sort_by: :ASC)
+    data_table.with_column(header: "Status", field: :status_code) do |column|
+      column.with_cell do |row|
+        render(Primer::Beta::Label.new) { row.status_code }
+      end
+    end
+
+    data_table.with_column(header: "Created at", field: :created_at, sort_by: :DESC) do |column|
+      column.with_cell do |row|
+        row.created_at.strftime("%Y-%m-%d")
+      end
+    end
+
+    data_table.with_column(id: "actions") do |column|
+      column.with_header do
+        render(Primer::Beta::Text.new(classes: "sr-only")) { "Actions" }
+      end
+
+      column.with_cell do
+        render(Primer::Alpha::ActionMenu.new) do |menu|
+          menu.with_show_button(icon: "kebab-horizontal", "aria-label": "More", scheme: :invisible)
+
+          menu.with_item(tag: :a, label: "Edit", href: "#") do |item|
+            item.with_leading_visual_icon(icon: :pencil)
+            "Edit row"
+          end
+
+          menu.with_item(tag: :a, label: "Copy row", href: "#") do |item|
+            item.with_leading_visual_icon(icon: :copy)
+            "Copy row"
+          end
+
+          menu.with_item(tag: :a, label: "Export row as CSV", href: "#") do |item|
+            item.with_leading_visual_icon(icon: :share)
+            "Export row as CSV"
+          end
+
+          menu.with_divider
+
+          menu.with_item(scheme: :danger, tag: :a, label: "Delete row", href: "#") do |item|
+            item.with_leading_visual_icon(icon: :trash)
+            "Delete row"
+          end
+        end
+      end
+    end
+  end
+%>

@@ -1,0 +1,75 @@
+<style>
+    table {
+        border: 1px solid black;
+    }
+
+    .hover {
+        background: var(--bgColor-muted);
+    }
+
+    [data-cell-align="start"] {
+        text-align: start;
+    }
+
+    [data-cell-align="end"] {
+        text-align: end;
+    }
+</style>
+
+<%=
+  render(
+    Primer::OpenProject::Table.new(
+      data: controller.present? ? { controller: controller } : {}
+    )
+  ) do |table|
+%>
+  <% table.with_caption { caption_text } if caption_text.present? %>
+
+  <% if show_colgroup %>
+    <% table.with_colgroup do |colgroup| %>
+      <% colgroup.with_col %>
+      <% colgroup.with_col %>
+      <% colgroup.with_col %>
+      <% colgroup.with_col %>
+    <% end %>
+  <% end %>
+
+  <% table.with_head do |thead| %>
+    <% thead.with_row do |tr| %>
+      <% tr.with_header { "Flavor" } %>
+      <% tr.with_header { "Size" } %>
+      <% tr.with_header { "Price (USD)" } %>
+      <% tr.with_header { "In Stock" } %>
+    <% end %>
+  <% end %>
+
+  <% table.with_body do |tbody| %>
+    <% data = [
+      ["Vanilla Bean",    "Single Scoop", "$3.50", "Yes"],
+      ["Chocolate Fudge", "Double Scoop", "$5.25", "Yes"],
+      ["Strawberry",      "Pint",         "$6.75", "No"],
+      ["Mint Chip",       "Pint",         "$7.00", "Yes"],
+      ["Pistachio",       "Single Scoop", "$4.25", "Yes"],
+      ["Cookie Dough",    "Double Scoop", "$5.75", "No"]
+    ] %>
+
+    <% data.first(rows_count).each do |(flavor, size, price, stock)| %>
+      <% tbody.with_row do |tr| %>
+        <% tr.with_row_header { flavor } %>
+        <% tr.with_cell { size } %>
+        <% tr.with_cell(align: :end) { price } %>
+        <% tr.with_cell { stock } %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <% if show_footer %>
+    <% table.with_foot do |tfoot| %>
+      <% tfoot.with_row do |tr| %>
+        <% tr.with_row_header(colspan: 2) { "Average Price" } %>
+        <% tr.with_cell(align: :end) { "$5.63" } %>
+        <% tr.with_cell { "" } %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

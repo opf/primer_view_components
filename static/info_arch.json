@@ -19854,6 +19854,304 @@
     "subcomponents": []
   },
   {
+    "fully_qualified_name": "Primer::OpenProject::DataTable",
+    "description": "DataTable is a 2-dimensional data structure where each row is an item, and\neach column is a data point about the item.",
+    "accessibility_docs": null,
+    "is_form_component": false,
+    "is_published": true,
+    "requires_js": false,
+    "component": "OpenProject::DataTable",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectDataTable",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/data_table.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/data_table/default/",
+    "parameters": [
+      {
+        "name": "data",
+        "type": "Array, ActiveRecord::Relation",
+        "default": "N/A",
+        "description": "A collection of rows that will be rendered inside the table"
+      },
+      {
+        "name": "cell_padding",
+        "type": "Symbol",
+        "default": "`:normal`",
+        "description": "The amount of space around the contents of each cell. Options: :condensed, :normal, :spacious"
+      },
+      {
+        "name": "initial_sort_column",
+        "type": "Symbol, Number, nil",
+        "default": "`nil`",
+        "description": "ID or field of the column by which the table is initially sorted"
+      },
+      {
+        "name": "initial_sort_direction",
+        "type": "Symbol, nil",
+        "default": "`nil`",
+        "description": "Sort direction for the initially sorted column. Options: :ASC, :DESC"
+      },
+      {
+        "name": "html_data",
+        "type": "Hash",
+        "default": "`{}`",
+        "description": "HTML data attributes to be passed to the table"
+      },
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "System arguments passed to the root table element"
+      }
+    ],
+    "slots": [
+      {
+        "name": "title",
+        "description": null,
+        "parameters": []
+      },
+      {
+        "name": "subtitle",
+        "description": null,
+        "parameters": []
+      },
+      {
+        "name": "columns",
+        "description": null,
+        "parameters": []
+      }
+    ],
+    "methods": [
+      {
+        "name": "headers",
+        "description": "Returns the value of attribute headers.",
+        "parameters": [],
+        "return_types": []
+      },
+      {
+        "name": "rows",
+        "description": "Returns the value of attribute rows.",
+        "parameters": [],
+        "return_types": []
+      }
+    ],
+    "previews": [
+      {
+        "preview_path": "primer/open_project/data_table/default",
+        "name": "default",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/data_table/with_row_actions",
+        "name": "with_row_actions",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/data_table/playground",
+        "name": "playground",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      }
+    ],
+    "subcomponents": []
+  },
+  {
+    "fully_qualified_name": "Primer::OpenProject::DataTable::Column",
+    "description": "This component is part of `Primer::OpenProject::DataTable` and should\nnot be used as a standalone component.",
+    "accessibility_docs": null,
+    "is_form_component": false,
+    "is_published": true,
+    "requires_js": false,
+    "component": "OpenProject::DataTable::Column",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectDataTableColumn",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/data_table/column.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/data_table/column/default/",
+    "parameters": [
+      {
+        "name": "id",
+        "type": "String, Symbol, nil",
+        "default": "`nil`",
+        "description": "Optional DOM id for the column"
+      },
+      {
+        "name": "field",
+        "type": "Symbol, nil",
+        "default": "`nil`",
+        "description": "Attribute/method name called on each row to render a default cell value"
+      },
+      {
+        "name": "align",
+        "type": "Symbol",
+        "default": "`:start`",
+        "description": "Horizontal alignment of the column content"
+      },
+      {
+        "name": "header",
+        "type": "String, nil",
+        "default": "`nil`",
+        "description": "Column header text (rendered in the table header)"
+      },
+      {
+        "name": "width",
+        "type": "Numeric, String, Symbol, nil",
+        "default": "`nil`",
+        "description": "Width value or one of COLUMN_WIDTH_OPTIONS"
+      },
+      {
+        "name": "sort_by",
+        "type": "String, Symbol, nil",
+        "default": "`nil`",
+        "description": "Sort key used for sorting"
+      },
+      {
+        "name": "row_header",
+        "type": "Boolean",
+        "default": "`false`",
+        "description": "Whether this column is a row header (`<th scope=\"row\">`)"
+      },
+      {
+        "name": "min_width",
+        "type": "Numeric, String, nil",
+        "default": "`nil`",
+        "description": "Minimum width"
+      },
+      {
+        "name": "max_width",
+        "type": "Numeric, String, nil",
+        "default": "`nil`",
+        "description": "Maximum width"
+      }
+    ],
+    "slots": [
+      {
+        "name": "header",
+        "description": null,
+        "parameters": []
+      }
+    ],
+    "methods": [
+      {
+        "name": "id",
+        "description": "Returns the value of attribute id.",
+        "parameters": [],
+        "return_types": []
+      },
+      {
+        "name": "align",
+        "description": "Returns the value of attribute align.",
+        "parameters": [],
+        "return_types": []
+      },
+      {
+        "name": "field",
+        "description": "Returns the value of attribute field.",
+        "parameters": [],
+        "return_types": []
+      },
+      {
+        "name": "max_width",
+        "description": "Returns the value of attribute max_width.",
+        "parameters": [],
+        "return_types": []
+      },
+      {
+        "name": "min_width",
+        "description": "Returns the value of attribute min_width.",
+        "parameters": [],
+        "return_types": []
+      },
+      {
+        "name": "row_header",
+        "description": "Returns the value of attribute row_header.",
+        "parameters": [],
+        "return_types": []
+      },
+      {
+        "name": "sort_by",
+        "description": "Returns the value of attribute sort_by.",
+        "parameters": [],
+        "return_types": []
+      },
+      {
+        "name": "width",
+        "description": "Returns the value of attribute width.",
+        "parameters": [],
+        "return_types": []
+      },
+      {
+        "name": "cell_block",
+        "description": "Returns the value of attribute cell_block.",
+        "parameters": [],
+        "return_types": []
+      },
+      {
+        "name": "with_cell",
+        "description": "Provide a custom cell renderer.",
+        "parameters": [],
+        "return_types": []
+      }
+    ],
+    "previews": [],
+    "subcomponents": []
+  },
+  {
+    "fully_qualified_name": "Primer::OpenProject::DataTable::SortHeader",
+    "description": "This component is part of `Primer::OpenProject::DataTable` and should\nnot be used as a standalone component.",
+    "accessibility_docs": null,
+    "is_form_component": false,
+    "is_published": true,
+    "requires_js": false,
+    "component": "OpenProject::DataTable::SortHeader",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectDataTableSortHeader",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/data_table/sort_header.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/data_table/sort_header/default/",
+    "parameters": [
+      {
+        "name": "direction",
+        "type": "Symbol",
+        "default": "`:ASC`",
+        "description": "select [:ASC, :DESC, :NONE] Specify the sort direction for the header."
+      },
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "System arguments passed to the root element"
+      }
+    ],
+    "slots": [],
+    "methods": [],
+    "previews": [],
+    "subcomponents": []
+  },
+  {
     "fully_qualified_name": "Primer::OpenProject::DragHandle",
     "description": "Add a general description of component here\nAdd additional usage considerations or best practices that may aid the user to use the component correctly.",
     "accessibility_docs": "Add any accessibility considerations",
@@ -21894,6 +22192,342 @@
         ]
       }
     ],
+    "methods": [],
+    "previews": [],
+    "subcomponents": []
+  },
+  {
+    "fully_qualified_name": "Primer::OpenProject::Table",
+    "description": "A low-level component for constructing HTML tables with proper structure\nand semantics.\n\nThis component is not designed to be used directly, but rather serves as a\nprimitive for authors of other components, such as {{#link_to_component}}Primer::OpenProject::DataTable{{/link_to_component}}.",
+    "accessibility_docs": null,
+    "is_form_component": false,
+    "is_published": true,
+    "requires_js": false,
+    "component": "OpenProject::Table",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectTable",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/default/",
+    "parameters": [],
+    "slots": [
+      {
+        "name": "caption",
+        "description": null,
+        "parameters": []
+      },
+      {
+        "name": "cols",
+        "description": null,
+        "parameters": []
+      },
+      {
+        "name": "colgroups",
+        "description": null,
+        "parameters": []
+      },
+      {
+        "name": "head",
+        "description": null,
+        "parameters": []
+      },
+      {
+        "name": "bodies",
+        "description": null,
+        "parameters": []
+      },
+      {
+        "name": "foot",
+        "description": null,
+        "parameters": []
+      }
+    ],
+    "methods": [],
+    "previews": [
+      {
+        "preview_path": "primer/open_project/table/default",
+        "name": "default",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/table/playground",
+        "name": "playground",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      }
+    ],
+    "subcomponents": []
+  },
+  {
+    "fully_qualified_name": "Primer::OpenProject::Table::Body",
+    "description": "The `Table`'s body.\n\nThis component is should not be used directly, except for advanced user\ncases.",
+    "accessibility_docs": null,
+    "is_form_component": false,
+    "is_published": true,
+    "requires_js": false,
+    "component": "OpenProject::Table::Body",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectTableBody",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table/body.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/body/default/",
+    "parameters": [],
+    "slots": [
+      {
+        "name": "rows",
+        "description": null,
+        "parameters": []
+      }
+    ],
+    "methods": [],
+    "previews": [],
+    "subcomponents": []
+  },
+  {
+    "fully_qualified_name": "Primer::OpenProject::Table::Caption",
+    "description": "The `Table`'s caption.\n\nThis component is should not be used directly, except for advanced user\ncases.",
+    "accessibility_docs": null,
+    "is_form_component": false,
+    "is_published": true,
+    "requires_js": false,
+    "component": "OpenProject::Table::Caption",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectTableCaption",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table/caption.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/caption/default/",
+    "parameters": [],
+    "slots": [],
+    "methods": [
+      {
+        "name": "text",
+        "description": "Returns the value of attribute text.",
+        "parameters": [],
+        "return_types": []
+      }
+    ],
+    "previews": [],
+    "subcomponents": []
+  },
+  {
+    "fully_qualified_name": "Primer::OpenProject::Table::Cell",
+    "description": "A `Table` cell.\n\nThis component is should not be used directly, except for advanced user\ncases.",
+    "accessibility_docs": null,
+    "is_form_component": false,
+    "is_published": true,
+    "requires_js": false,
+    "component": "OpenProject::Table::Cell",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectTableCell",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table/cell.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/cell/default/",
+    "parameters": [],
+    "slots": [],
+    "methods": [
+      {
+        "name": "text",
+        "description": "Returns the value of attribute text.",
+        "parameters": [],
+        "return_types": []
+      }
+    ],
+    "previews": [],
+    "subcomponents": []
+  },
+  {
+    "fully_qualified_name": "Primer::OpenProject::Table::ColGroup",
+    "description": "A `Table` column group.\n\nThis component is should not be used directly, except for advanced user\ncases.",
+    "accessibility_docs": null,
+    "is_form_component": false,
+    "is_published": true,
+    "requires_js": false,
+    "component": "OpenProject::Table::ColGroup",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectTableColGroup",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table/col_group.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/col_group/default/",
+    "parameters": [],
+    "slots": [
+      {
+        "name": "cols",
+        "description": null,
+        "parameters": []
+      }
+    ],
+    "methods": [],
+    "previews": [],
+    "subcomponents": []
+  },
+  {
+    "fully_qualified_name": "Primer::OpenProject::Table::ColGroup::Col",
+    "description": "A `Table` column.\n\nThis component is should not be used directly, except for advanced\nuser cases.",
+    "accessibility_docs": null,
+    "is_form_component": false,
+    "is_published": true,
+    "requires_js": false,
+    "component": "OpenProject::Table::ColGroup::Col",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectTableColGroupCol",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table/col_group/col.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/col_group/col/default/",
+    "parameters": [],
+    "slots": [],
+    "methods": [],
+    "previews": [],
+    "subcomponents": []
+  },
+  {
+    "fully_qualified_name": "Primer::OpenProject::Table::Foot",
+    "description": "The `Table`'s footer.\n\nThis component is should not be used directly, except for advanced user\ncases.",
+    "accessibility_docs": null,
+    "is_form_component": false,
+    "is_published": true,
+    "requires_js": false,
+    "component": "OpenProject::Table::Foot",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectTableFoot",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table/foot.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/foot/default/",
+    "parameters": [],
+    "slots": [
+      {
+        "name": "rows",
+        "description": null,
+        "parameters": []
+      }
+    ],
+    "methods": [],
+    "previews": [],
+    "subcomponents": []
+  },
+  {
+    "fully_qualified_name": "Primer::OpenProject::Table::Head",
+    "description": "The `Table`'s head (`thead`) (not to be confused with header cells).\n\nThis component is should not be used directly, except for advanced user\ncases.",
+    "accessibility_docs": null,
+    "is_form_component": false,
+    "is_published": true,
+    "requires_js": false,
+    "component": "OpenProject::Table::Head",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectTableHead",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table/head.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/head/default/",
+    "parameters": [],
+    "slots": [
+      {
+        "name": "rows",
+        "description": null,
+        "parameters": []
+      }
+    ],
+    "methods": [],
+    "previews": [],
+    "subcomponents": []
+  },
+  {
+    "fully_qualified_name": "Primer::OpenProject::Table::Header",
+    "description": "A `Table`'s header cell.\n\nThis component is should not be used directly, except for advanced user\ncases.",
+    "accessibility_docs": null,
+    "is_form_component": false,
+    "is_published": true,
+    "requires_js": false,
+    "component": "OpenProject::Table::Header",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectTableHeader",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table/header.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/header/default/",
+    "parameters": [],
+    "slots": [],
+    "methods": [],
+    "previews": [],
+    "subcomponents": []
+  },
+  {
+    "fully_qualified_name": "Primer::OpenProject::Table::HeaderRow",
+    "description": "The `Table`'s header row.\n\nThis component is should not be used directly, except for advanced user\ncases.",
+    "accessibility_docs": null,
+    "is_form_component": false,
+    "is_published": true,
+    "requires_js": false,
+    "component": "OpenProject::Table::HeaderRow",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectTableHeaderRow",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table/header_row.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/header_row/default/",
+    "parameters": [],
+    "slots": [
+      {
+        "name": "cells",
+        "description": null,
+        "parameters": []
+      }
+    ],
+    "methods": [],
+    "previews": [],
+    "subcomponents": []
+  },
+  {
+    "fully_qualified_name": "Primer::OpenProject::Table::Row",
+    "description": "A `Table` row.\n\nThis component is should not be used directly, except for advanced user\ncases.",
+    "accessibility_docs": null,
+    "is_form_component": false,
+    "is_published": true,
+    "requires_js": false,
+    "component": "OpenProject::Table::Row",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectTableRow",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table/row.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/row/default/",
+    "parameters": [],
+    "slots": [
+      {
+        "name": "cells",
+        "description": null,
+        "parameters": []
+      }
+    ],
+    "methods": [],
+    "previews": [],
+    "subcomponents": []
+  },
+  {
+    "fully_qualified_name": "Primer::OpenProject::Table::RowGroup",
+    "description": "A `Table`'s row group\n\nThis component should not be used directly, except for advanced use\ncases.",
+    "accessibility_docs": null,
+    "is_form_component": false,
+    "is_published": true,
+    "requires_js": false,
+    "component": "OpenProject::Table::RowGroup",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectTableRowGroup",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table/row_group.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/row_group/default/",
+    "parameters": [],
+    "slots": [],
     "methods": [],
     "previews": [],
     "subcomponents": []

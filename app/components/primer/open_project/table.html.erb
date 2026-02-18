@@ -1,0 +1,17 @@
+<%= render(Primer::BaseComponent.new(**@system_arguments)) do %>
+  <%= caption %>
+  <% colgroups.each do |colgroup| %>
+    <%= colgroup %>
+  <% end %>
+  <% cols.each do |col| %>
+    <%= col %>
+  <% end %>
+  <%= head %>
+  <% bodies.each do |body| %>
+    <%= body %>
+  <% end %>
+  <% if content.present? %>
+    <%= content %>
+  <% end %>
+  <%= foot %>
+<% end %>

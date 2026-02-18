@@ -6005,6 +6005,138 @@
     "parameters": []
   },
   {
+    "component": "OpenProject::DataTable",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectDataTable",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/data_table.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/data_table/default/",
+    "parameters": [
+      {
+        "name": "data",
+        "type": "Array, ActiveRecord::Relation",
+        "default": "N/A",
+        "description": "A collection of rows that will be rendered inside the table"
+      },
+      {
+        "name": "cell_padding",
+        "type": "Symbol",
+        "default": "`:normal`",
+        "description": "The amount of space around the contents of each cell. Options: :condensed, :normal, :spacious"
+      },
+      {
+        "name": "initial_sort_column",
+        "type": "Symbol, Number, nil",
+        "default": "`nil`",
+        "description": "ID or field of the column by which the table is initially sorted"
+      },
+      {
+        "name": "initial_sort_direction",
+        "type": "Symbol, nil",
+        "default": "`nil`",
+        "description": "Sort direction for the initially sorted column. Options: :ASC, :DESC"
+      },
+      {
+        "name": "html_data",
+        "type": "Hash",
+        "default": "`{}`",
+        "description": "HTML data attributes to be passed to the table"
+      },
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "System arguments passed to the root table element"
+      }
+    ]
+  },
+  {
+    "component": "OpenProject::DataTable::Column",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectDataTableColumn",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/data_table/column.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/data_table/column/default/",
+    "parameters": [
+      {
+        "name": "id",
+        "type": "String, Symbol, nil",
+        "default": "`nil`",
+        "description": "Optional DOM id for the column"
+      },
+      {
+        "name": "field",
+        "type": "Symbol, nil",
+        "default": "`nil`",
+        "description": "Attribute/method name called on each row to render a default cell value"
+      },
+      {
+        "name": "align",
+        "type": "Symbol",
+        "default": "`:start`",
+        "description": "Horizontal alignment of the column content"
+      },
+      {
+        "name": "header",
+        "type": "String, nil",
+        "default": "`nil`",
+        "description": "Column header text (rendered in the table header)"
+      },
+      {
+        "name": "width",
+        "type": "Numeric, String, Symbol, nil",
+        "default": "`nil`",
+        "description": "Width value or one of COLUMN_WIDTH_OPTIONS"
+      },
+      {
+        "name": "sort_by",
+        "type": "String, Symbol, nil",
+        "default": "`nil`",
+        "description": "Sort key used for sorting"
+      },
+      {
+        "name": "row_header",
+        "type": "Boolean",
+        "default": "`false`",
+        "description": "Whether this column is a row header (`<th scope=\"row\">`)"
+      },
+      {
+        "name": "min_width",
+        "type": "Numeric, String, nil",
+        "default": "`nil`",
+        "description": "Minimum width"
+      },
+      {
+        "name": "max_width",
+        "type": "Numeric, String, nil",
+        "default": "`nil`",
+        "description": "Maximum width"
+      }
+    ]
+  },
+  {
+    "component": "OpenProject::DataTable::SortHeader",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectDataTableSortHeader",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/data_table/sort_header.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/data_table/sort_header/default/",
+    "parameters": [
+      {
+        "name": "direction",
+        "type": "Symbol",
+        "default": "`:ASC`",
+        "description": "select [:ASC, :DESC, :NONE] Specify the sort direction for the header."
+      },
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "System arguments passed to the root element"
+      }
+    ]
+  },
+  {
     "component": "OpenProject::DragHandle",
     "status": "open_project",
     "a11y_reviewed": false,
@@ -6559,6 +6691,114 @@
         "description": "[System arguments](/system-arguments)"
       }
     ]
+  },
+  {
+    "component": "OpenProject::Table",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectTable",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/default/",
+    "parameters": []
+  },
+  {
+    "component": "OpenProject::Table::Body",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectTableBody",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table/body.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/body/default/",
+    "parameters": []
+  },
+  {
+    "component": "OpenProject::Table::Caption",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectTableCaption",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table/caption.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/caption/default/",
+    "parameters": []
+  },
+  {
+    "component": "OpenProject::Table::Cell",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectTableCell",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table/cell.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/cell/default/",
+    "parameters": []
+  },
+  {
+    "component": "OpenProject::Table::ColGroup",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectTableColGroup",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table/col_group.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/col_group/default/",
+    "parameters": []
+  },
+  {
+    "component": "OpenProject::Table::ColGroup::Col",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectTableColGroupCol",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table/col_group/col.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/col_group/col/default/",
+    "parameters": []
+  },
+  {
+    "component": "OpenProject::Table::Foot",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectTableFoot",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table/foot.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/foot/default/",
+    "parameters": []
+  },
+  {
+    "component": "OpenProject::Table::Head",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectTableHead",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table/head.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/head/default/",
+    "parameters": []
+  },
+  {
+    "component": "OpenProject::Table::Header",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectTableHeader",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table/header.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/header/default/",
+    "parameters": []
+  },
+  {
+    "component": "OpenProject::Table::HeaderRow",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectTableHeaderRow",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table/header_row.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/header_row/default/",
+    "parameters": []
+  },
+  {
+    "component": "OpenProject::Table::Row",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectTableRow",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table/row.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/row/default/",
+    "parameters": []
+  },
+  {
+    "component": "OpenProject::Table::RowGroup",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectTableRowGroup",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table/row_group.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/row_group/default/",
+    "parameters": []
   },
   {
     "component": "OpenProject::ZenModeButton",
