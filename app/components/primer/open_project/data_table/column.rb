@@ -68,10 +68,6 @@ module Primer
           @header.present? || super
         end
 
-        def call
-          content
-        end
-
         def render_cell(row)
           return @cell_block.call(row) if @cell_block
           return unless field

@@ -7,7 +7,6 @@
         <% table.with_head(classes: "TableHead") do |thead| %>
           <% thead.with_row(classes: "TableRow") do |tr| %>
             <% headers.each do |header| %>
-              <% header.column.to_s # force rendering %>
               <% if header.sortable? %>
                 <%
                   tr.with_header(

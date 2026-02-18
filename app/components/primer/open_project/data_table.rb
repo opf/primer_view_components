@@ -42,7 +42,11 @@ module Primer
         Primer::BaseComponent.new(**system_arguments)
       }
 
-      renders_many :columns, Column
+      renders_many :columns, ->(**args, &block) {
+        column = Column.new(**args)
+        block&.call(column)
+        column
+      }
 
       # @param data [Array, ActiveRecord::Relation]
       #   A collection of rows that will be rendered inside the table
