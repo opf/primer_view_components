@@ -1,0 +1,35 @@
+- table "Ice Cream Prices (Summer 2026)":
+  - caption: Ice Cream Prices (Summer 2026)
+  - rowgroup:
+    - row "Flavor Size Price (USD) In Stock":
+      - columnheader "Flavor"
+      - columnheader "Size"
+      - columnheader "Price (USD)"
+      - columnheader "In Stock"
+  - rowgroup:
+    - row "Vanilla Bean Single Scoop $3.50 Yes":
+      - rowheader "Vanilla Bean"
+      - cell "Single Scoop"
+      - cell "$3.50"
+      - cell "Yes"
+    - row "Chocolate Fudge Double Scoop $5.25 Yes":
+      - rowheader "Chocolate Fudge"
+      - cell "Double Scoop"
+      - cell "$5.25"
+      - cell "Yes"
+    - row "Strawberry Pint $6.75 No":
+      - rowheader "Strawberry"
+      - cell "Pint"
+      - cell "$6.75"
+      - cell "No"
+    - row "Mint Chip Pint $7.00 Yes":
+      - rowheader "Mint Chip"
+      - cell "Pint"
+      - cell "$7.00"
+      - cell "Yes"
+  - rowgroup:
+    - row "Average Price":
+      - rowheader "Average Price"
+      - cell:
+        - status: $5.63
+      - cell
