@@ -15,6 +15,10 @@ module Primer
           @system_arguments[:role] = :rowgroup
         end
 
+        def rows
+          []
+        end
+
         def render?
           rows.any? || content?
         end
