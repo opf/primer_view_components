@@ -86,6 +86,7 @@ module Primer
         @system_arguments[:system_arguments_denylist] = { [:p, :pt, :pb, :pr, :pl] => PADDING_SUGGESTION }
         @list_arguments = { tag: :ul }
         @list_arguments[:id] = list_id if list_id
+        @list_arguments[:classes] = "Box-list"
       end
 
       def render?

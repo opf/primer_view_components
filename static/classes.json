@@ -244,7 +244,16 @@
   "CollapsibleHeader": [
     "Primer::OpenProject::BorderBox::CollapsibleHeader"
   ],
-  "CollapsibleHeader--triggerArea": [
+  "CollapsibleHeader--multi-line": [
+    "Primer::OpenProject::BorderBox::CollapsibleHeader"
+  ],
+  "CollapsibleHeader-description": [
+    "Primer::OpenProject::BorderBox::CollapsibleHeader"
+  ],
+  "CollapsibleHeader-title-line": [
+    "Primer::OpenProject::BorderBox::CollapsibleHeader"
+  ],
+  "CollapsibleHeader-triggerArea": [
     "Primer::OpenProject::BorderBox::CollapsibleHeader"
   ],
   "CollapsibleSection--triggerArea": [

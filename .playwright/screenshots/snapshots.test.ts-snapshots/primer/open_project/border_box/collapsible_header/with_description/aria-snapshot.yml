@@ -1,4 +1,6 @@
-- button "Backlog This backlog is unique to this one-time meeting. You can drag items in and out to add or remove them from the meeting agenda." [expanded]
+- button "Backlog This backlog is unique to this one-time meeting. You can drag items in and out to add or remove them from the meeting agenda." [expanded]:
+  - heading "Backlog" [level=3]
+  - text: This backlog is unique to this one-time meeting. You can drag items in and out to add or remove them from the meeting agenda.
 - text: Body
 - list "Backlog This backlog is unique to this one-time meeting. You can drag items in and out to add or remove them from the meeting agenda.":
   - listitem: Row 1

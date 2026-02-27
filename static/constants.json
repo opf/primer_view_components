@@ -1703,7 +1703,16 @@
     "GeneratedSlotMethods": "Primer::OpenProject::AvatarWithFallback::GeneratedSlotMethods"
   },
   "Primer::OpenProject::BorderBox::CollapsibleHeader": {
-    "GeneratedSlotMethods": "Primer::OpenProject::BorderBox::CollapsibleHeader::GeneratedSlotMethods"
+    "GeneratedSlotMethods": "Primer::OpenProject::BorderBox::CollapsibleHeader::GeneratedSlotMethods",
+    "TITLE_TAG_DEFAULT": "h3",
+    "TITLE_TAG_OPTIONS": [
+      "h1",
+      "h2",
+      "h3",
+      "h4",
+      "h5",
+      "h6"
+    ]
   },
   "Primer::OpenProject::BorderGrid": {
     "Cell": "Primer::OpenProject::BorderGrid::Cell",

@@ -19182,10 +19182,28 @@
         "description": "The unique ID of the collapsible header."
       },
       {
+        "name": "box",
+        "type": "Primer::Beta::BorderBox",
+        "default": "`nil`",
+        "description": "Deprecated. Previously used to reference the parent BorderBox."
+      },
+      {
         "name": "collapsed",
         "type": "Boolean",
         "default": "`false`",
         "description": "Whether the header is collapsed on initial render."
+      },
+      {
+        "name": "collapsible_id",
+        "type": "String",
+        "default": "`nil`",
+        "description": "The id or ids of the elements that will be collapsed. This should include the BorderBox's list, body and footer. This will be required in future versions."
+      },
+      {
+        "name": "multi_line",
+        "type": "Boolean",
+        "default": "`true`",
+        "description": "Whether the description is on its own line and can wrap across multiple lines."
       },
       {
         "name": "system_arguments",
@@ -19199,6 +19217,12 @@
         "name": "title",
         "description": "Required title",
         "parameters": [
+          {
+            "name": "tag",
+            "type": "Symbol",
+            "default": "N/A",
+            "description": "One of `:h1`, `:h2`, `:h3`, `:h4`, `:h5`, or `:h6`."
+          },
           {
             "name": "system_arguments",
             "type": "Hash",
