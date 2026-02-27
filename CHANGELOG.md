@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 0.82.0
+
+### Minor Changes
+
+- [#418](https://github.com/opf/primer_view_components/pull/418) [`07164d5`](https://github.com/opf/primer_view_components/commit/07164d5c7d2505846b8a5dba23a6cd4d25f8b162) Thanks [@myabc](https://github.com/myabc)! - `BorderBox::CollapsibleHeader`: improve accessibility via `collapsible_id` (sets `aria-controls`) on the trigger area; support opt-in single-line description layout on larger viewports (`multi_line: false`); use CSS instead of JS to toggle description visibility; deprecate `box` param
+
+### Patch Changes
+
+- [#418](https://github.com/opf/primer_view_components/pull/418) [`6bc226d`](https://github.com/opf/primer_view_components/commit/6bc226d780346f769591887033a41f81b9906035) Thanks [@myabc](https://github.com/myabc)! - `BorderBox::CollapsibleHeader`: improve accessibility by always rendering title with semantic headings (default `h3`); trim whitespace from empty description slots
+
 ## 0.81.1
 
 ### Patch Changes
