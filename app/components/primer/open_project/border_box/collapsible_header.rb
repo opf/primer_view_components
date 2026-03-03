@@ -22,7 +22,7 @@ module Primer
             "Box-title"
           )
 
-          Primer::Beta::Heading.new(tag: fetch_or_fallback(TITLE_TAG_OPTIONS, tag, TITLE_TAG_DEFAULT), **system_arguments)
+          Primer::Beta::Truncate.new(tag: fetch_or_fallback(TITLE_TAG_OPTIONS, tag, TITLE_TAG_DEFAULT), **system_arguments)
         }
 
         # Optional count
