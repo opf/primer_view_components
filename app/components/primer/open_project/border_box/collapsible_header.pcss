@@ -26,6 +26,7 @@
   align-items: center;
   column-gap: var(--stack-gap-normal);
   row-gap: var(--base-size-4);
+  overflow: hidden;
 
   .CollapsibleHeader > & {
     flex: 1;
@@ -66,10 +67,12 @@
 }
 
 .CollapsibleHeader-title-line {
+  flex-basis: 66%;
   display: flex;
   align-items: center;
   gap: var(--stack-gap-condensed);
-  min-width: fit-content;
+  overflow: hidden;
+  max-width: 100%;
 }
 
 .CollapsibleHeader-description {
