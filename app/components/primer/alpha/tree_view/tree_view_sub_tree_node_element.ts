@@ -11,7 +11,7 @@ export type SelectStrategy = 'self' | 'descendants' | 'mixed_descendants'
 
 export type SelectVariant = 'none' | 'single' | 'multiple'
 
-@controller
+@controller('tree-view-sub-tree-node')
 export class TreeViewSubTreeNodeElement extends HTMLElement {
   @target node: HTMLElement
   @target subTree: HTMLElement
@@ -188,6 +188,12 @@ export class TreeViewSubTreeNodeElement extends HTMLElement {
       // sub-tree and no node in the entire tree can be focused
       const previousNode = this.subTree.querySelector("[tabindex='0']")
       previousNode?.setAttribute('tabindex', '-1')
+
+      // Also check if the subtree element itself is an include-fragment with role="treeitem" and has focus
+      if (this.#isIncludeFragment() && this.subTree.getAttribute('tabindex') === '0') {
+        this.subTree.setAttribute('tabindex', '-1')
+      }
+
       this.node.setAttribute('tabindex', '0')
 
       this.treeView.dispatchEvent(
@@ -279,6 +285,10 @@ export class TreeViewSubTreeNodeElement extends HTMLElement {
       // request succeeded but element has not yet been replaced
       case 'include-fragment-replace':
         this.#activeElementIsLoader = document.activeElement === this.loadingIndicator.closest('[role=treeitem]')
+        // Also check if the include-fragment itself has focus (when it has role="treeitem")
+        if (!this.#activeElementIsLoader && document.activeElement === this.subTree && this.#isIncludeFragment()) {
+          this.#activeElementIsLoader = true
+        }
         this.loadingState = 'success'
         break
 
@@ -432,6 +442,13 @@ export class TreeViewSubTreeNodeElement extends HTMLElement {
   #update() {
     if (this.expanded) {
       if (this.subTree) this.subTree.hidden = false
+      if (this.#isIncludeFragment()) {
+        this.subTree.setAttribute('role', 'treeitem')
+        // Ensure the include-fragment can participate in roving tab index
+        if (!this.subTree.hasAttribute('tabindex')) {
+          this.subTree.setAttribute('tabindex', '-1')
+        }
+      }
       this.node.setAttribute('aria-expanded', 'true')
       this.treeView?.expandAncestorsForNode(this)
 
@@ -445,6 +462,11 @@ export class TreeViewSubTreeNodeElement extends HTMLElement {
       }
     } else {
       if (this.subTree) this.subTree.hidden = true
+      if (this.#isIncludeFragment()) {
+        this.subTree.removeAttribute('role')
+        // Remove tabindex when role is removed
+        this.subTree.removeAttribute('tabindex')
+      }
       this.node.setAttribute('aria-expanded', 'false')
 
       if (this.iconPair) {
@@ -473,6 +495,10 @@ export class TreeViewSubTreeNodeElement extends HTMLElement {
         if (this.loadingIndicator) this.loadingIndicator.hidden = true
         if (this.loadingFailureMessage) this.loadingFailureMessage.hidden = true
     }
+  }
+
+  #isIncludeFragment(): boolean {
+    return this.subTree?.getAttribute('data-target')?.includes('tree-view-sub-tree-node.includeFragment') ?? false
   }
 
   get #checkboxElement(): HTMLElement | null {
