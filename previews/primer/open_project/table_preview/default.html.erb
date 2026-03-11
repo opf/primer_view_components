@@ -1,0 +1,78 @@
+<style>
+    table {
+        border: 1px solid black;
+    }
+
+    .hover {
+        background: var(--bgColor-muted);
+    }
+
+    [data-cell-align="start"] {
+        text-align: start;
+    }
+
+    [data-cell-align="end"] {
+        text-align: end;
+    }
+</style>
+<%=
+  render(Primer::OpenProject::Table.new(data: { controller: "table-highlighting" })) do |table|
+    table.with_caption { "Ice Cream Prices (Summer 2026)" }
+
+    table.with_colgroup do |colgroup|
+      colgroup.with_col
+      colgroup.with_col
+      colgroup.with_col
+      colgroup.with_col(data: { highlight: false })
+    end
+
+    table.with_head do |thead|
+      thead.with_row do |tr|
+        tr.with_header { "Flavor" }
+        tr.with_header { "Size" }
+        tr.with_header { "Price (USD)" }
+        tr.with_header { "In Stock" }
+      end
+    end
+
+    table.with_body do |tbody|
+      tbody.with_row do |tr|
+        tr.with_row_header { "Vanilla Bean" }
+        tr.with_cell { "Single Scoop" }
+        tr.with_cell(id: "price1", align: :end) { "$3.50" }
+        tr.with_cell { "Yes" }
+      end
+
+      tbody.with_row do |tr|
+        tr.with_row_header { "Chocolate Fudge" }
+        tr.with_cell { "Double Scoop" }
+        tr.with_cell(id: "price2", align: :end) { "$5.25" }
+        tr.with_cell { "Yes" }
+      end
+
+      tbody.with_row do |tr|
+        tr.with_row_header { "Strawberry" }
+        tr.with_cell { "Pint" }
+        tr.with_cell(id: "price3", align: :end) { "$6.75" }
+        tr.with_cell { "No" }
+      end
+
+      tbody.with_row do |tr|
+        tr.with_row_header { "Mint Chip" }
+        tr.with_cell { "Pint" }
+        tr.with_cell(id: "price4", align: :end) { "$7.00" }
+        tr.with_cell { "Yes" }
+      end
+    end
+
+    table.with_foot do |tfoot|
+      tfoot.with_row do |tr|
+        tr.with_row_header(colspan: 2) { "Average Price" }
+        tr.with_cell(align: :end) do
+          tag.output(for: "price1 price2 price3 price4") { "$5.63" }
+        end
+        tr.with_cell { "" }
+      end
+    end
+  end
+%>

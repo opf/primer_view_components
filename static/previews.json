@@ -3609,6 +3609,53 @@
     ]
   },
   {
+    "name": "data_table",
+    "component": "OpenProject::DataTable",
+    "status": "open_project",
+    "lookup_path": "primer/open_project/data_table",
+    "examples": [
+      {
+        "preview_path": "primer/open_project/data_table/default",
+        "name": "default",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/data_table/with_row_actions",
+        "name": "with_row_actions",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/data_table/playground",
+        "name": "playground",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      }
+    ]
+  },
+  {
     "name": "details",
     "component": "Details",
     "status": "beta",
@@ -8383,6 +8430,40 @@
       {
         "preview_path": "primer/alpha/tab_panels/with_extra",
         "name": "with_extra",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "table",
+    "component": "OpenProject::Table",
+    "status": "open_project",
+    "lookup_path": "primer/open_project/table",
+    "examples": [
+      {
+        "preview_path": "primer/open_project/table/default",
+        "name": "default",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/table/playground",
+        "name": "playground",
         "snapshot": "false",
         "skip_rules": {
           "wont_fix": [

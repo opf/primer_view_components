@@ -1,0 +1,51 @@
+- heading "Projects" [level=2]
+- text: The latest projects in OpenProject
+- table "Projects":
+  - rowgroup:
+    - row "Name Status Created":
+      - columnheader "Name":
+        - button "Name"
+      - columnheader "Status"
+      - columnheader "Created":
+        - button "Created"
+  - rowgroup:
+    - row "Project 1 active 2026-02-18":
+      - rowheader "Project 1"
+      - cell "active"
+      - cell "2026-02-18"
+    - row "Project 2 on_track 2026-02-17":
+      - rowheader "Project 2"
+      - cell "on_track"
+      - cell "2026-02-17"
+    - row "Project 3 at_risk 2026-02-16":
+      - rowheader "Project 3"
+      - cell "at_risk"
+      - cell "2026-02-16"
+    - row "Project 4 off_track 2026-02-15":
+      - rowheader "Project 4"
+      - cell "off_track"
+      - cell "2026-02-15"
+    - row "Project 5 active 2026-02-14":
+      - rowheader "Project 5"
+      - cell "active"
+      - cell "2026-02-14"
+    - row "Project 6 on_track 2026-02-13":
+      - rowheader "Project 6"
+      - cell "on_track"
+      - cell "2026-02-13"
+    - row "Project 7 at_risk 2026-02-12":
+      - rowheader "Project 7"
+      - cell "at_risk"
+      - cell "2026-02-12"
+    - row "Project 8 off_track 2026-02-11":
+      - rowheader "Project 8"
+      - cell "off_track"
+      - cell "2026-02-11"
+    - row "Project 9 active 2026-02-10":
+      - rowheader "Project 9"
+      - cell "active"
+      - cell "2026-02-10"
+    - row "Project 10 on_track 2026-02-09":
+      - rowheader "Project 10"
+      - cell "on_track"
+      - cell "2026-02-09"

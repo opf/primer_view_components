@@ -1,0 +1,48 @@
+<%= render(Primer::Box.new(**@container_arguments)) do %>
+  <%= title %>
+  <%= subtitle %>
+  <%= render(Primer::BaseComponent.new(**@wrapper_arguments)) do %>
+    <data-table>
+      <%= render(Primer::OpenProject::Table.new(**@system_arguments)) do |table| %>
+        <% table.with_head(classes: "TableHead") do |thead| %>
+          <% thead.with_row(classes: "TableRow") do |tr| %>
+            <% headers.each do |header| %>
+              <% if header.sortable? %>
+                <%
+                  tr.with_header(
+                    component_klass: Primer::OpenProject::DataTable::SortHeader,
+                    align: header.column.align,
+                    direction: header.sort_direction
+                  ) do
+                %>
+                  <%= header.column.header %>
+                <% end %>
+              <% else %>
+                <% tr.with_header(classes: "TableHeader", align: header.column.align) do %>
+                  <%= header.column.header %>
+                <% end %>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% end %>
+        <% table.with_body(classes: "TableBody") do |tbody| %>
+          <% rows.each do |row| %>
+            <% tbody.with_row(classes: "TableRow") do |tr| %>
+              <% cells_for(row).each do |cell| %>
+                <% if cell.row_header? %>
+                  <% tr.with_row_header(classes: "TableCell") do %>
+                    <%= cell.column.render_cell(row) %>
+                  <% end %>
+                <% else %>
+                  <% tr.with_cell(classes: "TableCell") do %>
+                    <%= cell.column.render_cell(row) %>
+                  <% end %>
+                <% end %>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </data-table>
+  <% end %>
+<% end %>
