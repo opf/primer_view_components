@@ -1,4 +1,8 @@
 /* Banner alert */
+x-banner {
+  container-type: inline-size;
+  display: block;
+}
 
 .Banner {
   position: relative;
@@ -14,7 +18,7 @@
   grid-template-rows: min-content;
 
   /* `sm` breakpoint variation */
-  @media (max-width: 543.98px) {
+  @container (max-width: 543.98px) {
     grid-template-areas:
       'visual message close'
       '. actions actions';
