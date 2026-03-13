@@ -8,6 +8,9 @@ en:
   button_filter: "Filter"
   button_save: "Save"
 
+  drag_handle:
+    button_drag: "Drag to reorder"
+
   filterable_tree_view:
     filter_mode:
       all: "All"

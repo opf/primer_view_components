@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 0.82.1
+
+### Patch Changes
+
+- [#419](https://github.com/opf/primer_view_components/pull/419) [`62a3462`](https://github.com/opf/primer_view_components/commit/62a3462b142b00dea14415df678ec283a9aac52a) Thanks [@myabc](https://github.com/myabc)! - DragHandle: Add accessibility attributes (role, tabindex, aria-label).
+
+- [#423](https://github.com/opf/primer_view_components/pull/423) [`576b200`](https://github.com/opf/primer_view_components/commit/576b2004469d834bbf97df6d5d35651a911b6be1) Thanks [@HDinger](https://github.com/HDinger)! - Let Banner component react on container size instead of screen size
+
 ## 0.82.0
 
 ### Minor Changes
