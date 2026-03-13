@@ -1,6 +1,6 @@
 import {controller, targets} from '@github/catalyst'
 
-@controller
+@controller('segmented-control')
 export class SegmentedControlElement extends HTMLElement {
   @targets items: HTMLElement[]
 

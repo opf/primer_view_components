@@ -3,7 +3,7 @@ import {SelectStrategy, SelectVariant, TreeViewSubTreeNodeElement} from './tree_
 import {useRovingTabIndex} from './tree_view_roving_tab_index'
 import type {TreeViewCheckedValue, TreeViewNodeInfo, TreeViewNodeType} from '../../shared_events'
 
-@controller
+@controller('tree-view')
 export class TreeViewElement extends HTMLElement {
   @target formInputContainer: HTMLElement
   @target formInputPrototype: HTMLInputElement
