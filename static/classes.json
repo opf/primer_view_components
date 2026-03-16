@@ -494,6 +494,9 @@
   "Overlay-headerFilter": [
     "Primer::Alpha::Dialog"
   ],
+  "Page": [
+    "Primer::Alpha::Pagination"
+  ],
   "PageHeader": [
     "Primer::OpenProject::PageHeader"
   ],
@@ -535,6 +538,9 @@
   ],
   "PageHeader-titleBar": [
     "Primer::OpenProject::PageHeader"
+  ],
+  "PaginationContainer": [
+    "Primer::Alpha::Pagination"
   ],
   "Popover": [
     "Primer::Beta::Popover"
@@ -688,6 +694,9 @@
   ],
   "Subhead-heading--medium": [
     "Primer::Beta::Subhead"
+  ],
+  "TablePaginationSteps": [
+    "Primer::Alpha::Pagination"
   ],
   "TimelineItem": [
     "Primer::Beta::TimelineItem"

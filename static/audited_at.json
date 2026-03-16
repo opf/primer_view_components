@@ -54,6 +54,7 @@
   "Primer::Alpha::Overlay::Body": "",
   "Primer::Alpha::Overlay::Footer": "",
   "Primer::Alpha::Overlay::Header": "",
+  "Primer::Alpha::Pagination": "",
   "Primer::Alpha::RadioButton": "",
   "Primer::Alpha::RadioButtonGroup": "",
   "Primer::Alpha::SegmentedControl": "2023-02-01",

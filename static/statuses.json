@@ -54,6 +54,7 @@
   "Primer::Alpha::Overlay::Body": "alpha",
   "Primer::Alpha::Overlay::Footer": "alpha",
   "Primer::Alpha::Overlay::Header": "alpha",
+  "Primer::Alpha::Pagination": "alpha",
   "Primer::Alpha::RadioButton": "alpha",
   "Primer::Alpha::RadioButtonGroup": "alpha",
   "Primer::Alpha::SegmentedControl": "alpha",

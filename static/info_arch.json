@@ -6745,6 +6745,95 @@
     ]
   },
   {
+    "fully_qualified_name": "Primer::Alpha::Pagination",
+    "description": "",
+    "accessibility_docs": null,
+    "is_form_component": false,
+    "is_published": true,
+    "requires_js": false,
+    "component": "Pagination",
+    "status": "alpha",
+    "a11y_reviewed": false,
+    "short_name": "Pagination",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/alpha/pagination.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/alpha/pagination/default/",
+    "parameters": [],
+    "slots": [],
+    "methods": [
+      {
+        "name": "class_name",
+        "description": "Returns the value of attribute class_name.",
+        "parameters": [],
+        "return_types": []
+      },
+      {
+        "name": "page_count",
+        "description": "Returns the value of attribute page_count.",
+        "parameters": [],
+        "return_types": []
+      },
+      {
+        "name": "current_page",
+        "description": "Returns the value of attribute current_page.",
+        "parameters": [],
+        "return_types": []
+      },
+      {
+        "name": "href_builder",
+        "description": "Returns the value of attribute href_builder.",
+        "parameters": [],
+        "return_types": []
+      },
+      {
+        "name": "margin_page_count",
+        "description": "Returns the value of attribute margin_page_count.",
+        "parameters": [],
+        "return_types": []
+      },
+      {
+        "name": "show_pages",
+        "description": "Returns the value of attribute show_pages.",
+        "parameters": [],
+        "return_types": []
+      },
+      {
+        "name": "surrounding_page_count",
+        "description": "Returns the value of attribute surrounding_page_count.",
+        "parameters": [],
+        "return_types": []
+      }
+    ],
+    "previews": [
+      {
+        "preview_path": "primer/alpha/pagination/playground",
+        "name": "playground",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/alpha/pagination/default",
+        "name": "default",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      }
+    ],
+    "subcomponents": []
+  },
+  {
     "fully_qualified_name": "Primer::Alpha::RadioButton",
     "description": "Radio buttons represent one of a set of options and are rendered as `<input type=\"radio\">` in HTML.\n**NOTE**: You probably want to use the {{#link_to_component}}Primer::Alpha::RadioButtonGroup{{/link_to_component}}\ncomponent instead, as it allows rendering a group of options.",
     "accessibility_docs": null,

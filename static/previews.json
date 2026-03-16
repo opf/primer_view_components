@@ -6562,6 +6562,40 @@
     ]
   },
   {
+    "name": "pagination",
+    "component": "Pagination",
+    "status": "alpha",
+    "lookup_path": "primer/alpha/pagination",
+    "examples": [
+      {
+        "preview_path": "primer/alpha/pagination/playground",
+        "name": "playground",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/alpha/pagination/default",
+        "name": "default",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      }
+    ]
+  },
+  {
     "name": "popover",
     "component": "Popover",
     "status": "beta",
