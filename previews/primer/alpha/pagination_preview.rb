@@ -1,0 +1,47 @@
+# frozen_string_literal: true
+
+module Primer
+  module Alpha
+    # @label Pagination
+    class PaginationPreview < ViewComponent::Preview
+      # @label Playground
+      #
+      # @param current_page number
+      # @param page_count number
+      # @param margin_page_count number
+      # @param surrounding_page_count number
+      # @param show_pages toggle
+      def playground(
+        current_page: 6,
+        page_count: 20,
+        margin_page_count: 1,
+        surrounding_page_count: 2,
+        show_pages: true
+      )
+        render(
+          Primer::Alpha::Pagination.new(
+            current_page: current_page,
+            page_count: page_count,
+            margin_page_count: margin_page_count,
+            surrounding_page_count: surrounding_page_count,
+            show_pages: show_pages,
+            href_builder: ->(page) { "#page-#{page}" }
+          )
+        )
+      end
+
+      # @label Default
+      def default
+        render(
+          Primer::Alpha::Pagination.new(
+            current_page: 6,
+            page_count: 20,
+            href_builder: ->(page) { "#page-#{page}" }
+          )
+        )
+      end
+      #
+      # @!endgroup
+    end
+  end
+end
