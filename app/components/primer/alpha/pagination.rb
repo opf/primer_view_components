@@ -57,7 +57,7 @@ module Primer
         {
           tag: :nav,
           classes: class_names("PaginationContainer", class_name, @system_arguments[:classes]),
-          "aria-label": "Pagination"
+          "aria-label": I18n.t("pagination.label")
         }.merge(@system_arguments.except(:classes))
       end
 
@@ -201,7 +201,7 @@ module Primer
         case page[:type]
         when "PREV"
           key = "page-prev"
-          content = "Previous"
+          content = I18n.t("pagination.previous")
 
           if page[:disabled]
             props.merge!(
@@ -213,13 +213,13 @@ module Primer
             props.merge!(
               rel: "prev",
               href: href_builder.call(page[:num]),
-              "aria-label": "Previous Page"
+              "aria-label": I18n.t("pagination.previous_page")
             )
           end
 
         when "NEXT"
           key = "page-next"
-          content = "Next"
+          content = I18n.t("pagination.next")
 
           if page[:disabled]
             props.merge!(
@@ -231,7 +231,7 @@ module Primer
             props.merge!(
               rel: "next",
               href: href_builder.call(page[:num]),
-              "aria-label": "Next Page"
+              "aria-label": I18n.t("pagination.next_page")
             )
           end
 
@@ -241,7 +241,7 @@ module Primer
 
           props.merge!(
             href: href_builder.call(page[:num]),
-            "aria-label": "Page #{page[:num]}#{page[:precedes_break] ? '...' : ''}"
+            "aria-label": page[:precedes_break] ? I18n.t("pagination.page_with_more", number: page[:num]) : I18n.t("pagination.page", number: page[:num])
           )
 
           props[:"aria-current"] = "page" if page[:selected]
