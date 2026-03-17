@@ -668,12 +668,7 @@
     "DEFAULT_MARGIN_PAGE_COUNT": 1,
     "DEFAULT_SURROUNDING_PAGE_COUNT": 2,
     "GeneratedSlotMethods": "Primer::Alpha::Pagination::GeneratedSlotMethods",
-    "PageData": "Primer::Alpha::Pagination::PageData",
-    "VIEWPORT_RANGES": [
-      "narrow",
-      "regular",
-      "wide"
-    ]
+    "PageData": "Primer::Alpha::Pagination::PageData"
   },
   "Primer::Alpha::RadioButton": {
     "GeneratedSlotMethods": "Primer::Alpha::RadioButton::GeneratedSlotMethods"
