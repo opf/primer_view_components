@@ -18,6 +18,11 @@ module Primer
         surrounding_page_count: 2,
         show_pages: true
       )
+        current_page = (current_page.presence || 6).to_i
+        page_count = (page_count.presence || 20).to_i
+        margin_page_count = (margin_page_count.presence || 1).to_i
+        surrounding_page_count = (surrounding_page_count.presence || 2).to_i
+
         render(
           Primer::Alpha::Pagination.new(
             current_page: current_page,
