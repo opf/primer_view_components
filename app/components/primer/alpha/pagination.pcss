@@ -1,21 +1,12 @@
 .Page {
-  min-width: 32px; /* primer.control.medium.size */
-  height: 32px; /* primer.control.medium.size */
-  padding: var(--base-size-8) calc((var(--base-size-32) - var(--base-size-20)) / 2); /* primer.control.medium.paddingInline.condensed primer.control.medium.paddingBlock */
+  min-width: var(--base-size-32);
+  height: var(--base-size-32);
+  padding: var(--base-size-8) var(--base-size-6);
   margin-right: var(--base-size-4);
-  font-style: normal;
-
-  /* stylelint-disable-next-line primer/typography */
-  line-height: 1;
-
   color: var(--fgColor-default);
-  text-align: center;
-  text-decoration: none;
   white-space: nowrap;
   vertical-align: middle;
   cursor: pointer;
-  user-select: none;
-  background-color: transparent;
   border-radius: var(--borderRadius-medium,.375rem);
   transition: background-color 0.2s cubic-bezier(0.3, 0, 0.5, 1);
   display: inline-flex;
@@ -25,8 +16,8 @@
 
 .Page[rel='prev'] > svg,
 .Page[rel='next'] > svg {
-  height: 1em;
-  width: 1em;
+  height: var(--base-size-16);
+  width: var(--base-size-16);
 }
 
 .Page[rel='prev'] > svg {
@@ -51,7 +42,6 @@
 
 .Page:focus-visible {
   outline: 2px solid var(--bgColor-accent-emphasis);
-  outline-offset: -2px;
 }
 
 .Page:active {
@@ -72,10 +62,7 @@
 
 .Page[aria-current]:focus-visible {
   outline: 2px solid var(--bgColor-accent-emphasis);
-  outline-offset: -2px;
-
-  /* stylelint-disable-next-line primer/box-shadow */
-  box-shadow: inset 0 0 0 3px var(--fgColor-onEmphasis);
+  box-shadow: inset 0 0 0 var(--base-size-2) var(--fgColor-onEmphasis);
 }
 
 .Page[aria-hidden],
@@ -88,55 +75,12 @@
 }
 
 .PaginationContainer {
-  /* stylelint-disable-next-line primer/spacing */
-  margin-top: 20px;
-
-  /* stylelint-disable-next-line primer/spacing */
-  margin-bottom: 15px;
-
+  margin: var(--base-size-16) 0;
   text-align: center;
 }
 
-.TablePaginationSteps {
-  display: inline-block;
-}
-
-@media screen and (max-width: 544px) {
-  .TablePaginationSteps > *:not([rel='prev']):not([rel='next']) {
+@media (max-width: 543.98px){
+  .Page:not([rel='prev']):not([rel='next']) {
     display: none;
-  }
-
-  .TablePaginationSteps > [rel='prev'] {
-    margin-inline-end: 0;
-  }
-
-  .TablePaginationSteps > [rel='next'] {
-    margin-inline-start: 0;
-  }
-}
-/* Regular screens (tablet) */
-@media screen and (min-width: 545px) and (max-width: 768px) {
-  .TablePaginationSteps > *:not(:first-child):not(:last-child) {
-    display: none;
-  }
-
-  .TablePaginationSteps > *:first-child {
-    margin-inline-end: 0;
-  }
-
-  .TablePaginationSteps > *:last-child {
-    margin-inline-start: 0;
-  }
-}
-
-/* Wide screens (desktop) */
-@media screen and (min-width: 769px) {
-
-  .TablePaginationSteps > *:first-child {
-    margin-inline-end: 0;
-  }
-
-  .TablePaginationSteps > *:last-child {
-    margin-inline-start: 0;
   }
 }

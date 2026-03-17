@@ -12,7 +12,6 @@ module Primer
 
         assert_selector("nav[aria-label='Pagination']")
         assert_selector(".PaginationContainer")
-        assert_selector(".TablePaginationSteps")
       end
 
       def test_renders_page_numbers
@@ -95,18 +94,6 @@ module Primer
         end
 
         assert_equal "show_pages must be a boolean or a hash of viewport ranges", error.message
-      end
-
-      def test_renders_hidden_viewport_ranges_from_show_pages_hash
-        render_inline(
-          Primer::Alpha::Pagination.new(
-            page_count: 10,
-            current_page: 2,
-            show_pages: { narrow: false, regular: true, wide: false }
-          )
-        )
-
-        assert_selector(".TablePaginationSteps[data-hidden-viewport-ranges='narrow wide']")
       end
 
       def test_disables_next_when_page_count_is_zero

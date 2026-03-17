@@ -1,38 +1,36 @@
 <%= render(Primer::BaseComponent.new(**nav_arguments)) do %>
-  <%= render(Primer::BaseComponent.new(**steps_arguments)) do %>
-    <% pages.each do |page| %>
-      <% if page.props[:as] == "span" %>
-        <%= content_tag(
-              :span,
-              page.content,
-              page.props.except(:as).merge(class: "Page")
-            ) %>
-      <% elsif page.props[:href].present? %>
-        <%= link_to page.props[:href], page.props.except(:href).merge(class: "Page") do %>
-          <% if page.key == "page-prev" %>
-            <%= render(Primer::Beta::Octicon.new(icon: "chevron-left", "aria-hidden": true)) %>
-          <% end %>
-
-          <%= page.content %>
-
-          <% if page.key == "page-next" %>
-            <%= render(Primer::Beta::Octicon.new(icon: "chevron-right", "aria-hidden": true)) %>
-          <% end %>
+  <% pages.each do |page| %>
+    <% if page.props[:as] == "span" %>
+      <%= content_tag(
+            :span,
+            page.content,
+            page.props.except(:as).merge(class: "Page")
+          ) %>
+    <% elsif page.props[:href].present? %>
+      <%= link_to page.props[:href], page.props.except(:href).merge(class: "Page") do %>
+        <% if page.key == "page-prev" %>
+          <%= render(Primer::Beta::Octicon.new(icon: "chevron-left", "aria-hidden": true)) %>
         <% end %>
-      <% else %>
-        <%= content_tag(
-              :span,
-              page.props.except(:as).merge(class: "Page")
-            ) do %>
-          <% if page.key == "page-prev" %>
-            <%= render(Primer::Beta::Octicon.new(icon: "chevron-left", "aria-hidden": true)) %>
-          <% end %>
 
-          <%= page.content %>
+        <%= page.content %>
 
-          <% if page.key == "page-next" %>
-            <%= render(Primer::Beta::Octicon.new(icon: "chevron-right", "aria-hidden": true)) %>
-          <% end %>
+        <% if page.key == "page-next" %>
+          <%= render(Primer::Beta::Octicon.new(icon: "chevron-right", "aria-hidden": true)) %>
+        <% end %>
+      <% end %>
+    <% else %>
+      <%= content_tag(
+            :span,
+            page.props.except(:as).merge(class: "Page")
+          ) do %>
+        <% if page.key == "page-prev" %>
+          <%= render(Primer::Beta::Octicon.new(icon: "chevron-left", "aria-hidden": true)) %>
+        <% end %>
+
+        <%= page.content %>
+
+        <% if page.key == "page-next" %>
+          <%= render(Primer::Beta::Octicon.new(icon: "chevron-right", "aria-hidden": true)) %>
         <% end %>
       <% end %>
     <% end %>

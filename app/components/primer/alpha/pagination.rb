@@ -61,14 +61,6 @@ module Primer
         }.merge(@system_arguments.except(:classes))
       end
 
-      def steps_arguments
-        {
-          tag: :div,
-          classes: "TablePaginationSteps",
-          "data-hidden-viewport-ranges": hidden_viewport_ranges.join(" ")
-        }
-      end
-
       def pages
         build_pagination_model.map do |page|
           build_component_data(page)
@@ -91,16 +83,6 @@ module Primer
 
       def default_href_builder(page_num)
         "##{page_num}"
-      end
-
-      def hidden_viewport_ranges
-        if show_pages.is_a?(Hash)
-          VIEWPORT_RANGES.select { |key| !show_pages[key] }
-        elsif show_pages
-          []
-        else
-          VIEWPORT_RANGES
-        end
       end
 
       def show_pages_boolean
