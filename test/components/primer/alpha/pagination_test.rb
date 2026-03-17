@@ -84,6 +84,72 @@ module Primer
         assert_selector("a[href='/page/2']")
         assert_selector("a[href='/page/3']")
       end
+
+      def test_raises_when_show_pages_is_invalid
+        error = assert_raises(ArgumentError) do
+          Primer::Alpha::Pagination.new(
+            page_count: 10,
+            current_page: 2,
+            show_pages: "invalid"
+          )
+        end
+
+        assert_equal "show_pages must be a boolean or a hash of viewport ranges", error.message
+      end
+
+      def test_renders_hidden_viewport_ranges_from_show_pages_hash
+        render_inline(
+          Primer::Alpha::Pagination.new(
+            page_count: 10,
+            current_page: 2,
+            show_pages: { narrow: false, regular: true, wide: false }
+          )
+        )
+
+        assert_selector(".TablePaginationSteps[data-hidden-viewport-ranges='narrow wide']")
+      end
+
+      def test_disables_next_when_page_count_is_zero
+        render_inline(
+          Primer::Alpha::Pagination.new(
+            page_count: 0,
+            current_page: 1
+          )
+        )
+
+        assert_selector("[rel='prev'][aria-disabled='true']")
+        assert_selector("[rel='next'][aria-disabled='true']")
+      end
+
+      def test_renders_pages_near_end_without_end_ellipsis
+        render_inline(
+          Primer::Alpha::Pagination.new(
+            page_count: 20,
+            current_page: 18
+          )
+        )
+
+        assert_selector("a", text: "15")
+        assert_selector("a", text: "16")
+        assert_selector("a", text: "17")
+        assert_selector("a[aria-current='page']", text: "18")
+        assert_selector("a", text: "19")
+        assert_selector("a", text: "20")
+
+        assert_selector("span.Page[role='presentation']", count: 1, text: "…")
+      end
+
+      def test_raises_when_href_builder_is_invalid
+        error = assert_raises(ArgumentError) do
+          Primer::Alpha::Pagination.new(
+            page_count: 10,
+            current_page: 2,
+            href_builder: "invalid"
+          )
+        end
+
+        assert_equal "href_builder must respond to #call", error.message
+      end
     end
   end
 end
