@@ -5,7 +5,6 @@ module Primer
     class Pagination < Primer::Component
       DEFAULT_MARGIN_PAGE_COUNT = 1
       DEFAULT_SURROUNDING_PAGE_COUNT = 2
-      VIEWPORT_RANGES = %i[narrow regular wide].freeze
 
       PageData = Struct.new(:key, :content, :props, keyword_init: true)
 
