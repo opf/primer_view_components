@@ -695,9 +695,6 @@
   "Subhead-heading--medium": [
     "Primer::Beta::Subhead"
   ],
-  "TablePaginationSteps": [
-    "Primer::Alpha::Pagination"
-  ],
   "TimelineItem": [
     "Primer::Beta::TimelineItem"
   ],
