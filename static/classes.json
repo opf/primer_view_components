@@ -495,7 +495,7 @@
     "Primer::Alpha::Dialog"
   ],
   "Page": [
-    "Primer::Alpha::Pagination"
+    "Primer::OpenProject::Pagination"
   ],
   "PageHeader": [
     "Primer::OpenProject::PageHeader"
@@ -540,7 +540,7 @@
     "Primer::OpenProject::PageHeader"
   ],
   "PaginationContainer": [
-    "Primer::Alpha::Pagination"
+    "Primer::OpenProject::Pagination"
   ],
   "Popover": [
     "Primer::Beta::Popover"

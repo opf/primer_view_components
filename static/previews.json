@@ -6563,12 +6563,12 @@
   },
   {
     "name": "pagination",
-    "component": "Pagination",
-    "status": "alpha",
-    "lookup_path": "primer/alpha/pagination",
+    "component": "OpenProject::Pagination",
+    "status": "open_project",
+    "lookup_path": "primer/open_project/pagination",
     "examples": [
       {
-        "preview_path": "primer/alpha/pagination/playground",
+        "preview_path": "primer/open_project/pagination/playground",
         "name": "playground",
         "snapshot": "false",
         "skip_rules": {
@@ -6581,7 +6581,7 @@
         }
       },
       {
-        "preview_path": "primer/alpha/pagination/default",
+        "preview_path": "primer/open_project/pagination/default",
         "name": "default",
         "snapshot": "true",
         "skip_rules": {

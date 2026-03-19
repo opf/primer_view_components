@@ -664,12 +664,6 @@
       "large"
     ]
   },
-  "Primer::Alpha::Pagination": {
-    "DEFAULT_MARGIN_PAGE_COUNT": 1,
-    "DEFAULT_SURROUNDING_PAGE_COUNT": 2,
-    "GeneratedSlotMethods": "Primer::Alpha::Pagination::GeneratedSlotMethods",
-    "PageData": "Primer::Alpha::Pagination::PageData"
-  },
   "Primer::Alpha::RadioButton": {
     "GeneratedSlotMethods": "Primer::Alpha::RadioButton::GeneratedSlotMethods"
   },
@@ -1927,6 +1921,12 @@
       "h5",
       "h6"
     ]
+  },
+  "Primer::OpenProject::Pagination": {
+    "DEFAULT_MARGIN_PAGE_COUNT": 1,
+    "DEFAULT_SURROUNDING_PAGE_COUNT": 2,
+    "GeneratedSlotMethods": "Primer::OpenProject::Pagination::GeneratedSlotMethods",
+    "PageData": "Primer::OpenProject::Pagination::PageData"
   },
   "Primer::OpenProject::SidePanel": {
     "GeneratedSlotMethods": "Primer::OpenProject::SidePanel::GeneratedSlotMethods",

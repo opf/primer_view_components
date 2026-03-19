@@ -2132,15 +2132,6 @@
     ]
   },
   {
-    "component": "Pagination",
-    "status": "alpha",
-    "a11y_reviewed": false,
-    "short_name": "Pagination",
-    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/alpha/pagination.rb",
-    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/alpha/pagination/default/",
-    "parameters": []
-  },
-  {
     "component": "RadioButton",
     "status": "alpha",
     "a11y_reviewed": false,
@@ -6433,6 +6424,15 @@
         "description": "[System arguments](/system-arguments)"
       }
     ]
+  },
+  {
+    "component": "OpenProject::Pagination",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectPagination",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/pagination.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/pagination/default/",
+    "parameters": []
   },
   {
     "component": "OpenProject::SidePanel",
