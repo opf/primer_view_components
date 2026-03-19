@@ -24,7 +24,7 @@ module Primer
         surrounding_page_count = (surrounding_page_count.presence || 2).to_i
 
         render(
-          Primer::Alpha::Pagination.new(
+          Primer::OpenProject::Pagination.new(
             current_page: current_page,
             page_count: page_count,
             margin_page_count: margin_page_count,
@@ -39,7 +39,7 @@ module Primer
       # @label Default
       def default
         render(
-          Primer::Alpha::Pagination.new(
+          Primer::OpenProject::Pagination.new(
             current_page: 6,
             page_count: 20,
             href_builder: ->(page) { "#page-#{page}" }

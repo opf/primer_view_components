@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 module Primer
-  module Alpha
+  module OpenProject
     class Pagination < Primer::Component
+      status :open_project
       DEFAULT_MARGIN_PAGE_COUNT = 1
       DEFAULT_SURROUNDING_PAGE_COUNT = 2
 

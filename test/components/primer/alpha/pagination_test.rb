@@ -8,14 +8,14 @@ module Primer
       include Primer::ComponentTestHelpers
 
       def test_renders_navigation
-        render_inline(Primer::Alpha::Pagination.new(page_count: 10, current_page: 2))
+        render_inline(Primer::OpenProject::Pagination.new(page_count: 10, current_page: 2))
 
         assert_selector("nav[aria-label='Pagination']")
         assert_selector(".PaginationContainer")
       end
 
       def test_renders_page_numbers
-        render_inline(Primer::Alpha::Pagination.new(page_count: 5, current_page: 2))
+        render_inline(Primer::OpenProject::Pagination.new(page_count: 5, current_page: 2))
 
         assert_selector("a", text: "1")
         assert_selector("a", text: "2")
@@ -25,26 +25,26 @@ module Primer
       end
 
       def test_marks_current_page
-        render_inline(Primer::Alpha::Pagination.new(page_count: 5, current_page: 3))
+        render_inline(Primer::OpenProject::Pagination.new(page_count: 5, current_page: 3))
 
         assert_selector("[aria-current='page']", text: "3")
       end
 
       def test_disables_previous_on_first_page
-        render_inline(Primer::Alpha::Pagination.new(page_count: 5, current_page: 1))
+        render_inline(Primer::OpenProject::Pagination.new(page_count: 5, current_page: 1))
 
         assert_selector("[rel='prev'][aria-disabled='true']")
       end
 
       def test_disables_next_on_last_page
-        render_inline(Primer::Alpha::Pagination.new(page_count: 5, current_page: 5))
+        render_inline(Primer::OpenProject::Pagination.new(page_count: 5, current_page: 5))
 
         assert_selector("[rel='next'][aria-disabled='true']")
       end
 
       def test_renders_ellipsis_for_many_pages
         render_inline(
-          Primer::Alpha::Pagination.new(
+          Primer::OpenProject::Pagination.new(
             page_count: 30,
             current_page: 10
           )
@@ -55,7 +55,7 @@ module Primer
 
       def test_show_pages_false_renders_only_prev_next
         render_inline(
-          Primer::Alpha::Pagination.new(
+          Primer::OpenProject::Pagination.new(
             page_count: 10,
             current_page: 5,
             show_pages: false
@@ -72,7 +72,7 @@ module Primer
 
       def test_custom_href_builder
         render_inline(
-          Primer::Alpha::Pagination.new(
+          Primer::OpenProject::Pagination.new(
             page_count: 5,
             current_page: 2,
             href_builder: ->(page) { "/page/#{page}" }
@@ -86,7 +86,7 @@ module Primer
 
       def test_raises_when_show_pages_is_invalid
         error = assert_raises(ArgumentError) do
-          Primer::Alpha::Pagination.new(
+          Primer::OpenProject::Pagination.new(
             page_count: 10,
             current_page: 2,
             show_pages: "invalid"
@@ -98,7 +98,7 @@ module Primer
 
       def test_disables_next_when_page_count_is_zero
         render_inline(
-          Primer::Alpha::Pagination.new(
+          Primer::OpenProject::Pagination.new(
             page_count: 0,
             current_page: 1
           )
@@ -110,7 +110,7 @@ module Primer
 
       def test_renders_pages_near_end_without_end_ellipsis
         render_inline(
-          Primer::Alpha::Pagination.new(
+          Primer::OpenProject::Pagination.new(
             page_count: 20,
             current_page: 18
           )
@@ -128,7 +128,7 @@ module Primer
 
       def test_raises_when_href_builder_is_invalid
         error = assert_raises(ArgumentError) do
-          Primer::Alpha::Pagination.new(
+          Primer::OpenProject::Pagination.new(
             page_count: 10,
             current_page: 2,
             href_builder: "invalid"

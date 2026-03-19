@@ -68,11 +68,11 @@ class PrimerComponentTest < Minitest::Test
       component.with_breadcrumbs([{ href: "/foo", text: "Foo" }, { href: "/bar", text: "Bar" }, "Baz"])
     }],
     [Primer::OpenProject::FilterableTreeView, {}],
+    [Primer::OpenProject::Pagination, { page_count: 10, current_page: 2 }],
     [Primer::Alpha::SkeletonBox, {}],
     [Primer::Alpha::TreeView, {}],
     [Primer::Alpha::FileTreeView, {}],
     [Primer::Alpha::IncludeFragment, {}],
-    [Primer::Alpha::Pagination, { page_count: 10, current_page: 2 }],
     [Primer::Alpha::ActionBar, {}, proc { |component|
       component.with_item_icon_button(icon: :search, label: "Search")
       component.with_item_icon_button(icon: :pencil, label: "Edit")
