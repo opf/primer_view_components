@@ -1,0 +1,138 @@
+# frozen_string_literal: true
+
+require "components/test_helper"
+
+class PrimerOpenProjectPaginationTest < Minitest::Test
+  include Primer::ComponentTestHelpers
+
+  def test_renders_navigation
+    render_inline(Primer::OpenProject::Pagination.new(page_count: 10, current_page: 2))
+
+    assert_selector("nav[aria-label='Pagination']")
+    assert_selector(".PaginationContainer")
+  end
+
+  def test_renders_page_numbers
+    render_inline(Primer::OpenProject::Pagination.new(page_count: 5, current_page: 2))
+
+    assert_selector("a", text: "1")
+    assert_selector("a", text: "2")
+    assert_selector("a", text: "3")
+    assert_selector("a", text: "4")
+    assert_selector("a", text: "5")
+  end
+
+  def test_marks_current_page
+    render_inline(Primer::OpenProject::Pagination.new(page_count: 5, current_page: 3))
+
+    assert_selector("[aria-current='page']", text: "3")
+  end
+
+  def test_disables_previous_on_first_page
+    render_inline(Primer::OpenProject::Pagination.new(page_count: 5, current_page: 1))
+
+    assert_selector("[rel='prev'][aria-disabled='true']")
+  end
+
+  def test_disables_next_on_last_page
+    render_inline(Primer::OpenProject::Pagination.new(page_count: 5, current_page: 5))
+
+    assert_selector("[rel='next'][aria-disabled='true']")
+  end
+
+  def test_renders_ellipsis_for_many_pages
+    render_inline(
+      Primer::OpenProject::Pagination.new(
+        page_count: 30,
+        current_page: 10
+      )
+    )
+
+    assert_selector("[role='presentation']", text: "…")
+  end
+
+  def test_show_pages_false_renders_only_prev_next
+    render_inline(
+      Primer::OpenProject::Pagination.new(
+        page_count: 10,
+        current_page: 5,
+        show_pages: false
+      )
+    )
+
+    assert_selector("[rel='prev']")
+    assert_selector("[rel='next']")
+
+    refute_selector("a", text: "1")
+    refute_selector("a", text: "2")
+    refute_selector("a", text: "3")
+  end
+
+  def test_custom_href_builder
+    render_inline(
+      Primer::OpenProject::Pagination.new(
+        page_count: 5,
+        current_page: 2,
+        href_builder: ->(page) { "/page/#{page}" }
+      )
+    )
+
+    assert_selector("a[href='/page/1']")
+    assert_selector("a[href='/page/2']")
+    assert_selector("a[href='/page/3']")
+  end
+
+  def test_raises_when_show_pages_is_invalid
+    error = assert_raises(ArgumentError) do
+      Primer::OpenProject::Pagination.new(
+        page_count: 10,
+        current_page: 2,
+        show_pages: "invalid"
+      )
+    end
+
+    assert_equal "show_pages must be a boolean or a hash of viewport ranges", error.message
+  end
+
+  def test_disables_next_when_page_count_is_zero
+    render_inline(
+      Primer::OpenProject::Pagination.new(
+        page_count: 0,
+        current_page: 1
+      )
+    )
+
+    assert_selector("[rel='prev'][aria-disabled='true']")
+    assert_selector("[rel='next'][aria-disabled='true']")
+  end
+
+  def test_renders_pages_near_end_without_end_ellipsis
+    render_inline(
+      Primer::OpenProject::Pagination.new(
+        page_count: 20,
+        current_page: 18
+      )
+    )
+
+    assert_selector("a", text: "15")
+    assert_selector("a", text: "16")
+    assert_selector("a", text: "17")
+    assert_selector("a[aria-current='page']", text: "18")
+    assert_selector("a", text: "19")
+    assert_selector("a", text: "20")
+
+    assert_selector("span.Page[role='presentation']", count: 1, text: "…")
+  end
+
+  def test_raises_when_href_builder_is_invalid
+    error = assert_raises(ArgumentError) do
+      Primer::OpenProject::Pagination.new(
+        page_count: 10,
+        current_page: 2,
+        href_builder: "invalid"
+      )
+    end
+
+    assert_equal "href_builder must respond to #call", error.message
+  end
+end
