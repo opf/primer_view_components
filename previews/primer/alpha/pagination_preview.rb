@@ -35,6 +35,7 @@ module Primer
         )
       end
 
+      # @snapshot
       # @label Default
       def default
         render(
