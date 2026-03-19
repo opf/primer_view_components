@@ -89,72 +89,128 @@ module Primer
         !!show_pages
       end
 
+      private
+
       def build_pagination_model
-        prev = {
+        prev = previous_page_item
+        next_page = next_page_item
+
+        return [prev, next_page] unless show_pages_boolean
+        return pagination_without_pages(prev, next_page) if page_count <= 0
+        return full_pagination_without_breaks(prev, next_page) if all_pages_fit?
+
+        [prev, *paginated_number_items, next_page]
+      end
+
+      def previous_page_item
+        {
           type: "PREV",
           num: current_page - 1,
           disabled: current_page == 1
         }
+      end
 
-        next_page = {
+      def next_page_item
+        {
           type: "NEXT",
           num: current_page + 1,
           disabled: current_page == page_count
         }
+      end
 
-        return [prev, next_page] unless show_pages_boolean
+      def pagination_without_pages(prev, next_page)
+        [prev, next_page.merge(disabled: true)]
+      end
 
-        if page_count <= 0
-          return [prev, next_page.merge(disabled: true)]
-        end
+      def full_pagination_without_breaks(prev, next_page)
+        pages = []
+        add_pages(pages, 1, page_count, false)
+        [prev, *pages, next_page]
+      end
 
+      def paginated_number_items
         pages = []
 
-        standard_gap = surrounding_page_count + margin_page_count
-        max_visible_pages = standard_gap + standard_gap + 3
+        add_start_pages_and_ellipsis(pages)
+        add_middle_pages(pages)
+        add_end_pages_and_ellipsis(pages)
 
-        if page_count <= max_visible_pages
-          add_pages(pages, 1, page_count, false)
-          return [prev, *pages, next_page]
-        end
+        pages
+      end
 
-        start_gap = 0
-        start_offset = 0
+      def add_start_pages_and_ellipsis(pages)
+        add_pages(pages, 1, margin_page_count, has_start_ellipsis?)
+        add_ellipsis(pages, margin_page_count) if has_start_ellipsis?
+      end
 
-        if current_page - standard_gap - 1 <= 1
-          start_offset = current_page - standard_gap - 2
-        else
-          start_gap = current_page - standard_gap - 1
-        end
-
-        end_gap = 0
-        end_offset = 0
-
-        if page_count - current_page - standard_gap <= 1
-          end_offset = page_count - current_page - standard_gap - 1
-        else
-          end_gap = page_count - current_page - standard_gap
-        end
-
-        has_start_ellipsis = start_gap > 0
-        has_end_ellipsis = end_gap > 0
-
-        add_pages(pages, 1, margin_page_count, has_start_ellipsis)
-
-        add_ellipsis(pages, margin_page_count) if has_start_ellipsis
-
+      def add_middle_pages(pages)
         add_pages(
           pages,
-          margin_page_count + start_gap + end_offset + 1,
-          page_count - start_offset - end_gap - margin_page_count,
-          has_end_ellipsis
+          middle_start_page,
+          middle_end_page,
+          has_end_ellipsis?
         )
+      end
 
-        add_ellipsis(pages, page_count - start_offset - end_gap - margin_page_count) if has_end_ellipsis
+      def add_end_pages_and_ellipsis(pages)
+        add_ellipsis(pages, middle_end_page) if has_end_ellipsis?
+        add_pages(pages, ending_start_page, page_count)
+      end
 
-        add_pages(pages, page_count - margin_page_count + 1, page_count)
+      def all_pages_fit?
+        page_count <= max_visible_pages
+      end
 
-        [prev, *pages, next_page]
+      def max_visible_pages
+        standard_gap + standard_gap + 3
+      end
+
+      def standard_gap
+        surrounding_page_count + margin_page_count
+      end
+
+      def has_start_ellipsis?
+        start_gap.positive?
+      end
+
+      def has_end_ellipsis?
+        end_gap.positive?
+      end
+
+      def start_gap
+        @start_gap ||= near_start? ? 0 : current_page - standard_gap - 1
+      end
+
+      def start_offset
+        @start_offset ||= near_start? ? current_page - standard_gap - 2 : 0
+      end
+
+      def end_gap
+        @end_gap ||= near_end? ? 0 : page_count - current_page - standard_gap
+      end
+
+      def end_offset
+        @end_offset ||= near_end? ? page_count - current_page - standard_gap - 1 : 0
+      end
+
+      def near_start?
+        current_page - standard_gap - 1 <= 1
+      end
+
+      def near_end?
+        page_count - current_page - standard_gap <= 1
+      end
+
+      def middle_start_page
+        margin_page_count + start_gap + end_offset + 1
+      end
+
+      def middle_end_page
+        page_count - start_offset - end_gap - margin_page_count
+      end
+
+      def ending_start_page
+        page_count - margin_page_count + 1
       end
 
       def add_ellipsis(pages, previous_page)
