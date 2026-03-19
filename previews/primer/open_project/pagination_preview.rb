@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Primer
-  module Alpha
+  module OpenProject
     # @label Pagination
     class PaginationPreview < ViewComponent::Preview
       # @label Playground
