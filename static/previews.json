@@ -6583,7 +6583,7 @@
       {
         "preview_path": "primer/alpha/pagination/default",
         "name": "default",
-        "snapshot": "false",
+        "snapshot": "true",
         "skip_rules": {
           "wont_fix": [
             "region"
