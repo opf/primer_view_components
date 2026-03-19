@@ -75,27 +75,18 @@ module Primer
         raise ArgumentError, "margin_page_count must be >= 0" if margin_page_count < 0
         raise ArgumentError, "surrounding_page_count must be >= 0" if surrounding_page_count < 0
         raise ArgumentError, "href_builder must respond to #call" unless href_builder.respond_to?(:call)
-
-        unless show_pages.is_a?(TrueClass) || show_pages.is_a?(FalseClass) || show_pages.is_a?(Hash)
-          raise ArgumentError, "show_pages must be a boolean or a hash of viewport ranges"
-        end
+        raise ArgumentError, "show_pages must be a boolean" unless [true, false].include?(show_pages)
       end
 
       def default_href_builder(page_num)
         "##{page_num}"
       end
 
-      def show_pages_boolean
-        !!show_pages
-      end
-
-      private
-
       def build_pagination_model
         prev = previous_page_item
         next_page = next_page_item
 
-        return [prev, next_page] unless show_pages_boolean
+        return [prev, next_page] unless show_pages
         return pagination_without_pages(prev, next_page) if page_count <= 0
         return full_pagination_without_breaks(prev, next_page) if all_pages_fit?
 
@@ -124,7 +115,7 @@ module Primer
 
       def full_pagination_without_breaks(prev, next_page)
         pages = []
-        add_pages(pages, 1, page_count, false)
+        add_pages(pages, 1, page_count)
         [prev, *pages, next_page]
       end
 
@@ -162,7 +153,7 @@ module Primer
       end
 
       def max_visible_pages
-        standard_gap + standard_gap + 3
+        (standard_gap * 2) + 3
       end
 
       def standard_gap
