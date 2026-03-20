@@ -1,6 +1,11 @@
 # Contributing
 
-Hi there! We're thrilled that you'd like to contribute to this project. Your help is essential for keeping it great.
+> [!WARNING]
+> As part of GitHub’s move to React-based interfaces, [Primer ViewComponents is in maintenance mode](https://github.com/primer/view_components/discussions/3908) as of February 2026.
+>
+> Maintenance mode means this project is **not accepting new features, components, or significant enhancements.** For posterity, the documentation will continue to include guidance on adding new components.
+>
+> We will consider accepting contributions and community reviews for security updates, dependency bumps, and critical/P0 bug fixes. We deeply appreciate your support of this project over the years.
 
 If you have any substantial changes that you would like to make, please [open an issue](http://github.com/opf/primer_view_components/issues/new) first to discuss them with us.
 
