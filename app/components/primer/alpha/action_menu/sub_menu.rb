@@ -9,6 +9,7 @@ module Primer
       class SubMenu < Menu
         DEFAULT_ANCHOR_ALIGN = :start
         DEFAULT_ANCHOR_SIDE = :outside_right
+        DEFAULT_ANCHOR_WHEN_NARROW = :inherit
 
         # @!parse
         #   # Adds an item to the menu.
@@ -44,12 +45,14 @@ module Primer
         # @param menu_id [String] Id of the menu.
         # @param anchor_align [Symbol] <%= one_of(Primer::Alpha::Overlay::ANCHOR_ALIGN_OPTIONS) %>
         # @param anchor_side [Symbol] <%= one_of(Primer::Alpha::Overlay::ANCHOR_SIDE_OPTIONS) %>
+        # @param anchor_when_narrow [Symbol] <%= one_of(Primer::Alpha::Overlay::ANCHOR_WHEN_NARROW_OPTIONS) %>.
         # @param overlay_arguments [Hash] Arguments to pass to the underlying <%= link_to_component(Primer::Alpha::Overlay) %>
         # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>.
         def initialize(
           menu_id: self.class.generate_id,
           anchor_align: DEFAULT_ANCHOR_ALIGN,
           anchor_side: DEFAULT_ANCHOR_SIDE,
+          anchor_when_narrow: DEFAULT_ANCHOR_WHEN_NARROW,
           overlay_arguments: {},
           **system_arguments
         )
@@ -64,6 +67,7 @@ module Primer
           super(
             anchor_align: anchor_align, # carry over to sub-menus
             anchor_side: anchor_side, # carry over to sub-menus
+            anchor_when_narrow: anchor_when_narrow, # carry over to sub-menus
             **system_arguments,
             &block
           )

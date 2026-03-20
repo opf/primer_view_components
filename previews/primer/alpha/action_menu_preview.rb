@@ -485,17 +485,20 @@ module Primer
       #
       # @param anchor_align [Symbol] select [start, center, end]
       # @param anchor_side [Symbol] select [outside_bottom, outside_top, outside_left, outside_right]
+      # @param anchor_when_narrow [Symbol] select [inherit, bottom, fullscreen, left, right]
       # @param sub_menu_anchor_align [Symbol] select [start, center, end]
       # @param sub_menu_anchor_side [Symbol] select [outside_bottom, outside_top, outside_left, outside_right]
       def sub_menus(
         anchor_align: Primer::Alpha::ActionMenu::PrimaryMenu::DEFAULT_ANCHOR_ALIGN,
         anchor_side: Primer::Alpha::ActionMenu::PrimaryMenu::DEFAULT_ANCHOR_SIDE,
+        anchor_when_narrow: Primer::Alpha::ActionMenu::SubMenu::DEFAULT_ANCHOR_WHEN_NARROW,
         sub_menu_anchor_align: Primer::Alpha::ActionMenu::SubMenu::DEFAULT_ANCHOR_ALIGN,
         sub_menu_anchor_side: Primer::Alpha::ActionMenu::SubMenu::DEFAULT_ANCHOR_SIDE
       )
         render_with_template(locals: {
           anchor_align: anchor_align.to_sym,
           anchor_side: anchor_side.to_sym,
+          anchor_when_narrow: anchor_when_narrow.to_sym,
           sub_menu_anchor_align: sub_menu_anchor_align,
           sub_menu_anchor_side: sub_menu_anchor_side
         })
