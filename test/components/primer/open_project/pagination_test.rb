@@ -91,7 +91,7 @@ class PrimerOpenProjectPaginationTest < Minitest::Test
       )
     end
 
-    assert_equal "show_pages must be a boolean or a hash of viewport ranges", error.message
+    assert_equal "show_pages must be a boolean", error.message
   end
 
   def test_disables_next_when_page_count_is_zero
