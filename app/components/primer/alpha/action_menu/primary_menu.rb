@@ -9,6 +9,7 @@ module Primer
       class PrimaryMenu < Menu
         DEFAULT_ANCHOR_ALIGN = :start
         DEFAULT_ANCHOR_SIDE = :outside_bottom
+        DEFAULT_ANCHOR_WHEN_NARROW = :inherit
 
         attr_reader :dynamic_label, :dynamic_label_prefix
 
@@ -45,12 +46,14 @@ module Primer
 
         # @param anchor_align [Symbol] <%= one_of(Primer::Alpha::Overlay::ANCHOR_ALIGN_OPTIONS) %>
         # @param anchor_side [Symbol] <%= one_of(Primer::Alpha::Overlay::ANCHOR_SIDE_OPTIONS) %>
+        # @param anchor_when_narrow [Symbol] <%= one_of(Primer::Alpha::Overlay::ANCHOR_WHEN_NARROW_OPTIONS) %>.
         # @param dynamic_label [Boolean] Whether or not to display the text of the currently selected item in the show button.
         # @param dynamic_label_prefix [String] If provided, the prefix is prepended to the dynamic label and displayed in the show button.
         # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>.
         def initialize(
           anchor_align: DEFAULT_ANCHOR_ALIGN,
           anchor_side: DEFAULT_ANCHOR_SIDE,
+          anchor_when_narrow: DEFAULT_ANCHOR_WHEN_NARROW,
           dynamic_label: false,
           dynamic_label_prefix: nil,
           **system_arguments
@@ -68,6 +71,7 @@ module Primer
           super(
             anchor_align: anchor_align,
             anchor_side: anchor_side,
+            anchor_when_narrow: anchor_when_narrow,
             **system_arguments
           )
         end

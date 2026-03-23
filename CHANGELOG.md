@@ -1,5 +1,41 @@
 # CHANGELOG
 
+## 0.83.0
+
+### Minor Changes
+
+- [#3938](https://github.com/primer/view_components/pull/3938) [`b7f61e2`](https://github.com/opf/primer_view_components/commit/b7f61e2a2403bf714e0f34975cb83174e5a8b517) Thanks [@acbreton](https://github.com/acbreton)! - Change `ToggleSwitch` ViewComponent `type` to `button`
+
+### Patch Changes
+
+- [#3952](https://github.com/primer/view_components/pull/3952) [`02c89a5`](https://github.com/opf/primer_view_components/commit/02c89a5ddcf029c252ea6f1b51e5e12cfe71f891) Thanks [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Performance improvements to `ActionBarElement`:
+  - Replaced the `#eachItem` / `ItemType` abstraction with a two-pass read-then-write loop that snapshots all element geometry before mutating the DOM, eliminating forced synchronous reflow.
+  - Cached the `#menuItems` `NodeListOf` query across each update pass instead of re-querying per item.
+  - Simplified `#firstItem` to a one-liner using `Array.find`.
+  - Coalesces rapid resize/intersection events via `requestAnimationFrame` so at most one layout pass runs per frame.
+  - `update()` remains the public entry point (coalescing scheduler); actual layout work is in the private `#performUpdate()`.
+  - `overflow: visible` is always applied in `connectedCallback` (no popover feature-detection gate), preserving the original behavior for CSS/tooltip positioning.
+
+- [#3945](https://github.com/primer/view_components/pull/3945) [`983cc29`](https://github.com/opf/primer_view_components/commit/983cc290b199169181545a5518459640c2c212cf) Thanks [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Blankslate: Add `text-wrap: balance` to heading and description
+
+- [#3950](https://github.com/primer/view_components/pull/3950) [`ca926de`](https://github.com/opf/primer_view_components/commit/ca926de90555a130cbc8dc1b427261417759bfd7) Thanks [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Defer `--dialog-scrollgutter` computation in `DialogHelperElement` to the moment a dialog is first opened, avoiding a forced synchronous layout reflow during page load.
+
+- [#3955](https://github.com/primer/view_components/pull/3955) [`ed8bf4a`](https://github.com/opf/primer_view_components/commit/ed8bf4a6e8198473e3e3b004eb36256504b80035) Thanks [@TylerJDev](https://github.com/TylerJDev)! - ActionMenu: Add fullscreen option to ActionMenu
+
+- [#3912](https://github.com/primer/view_components/pull/3912) [`1597a74`](https://github.com/opf/primer_view_components/commit/1597a742f693963db74f62721688bdc254d81ad1) Thanks [@llastflowers](https://github.com/llastflowers)! - Remove newline in file to revert accidental visual regression of Button
+
+- [#3961](https://github.com/primer/view_components/pull/3961) [`16a2d75`](https://github.com/opf/primer_view_components/commit/16a2d7547f9a527248fa303a21303a0df3d71ddd) Thanks [@liuliu-dev](https://github.com/liuliu-dev)! - Tooltip: Fix tooltip overflow on narrow viewports by capping max-width to viewport width.
+
+- [#3940](https://github.com/primer/view_components/pull/3940) [`b585532`](https://github.com/opf/primer_view_components/commit/b5855325cfac72e9ce34ad88a7c0e1b1c14bcb94) Thanks [@TylerJDev](https://github.com/TylerJDev)! - Dialog: Fixes issue in `dialog_helper.ts` where focus could be lost
+
+- [#3894](https://github.com/primer/view_components/pull/3894) [`4ddf815`](https://github.com/opf/primer_view_components/commit/4ddf815475c5da1c588f12a024c48defc621a719) Thanks [@francinelucca](https://github.com/francinelucca)! - chore(treeview): add treeitem role to shadow dom node
+
+- [#3919](https://github.com/primer/view_components/pull/3919) [`e060f4d`](https://github.com/opf/primer_view_components/commit/e060f4da7cf02d88477f9791fd1ed778b51dfa43) Thanks [@francinelucca](https://github.com/francinelucca)! - Chore: add custom "invokerClicked" selectpanel event
+
+- [#3957](https://github.com/primer/view_components/pull/3957) [`3baaad2`](https://github.com/opf/primer_view_components/commit/3baaad2b69e973988a611eb2fa14e57c7057afb2) Thanks [@francinelucca](https://github.com/francinelucca)! - chore(AutoComplete): fix NoResultItem contrast ratio
+
+- [#3930](https://github.com/primer/view_components/pull/3930) [`0ebf631`](https://github.com/opf/primer_view_components/commit/0ebf631648bb4e0a6ccdce2437fa91290636301c) Thanks [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Update Catalyst to version 1.8.0 and hard-code controller/custom-element names via their @controller('...') decorators to allow for better minification
+
 ## 0.82.1
 
 ### Patch Changes

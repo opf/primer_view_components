@@ -1634,6 +1634,19 @@
         }
       },
       {
+        "preview_path": "primer/alpha/action_menu/fullscreen_when_narrow",
+        "name": "fullscreen_when_narrow",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
         "preview_path": "primer/alpha/action_menu/sub_menus",
         "name": "sub_menus",
         "snapshot": "false",
@@ -1673,6 +1686,12 @@
             "type": "Symbol",
             "default": "N/A",
             "description": "One of `:inside_bottom`, `:inside_center`, `:inside_left`, `:inside_right`, `:inside_top`, `:outside_bottom`, `:outside_left`, `:outside_right`, or `:outside_top`."
+          },
+          {
+            "name": "anchor_when_narrow",
+            "type": "Symbol",
+            "default": "N/A",
+            "description": "One of `:bottom`, `:fullscreen`, `:inherit`, `:left`, or `:right`."
           },
           {
             "name": "menu_id",
@@ -1746,6 +1765,12 @@
           {
             "name": "anchor_align",
             "description": "Returns the value of attribute anchor_align.",
+            "parameters": [],
+            "return_types": []
+          },
+          {
+            "name": "anchor_when_narrow",
+            "description": "Returns the value of attribute anchor_when_narrow.",
             "parameters": [],
             "return_types": []
           },
@@ -1928,6 +1953,12 @@
             "description": "One of `:inside_bottom`, `:inside_center`, `:inside_left`, `:inside_right`, `:inside_top`, `:outside_bottom`, `:outside_left`, `:outside_right`, or `:outside_top`."
           },
           {
+            "name": "anchor_when_narrow",
+            "type": "Symbol",
+            "default": "`:inherit`",
+            "description": "One of `:bottom`, `:fullscreen`, `:inherit`, `:left`, or `:right`.."
+          },
+          {
             "name": "overlay_arguments",
             "type": "Hash",
             "default": "`{}`",
@@ -2044,6 +2075,12 @@
             "type": "Symbol",
             "default": "`:outside_bottom`",
             "description": "One of `:inside_bottom`, `:inside_center`, `:inside_left`, `:inside_right`, `:inside_top`, `:outside_bottom`, `:outside_left`, `:outside_right`, or `:outside_top`."
+          },
+          {
+            "name": "anchor_when_narrow",
+            "type": "Symbol",
+            "default": "`:inherit`",
+            "description": "One of `:bottom`, `:fullscreen`, `:inherit`, `:left`, or `:right`.."
           },
           {
             "name": "dynamic_label",
@@ -6404,6 +6441,12 @@
         "type": "Symbol",
         "default": "`:normal`",
         "description": "The anchor offset to give the Overlay. One of `:normal` or `:spacious`."
+      },
+      {
+        "name": "anchor_when_narrow",
+        "type": "Symbol",
+        "default": "`:inherit`",
+        "description": "The position of the Overlay when in a narrow viewport. One of `:bottom`, `:fullscreen`, `:inherit`, `:left`, or `:right`."
       },
       {
         "name": "allow_out_of_bounds",
@@ -12389,6 +12432,32 @@
     ],
     "subcomponents": [
       {
+        "fully_qualified_name": "Primer::Beta::AutoComplete::NoResultItem",
+        "description": "Use `NoResultItem` to display a message when no autocomplete results are found.\nRenders as a simple div inside the overlay, not as a list item.",
+        "accessibility_docs": null,
+        "is_form_component": false,
+        "is_published": true,
+        "requires_js": false,
+        "component": "AutoComplete::NoResultItem",
+        "status": "beta",
+        "a11y_reviewed": false,
+        "short_name": "AutoCompleteNoResultItem",
+        "source": "https://github.com/primer/view_components/tree/main/app/components/primer/beta/auto_complete/no_result_item.rb",
+        "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/beta/auto_complete/no_result_item/default/",
+        "parameters": [
+          {
+            "name": "system_arguments",
+            "type": "Hash",
+            "default": "N/A",
+            "description": "{{link_to_system_arguments_docs}}"
+          }
+        ],
+        "slots": [],
+        "methods": [],
+        "previews": [],
+        "subcomponents": []
+      },
+      {
         "fully_qualified_name": "Primer::Beta::AutoComplete::Item",
         "description": "Use `AutoCompleteItem` to list results of an auto-completed search.",
         "accessibility_docs": null,
@@ -12439,62 +12508,6 @@
             "description": "{{link_to_system_arguments_docs}}"
           }
         ],
-        "slots": [
-          {
-            "name": "leading_visual",
-            "description": "The leading visual rendered before the link.",
-            "parameters": [
-              {
-                "name": "kwargs",
-                "type": "Hash",
-                "default": "N/A",
-                "description": "The arguments accepted by {{#link_to_component}}Primer::Beta::Avatar{{/link_to_component}} or {{#link_to_component}}Primer::Beta::Octicon{{/link_to_component}}"
-              }
-            ]
-          },
-          {
-            "name": "trailing_visual",
-            "description": "The trailing visual rendered after the link.",
-            "parameters": [
-              {
-                "name": "kwargs",
-                "type": "Hash",
-                "default": "N/A",
-                "description": "The arguments accepted by {{#link_to_component}}Primer::Beta::Octicon{{/link_to_component}}, {{#link_to_component}}Primer::Beta::Label{{/link_to_component}}, or {{#link_to_component}}Primer::Beta::Counter{{/link_to_component}}"
-              }
-            ]
-          },
-          {
-            "name": "description",
-            "description": "Optional description",
-            "parameters": [
-              {
-                "name": "system_arguments",
-                "type": "Hash",
-                "default": "N/A",
-                "description": "{{link_to_system_arguments_docs}}"
-              }
-            ]
-          }
-        ],
-        "methods": [],
-        "previews": [],
-        "subcomponents": []
-      },
-      {
-        "fully_qualified_name": "Primer::Beta::AutoComplete::NoResultItem",
-        "description": "",
-        "accessibility_docs": null,
-        "is_form_component": false,
-        "is_published": true,
-        "requires_js": false,
-        "component": "AutoComplete::NoResultItem",
-        "status": "beta",
-        "a11y_reviewed": false,
-        "short_name": "AutoCompleteNoResultItem",
-        "source": "https://github.com/primer/view_components/tree/main/app/components/primer/beta/auto_complete/no_result_item.rb",
-        "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/beta/auto_complete/no_result_item/default/",
-        "parameters": [],
         "slots": [
           {
             "name": "leading_visual",

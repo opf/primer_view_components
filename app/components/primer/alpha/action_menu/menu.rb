@@ -16,7 +16,7 @@ module Primer
           DEFAULT_SELECT_VARIANT
         ].freeze
 
-        attr_reader :menu_id, :anchor_side, :anchor_align, :list, :preload, :src, :select_variant, :form_arguments
+        attr_reader :menu_id, :anchor_side, :anchor_align, :anchor_when_narrow, :list, :preload, :src, :select_variant, :form_arguments
 
         delegate :with_item, :with_avatar_item, :with_divider, :with_group, :items, :acts_as_form_input?, to: :@list
 
@@ -55,6 +55,7 @@ module Primer
 
         # @param anchor_align [Symbol] <%= one_of(Primer::Alpha::Overlay::ANCHOR_ALIGN_OPTIONS) %>
         # @param anchor_side [Symbol] <%= one_of(Primer::Alpha::Overlay::ANCHOR_SIDE_OPTIONS) %>
+        # @param anchor_when_narrow [Symbol] <%= one_of(Primer::Alpha::Overlay::ANCHOR_WHEN_NARROW_OPTIONS) %>
         # @param menu_id [String] Id of the menu.
         # @param size [Symbol] <%= one_of(Primer::Alpha::Overlay::SIZE_OPTIONS) %>
         # @param src [String] Used with an `include-fragment` element to load menu content from the given source URL.
@@ -67,6 +68,7 @@ module Primer
         def initialize(
           anchor_align:,
           anchor_side:,
+          anchor_when_narrow:,
           menu_id: self.class.generate_id,
           size: Primer::Alpha::Overlay::DEFAULT_SIZE,
           src: nil,
@@ -82,6 +84,7 @@ module Primer
           @preload = fetch_or_fallback_boolean(preload, DEFAULT_PRELOAD)
           @anchor_side = anchor_side
           @anchor_align = anchor_align
+          @anchor_when_narrow = anchor_when_narrow
 
           @select_variant = fetch_or_fallback(SELECT_VARIANT_OPTIONS, select_variant, DEFAULT_SELECT_VARIANT)
           @form_arguments = form_arguments
@@ -98,6 +101,7 @@ module Primer
             visually_hide_title: true,
             anchor_align: anchor_align,
             anchor_side: anchor_side,
+            anchor_when_narrow: anchor_when_narrow,
             size: size,
             **overlay_arguments
           )

@@ -465,6 +465,12 @@
         "description": "One of `:inside_bottom`, `:inside_center`, `:inside_left`, `:inside_right`, `:inside_top`, `:outside_bottom`, `:outside_left`, `:outside_right`, or `:outside_top`."
       },
       {
+        "name": "anchor_when_narrow",
+        "type": "Symbol",
+        "default": "N/A",
+        "description": "One of `:bottom`, `:fullscreen`, `:inherit`, `:left`, or `:right`."
+      },
+      {
         "name": "menu_id",
         "type": "String",
         "default": "`self.class.generate_id`",
@@ -541,6 +547,12 @@
         "description": "One of `:inside_bottom`, `:inside_center`, `:inside_left`, `:inside_right`, `:inside_top`, `:outside_bottom`, `:outside_left`, `:outside_right`, or `:outside_top`."
       },
       {
+        "name": "anchor_when_narrow",
+        "type": "Symbol",
+        "default": "`:inherit`",
+        "description": "One of `:bottom`, `:fullscreen`, `:inherit`, `:left`, or `:right`.."
+      },
+      {
         "name": "dynamic_label",
         "type": "Boolean",
         "default": "`false`",
@@ -585,6 +597,12 @@
         "type": "Symbol",
         "default": "`:outside_right`",
         "description": "One of `:inside_bottom`, `:inside_center`, `:inside_left`, `:inside_right`, `:inside_top`, `:outside_bottom`, `:outside_left`, `:outside_right`, or `:outside_top`."
+      },
+      {
+        "name": "anchor_when_narrow",
+        "type": "Symbol",
+        "default": "`:inherit`",
+        "description": "One of `:bottom`, `:fullscreen`, `:inherit`, `:left`, or `:right`.."
       },
       {
         "name": "overlay_arguments",
@@ -2008,6 +2026,12 @@
         "type": "Symbol",
         "default": "`:normal`",
         "description": "The anchor offset to give the Overlay. One of `:normal` or `:spacious`."
+      },
+      {
+        "name": "anchor_when_narrow",
+        "type": "Symbol",
+        "default": "`:inherit`",
+        "description": "The position of the Overlay when in a narrow viewport. One of `:bottom`, `:fullscreen`, `:inherit`, `:left`, or `:right`."
       },
       {
         "name": "allow_out_of_bounds",
@@ -4009,7 +4033,14 @@
     "short_name": "AutoCompleteNoResultItem",
     "source": "https://github.com/primer/view_components/tree/main/app/components/primer/beta/auto_complete/no_result_item.rb",
     "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/beta/auto_complete/no_result_item/default/",
-    "parameters": []
+    "parameters": [
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "[System arguments](/system-arguments)"
+      }
+    ]
   },
   {
     "component": "Avatar",
