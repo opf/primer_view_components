@@ -13,7 +13,7 @@ type SelectedItem = {
   element: Element
 }
 
-@controller
+@controller('action-menu')
 export class ActionMenuElement extends HTMLElement {
   @target includeFragment: IncludeFragmentElement
   @target overlay: AnchoredPositionElement
