@@ -21438,12 +21438,6 @@
     "slots": [],
     "methods": [
       {
-        "name": "class_name",
-        "description": "Returns the value of attribute class_name.",
-        "parameters": [],
-        "return_types": []
-      },
-      {
         "name": "page_count",
         "description": "Returns the value of attribute page_count.",
         "parameters": [],
