@@ -135,4 +135,50 @@ class PrimerOpenProjectPaginationTest < Minitest::Test
 
     assert_equal "href_builder must respond to #call", error.message
   end
+
+  def test_raises_when_page_count_is_negative
+    error = assert_raises(ArgumentError) do
+      Primer::OpenProject::Pagination.new(
+        page_count: -1,
+        current_page: 1
+      )
+    end
+
+    assert_equal "page_count must be >= 0", error.message
+  end
+
+  def test_raises_when_current_page_is_less_than_one
+    error = assert_raises(ArgumentError) do
+      Primer::OpenProject::Pagination.new(
+        page_count: 10,
+        current_page: 0
+      )
+    end
+
+    assert_equal "current_page must be >= 1", error.message
+  end
+
+  def test_raises_when_margin_page_count_is_negative
+    error = assert_raises(ArgumentError) do
+      Primer::OpenProject::Pagination.new(
+        page_count: 10,
+        current_page: 2,
+        margin_page_count: -1
+      )
+    end
+
+    assert_equal "margin_page_count must be >= 0", error.message
+  end
+
+  def test_raises_when_surrounding_page_count_is_negative
+    error = assert_raises(ArgumentError) do
+      Primer::OpenProject::Pagination.new(
+        page_count: 10,
+        current_page: 2,
+        surrounding_page_count: -1
+      )
+    end
+
+    assert_equal "surrounding_page_count must be >= 0", error.message
+  end
 end
