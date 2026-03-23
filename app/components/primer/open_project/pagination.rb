@@ -28,20 +28,12 @@ module Primer
         raise ArgumentError, "page_count is required" if page_count.nil?
         raise ArgumentError, "current_page is required" if current_page.nil?
 
-        @page_count = cast_integer!(page_count, "page count")
-
-        @current_page = cast_integer!(current_page, "current page")
-
-        @margin_page_count =
-          cast_integer!(margin_page_count.nil? ? DEFAULT_MARGIN_PAGE_COUNT : margin_page_count, "margin page count")
-
-        @surrounding_page_count =
-          cast_integer!(surrounding_page_count.nil? ? DEFAULT_SURROUNDING_PAGE_COUNT : surrounding_page_count, "surrounding page count")
-
+        @page_count = cast_integer!(page_count, "page_count")
+        @current_page = cast_integer!(current_page, "current_page")
         @href_builder = href_builder || method(:default_href_builder)
-
+        @margin_page_count = cast_integer!(margin_page_count, "margin_page_count")
         @show_pages = show_pages
-
+        @surrounding_page_count = cast_integer!(surrounding_page_count, "surrounding_page_count")
         @system_arguments = system_arguments
 
         validate_arguments!
@@ -292,6 +284,8 @@ module Primer
             as: "span"
           )
         end
+
+        props[:class] = class_names("Page", props[:class])
 
         PageData.new(
           key: key,
