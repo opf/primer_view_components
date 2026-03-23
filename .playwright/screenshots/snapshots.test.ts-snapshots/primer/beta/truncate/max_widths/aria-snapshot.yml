@@ -1,1 +1,6 @@
-- text: branch-name-that-is-really-long-branch-name-that-is-really-long-branch-name-that-is-really-long branch-name-that-is-really-long-branch-name-that-is-really-long-branch-name-that-is-really-long branch-name-that-is-really-long-branch-name-that-is-really-long-branch-name-that-is-really-long
+- link "branch-name-that-is-really-long-branch-name-that-is-really-long-branch-name-that-is-really-long":
+  - /url: https://github.com
+- link "branch-name-that-is-really-long-branch-name-that-is-really-long-branch-name-that-is-really-long":
+  - /url: https://github.com
+- link "branch-name-that-is-really-long-branch-name-that-is-really-long-branch-name-that-is-really-long":
+  - /url: https://github.com
