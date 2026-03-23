@@ -181,4 +181,27 @@ class PrimerOpenProjectPaginationTest < Minitest::Test
 
     assert_equal "surrounding_page_count must be >= 0", error.message
   end
+
+  def test_raises_when_page_count_is_not_a_number
+    error = assert_raises(ArgumentError) do
+      Primer::OpenProject::Pagination.new(
+        page_count: "invalid",
+        current_page: 1
+      )
+    end
+
+    assert_equal "page_count must be a number", error.message
+  end
+
+  def test_raises_when_margin_page_count_is_not_a_number
+    error = assert_raises(ArgumentError) do
+      Primer::OpenProject::Pagination.new(
+        page_count: 10,
+        current_page: 1,
+        margin_page_count: "invalid"
+      )
+    end
+
+    assert_equal "margin_page_count must be a number", error.message
+  end
 end
