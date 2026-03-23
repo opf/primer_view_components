@@ -28,18 +28,19 @@ module Primer
         raise ArgumentError, "page_count is required" if page_count.nil?
         raise ArgumentError, "current_page is required" if current_page.nil?
 
-        @page_count = Integer(page_count)
-        @current_page = Integer(current_page)
+        @page_count = cast_integer!(page_count, "page count")
+
+        @current_page = cast_integer!(current_page, "current page")
+
+        @margin_page_count =
+          cast_integer!(margin_page_count.nil? ? DEFAULT_MARGIN_PAGE_COUNT : margin_page_count, "margin page count")
+
+        @surrounding_page_count =
+          cast_integer!(surrounding_page_count.nil? ? DEFAULT_SURROUNDING_PAGE_COUNT : surrounding_page_count, "surrounding page count")
 
         @href_builder = href_builder || method(:default_href_builder)
 
-        @margin_page_count =
-          Integer(margin_page_count.nil? ? DEFAULT_MARGIN_PAGE_COUNT : margin_page_count)
-
         @show_pages = show_pages
-
-        @surrounding_page_count =
-          Integer(surrounding_page_count.nil? ? DEFAULT_SURROUNDING_PAGE_COUNT : surrounding_page_count)
 
         @system_arguments = system_arguments
 
@@ -69,6 +70,12 @@ module Primer
       end
 
       private
+
+      def cast_integer!(value, name)
+        Integer(value)
+      rescue ArgumentError, TypeError
+        raise ArgumentError, "#{name} must be a number"
+      end
 
       def validate_arguments!
         raise ArgumentError, "page_count must be >= 0" if page_count < 0
