@@ -9,8 +9,7 @@ module Primer
 
       PageData = Struct.new(:key, :content, :props, keyword_init: true)
 
-      attr_reader :class_name,
-                  :page_count,
+      attr_reader :page_count,
                   :current_page,
                   :href_builder,
                   :margin_page_count,
@@ -20,7 +19,6 @@ module Primer
       def initialize(
         page_count:,
         current_page:,
-        class_name: nil,
         href_builder: nil,
         margin_page_count: DEFAULT_MARGIN_PAGE_COUNT,
         show_pages: true,
@@ -30,7 +28,6 @@ module Primer
         raise ArgumentError, "page_count is required" if page_count.nil?
         raise ArgumentError, "current_page is required" if current_page.nil?
 
-        @class_name = class_name
         @page_count = Integer(page_count)
         @current_page = Integer(current_page)
 
@@ -54,11 +51,15 @@ module Primer
       end
 
       def nav_arguments
-        {
-          tag: :nav,
-          classes: class_names("PaginationContainer", class_name, @system_arguments[:classes]),
-          "aria-label": I18n.t("pagination.label")
-        }.merge(@system_arguments.except(:classes))
+        system_arguments = @system_arguments.dup
+        system_arguments[:tag] = :nav
+        system_arguments[:classes] = class_names(
+          "PaginationContainer",
+          system_arguments[:classes]
+        )
+        system_arguments["aria-label"] = I18n.t("pagination.label")
+
+        system_arguments
       end
 
       def pages
