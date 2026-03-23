@@ -832,8 +832,12 @@
         "name": "fullscreen_when_narrow",
         "snapshot": "false",
         "skip_rules": {
-          "wont_fix": ["region"],
-          "will_fix": ["color-contrast"]
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
         }
       },
       {

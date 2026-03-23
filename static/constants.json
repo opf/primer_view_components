@@ -193,11 +193,13 @@
   "Primer::Alpha::ActionMenu::PrimaryMenu": {
     "DEFAULT_ANCHOR_ALIGN": "start",
     "DEFAULT_ANCHOR_SIDE": "outside_bottom",
+    "DEFAULT_ANCHOR_WHEN_NARROW": "inherit",
     "GeneratedSlotMethods": "Primer::Alpha::ActionMenu::PrimaryMenu::GeneratedSlotMethods"
   },
   "Primer::Alpha::ActionMenu::SubMenu": {
     "DEFAULT_ANCHOR_ALIGN": "start",
     "DEFAULT_ANCHOR_SIDE": "outside_right",
+    "DEFAULT_ANCHOR_WHEN_NARROW": "inherit",
     "GeneratedSlotMethods": "Primer::Alpha::ActionMenu::SubMenu::GeneratedSlotMethods"
   },
   "Primer::Alpha::ActionMenu::SubMenuItem": {
