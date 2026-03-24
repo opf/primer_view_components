@@ -94,16 +94,15 @@ class PrimerOpenProjectPaginationTest < Minitest::Test
     assert_equal "show_pages must be a boolean", error.message
   end
 
-  def test_disables_next_when_page_count_is_zero
-    render_inline(
+  def test_raises_when_current_page_is_too_big
+    error = assert_raises(ArgumentError) do
       Primer::OpenProject::Pagination.new(
         page_count: 0,
         current_page: 1
       )
-    )
+    end
 
-    assert_selector("[rel='prev'][aria-disabled='true']")
-    assert_selector("[rel='next'][aria-disabled='true']")
+    assert_equal "current_page can't be larger than page_count", error.message
   end
 
   def test_renders_pages_near_end_without_end_ellipsis
