@@ -203,4 +203,65 @@ class PrimerOpenProjectPaginationTest < Minitest::Test
 
     assert_equal "margin_page_count must be a number", error.message
   end
+
+  def test_renders_surrounding_pages_without_margins
+    render_inline(
+      Primer::OpenProject::Pagination.new(
+        page_count: 20,
+        current_page: 6,
+        margin_page_count: 0,
+        surrounding_page_count: 1
+      )
+    )
+
+    assert_selector("a", text: "5")
+    assert_selector("a[aria-current='page']", text: "6")
+    assert_selector("a", text: "7")
+
+    refute_selector("a", text: "1") # no margin
+    refute_selector("a", text: "20")
+
+    assert_selector("span.Page[role='presentation']", text: "…")
+  end
+
+  def test_renders_margin_pages_without_surrounding
+    render_inline(
+      Primer::OpenProject::Pagination.new(
+        page_count: 20,
+        current_page: 6,
+        margin_page_count: 1,
+        surrounding_page_count: 0
+      )
+    )
+
+    assert_selector("a", text: "1")
+    assert_selector("a[aria-current='page']", text: "6")
+    assert_selector("a", text: "20")
+
+    refute_selector("a", text: "5")
+    refute_selector("a", text: "7")
+
+    assert_selector("span.Page[role='presentation']", text: "…")
+  end
+
+  def test_renders_only_current_page_with_ellipses_when_no_margin_and_no_surrounding
+    render_inline(
+      Primer::OpenProject::Pagination.new(
+        page_count: 20,
+        current_page: 6,
+        margin_page_count: 0,
+        surrounding_page_count: 0
+      )
+    )
+
+    assert_selector("a[aria-current='page']", text: "6")
+
+    refute_selector("a", text: "1")
+    refute_selector("a", text: "5")
+    refute_selector("a", text: "7")
+    refute_selector("a", text: "20")
+
+    assert_selector("span.Page[role='presentation']", count: 2, text: "…")
+  end
+
 end
