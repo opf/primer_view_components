@@ -1943,6 +1943,10 @@
     "DEFAULT_MARGIN_PAGE_COUNT": 1,
     "DEFAULT_SURROUNDING_PAGE_COUNT": 2,
     "GeneratedSlotMethods": "Primer::OpenProject::Pagination::GeneratedSlotMethods",
+    "PAGE_TYPE__BREAK": "break",
+    "PAGE_TYPE__NEXT": "next",
+    "PAGE_TYPE__NUM": "num",
+    "PAGE_TYPE__PREV": "prev",
     "PageData": "Primer::OpenProject::Pagination::PageData"
   },
   "Primer::OpenProject::SidePanel": {
