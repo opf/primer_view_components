@@ -6463,6 +6463,15 @@
     ]
   },
   {
+    "component": "OpenProject::Pagination",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectPagination",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/pagination.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/pagination/default/",
+    "parameters": []
+  },
+  {
     "component": "OpenProject::SidePanel",
     "status": "open_project",
     "a11y_reviewed": false,

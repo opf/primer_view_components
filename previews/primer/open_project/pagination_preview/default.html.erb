@@ -1,0 +1,7 @@
+<%= render(
+      Primer::OpenProject::Pagination.new(
+        current_page: 6,
+        page_count: 20,
+        href_builder: ->(page) { "#page-#{page}" }
+      )
+    ) %>

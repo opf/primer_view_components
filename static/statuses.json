@@ -165,6 +165,7 @@
   "Primer::OpenProject::PageHeader::Dialog": "open_project",
   "Primer::OpenProject::PageHeader::Menu": "open_project",
   "Primer::OpenProject::PageHeader::Title": "open_project",
+  "Primer::OpenProject::Pagination": "open_project",
   "Primer::OpenProject::SidePanel": "open_project",
   "Primer::OpenProject::SidePanel::Section": "open_project",
   "Primer::OpenProject::SubHeader": "open_project",

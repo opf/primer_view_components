@@ -497,6 +497,9 @@
   "Overlay-headerFilter": [
     "Primer::Alpha::Dialog"
   ],
+  "Page": [
+    "Primer::OpenProject::Pagination"
+  ],
   "PageHeader": [
     "Primer::OpenProject::PageHeader"
   ],
@@ -538,6 +541,9 @@
   ],
   "PageHeader-titleBar": [
     "Primer::OpenProject::PageHeader"
+  ],
+  "PaginationContainer": [
+    "Primer::OpenProject::Pagination"
   ],
   "Popover": [
     "Primer::Beta::Popover"
