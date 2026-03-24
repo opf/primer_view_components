@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.83.1
+
+### Patch Changes
+
+- [#428](https://github.com/opf/primer_view_components/pull/428) [`cba7775`](https://github.com/opf/primer_view_components/commit/cba7775e683ed17abd5f6996127f7401ee9535b8) Thanks [@HDinger](https://github.com/HDinger)! - Revert changes to Banner component for better mobile responsiveness
+
 ## 0.83.0
 
 ### Minor Changes
