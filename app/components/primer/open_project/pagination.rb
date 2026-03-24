@@ -10,6 +10,11 @@ module Primer
       DEFAULT_MARGIN_PAGE_COUNT = 1
       DEFAULT_SURROUNDING_PAGE_COUNT = 2
 
+      PAGE_TYPE__BREAK = :break
+      PAGE_TYPE__PREV = :prev
+      PAGE_TYPE__NEXT = :next
+      PAGE_TYPE__NUM = :num
+
       attr_reader :page_count,
                   :current_page,
                   :href_builder,
@@ -89,7 +94,7 @@ module Primer
 
       def previous_page_item
         {
-          type: "PREV",
+          type: PAGE_TYPE__PREV,
           num: current_page - 1,
           disabled: current_page == 1
         }
@@ -97,7 +102,7 @@ module Primer
 
       def next_page_item
         {
-          type: "NEXT",
+          type: PAGE_TYPE__NEXT,
           num: current_page + 1,
           disabled: current_page == page_count
         }
@@ -143,6 +148,8 @@ module Primer
       end
 
       def max_visible_pages
+        # The standard gap on the left and the right +
+        # current page + 2 boundary pages (one on each side before an ellipsis would appear)
         (standard_gap * 2) + 3
       end
 
@@ -196,7 +203,7 @@ module Primer
 
       def add_ellipsis(pages, previous_page)
         pages << {
-          type: "BREAK",
+          type: PAGE_TYPE__BREAK,
           num: previous_page + 1
         }
       end
@@ -204,7 +211,7 @@ module Primer
       def add_pages(pages, start_page, end_page, precedes_break = false)
         (start_page..end_page).each do |i|
           pages << {
-            type: "NUM",
+            type: PAGE_TYPE__NUM,
             num: i,
             selected: i == current_page,
             precedes_break: i == end_page && precedes_break
@@ -218,44 +225,27 @@ module Primer
         key = ""
 
         case page[:type]
-        when "PREV"
-          key = "page-prev"
-          content = I18n.t("pagination.previous")
+        when PAGE_TYPE__PREV, PAGE_TYPE__NEXT
+          key = page[:type]
+          key_string = key.to_s
+          content = I18n.t("pagination.#{key_string}")
 
           if page[:disabled]
             props.merge!(
-              rel: "prev",
+              rel: key_string,
               "aria-hidden": "true",
               "aria-disabled": "true"
             )
           else
             props.merge!(
-              rel: "prev",
+              rel: key_string,
               href: href_builder.call(page[:num]),
-              "aria-label": I18n.t("pagination.previous_page")
+              "aria-label": I18n.t("pagination.#{key_string}_page")
             )
           end
 
-        when "NEXT"
-          key = "page-next"
-          content = I18n.t("pagination.next")
-
-          if page[:disabled]
-            props.merge!(
-              rel: "next",
-              "aria-hidden": "true",
-              "aria-disabled": "true"
-            )
-          else
-            props.merge!(
-              rel: "next",
-              href: href_builder.call(page[:num]),
-              "aria-label": I18n.t("pagination.next_page")
-            )
-          end
-
-        when "NUM"
-          key = "page-#{page[:num]}"
+        when PAGE_TYPE__NUM
+          key = :"page-#{page[:num]}"
           content = page[:num].to_s
 
           props.merge!(
@@ -265,8 +255,8 @@ module Primer
 
           props[:"aria-current"] = "page" if page[:selected]
 
-        when "BREAK"
-          key = "page-#{page[:num]}-break"
+        when PAGE_TYPE__BREAK
+          key = :"page-#{page[:num]}-break"
           content = "…"
 
           props.merge!(

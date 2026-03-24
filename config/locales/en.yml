@@ -32,8 +32,8 @@ en:
     confirmation_live_message_unchecked: "The button to proceed is now inactive. You need to tick the checkbox to continue."
   pagination:
     label: "Pagination"
-    previous: "Previous"
-    previous_page: "Previous Page"
+    prev: "Previous"
+    prev_page: "Previous Page"
     next: "Next"
     next_page: "Next Page"
     page: "Page %{number}"
