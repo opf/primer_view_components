@@ -4,10 +4,11 @@ module Primer
   module OpenProject
     class Pagination < Primer::Component
       status :open_project
-      DEFAULT_MARGIN_PAGE_COUNT = 1
-      DEFAULT_SURROUNDING_PAGE_COUNT = 2
 
       PageData = Struct.new(:key, :content, :props, keyword_init: true)
+
+      DEFAULT_MARGIN_PAGE_COUNT = 1
+      DEFAULT_SURROUNDING_PAGE_COUNT = 2
 
       attr_reader :page_count,
                   :current_page,
@@ -25,9 +26,6 @@ module Primer
         surrounding_page_count: DEFAULT_SURROUNDING_PAGE_COUNT,
         **system_arguments
       )
-        raise ArgumentError, "page_count is required" if page_count.nil?
-        raise ArgumentError, "current_page is required" if current_page.nil?
-
         @page_count = cast_integer!(page_count, "page_count")
         @current_page = cast_integer!(current_page, "current_page")
         @href_builder = href_builder || method(:default_href_builder)
@@ -36,23 +34,14 @@ module Primer
         @surrounding_page_count = cast_integer!(surrounding_page_count, "surrounding_page_count")
         @system_arguments = system_arguments
 
-        validate_arguments!
-      end
-
-      def render?
-        true
-      end
-
-      def nav_arguments
-        system_arguments = @system_arguments.dup
-        system_arguments[:tag] = :nav
-        system_arguments[:classes] = class_names(
+        @system_arguments[:tag] = :nav
+        @system_arguments[:classes] = class_names(
           "PaginationContainer",
-          system_arguments[:classes]
+          @system_arguments[:classes]
         )
-        system_arguments["aria-label"] = I18n.t("pagination.label")
+        @system_arguments["aria-label"] = I18n.t("pagination.label")
 
-        system_arguments
+        validate_arguments!
       end
 
       def pages
@@ -76,6 +65,7 @@ module Primer
         raise ArgumentError, "surrounding_page_count must be >= 0" if surrounding_page_count < 0
         raise ArgumentError, "href_builder must respond to #call" unless href_builder.respond_to?(:call)
         raise ArgumentError, "show_pages must be a boolean" unless [true, false].include?(show_pages)
+        raise ArgumentError, "current_page can't be larger than page_count" if current_page > page_count
       end
 
       def default_href_builder(page_num)
@@ -83,14 +73,18 @@ module Primer
       end
 
       def build_pagination_model
-        prev = previous_page_item
+        prev_page = previous_page_item
         next_page = next_page_item
 
-        return [prev, next_page] unless show_pages
-        return pagination_without_pages(prev, next_page) if page_count <= 0
-        return full_pagination_without_breaks(prev, next_page) if all_pages_fit?
+        return [prev_page, next_page] unless show_pages || page_count <= 0
 
-        [prev, *paginated_number_items, next_page]
+        pages = if all_pages_fit?
+                  full_pagination_without_breaks
+                else
+                  paginated_number_items
+                end
+
+        [prev_page, *pages, next_page]
       end
 
       def previous_page_item
@@ -109,14 +103,10 @@ module Primer
         }
       end
 
-      def pagination_without_pages(prev, next_page)
-        [prev, next_page.merge(disabled: true)]
-      end
-
-      def full_pagination_without_breaks(prev, next_page)
+      def full_pagination_without_breaks
         pages = []
         add_pages(pages, 1, page_count)
-        [prev, *pages, next_page]
+        pages
       end
 
       def paginated_number_items
@@ -280,8 +270,7 @@ module Primer
           content = "…"
 
           props.merge!(
-            role: "presentation",
-            as: "span"
+            role: "presentation"
           )
         end
 
