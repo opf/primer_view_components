@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.84.0
+
+### Minor Changes
+
+- [#425](https://github.com/opf/primer_view_components/pull/425) [`fb62368`](https://github.com/opf/primer_view_components/commit/fb623680e6273401f31ff316fc005a1c5e605cfb) Thanks [@bsatarnejad](https://github.com/bsatarnejad)! - [71063] Create a rails-based PaginationComponent based on the Primer specification
+
 ## 0.83.1
 
 ### Patch Changes
