@@ -264,4 +264,40 @@ class PrimerOpenProjectPaginationTest < Minitest::Test
     assert_selector("span.Page[role='presentation']", count: 2, text: "…")
   end
 
+  def test_link_arguments_are_applied_to_page_links
+    render_inline(
+      Primer::OpenProject::Pagination.new(
+        page_count: 5,
+        current_page: 2,
+        link_arguments: { data: { turbo: false } }
+      )
+    )
+
+    assert_selector("a[data-turbo='false']", minimum: 1)
+  end
+
+  def test_link_arguments_are_not_applied_to_disabled_links
+    render_inline(
+      Primer::OpenProject::Pagination.new(
+        page_count: 5,
+        current_page: 1,
+        link_arguments: { data: { turbo: false } }
+      )
+    )
+
+    refute_selector("[rel='prev'][data-turbo='false']")
+  end
+
+  def test_link_arguments_are_not_applied_to_break_elements
+    render_inline(
+      Primer::OpenProject::Pagination.new(
+        page_count: 30,
+        current_page: 10,
+        link_arguments: { data: { turbo: false } }
+      )
+    )
+
+    refute_selector("span[role='presentation'][data-turbo='false']")
+  end
+
 end
