@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.84.1
+
+### Patch Changes
+
+- [#432](https://github.com/opf/primer_view_components/pull/432) [`3285c51`](https://github.com/opf/primer_view_components/commit/3285c51b142a39d8f6ebaf202afda9550f3f6831) Thanks [@HDinger](https://github.com/HDinger)! - Allow link_arguments for pagination links
+
 ## 0.84.0
 
 ### Minor Changes
