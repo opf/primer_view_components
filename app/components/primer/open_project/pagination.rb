@@ -29,6 +29,7 @@ module Primer
         margin_page_count: DEFAULT_MARGIN_PAGE_COUNT,
         show_pages: true,
         surrounding_page_count: DEFAULT_SURROUNDING_PAGE_COUNT,
+        link_arguments: {},
         **system_arguments
       )
         @page_count = cast_integer!(page_count, "page_count")
@@ -37,6 +38,7 @@ module Primer
         @margin_page_count = cast_integer!(margin_page_count, "margin_page_count")
         @show_pages = show_pages
         @surrounding_page_count = cast_integer!(surrounding_page_count, "surrounding_page_count")
+        @link_arguments = link_arguments
         @system_arguments = system_arguments
 
         @system_arguments[:tag] = :nav
@@ -71,6 +73,7 @@ module Primer
         raise ArgumentError, "href_builder must respond to #call" unless href_builder.respond_to?(:call)
         raise ArgumentError, "show_pages must be a boolean" unless [true, false].include?(show_pages)
         raise ArgumentError, "current_page can't be larger than page_count" if current_page > page_count
+        raise ArgumentError, "link_arguments must be a Hash" unless @link_arguments.is_a?(Hash)
       end
 
       def default_href_builder(page_num)
@@ -240,7 +243,8 @@ module Primer
             props.merge!(
               rel: key_string,
               href: href_builder.call(page[:num]),
-              "aria-label": I18n.t("pagination.#{key_string}_page")
+              "aria-label": I18n.t("pagination.#{key_string}_page"),
+              **@link_arguments
             )
           end
 
@@ -250,7 +254,8 @@ module Primer
 
           props.merge!(
             href: href_builder.call(page[:num]),
-            "aria-label": page[:precedes_break] ? I18n.t("pagination.page_with_more", number: page[:num]) : I18n.t("pagination.page", number: page[:num])
+            "aria-label": page[:precedes_break] ? I18n.t("pagination.page_with_more", number: page[:num]) : I18n.t("pagination.page", number: page[:num]),
+            **@link_arguments
           )
 
           props[:"aria-current"] = "page" if page[:selected]
