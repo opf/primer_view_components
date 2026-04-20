@@ -18838,44 +18838,7 @@
     "short_name": "OpenProjectAvatarStack",
     "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/avatar_stack.rb",
     "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/avatar_stack/default/",
-    "parameters": [
-      {
-        "name": "tag",
-        "type": "Symbol",
-        "default": "`:div`",
-        "description": "One of `:div` or `:span`."
-      },
-      {
-        "name": "align",
-        "type": "Symbol",
-        "default": "`:left`",
-        "description": "One of `:left` or `:right`."
-      },
-      {
-        "name": "tooltipped",
-        "type": "Boolean",
-        "default": "`false`",
-        "description": "Whether to add a tooltip to the stack or not."
-      },
-      {
-        "name": "disable_expand",
-        "type": "Boolean",
-        "default": "`false`",
-        "description": "Whether to disable the expand behavior on hover. If true, avatars will not expand."
-      },
-      {
-        "name": "body_arguments",
-        "type": "Hash",
-        "default": "`{}`",
-        "description": "Parameters to add to the Body. If `tooltipped` is set, has the same arguments as {{#link_to_component}}Primer::Tooltip{{/link_to_component}}. The default tag is `:div` but can be changed using `tag:` to one of `:div` or `:span`."
-      },
-      {
-        "name": "system_arguments",
-        "type": "Hash",
-        "default": "N/A",
-        "description": "{{link_to_system_arguments_docs}}"
-      }
-    ],
+    "parameters": [],
     "slots": [
       {
         "name": "avatar_with_fallbacks",
