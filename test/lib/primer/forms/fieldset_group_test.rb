@@ -39,6 +39,7 @@ class Primer::Forms::FieldsetGroupTest < Minitest::Test
         render(
           Primer::Forms::FieldsetGroup.new(
             title: "Ultimate answers",
+            description: "... for the universe",
             inputs: inputs,
             builder: f,
             form: Object.new,
@@ -51,6 +52,7 @@ class Primer::Forms::FieldsetGroupTest < Minitest::Test
     assert_selector "section", text: "Ultimate answers"
     assert_selector "fieldset"
     assert_selector "h3##{heading_id}", text: "Ultimate answers"
+    assert_selector(".Subhead-description", text: "... for the universe")
     assert_selector "section[aria-labelledby='#{heading_id}']"
     assert_selector "fieldset[aria-labelledby='#{heading_id}']"
     assert_selector "fieldset input[type='checkbox']", count: 3

@@ -6,6 +6,7 @@ module Primer
     class FieldsetGroup < BaseComponent
       ##
       # @param title [String] The title displayed as the heading for the fieldset
+      # @param description [String] The description displayed below the heading
       # @param inputs [Array<Primer::Forms::Dsl::Input>] Array of form inputs to be grouped
       # @param builder [ActionView::Helpers::FormBuilder] The form builder instance
       # @param form [Primer::Forms::BaseForm] The form object
@@ -18,6 +19,7 @@ module Primer
       # @param system_arguments [Hash] Additional system arguments passed to the section wrapper
       def initialize( # rubocop:disable Metrics/AbcSize
         title:,
+        description: nil,
         inputs:,
         builder:,
         form:,
@@ -29,6 +31,7 @@ module Primer
         super()
 
         @title = title
+        @description = description
 
         @heading_arguments = heading_arguments
         @heading_arguments[:id] ||= "subhead-#{SecureRandom.uuid}"
