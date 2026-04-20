@@ -31,7 +31,7 @@ else
 end
 
 # Use Puma as the app server
-gem "puma", "~> 7.1.0"
+gem "puma", "~> 7.2.0"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", ">= 1.4.2", require: false
@@ -40,7 +40,7 @@ gem "lookbook", "~> 2.3.14"
 if ENV["VIEW_COMPONENT_PATH"]
   gem "view_component", path: ENV["VIEW_COMPONENT_PATH"]
 else
-  gem "view_component", "4.5.0"
+  gem "view_component", "4.6.0"
 end
 
 gem "kramdown", "~> 2.5"
