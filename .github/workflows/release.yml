@@ -79,7 +79,7 @@ jobs:
       # Use the primer GitHub App for authentication.
       # See: https://github.com/organizations/opf/settings/apps/openproject-primer-view-components
       - name: Get App Token
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@v3
         id: get-access-token
         with:
           app-id: ${{ vars.PRIMER_APP_ID_SHARED }}
