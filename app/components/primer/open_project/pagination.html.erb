@@ -1,0 +1,15 @@
+<%= render(Primer::BaseComponent.new(**@system_arguments)) do %>
+  <% pages.each do |page| %>
+    <%= content_tag(page.props[:href].present? ? :a : :span, **page.props) do %>
+      <% if page.key == PAGE_TYPE__PREV %>
+        <%= render(Primer::Beta::Octicon.new(icon: "chevron-left", "aria-hidden": true)) %>
+      <% end %>
+
+      <%= page.content %>
+
+      <% if page.key == PAGE_TYPE__NEXT %>
+        <%= render(Primer::Beta::Octicon.new(icon: "chevron-right", "aria-hidden": true)) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

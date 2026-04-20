@@ -21447,6 +21447,89 @@
     "subcomponents": []
   },
   {
+    "fully_qualified_name": "Primer::OpenProject::Pagination",
+    "description": "",
+    "accessibility_docs": null,
+    "is_form_component": false,
+    "is_published": true,
+    "requires_js": false,
+    "component": "OpenProject::Pagination",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectPagination",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/pagination.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/pagination/default/",
+    "parameters": [],
+    "slots": [],
+    "methods": [
+      {
+        "name": "page_count",
+        "description": "Returns the value of attribute page_count.",
+        "parameters": [],
+        "return_types": []
+      },
+      {
+        "name": "current_page",
+        "description": "Returns the value of attribute current_page.",
+        "parameters": [],
+        "return_types": []
+      },
+      {
+        "name": "href_builder",
+        "description": "Returns the value of attribute href_builder.",
+        "parameters": [],
+        "return_types": []
+      },
+      {
+        "name": "margin_page_count",
+        "description": "Returns the value of attribute margin_page_count.",
+        "parameters": [],
+        "return_types": []
+      },
+      {
+        "name": "show_pages",
+        "description": "Returns the value of attribute show_pages.",
+        "parameters": [],
+        "return_types": []
+      },
+      {
+        "name": "surrounding_page_count",
+        "description": "Returns the value of attribute surrounding_page_count.",
+        "parameters": [],
+        "return_types": []
+      }
+    ],
+    "previews": [
+      {
+        "preview_path": "primer/open_project/pagination/playground",
+        "name": "playground",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/pagination/default",
+        "name": "default",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      }
+    ],
+    "subcomponents": []
+  },
+  {
     "fully_qualified_name": "Primer::OpenProject::SidePanel",
     "description": "Add a general description of component here\nAdd additional usage considerations or best practices that may aid the user to use the component correctly.",
     "accessibility_docs": "Add any accessibility considerations",

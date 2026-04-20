@@ -30,3 +30,11 @@ en:
   danger_dialog:
     confirmation_live_message_checked: "The button to proceed is now active."
     confirmation_live_message_unchecked: "The button to proceed is now inactive. You need to tick the checkbox to continue."
+  pagination:
+    label: "Pagination"
+    prev: "Previous"
+    prev_page: "Previous Page"
+    next: "Next"
+    next_page: "Next Page"
+    page: "Page %{number}"
+    page_with_more: "Page %{number}..."

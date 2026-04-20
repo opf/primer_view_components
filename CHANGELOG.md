@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## 0.84.1
+
+### Patch Changes
+
+- [#432](https://github.com/opf/primer_view_components/pull/432) [`3285c51`](https://github.com/opf/primer_view_components/commit/3285c51b142a39d8f6ebaf202afda9550f3f6831) Thanks [@HDinger](https://github.com/HDinger)! - Allow link_arguments for pagination links
+
+## 0.84.0
+
+### Minor Changes
+
+- [#425](https://github.com/opf/primer_view_components/pull/425) [`fb62368`](https://github.com/opf/primer_view_components/commit/fb623680e6273401f31ff316fc005a1c5e605cfb) Thanks [@bsatarnejad](https://github.com/bsatarnejad)! - [71063] Create a rails-based PaginationComponent based on the Primer specification
+
+## 0.83.1
+
+### Patch Changes
+
+- [#428](https://github.com/opf/primer_view_components/pull/428) [`cba7775`](https://github.com/opf/primer_view_components/commit/cba7775e683ed17abd5f6996127f7401ee9535b8) Thanks [@HDinger](https://github.com/HDinger)! - Revert changes to Banner component for better mobile responsiveness
+
 ## 0.83.0
 
 ### Minor Changes

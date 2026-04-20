@@ -1,0 +1,86 @@
+.Page {
+  min-width: var(--base-size-32);
+  height: var(--base-size-32);
+  padding: var(--base-size-8) var(--base-size-6);
+  margin-right: var(--base-size-4);
+  color: var(--fgColor-default);
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  border-radius: var(--borderRadius-medium,.375rem);
+  transition: background-color 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Page[rel='prev'] > svg,
+.Page[rel='next'] > svg {
+  height: var(--base-size-16);
+  width: var(--base-size-16);
+}
+
+.Page[rel='prev'] > svg {
+  margin-inline-end: var(--base-size-4);
+}
+
+.Page[rel='next'] > svg {
+  margin-inline-start: var(--base-size-4);
+}
+
+.Page:last-child {
+  margin-right: 0;
+}
+
+.Page:hover,
+.Page:focus {
+  text-decoration: none;
+  background-color: var(--control-transparent-bgColor-hover);
+  outline: 0;
+  transition-duration: 0.1s;
+}
+
+.Page:focus-visible {
+  outline: 2px solid var(--bgColor-accent-emphasis);
+}
+
+.Page:active {
+  border-color: var(--borderColor-muted);
+}
+
+.Page[rel='prev'],
+.Page[rel='next'] {
+  color: var(--fgColor-accent);
+}
+
+.Page[aria-current],
+.Page[aria-current]:hover {
+  color: var(--fgColor-onEmphasis);
+  background-color: var(--bgColor-accent-emphasis);
+  border-color: transparent;
+}
+
+.Page[aria-current]:focus-visible {
+  outline: 2px solid var(--bgColor-accent-emphasis);
+  box-shadow: inset 0 0 0 var(--base-size-2) var(--fgColor-onEmphasis);
+}
+
+.Page[aria-hidden],
+.Page[aria-hidden]:hover,
+.Page[role='presentation'],
+.Page[role='presentation']:hover {
+  color: var(--fgColor-disabled);
+  cursor: default;
+  background-color: transparent;
+}
+
+.PaginationContainer {
+  margin: var(--base-size-16) 0;
+  text-align: center;
+}
+
+@media (max-width: 543.98px){
+  .Page:not([rel='prev']):not([rel='next']) {
+    display: none;
+  }
+}
