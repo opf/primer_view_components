@@ -5,6 +5,7 @@ source "https://rubygems.org"
 gemspec
 rails_version = (ENV["RAILS_VERSION"] || "8.0.2").to_s
 
+gem "minitest", "~> 5.0"
 gem "rack-cors"
 gem "rake", "~> 13.3"
 
@@ -39,7 +40,7 @@ gem "lookbook", "~> 2.3.14"
 if ENV["VIEW_COMPONENT_PATH"]
   gem "view_component", path: ENV["VIEW_COMPONENT_PATH"]
 else
-  gem "view_component", "4.1.1"
+  gem "view_component", "4.5.0"
 end
 
 gem "kramdown", "~> 2.5"
@@ -70,7 +71,7 @@ group :development do
   gem "rubocop-performance"
   gem "rubocop-rails"
   gem "rubocop-rails-accessibility", "~> 1.0"
-  gem "selenium-webdriver", "~> 4.40"
+  gem "selenium-webdriver", "~> 4.41"
   gem "simplecov", "~> 0.22.0"
   gem "simplecov-console", "~> 0.9.5"
   gem "sprockets"
