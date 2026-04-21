@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.84.3
+
+### Patch Changes
+
+- [#438](https://github.com/opf/primer_view_components/pull/438) [`99f6069`](https://github.com/opf/primer_view_components/commit/99f6069382c4698c4f6da6a621a76692c8aa1c3d) Thanks [@HDinger](https://github.com/HDinger)! - Bump octicons to 19.33.0
+
 ## 0.84.2
 
 ### Patch Changes
