@@ -3,6 +3,7 @@
     <%=
       render(Primer::Beta::Subhead.new) do |component|
         component.with_heading(**@heading_arguments).with_content(@title)
+        component.with_description.with_content(@description) unless @description.blank?
       end
     %>
     <%= render(Primer::Forms::Group.new(**@group_arguments)) %>
