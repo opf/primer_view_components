@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## 0.84.3
+
+### Patch Changes
+
+- [#438](https://github.com/opf/primer_view_components/pull/438) [`99f6069`](https://github.com/opf/primer_view_components/commit/99f6069382c4698c4f6da6a621a76692c8aa1c3d) Thanks [@HDinger](https://github.com/HDinger)! - Bump octicons to 19.33.0
+
+## 0.84.2
+
+### Patch Changes
+
+- [#437](https://github.com/opf/primer_view_components/pull/437) [`2771507`](https://github.com/opf/primer_view_components/commit/277150769ac9390d09ee111df7bd5f30b4bce3b2) Thanks [@HDinger](https://github.com/HDinger)! - Replace deprecated --control-medium-lineBoxHeight with --base-size-20
+
+- [#3997](https://github.com/primer/view_components/pull/3997) [`35c30b2`](https://github.com/opf/primer_view_components/commit/35c30b22abc7dd3989b3034eab4cff788ee2f179) Thanks [@siddharthkp](https://github.com/siddharthkp)! - Add `tmp-` prefixed duplicate classes for margin and padding utilities. System arguments like `mb: 3` now output both `mb-3` and `tmp-mb-3` classes to support CSS namespace migration.
+
+- [#3976](https://github.com/primer/view_components/pull/3976) [`d09bcc4`](https://github.com/opf/primer_view_components/commit/d09bcc441c40e4eba9d7e591d708a861d582b8c5) Thanks [@llastflowers](https://github.com/llastflowers)! - Push margin-top of TimelineBody +1px
+
 ## 0.84.1
 
 ### Patch Changes
