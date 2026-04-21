@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 0.84.4
+
+### Patch Changes
+
+- [#441](https://github.com/opf/primer_view_components/pull/441) [`a71da10`](https://github.com/opf/primer_view_components/commit/a71da1074d5f3e13e0610059de1066434b6d4b58) Thanks [@HDinger](https://github.com/HDinger)! - Bump ociticons to 19.34.0
+
+- [#436](https://github.com/opf/primer_view_components/pull/436) [`1438f6f`](https://github.com/opf/primer_view_components/commit/1438f6fed90c20cb8d1f13ce481a380fa3edca91) Thanks [@HDinger](https://github.com/HDinger)! - Support description in FieldsetGroups
+
 ## 0.84.3
 
 ### Patch Changes
