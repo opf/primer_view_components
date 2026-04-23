@@ -1,42 +1,12 @@
-<% contents = -> (menu) do %>
-  <% menu.with_item(
-    label: "Repository",
-    href: primer_view_components.action_menu_form_action_path(format: route_format),
-    form_arguments: {
-      method: :post,
-      inputs: [{
-        name: "query",
-        value: "query"
-      }, {
-        name: "foo", # use "foo" here because that's what the controller expects
-        value: "group-by-repository",
-      }],
-    }
-  ) %>
-  <% menu.with_item(
-    label: "Date",
-    href: primer_view_components.action_menu_form_action_path(format: route_format),
-    form_arguments: {
-      method: :post,
-      inputs: [{
-        name: "query",
-        value: "query"
-      }, {
-        name: "foo", # use "foo" here because that's what the controller expects
-        value: "sort-by-date"
-      }]
-    }
-  ) %>
-<% end %>
-
 <%= render(Primer::Alpha::ActionMenu.new(select_variant: :single)) do |menu| %>
   <% menu.with_show_button { "Group By" } %>
-
   <% if nest_in_sub_menu %>
     <% menu.with_sub_menu_item(label: "Sub-menu") do |sub_menu_item| %>
-      <% contents.call(sub_menu_item) %>
+      <% sub_menu_item.with_item(label: "Repository", href: primer_view_components.action_menu_form_action_path(format: route_format), form_arguments: { method: :post, inputs: [{ name: "query", value: "query" }, { name: "foo", value: "group-by-repository" }] }) %>
+      <% sub_menu_item.with_item(label: "Date", href: primer_view_components.action_menu_form_action_path(format: route_format), form_arguments: { method: :post, inputs: [{ name: "query", value: "query" }, { name: "foo", value: "sort-by-date" }] }) %>
     <% end %>
   <% else %>
-    <% contents.call(menu) %>
+    <% menu.with_item(label: "Repository", href: primer_view_components.action_menu_form_action_path(format: route_format), form_arguments: { method: :post, inputs: [{ name: "query", value: "query" }, { name: "foo", value: "group-by-repository" }] }) %>
+    <% menu.with_item(label: "Date", href: primer_view_components.action_menu_form_action_path(format: route_format), form_arguments: { method: :post, inputs: [{ name: "query", value: "query" }, { name: "foo", value: "sort-by-date" }] }) %>
   <% end %>
 <% end %>
