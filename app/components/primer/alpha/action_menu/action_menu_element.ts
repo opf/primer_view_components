@@ -346,6 +346,9 @@ export class ActionMenuElement extends HTMLElement {
   #handleToggleEvent(event: ToggleEvent) {
     const subMenu = event.target as AnchoredPositionElement
 
+    // Ignore toggle events from non-anchored-position elements (e.g. tooltips inside the menu)
+    if (!(event.target instanceof AnchoredPositionElement)) return
+
     if (event.newState === 'open') {
       // allow tabbing away from primary menu, but trap focus in sub-menus
       const isPrimaryMenu = subMenu === this.overlay

@@ -155,6 +155,7 @@ module Primer
         render(Primer::Alpha::ActionMenu.new) do |menu|
           menu.with_show_button(icon: :star, "aria-label": "Menu")
           menu.with_item(label: "Does something")
+          menu.with_item(label: "Does something else")
         end
       end
 
