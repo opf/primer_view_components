@@ -6,6 +6,7 @@ module Primer
       # @label Default
       # @snapshot
       def default
+        render(Primer::OpenProject::InlineMessage.new(scheme: :warning, size: :medium)) { "Warning message" }
       end
 
       # @label Playground
