@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.84.5
+
+### Patch Changes
+
+- [#443](https://github.com/opf/primer_view_components/pull/443) [`3b37afe`](https://github.com/opf/primer_view_components/commit/3b37afeb73aa2538eb7ea691f97982f3bdab84ea) Thanks [@HDinger](https://github.com/HDinger)! - Simplify previews for InlineMessage
+
 ## 0.84.4
 
 ### Patch Changes
