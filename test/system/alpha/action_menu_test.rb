@@ -1305,5 +1305,24 @@ module Alpha
       assert page.evaluate_script("window.activatedItemChecked")
       assert_equal "Fast forward", page.evaluate_script("window.activatedItemText")
     end
+
+    def test_icon_button_arrow_key_navigation_after_keyboard_open
+      # Regression test: when the show button is an IconButton (which has a tooltip),
+      # opening the menu via Enter key caused the tooltip's toggle event to destroy
+      # the focus zone, making arrow key navigation non-functional.
+      visit_preview(:with_icon_button)
+
+      focus_on_invoker_button
+      activate_via_enter
+      assert_selector "anchored-position:popover-open"
+
+      arrow_down_to("Does something else")
+
+      second_item_label = page.evaluate_script(<<~JS)
+        document.activeElement?.querySelector('.ActionListItem-label')?.textContent?.trim()
+      JS
+
+      assert_equal "Does something else", second_item_label
+    end
   end
 end
