@@ -100,6 +100,17 @@ module Primer
         })
       end
 
+      # @label Async loading
+      #
+      # Demonstrates server-side filtering: sub-tree children are fetched asynchronously.
+      # The server receives `filter_query` and `filter_mode` as URL parameters and is
+      # responsible for returning only the matching nodes. Changing the filter text or
+      # mode automatically reloads any already-expanded sub-trees.
+      # @param select_variant [Symbol] select [multiple, single]
+      def async_loading(select_variant: :single)
+        render_with_template(locals: { select_variant: select_variant.to_sym })
+      end
+
       # @label Custom no results text
       def custom_no_results_text(expanded: true)
         render_with_template(locals: {

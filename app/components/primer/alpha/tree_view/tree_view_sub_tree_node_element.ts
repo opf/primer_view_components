@@ -46,16 +46,7 @@ export class TreeViewSubTreeNodeElement extends HTMLElement {
       this,
       () => Boolean(this.includeFragment),
       () => {
-        this.includeFragment.addEventListener('loadstart', this, {signal})
-        this.includeFragment.addEventListener('error', this, {signal})
-        this.includeFragment.addEventListener('include-fragment-replace', this, {signal})
-        this.includeFragment.addEventListener(
-          'include-fragment-replaced',
-          (e: Event) => {
-            this.#handleIncludeFragmentEvent(e)
-          },
-          {signal},
-        )
+        this.#setupIncludeFragmentListeners(this.includeFragment)
       },
     )
 
@@ -150,8 +141,6 @@ export class TreeViewSubTreeNodeElement extends HTMLElement {
   handleEvent(event: Event) {
     if (event.target === this.toggleButton) {
       this.#handleToggleEvent(event)
-    } else if (event.target === this.includeFragment) {
-      this.#handleIncludeFragmentEvent(event)
     } else if (event instanceof KeyboardEvent) {
       this.#handleKeyboardEvent(event)
     } else if (
@@ -284,7 +273,8 @@ export class TreeViewSubTreeNodeElement extends HTMLElement {
 
       // request succeeded but element has not yet been replaced
       case 'include-fragment-replace':
-        this.#activeElementIsLoader = document.activeElement === this.loadingIndicator.closest('[role=treeitem]')
+        this.#activeElementIsLoader =
+          !!this.loadingIndicator && document.activeElement === this.loadingIndicator.closest('[role=treeitem]')
         // Also check if the include-fragment itself has focus (when it has role="treeitem")
         if (!this.#activeElementIsLoader && document.activeElement === this.subTree && this.#isIncludeFragment()) {
           this.#activeElementIsLoader = true
@@ -318,6 +308,16 @@ export class TreeViewSubTreeNodeElement extends HTMLElement {
       this.includeFragment.refetch()
     }
   }
+
+  #setupIncludeFragmentListeners(fragment: TreeViewIncludeFragmentElement) {
+    const {signal} = this.#abortController
+    const handler = (e: Event) => this.#handleIncludeFragmentEvent(e)
+    fragment.addEventListener('loadstart', handler, {signal})
+    fragment.addEventListener('error', handler, {signal})
+    fragment.addEventListener('include-fragment-replace', handler, {signal})
+    fragment.addEventListener('include-fragment-replaced', handler, {signal})
+  }
+
 
   #handleKeyboardEvent(event: KeyboardEvent) {
     const node = (event.target as HTMLElement).closest('[role=treeitem]')

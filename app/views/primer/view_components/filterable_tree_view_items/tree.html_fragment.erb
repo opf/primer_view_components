@@ -1,0 +1,18 @@
+<%= render(Primer::Alpha::TreeView.new(
+  select_variant: select_variant,
+  data: { target: "filterable-tree-view.treeViewList" }
+)) do |tree| %>
+  <% school_data.each do |house, years| %>
+    <% tree.with_sub_tree(label: house, select_variant: select_variant, select_strategy: :self) do |house_tree| %>
+      <% years.each do |year, students| %>
+        <% house_tree.with_sub_tree(label: year, select_variant: select_variant, select_strategy: :self) do |year_tree| %>
+          <% students.each do |name| %>
+            <% year_tree.with_leaf(label: name, select_variant: select_variant) do |item| %>
+              <% item.with_leading_visual_icon(icon: :person) %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

@@ -26,16 +26,36 @@ export class FilterableTreeViewElement extends HTMLElement {
   #filterFn?: FilterFn
   #abortController: AbortController
   #stateMap: Map<TreeViewSubTreeNodeElement, Map<HTMLElement, NodeState>> = new Map()
+  #reloadTimer: number | null = null
+  #reloadAbortController: AbortController | null = null
+  // Snapshot of expanded paths taken before the first filter keystroke. Used to
+  // restore the user's own expand/collapse state when the filter is cleared.
+  #preFilterExpandedPaths: Set<string> | null = null
+  // True once the first src-driven tree load has completed. Used to suppress the
+  // spurious itemActivated event that SegmentedControl fires on initialization,
+  // which would otherwise schedule a redundant second reload and overwrite any
+  // user-made selections before the reload completes.
+  #srcLoadCompleted = false
 
   connectedCallback() {
     const {signal} = (this.#abortController = new AbortController())
     this.addEventListener('treeViewNodeChecked', this, {signal})
     this.addEventListener('itemActivated', this, {signal})
     this.addEventListener('input', this, {signal})
+
+    // When a src is configured, replace the static initial content with a
+    // server-rendered tree on mount. This ensures initial and filtered states
+    // are always rendered by the same template, making checked-state
+    // capture/restore reliable across reloads.
+    if (this.src) {
+      void this.#reloadTree()
+    }
   }
 
   disconnectedCallback() {
     this.#abortController.abort()
+    if (this.#reloadTimer !== null) window.clearTimeout(this.#reloadTimer)
+    this.#reloadAbortController?.abort()
   }
 
   handleEvent(event: Event) {
@@ -118,20 +138,25 @@ export class FilterableTreeViewElement extends HTMLElement {
   #handleFilterModeEvent(event: Event) {
     if (event.type !== 'itemActivated') return
 
-    this.#applyFilterOptions()
+    // SegmentedControl fires itemActivated on initialization (not just on user
+    // interaction). Ignore it until the initial src-driven load has completed;
+    // the initial load already fetches the tree with the default filter mode.
+    if (this.src && !this.#srcLoadCompleted) return
+
+    this.#applyFilterOptions(true)
   }
 
   #handleFilterInputEvent(event: Event) {
     if (event.type !== 'input') return
 
-    this.#applyFilterOptions()
+    this.#applyFilterOptions(true)
   }
 
   #handleIncludeSubItemsCheckBoxEvent(event: Event) {
     if (!this.treeView) return
     if (event.type !== 'input') return
 
-    this.#applyFilterOptions()
+    this.#applyFilterOptions(false)
 
     if (this.includeSubItemsCheckBox.checked) {
       this.#includeSubItems()
@@ -293,8 +318,15 @@ export class FilterableTreeViewElement extends HTMLElement {
    *    1. For at least one of the node's children, including descendants, the filter function returns a
    *       truthy value.
    */
-  #applyFilterOptions() {
+  #applyFilterOptions(triggerReload = false) {
     if (!this.treeView) return
+
+    if (triggerReload && this.src) {
+      // Async mode: a single server request replaces the whole tree. Skip client-side
+      // DOM manipulation until the new content arrives.
+      this.#scheduleReload()
+      return
+    }
 
     this.#removeHighlights()
 
@@ -303,9 +335,14 @@ export class FilterableTreeViewElement extends HTMLElement {
     const generation = window.crypto.randomUUID()
     const filterRangesCache: Map<Element, Range[] | null> = new Map()
 
+    // Only expand ancestor nodes to reveal matches when the filter is actually narrowing
+    // down results. With an empty query in "all" mode every node matches, so we must not
+    // force-expand nodes – that would override the user's own collapse/expand state.
+    const shouldExpandToReveal = query.length > 0 || mode === 'selected'
+
     const expandAncestors = (...ancestors: TreeViewSubTreeNodeElement[]) => {
       for (const ancestor of ancestors) {
-        ancestor.expand()
+        if (shouldExpandToReveal) ancestor.expand()
         ancestor.removeAttribute('hidden')
         ancestor.setAttribute('data-generation', generation)
 
@@ -464,6 +501,164 @@ export class FilterableTreeViewElement extends HTMLElement {
     )
 
     yield [leafNodes, ancestry]
+  }
+
+  get src(): string | null {
+    return this.dataset.src || null
+  }
+
+  // Schedules a debounced full-tree reload. Using a debounce prevents firing a network
+  // request for every keystroke when the user is typing in the filter input.
+  #scheduleReload() {
+    if (this.#reloadTimer !== null) {
+      window.clearTimeout(this.#reloadTimer)
+    }
+
+    // On the first keystroke that triggers a reload, snapshot the current expanded
+    // state. This represents what the user had open *before* filtering started, so
+    // we can restore exactly that when they clear the filter again.
+    if (this.#preFilterExpandedPaths === null) {
+      this.#preFilterExpandedPaths = this.#captureExpandedPaths()
+    }
+
+    this.#reloadTimer = window.setTimeout(() => {
+      this.#reloadTimer = null
+      void this.#reloadTree()
+    }, 300)
+  }
+
+  // Build a stable, unique key for a sub-tree node by joining its own label text with
+  // those of its ancestor sub-trees, e.g. "Hogwarts/Gryffindor". The [role=treeitem]
+  // element for a sub-tree is a sibling of [role=group] (the children container), so
+  // its textContent only contains the node's own label – not the text of descendants.
+  #subTreeKey(subTreeNode: TreeViewSubTreeNodeElement): string | null {
+    const parts: string[] = []
+    let current: TreeViewSubTreeNodeElement | null = subTreeNode
+    while (current) {
+      const label = current.node?.textContent?.trim()
+      if (!label) return null
+      parts.unshift(label)
+      current = current.parentElement?.closest<TreeViewSubTreeNodeElement>('tree-view-sub-tree-node') ?? null
+    }
+    return parts.join('/') || null
+  }
+
+  // Leaf key: parent sub-tree path + leaf's own label (handles repeated names across groups).
+  #leafKey(node: HTMLElement): string | null {
+    const parentSubTree = node.closest<TreeViewSubTreeNodeElement>('tree-view-sub-tree-node')
+    const parentPath = parentSubTree ? this.#subTreeKey(parentSubTree) : ''
+    const label = node.textContent?.trim()
+    return label ? `${parentPath ?? ''}/${label}` : null
+  }
+
+  #captureExpandedPaths(): Set<string> {
+    const paths = new Set<string>()
+    for (const subTreeNode of this.querySelectorAll<TreeViewSubTreeNodeElement>('tree-view-sub-tree-node')) {
+      if (subTreeNode.expanded) {
+        const key = this.#subTreeKey(subTreeNode)
+        if (key) paths.add(key)
+      }
+    }
+    return paths
+  }
+
+  // Fetches a fresh tree from the server with the current filter parameters and replaces
+  // the existing <tree-view> element with the response. The pre-filter expanded state is
+  // restored after replacement so filter-expanded nodes don't "stick" after clearing.
+  // Client-side filtering is re-applied afterwards for highlights and aria-disabled.
+  async #reloadTree() {
+    const src = this.src
+    if (!src) return
+
+    // Cancel any in-flight reload
+    this.#reloadAbortController?.abort()
+    const abortController = (this.#reloadAbortController = new AbortController())
+
+    const url = new URL(src, location.href)
+    if (this.queryString) url.searchParams.set('filter_query', this.queryString)
+    if (this.filterMode) url.searchParams.set('filter_mode', this.filterMode)
+
+    let response: Response
+    try {
+      response = await fetch(url.toString(), {
+        signal: abortController.signal,
+        headers: {Accept: 'text/fragment+html'},
+      })
+    } catch {
+      return // Aborted or network error
+    }
+
+    if (!response.ok) return
+
+    const html = await response.text()
+    const template = document.createElement('template')
+    template.innerHTML = html
+
+    // Capture checked state before replacement.
+    const checkedSubTreeKeys = new Map<string, 'true' | 'false' | 'mixed'>()
+    const checkedLeafKeys = new Set<string>()
+    if (this.treeView) {
+      for (const subTreeNode of this.querySelectorAll<TreeViewSubTreeNodeElement>('tree-view-sub-tree-node')) {
+        const key = this.#subTreeKey(subTreeNode)
+        const value = this.treeView.getNodeCheckedValue(subTreeNode.node)
+        if (key && value !== 'false') checkedSubTreeKeys.set(key, value)
+      }
+      for (const node of this.querySelectorAll<HTMLElement>('[role=treeitem][data-node-type=leaf]')) {
+        if (this.treeView.getNodeCheckedValue(node) === 'true') {
+          const key = this.#leafKey(node)
+          if (key) checkedLeafKeys.add(key)
+        }
+      }
+    }
+
+    // Replace the existing <tree-view> with the server-rendered one
+    this.treeViewList.replaceWith(template.content)
+
+    // Restore checked state in the new tree.
+    // Leaves are restored first so the MutationObserver cascade in each sub-tree node
+    // can derive the correct parent state before we set sub-trees explicitly.
+    // Sub-trees are then restored in reverse DOM order (deepest first) so that parent
+    // state is set after children, avoiding conflicts with the cascade.
+    if (this.treeView) {
+      for (const node of this.querySelectorAll<HTMLElement>('[role=treeitem][data-node-type=leaf]')) {
+        const key = this.#leafKey(node)
+        if (key && checkedLeafKeys.has(key)) {
+          this.treeView.setNodeCheckedValue(node, 'true')
+        }
+      }
+      const subTreeNodes = Array.from(this.querySelectorAll<TreeViewSubTreeNodeElement>('tree-view-sub-tree-node'))
+      for (const subTreeNode of subTreeNodes.reverse()) {
+        const key = this.#subTreeKey(subTreeNode)
+        const value = key ? checkedSubTreeKeys.get(key) : undefined
+        if (value) this.treeView.setNodeCheckedValue(subTreeNode.node, value)
+      }
+    }
+
+    // Restore the pre-filter expanded state. When a filter is active, #applyFilterOptions
+    // will expand the necessary ancestor nodes on top of this baseline.
+    const keysToRestore = this.#preFilterExpandedPaths ?? new Set<string>()
+    for (const subTreeNode of this.querySelectorAll<TreeViewSubTreeNodeElement>('tree-view-sub-tree-node')) {
+      const key = this.#subTreeKey(subTreeNode)
+      if (key && keysToRestore.has(key)) {
+        subTreeNode.expand()
+      }
+    }
+
+    // Once the filter is cleared the snapshot is no longer needed.
+    if (!this.queryString) {
+      this.#preFilterExpandedPaths = null
+    }
+
+    this.#srcLoadCompleted = true
+
+    // Apply client-side filter for highlights, aria-disabled on parent nodes, and
+    // the no-results message. The server already filtered the nodes, so this pass
+    // mainly handles presentation. Skip when there is no active filter to avoid
+    // the defaultFilterFn treating an undefined filterMode as "no match" and
+    // hiding all nodes (e.g. on the initial connectedCallback load).
+    if (this.queryString || this.filterMode) {
+      this.#applyFilterOptions(false)
+    }
   }
 
   // Yields only the shallowest (i.e. lowest depth) sub-tree nodes that are checked, i.e. does not

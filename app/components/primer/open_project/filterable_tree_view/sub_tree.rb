@@ -36,13 +36,6 @@ module Primer
           )
         end
 
-        def with_loading_spinner(**system_arguments)
-          raise ArgumentError, "FilterableTreeView does not support asynchronous loading"
-        end
-
-        def with_loading_skeleton(**system_arguments)
-          raise ArgumentError, "FilterableTreeView does not support asynchronous loading"
-        end
       end
     end
   end

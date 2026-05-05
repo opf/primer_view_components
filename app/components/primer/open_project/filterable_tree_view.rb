@@ -4,6 +4,35 @@ module Primer
   module OpenProject
     # A TreeView and associated filter controls for searching nested hierarchies.
     #
+    # ## Synchronous vs. asynchronous loading
+    #
+    # `FilterableTreeView` supports two loading modes:
+    #
+    # ### Synchronous (client-side filtering, default)
+    #
+    # All nodes are rendered server-side on initial page load. Filtering is done entirely in the browser
+    # without any additional network requests.
+    #
+    # ### Asynchronous (server-side filtering)
+    #
+    # Sub-trees can be configured to load their children lazily from the server by calling
+    # `with_loading_spinner` or `with_loading_skeleton` on a sub-tree slot. When nodes are fetched
+    # asynchronously, the component passes the current filter state to the server as query parameters:
+    #
+    # | Parameter      | Description                                                    |
+    # |:---------------|:---------------------------------------------------------------|
+    # | `filter_query` | The free-form text entered in the filter input.               |
+    # | `filter_mode`  | The active filter mode, e.g. `"all"` or `"selected"`.        |
+    #
+    # The server is responsible for using these parameters to return only matching nodes. When the user
+    # changes the filter, any expanded async sub-trees are automatically reloaded (with a 300 ms debounce)
+    # so the server can apply the new filter criteria. Already-loaded sync nodes continue to be filtered
+    # client-side as usual.
+    #
+    # **Important**: when using async loading, the server-rendered nodes must include their correct
+    # `aria-checked` state. The component does not automatically propagate checked state to
+    # asynchronously loaded children.
+    #
     # ## Filter controls
     #
     # `FilterableTreeView`s can be filtered using two controls, both present in the toolbar above the tree:
@@ -153,6 +182,10 @@ module Primer
 
       DEFAULT_NO_RESULTS_NODE_ARGUMENTS.freeze
 
+      # @param src [String] Optional URL for async mode. When provided, changing the filter will send a single
+      #   request to this URL (with `filter_query` and `filter_mode` as query parameters) and replace the
+      #   entire tree with the server response. The server is responsible for returning a `<tree-view>` element
+      #   with `data-target="filterable-tree-view.treeViewList"` and only the nodes that match the filter.
       # @param tree_view_arguments [Hash] Arguments that will be passed to the underlying <%= link_to_component(Primer::Alpha::TreeView) %> component.
       # @param form_arguments [Hash] Form arguments that will be passed to the underlying <%= link_to_component(Primer::Alpha::TreeView) %> component. These arguments allow the selections made within a `FilterableTreeView` to be submitted to the server as part of a Rails form. Pass the `builder:` and `name:` options to this hash. `builder:` should be an instance of `ActionView::Helpers::FormBuilder`, which are created by the standard Rails `#form_with` and `#form_for` helpers. The `name:` option is the desired name of the field that will be included in the params sent to the server on form submission.
       # @param filter_input_arguments [Hash] Arguments that will be passed to the <%= link_to_component(Primer::Alpha::TextField) %> component.
@@ -160,6 +193,7 @@ module Primer
       # @param include_sub_items_check_box_arguments [Hash] Arguments that will be passed to the <%= link_to_component(Primer::Alpha::CheckBox) %> component.
       # @param no_results_node_arguments [Hash] Arguments that will be passed to a <%= link_to_component(Primer::Alpha::TreeView::LeafNode) %> component that appears when no items match the filter criteria.
       def initialize(
+        src: nil,
         tree_view_arguments: {},
         form_arguments: {},
         filter_input_arguments: DEFAULT_FILTER_INPUT_ARGUMENTS.dup,
@@ -209,6 +243,13 @@ module Primer
 
         @system_arguments = deny_tag_argument(**system_arguments)
         @system_arguments[:tag] = :"filterable-tree-view"
+
+        if src
+          @system_arguments[:data] = merge_data(
+            @system_arguments,
+            { data: { src: src } }
+          )
+        end
 
         @no_results_node_arguments = no_results_node_arguments
       end

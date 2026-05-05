@@ -1,0 +1,7 @@
+<%= render(Primer::OpenProject::FilterableTreeView::SubTree.new(path: path, node_variant: :div)) do |tree| %>
+  <% people.each do |name| %>
+    <% tree.with_leaf(label: name) do |item| %>
+      <% item.with_leading_visual_icon(icon: :person) %>
+    <% end %>
+  <% end %>
+<% end %>

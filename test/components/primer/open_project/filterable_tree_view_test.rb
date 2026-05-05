@@ -167,28 +167,30 @@ module Primer
         assert_equal error.message, "FilterableTreeView only supports `:multiple` or `:single` as select_variant"
       end
 
-      def test_sub_trees_cannot_load_with_async_spinner
-        error = assert_raises(ArgumentError) do
-          render_inline(Primer::OpenProject::FilterableTreeView.new) do |tree|
-            tree.with_sub_tree(label: "Foo") do |sub_tree|
-              sub_tree.with_loading_spinner(href: "/foo")
-            end
+      def test_sub_trees_can_load_with_async_spinner
+        render_inline(Primer::OpenProject::FilterableTreeView.new) do |tree|
+          tree.with_sub_tree(label: "Foo") do |sub_tree|
+            sub_tree.with_loading_spinner(src: "/foo")
           end
         end
 
-        assert_equal error.message, "FilterableTreeView does not support asynchronous loading"
+        assert_selector("tree-view-include-fragment[src='/foo']")
       end
 
-      def test_sub_trees_cannot_load_with_async_skeleton
-        error = assert_raises(ArgumentError) do
-          render_inline(Primer::OpenProject::FilterableTreeView.new) do |tree|
-            tree.with_sub_tree(label: "Foo") do |sub_tree|
-              sub_tree.with_loading_skeleton(href: "/foo")
-            end
+      def test_sub_trees_can_load_with_async_skeleton
+        render_inline(Primer::OpenProject::FilterableTreeView.new) do |tree|
+          tree.with_sub_tree(label: "Foo") do |sub_tree|
+            sub_tree.with_loading_skeleton(src: "/foo")
           end
         end
 
-        assert_equal error.message, "FilterableTreeView does not support asynchronous loading"
+        assert_selector("tree-view-include-fragment[src='/foo']")
+      end
+
+      def test_src_sets_data_src_attribute
+        render_inline(Primer::OpenProject::FilterableTreeView.new(src: "/tree"))
+
+        assert_selector("filterable-tree-view[data-src='/tree']")
       end
 
       def test_custom_filter_modes
