@@ -6152,6 +6152,12 @@
     "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/filterable_tree_view/default/",
     "parameters": [
       {
+        "name": "src",
+        "type": "String",
+        "default": "`nil`",
+        "description": "Optional URL for async mode. When provided, changing the filter will send a single request to this URL (with `filter_query` and `filter_mode` as query parameters) and replace the entire tree with the server response. The server is responsible for returning a `<tree-view>` element with `data-target=\"filterable-tree-view.treeViewList\"` and only the nodes that match the filter."
+      },
+      {
         "name": "tree_view_arguments",
         "type": "Hash",
         "default": "`{}`",
