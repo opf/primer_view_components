@@ -271,6 +271,9 @@
   "DragHandle": [
     "Primer::OpenProject::DragHandle"
   ],
+  "FilterableTreeViewLoadingSkeleton": [
+    "Primer::OpenProject::FilterableTreeView"
+  ],
   "FormControl": [
     "Primer::Alpha::TextField"
   ],

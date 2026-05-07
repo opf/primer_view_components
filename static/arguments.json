@@ -6152,6 +6152,12 @@
     "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/filterable_tree_view/default/",
     "parameters": [
       {
+        "name": "src",
+        "type": "String",
+        "default": "`nil`",
+        "description": "URL of the server endpoint that returns a filtered `<tree-view>` HTML fragment. When set, activates async (server-side) filtering mode. See \"Async loading strategy\" above."
+      },
+      {
         "name": "tree_view_arguments",
         "type": "Hash",
         "default": "`{}`",
