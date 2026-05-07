@@ -37,11 +37,11 @@ module Primer
         end
 
         def with_loading_spinner(**system_arguments)
-          raise ArgumentError, "FilterableTreeView does not support asynchronous loading"
+          raise ArgumentError, "FilterableTreeView does not support select variants for sub-trees loaded asynchronously. Please make the wole component load asynchronously."
         end
 
         def with_loading_skeleton(**system_arguments)
-          raise ArgumentError, "FilterableTreeView does not support asynchronous loading"
+          raise ArgumentError, "FilterableTreeView does not support select variants for sub-trees loaded asynchronously. Please make the wole component load asynchronously."
         end
       end
     end

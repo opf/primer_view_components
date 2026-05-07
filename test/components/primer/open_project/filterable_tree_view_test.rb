@@ -176,7 +176,7 @@ module Primer
           end
         end
 
-        assert_equal error.message, "FilterableTreeView does not support asynchronous loading"
+        assert_equal error.message, "FilterableTreeView does not support select variants for sub-trees loaded asynchronously. Please make the wole component load asynchronously."
       end
 
       def test_sub_trees_cannot_load_with_async_skeleton
@@ -188,7 +188,7 @@ module Primer
           end
         end
 
-        assert_equal error.message, "FilterableTreeView does not support asynchronous loading"
+        assert_equal error.message, "FilterableTreeView does not support select variants for sub-trees loaded asynchronously. Please make the wole component load asynchronously."
       end
 
       def test_custom_filter_modes
@@ -198,6 +198,52 @@ module Primer
         end
 
         assert_selector "segmented-control li", text: "Foo"
+      end
+
+      # ─── Async mode ────────────────────────────────────────────────────────
+
+      def test_src_attribute_is_set_when_src_is_provided
+        render_inline(Primer::OpenProject::FilterableTreeView.new(src: "/my/tree"))
+
+        assert_selector "filterable-tree-view[src='/my/tree']"
+      end
+
+      def test_src_attribute_is_absent_when_src_is_not_provided
+        render_inline(Primer::OpenProject::FilterableTreeView.new)
+
+        assert_selector "filterable-tree-view:not([src])"
+      end
+
+      def test_include_sub_items_checkbox_is_excluded_from_form_in_non_async_mode
+        render_preview(:form_input)
+
+        # form="" attribute causes the browser to disassociate the input from any form
+        input = page.find_css("input[name=include_sub_items]").first
+        assert_equal "", input["form"]
+      end
+
+      def test_include_sub_items_checkbox_is_included_in_form_in_async_mode
+        render_preview(:async_form_input)
+
+        # In async mode the checkbox must reach the server so it can handle descendants correctly;
+        # therefore it must NOT carry the form="" exclusion attribute.
+        input = page.find_css("input[name=include_sub_items]").first
+        assert_nil input["form"]
+      end
+
+      def test_raises_when_tree_view_arguments_provided_alongside_src
+        error = assert_raises(ArgumentError) do
+          render_inline(
+            Primer::OpenProject::FilterableTreeView.new(
+              src: "/my/tree",
+              tree_view_arguments: { aria: { label: "tree" } }
+            )
+          )
+        end
+
+        assert_equal error.message, "tree_view_arguments are not supported when src: is provided. " \
+          "The initial tree shell is replaced on the first async fetch, so any " \
+          "tree_view_arguments would be lost. Configure the tree in your server endpoint instead."
       end
     end
   end

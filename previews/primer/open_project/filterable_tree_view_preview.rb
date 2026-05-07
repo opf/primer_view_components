@@ -114,6 +114,20 @@ module Primer
         })
       end
 
+      # @label Async (server-side filtering)
+      #
+      # @param select_variant [Symbol] select [multiple, single]
+      def async(select_variant: :single)
+        render_with_template(locals: {
+          select_variant: select_variant.to_sym
+        })
+      end
+
+      # @label Async form input
+      def async_form_input
+        render_with_template
+      end
+
       # @label Hide checkbox
       #
       # @param include_sub_items [Boolean] toggle

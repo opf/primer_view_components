@@ -1,0 +1,30 @@
+/* CSS for FilterableTreeView */
+
+/* Highlight style for CSS Custom Highlight API */
+/* stylelint-disable-next-line selector-pseudo-element-no-unknown */
+::highlight(primer-filterable-tree-view-search-results) {
+  background-color: var(--bgColor-attention-muted);
+}
+
+/* Fallback: <mark> elements used when CSS Custom Highlight API is unavailable */
+filterable-tree-view mark {
+  background-color: var(--bgColor-attention-muted);
+  color: inherit;
+}
+
+/* Loading skeleton */
+
+.FilterableTreeViewLoadingSkeleton {
+  display: none;
+}
+
+/* stylelint-disable-next-line selector-max-type */
+filterable-tree-view[data-loading] .FilterableTreeViewLoadingSkeleton {
+  display: block;
+}
+
+/* stylelint-disable-next-line selector-max-type */
+filterable-tree-view[data-loading] tree-view,
+filterable-tree-view[data-loading] [data-target~="filterable-tree-view.noResultsMessage"] {
+  display: none;
+}
