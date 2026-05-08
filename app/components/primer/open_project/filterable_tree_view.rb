@@ -267,18 +267,19 @@ module Primer
         @filter_mode_control.with_item(**system_arguments)
       end
 
+      SUPPORTED_SELECT_VARIANTS = %i[multiple single none].freeze
+
       def with_sub_tree(**system_arguments, &block)
         system_arguments[:select_variant] ||= :multiple
 
-        if system_arguments[:select_variant] != :multiple && system_arguments[:select_variant] != :single
-          raise ArgumentError, "FilterableTreeView only supports `:multiple` or `:single` as select_variant"
+        unless SUPPORTED_SELECT_VARIANTS.include?(system_arguments[:select_variant])
+          raise ArgumentError, "FilterableTreeView only supports #{SUPPORTED_SELECT_VARIANTS.map { |v| "`:#{v}`" }.join(", ")} as select_variant"
         end
 
-        if system_arguments[:select_variant] == :single
-          # In single selection, the include sub-items checkbox and the SegmentedControl make no sense
+        if system_arguments[:select_variant] != :multiple
+          # In single/none selection, the include sub-items checkbox makes no sense
           @include_sub_items_check_box_arguments[:hidden] = true
           @include_sub_items_check_box_arguments[:checked] = false
-          @filter_mode_control_arguments[:hidden] = true
         end
 
         @tree_view.with_sub_tree(
@@ -292,15 +293,14 @@ module Primer
       def with_leaf(**system_arguments, &block)
         system_arguments[:select_variant] ||= :multiple
 
-        if system_arguments[:select_variant] != :multiple && system_arguments[:select_variant] != :single
-          raise ArgumentError, "FilterableTreeView only supports `:multiple` or `:single` as select_variant"
+        unless SUPPORTED_SELECT_VARIANTS.include?(system_arguments[:select_variant])
+          raise ArgumentError, "FilterableTreeView only supports #{SUPPORTED_SELECT_VARIANTS.map { |v| "`:#{v}`" }.join(", ")} as select_variant"
         end
 
-        if system_arguments[:select_variant] == :single
-          # In single selection, the include sub-items checkbox and the SegmentedControl make no sense
+        if system_arguments[:select_variant] != :multiple
+          # In single/none selection, the include sub-items checkbox makes no sense
           @include_sub_items_check_box_arguments[:hidden] = true
           @include_sub_items_check_box_arguments[:checked] = false
-          @filter_mode_control_arguments[:hidden] = true
         end
 
         @tree_view.with_leaf(

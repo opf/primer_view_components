@@ -93,12 +93,12 @@ module Primer
         assert_selector("input[name=include_sub_items][checked=checked]", visible: :visible)
       end
 
-      def test_include_sub_items_and_filter_mode_are_hidden_for_single_select_variant
+      def test_include_sub_items_is_hidden_for_single_select_variant
         render_preview(:form_input, params: { select_variant: :single })
 
         assert_selector(".FormControl-checkbox-wrap", visible: :hidden)
         assert_selector("input[name=include_sub_items]:not([checked=false])", visible: :hidden)
-        assert_selector("segmented-control", visible: :hidden)
+        assert_selector("segmented-control", visible: :visible)
       end
 
       def test_has_filter_input
@@ -127,44 +127,119 @@ module Primer
         assert_selector("label[for='#{id}'].sr-only", text: "Filtern")
       end
 
-      def test_leaf_cannot_render_with_select_variant_none
-        error = assert_raises(ArgumentError) do
-          render_inline(Primer::OpenProject::FilterableTreeView.new) do |tree|
-            tree.with_leaf(label: "Foo", select_variant: :none)
-          end
+      def test_leaf_renders_with_select_variant_none
+        render_inline(Primer::OpenProject::FilterableTreeView.new(tree_view_arguments: { node_variant: :anchor })) do |tree|
+          tree.with_leaf(label: "Foo", select_variant: :none, href: "/foo")
         end
 
-        assert_equal error.message, "FilterableTreeView only supports `:multiple` or `:single` as select_variant"
-
-        error = assert_raises(ArgumentError) do
-          render_inline(Primer::OpenProject::FilterableTreeView.new) do |tree|
-            tree.with_sub_tree(label: "Foo") do |sub_tree|
-              sub_tree.with_leaf(label: "Bar", select_variant: :none)
-            end
-          end
-        end
-
-        assert_equal error.message, "FilterableTreeView only supports `:multiple` or `:single` as select_variant"
+        assert_selector "[role=treeitem][href='/foo']"
       end
 
-      def test_sub_trees_cannot_render_with_select_variant_none
-        error = assert_raises(ArgumentError) do
-          render_inline(Primer::OpenProject::FilterableTreeView.new) do |tree|
-            tree.with_sub_tree(label: "Foo", select_variant: :none)
+      def test_leaf_in_sub_tree_renders_with_select_variant_none
+        render_inline(Primer::OpenProject::FilterableTreeView.new(tree_view_arguments: { node_variant: :anchor })) do |tree|
+          tree.with_sub_tree(label: "Foo", select_variant: :none, expanded: true) do |sub_tree|
+            sub_tree.with_leaf(label: "Bar", select_variant: :none, href: "/bar")
           end
         end
 
-        assert_equal error.message, "FilterableTreeView only supports `:multiple` or `:single` as select_variant"
+        assert_selector "[role=treeitem][href='/bar']"
+      end
 
-        error = assert_raises(ArgumentError) do
-          render_inline(Primer::OpenProject::FilterableTreeView.new) do |tree|
-            tree.with_sub_tree(label: "Foo") do |sub_tree|
-              sub_tree.with_sub_tree(label: "Bar", select_variant: :none)
+      def test_sub_tree_renders_with_select_variant_none
+        render_inline(Primer::OpenProject::FilterableTreeView.new) do |tree|
+          tree.with_sub_tree(label: "Foo", select_variant: :none) do |sub_tree|
+            sub_tree.with_leaf(label: "Bar", select_variant: :none)
+          end
+        end
+
+        assert_selector "[role=treeitem][data-select-variant=none]", text: "Foo"
+      end
+
+      def test_nested_sub_tree_renders_with_select_variant_none
+        render_inline(Primer::OpenProject::FilterableTreeView.new) do |tree|
+          tree.with_sub_tree(label: "Foo", select_variant: :none, expanded: true) do |sub_tree|
+            sub_tree.with_sub_tree(label: "Bar", select_variant: :none) do |nested|
+              nested.with_leaf(label: "Baz", select_variant: :none)
             end
           end
         end
 
-        assert_equal error.message, "FilterableTreeView only supports `:multiple` or `:single` as select_variant"
+        assert_selector "[role=treeitem][data-select-variant=none]", text: "Bar"
+      end
+
+      def test_include_sub_items_is_hidden_for_none_select_variant_via_leaf
+        render_inline(Primer::OpenProject::FilterableTreeView.new) do |tree|
+          tree.with_leaf(label: "Foo", select_variant: :none)
+        end
+
+        assert_selector(".FormControl-checkbox-wrap", visible: :hidden)
+        assert_selector("segmented-control", visible: :visible)
+      end
+
+      def test_include_sub_items_is_hidden_for_none_select_variant_via_sub_tree
+        render_inline(Primer::OpenProject::FilterableTreeView.new) do |tree|
+          tree.with_sub_tree(label: "Foo", select_variant: :none) do |sub_tree|
+            sub_tree.with_leaf(label: "Bar", select_variant: :none)
+          end
+        end
+
+        assert_selector(".FormControl-checkbox-wrap", visible: :hidden)
+        assert_selector("segmented-control", visible: :visible)
+      end
+
+      def test_segmented_control_remains_visible_for_none_select_variant_with_custom_filter_mode
+        render_inline(Primer::OpenProject::FilterableTreeView.new) do |tree|
+          tree.with_filter_mode(name: :active, label: "Active")
+          tree.with_filter_mode(name: :favourite, label: "Favourite")
+          tree.with_leaf(label: "Foo", select_variant: :none)
+        end
+
+        assert_selector("segmented-control", visible: :visible)
+        assert_selector(".SegmentedControl-item", text: "Active")
+      end
+
+      def test_leaf_cannot_render_with_unsupported_select_variant
+        expected_message = "FilterableTreeView only supports `:multiple`, `:single`, `:none` as select_variant"
+
+        error = assert_raises(ArgumentError) do
+          render_inline(Primer::OpenProject::FilterableTreeView.new) do |tree|
+            tree.with_leaf(label: "Foo", select_variant: :foo)
+          end
+        end
+
+        assert_equal expected_message, error.message
+
+        error = assert_raises(ArgumentError) do
+          render_inline(Primer::OpenProject::FilterableTreeView.new) do |tree|
+            tree.with_sub_tree(label: "Foo") do |sub_tree|
+              sub_tree.with_leaf(label: "Bar", select_variant: :foo)
+            end
+          end
+        end
+
+        assert_equal expected_message, error.message
+      end
+
+      def test_sub_trees_cannot_render_with_unsupported_select_variant
+        expected_message = "FilterableTreeView only supports `:multiple`, `:single`, `:none` as select_variant"
+
+        error = assert_raises(ArgumentError) do
+          render_inline(Primer::OpenProject::FilterableTreeView.new) do |tree|
+            tree.with_sub_tree(label: "Foo", select_variant: :foo)
+          end
+        end
+
+        assert_equal expected_message, error.message
+
+        error = assert_raises(ArgumentError) do
+          render_inline(Primer::OpenProject::FilterableTreeView.new) do |tree|
+            tree.with_sub_tree(label: "Foo") do |sub_tree|
+              sub_tree.with_sub_tree(label: "Bar", select_variant: :foo)
+            end
+          end
+        end
+
+        assert_equal expected_message, error.message
       end
 
       def test_sub_trees_cannot_load_with_async_spinner

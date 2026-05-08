@@ -11,8 +11,8 @@ module Primer
         def with_sub_tree(**system_arguments, &block)
           system_arguments[:select_variant] ||= :multiple
 
-          if system_arguments[:select_variant] != :multiple && system_arguments[:select_variant] != :single
-            raise ArgumentError, "FilterableTreeView only supports `:multiple` or `:single` as select_variant"
+          unless FilterableTreeView::SUPPORTED_SELECT_VARIANTS.include?(system_arguments[:select_variant])
+            raise ArgumentError, "FilterableTreeView only supports #{FilterableTreeView::SUPPORTED_SELECT_VARIANTS.map { |v| "`:#{v}`" }.join(", ")} as select_variant"
           end
 
           super(
@@ -26,8 +26,8 @@ module Primer
         def with_leaf(**system_arguments, &block)
           system_arguments[:select_variant] ||= :multiple
 
-          if system_arguments[:select_variant] != :multiple && system_arguments[:select_variant] != :single
-            raise ArgumentError, "FilterableTreeView only supports `:multiple` or `:single` as select_variant"
+          unless FilterableTreeView::SUPPORTED_SELECT_VARIANTS.include?(system_arguments[:select_variant])
+            raise ArgumentError, "FilterableTreeView only supports #{FilterableTreeView::SUPPORTED_SELECT_VARIANTS.map { |v| "`:#{v}`" }.join(", ")} as select_variant"
           end
 
           super(
