@@ -4611,6 +4611,11 @@
             "parameters": []
           },
           {
+            "name": "trailing_action",
+            "description": null,
+            "parameters": []
+          },
+          {
             "name": "trailing_visual",
             "description": null,
             "parameters": []
@@ -4642,6 +4647,11 @@
           },
           {
             "name": "leading_action",
+            "description": null,
+            "parameters": []
+          },
+          {
+            "name": "trailing_action",
             "description": null,
             "parameters": []
           },
@@ -10901,6 +10911,32 @@
         "subcomponents": []
       },
       {
+        "fully_qualified_name": "Primer::Alpha::TreeView::TrailingAction",
+        "description": "The trailing action for `TreeView` nodes.\n\nThis component is part of the {{#link_to_component}}Primer::Alpha::TreeView{{/link_to_component}} component and should\nnot be used directly.",
+        "accessibility_docs": null,
+        "is_form_component": false,
+        "is_published": true,
+        "requires_js": false,
+        "component": "TreeView::TrailingAction",
+        "status": "alpha",
+        "a11y_reviewed": false,
+        "short_name": "TreeViewTrailingAction",
+        "source": "https://github.com/primer/view_components/tree/main/app/components/primer/alpha/tree_view/trailing_action.rb",
+        "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/alpha/tree_view/trailing_action/default/",
+        "parameters": [
+          {
+            "name": "action",
+            "type": "ViewComponent::Base",
+            "default": "N/A",
+            "description": "A component or other renderable to use as the action button etc."
+          }
+        ],
+        "slots": [],
+        "methods": [],
+        "previews": [],
+        "subcomponents": []
+      },
+      {
         "fully_qualified_name": "Primer::Alpha::TreeView::SubTreeContainer",
         "description": "This component is part of the {{#link_to_component}}Primer::Alpha::TreeView{{/link_to_component}} component and should\nnot be used directly.",
         "accessibility_docs": null,
@@ -11241,6 +11277,11 @@
             "parameters": []
           },
           {
+            "name": "trailing_action",
+            "description": "Generic trailing action slot",
+            "parameters": []
+          },
+          {
             "name": "leading_visual",
             "description": "Generic leading visual slot",
             "parameters": []
@@ -11546,6 +11587,11 @@
             "parameters": []
           },
           {
+            "name": "trailing_action",
+            "description": null,
+            "parameters": []
+          },
+          {
             "name": "trailing_visual",
             "description": null,
             "parameters": []
@@ -11574,6 +11620,19 @@
           {
             "name": "with_leading_action_button",
             "description": "Adds a leading action rendered to the left of the node's label and any leading visuals or checkboxes.",
+            "parameters": [
+              {
+                "name": "system_arguments",
+                "type": "Hash",
+                "default": "N/A",
+                "description": "The arguments accepted by {{#link_to_component}}Primer::Beta::IconButton{{/link_to_component}}."
+              }
+            ],
+            "return_types": []
+          },
+          {
+            "name": "with_trailing_action_button",
+            "description": "Adds a trailing action rendered to the right of the node's content.",
             "parameters": [
               {
                 "name": "system_arguments",
@@ -11676,6 +11735,11 @@
             "parameters": []
           },
           {
+            "name": "trailing_action",
+            "description": null,
+            "parameters": []
+          },
+          {
             "name": "trailing_visual",
             "description": null,
             "parameters": []
@@ -11723,6 +11787,19 @@
           {
             "name": "with_leading_action_button",
             "description": "Adds a leading action rendered to the left of the node's label and any leading visuals or checkboxes.",
+            "parameters": [
+              {
+                "name": "system_arguments",
+                "type": "Hash",
+                "default": "N/A",
+                "description": "The arguments accepted by {{#link_to_component}}Primer::Beta::IconButton{{/link_to_component}}."
+              }
+            ],
+            "return_types": []
+          },
+          {
+            "name": "with_trailing_action_button",
+            "description": "Adds a trailing action rendered to the right of the node's content.",
             "parameters": [
               {
                 "name": "system_arguments",
@@ -20425,6 +20502,19 @@
       {
         "preview_path": "primer/open_project/filterable_tree_view/async_form_input",
         "name": "async_form_input",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/filterable_tree_view/link_nodes",
+        "name": "link_nodes",
         "snapshot": "false",
         "skip_rules": {
           "wont_fix": [
