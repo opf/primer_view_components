@@ -3,6 +3,7 @@ import {SegmentedControlElement} from '../alpha/segmented_control'
 import {TreeViewElement} from '../alpha/tree_view/tree_view'
 import {TreeViewSubTreeNodeElement} from '../alpha/tree_view/tree_view_sub_tree_node_element'
 import {TreeViewCheckedValue, TreeViewNodeInfo} from '../shared_events'
+import {Idiomorph} from 'idiomorph'
 
 // This function is expected to return the following values:
 // 1. No match - return null
@@ -342,7 +343,9 @@ export class FilterableTreeViewElement extends HTMLElement {
       // Invalidate old stateMap entries – the referenced DOM nodes no longer exist after replacement.
       this.#stateMap.clear()
 
-      oldTreeView.replaceWith(newTreeView)
+      Idiomorph.morph(oldTreeView, newTreeView.innerHTML, {morphStyle:'innerHTML'})
+
+      //oldTreeView.replaceWith(newTreeView)
       // Catalyst re-resolves @target treeViewList dynamically on next access.
 
       // Restore checked state for all nodes that now appear in the new tree.
