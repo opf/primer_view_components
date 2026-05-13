@@ -6,7 +6,7 @@ module Primer
     # :nocov:
     class FilterableTreeViewItemsController < ApplicationController
       # A node in the demo tree. Leaf nodes have no children.
-      TreeNode = Struct.new(:id, :label, :children, :all_descendant_ids, keyword_init: true) do
+      TreeNode = Data.define(:id, :label, :children, :all_descendant_ids) do
         def leaf?
           children.nil? || children.empty?
         end
@@ -23,7 +23,7 @@ module Primer
           else
             filtered_children = children.filter_map { |child| child.filter(query) }
             if matches?(query) || !filtered_children.empty?
-              TreeNode.new(
+              self.class.new(
                 id: id,
                 label: label,
                 children: filtered_children,
@@ -165,24 +165,18 @@ module Primer
       def index
         query = params[:query].to_s.strip
         select_variant = (params[:select_variant].presence || "multiple").to_sym
-        include_sub_items = params[:include_sub_items] == "true"
-        checked_ids = Array(params["checked_ids[]"]).map(&:to_s)
         nodes = TREE.filter_map { |node| node.filter(query) }
 
         render locals: {
           nodes: nodes,
           query: query,
-          select_variant: select_variant,
-          include_sub_items: include_sub_items,
-          checked_ids: checked_ids
+          select_variant: select_variant
         }
       end
 
       def async_form_tree
         query = params[:query].to_s.strip
         name = params[:name].to_s.presence || "characters"
-        include_sub_items = params[:include_sub_items] == "true"
-        checked_ids = Array(params["checked_ids[]"]).map(&:to_s)
         nodes = TREE.filter_map { |node| node.filter(query) }
         builder = ActionView::Helpers::FormBuilder.new("", nil, view_context, {})
 
@@ -190,9 +184,7 @@ module Primer
           nodes: nodes,
           query: query,
           name: name,
-          builder: builder,
-          include_sub_items: include_sub_items,
-          checked_ids: checked_ids
+          builder: builder
         }
       end
     end

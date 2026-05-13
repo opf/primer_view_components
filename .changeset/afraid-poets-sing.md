@@ -2,4 +2,4 @@
 '@openproject/primer-view-components': minor
 ---
 
-Async loading strategy for FitlerableTreeView
+Async loading strategy for FilterableTreeView

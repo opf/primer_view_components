@@ -592,6 +592,40 @@ module OpenProject
       refute_path_checked(HOGWARTS, "Students", "Gryffindor", "Harry Potter")
     end
 
+    def test_async_single_select_does_not_restore_previous_selection_after_tree_replacement
+      # Regression: #checkedNodeIds accumulated stale entries across replacements.
+      # Selecting A, then filtering (replacement), then selecting B caused both A
+      # and B to be re-checked when the tree was next replaced.
+      visit_preview(:async, select_variant: :single)
+      assert_path(HOGWARTS)
+
+      # Select Harry Potter (node A)
+      expand_at_path(HOGWARTS)
+      expand_at_path(HOGWARTS, "Students")
+      expand_at_path(HOGWARTS, "Students", "Gryffindor")
+      activate_at_path(HOGWARTS, "Students", "Gryffindor", "Harry Potter")
+      assert_path_checked(HOGWARTS, "Students", "Gryffindor", "Harry Potter")
+
+      # Filter — this triggers a tree replacement; Harry Potter is no longer in the DOM
+      fill_in "Filter", with: "Viktor"
+      assert_path(DURMSTRANG, "Students", "Viktor Krum")
+      refute_path(HOGWARTS)
+
+      # Select Viktor Krum (node B)
+      activate_at_path(DURMSTRANG, "Students", "Viktor Krum")
+      assert_path_checked(DURMSTRANG, "Students", "Viktor Krum")
+
+      # Clear filter — full tree is restored via another replacement
+      find(".FormControl button[aria-label='Clear']").click
+      assert_path(HOGWARTS)
+
+      # Only Viktor Krum must be checked; Harry Potter must NOT be checked
+      expand_at_path(DURMSTRANG)
+      expand_at_path(DURMSTRANG, "Students")
+      assert_path_checked(DURMSTRANG, "Students", "Viktor Krum")
+      refute_path_checked(HOGWARTS, "Students", "Gryffindor", "Harry Potter")
+    end
+
     # ─── Async form: include_sub_items flag ───────────────────────────────────
 
     def test_async_form_includes_include_sub_items_in_submission_when_checked
