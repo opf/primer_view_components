@@ -199,7 +199,7 @@ module Primer
       end
 
       def test_leaf_cannot_render_with_unsupported_select_variant
-        expected_message = "FilterableTreeView only supports `:multiple`, `:single`, `:none` as select_variant"
+        expected_message = "FilterableTreeView only supports :multiple, :single, and :none as select_variant"
 
         error = assert_raises(ArgumentError) do
           render_inline(Primer::OpenProject::FilterableTreeView.new) do |tree|
@@ -221,7 +221,7 @@ module Primer
       end
 
       def test_sub_trees_cannot_render_with_unsupported_select_variant
-        expected_message = "FilterableTreeView only supports `:multiple`, `:single`, `:none` as select_variant"
+        expected_message = "FilterableTreeView only supports :multiple, :single, and :none as select_variant"
 
         error = assert_raises(ArgumentError) do
           render_inline(Primer::OpenProject::FilterableTreeView.new) do |tree|
@@ -251,7 +251,7 @@ module Primer
           end
         end
 
-        assert_equal error.message, "FilterableTreeView does not support select variants for sub-trees loaded asynchronously. Please make the wole component load asynchronously."
+        assert_equal error.message, "FilterableTreeView does not support select variants for sub-trees loaded asynchronously. Please make the whole component load asynchronously."
       end
 
       def test_sub_trees_cannot_load_with_async_skeleton
@@ -263,7 +263,7 @@ module Primer
           end
         end
 
-        assert_equal error.message, "FilterableTreeView does not support select variants for sub-trees loaded asynchronously. Please make the wole component load asynchronously."
+        assert_equal error.message, "FilterableTreeView does not support select variants for sub-trees loaded asynchronously. Please make the whole component load asynchronously."
       end
 
       def test_custom_filter_modes

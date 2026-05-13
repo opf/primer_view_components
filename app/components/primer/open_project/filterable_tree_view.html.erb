@@ -3,7 +3,6 @@
     <%= render(Primer::Alpha::Stack.new(wrap: :wrap, direction: :horizontal, align: :center)) do %>
       <%= render(Primer::Alpha::StackItem.new(grow: true)) do %>
         <%= render(@filter_input) do |input| %>
-          <%# exclude from form submissions %>
           <% input.merge_input_arguments!(form: "") %>
         <% end %>
       <% end %>

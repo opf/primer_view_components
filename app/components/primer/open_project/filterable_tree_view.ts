@@ -2,6 +2,7 @@ import {controller, target} from '@github/catalyst'
 import {SegmentedControlElement} from '../alpha/segmented_control'
 import {TreeViewElement} from '../alpha/tree_view/tree_view'
 import {TreeViewSubTreeNodeElement} from '../alpha/tree_view/tree_view_sub_tree_node_element'
+// eslint-disable-next-line import/named
 import {TreeViewCheckedValue, TreeViewNodeInfo} from '../shared_events'
 
 // This function is expected to return the following values:
@@ -108,6 +109,15 @@ export class FilterableTreeViewElement extends HTMLElement {
           this.#checkedNodeIds.delete(nodeId)
           this.#checkedNodeFormPayloads.delete(nodeId)
         } else {
+          // In single-select mode, TreeView clears the previous selection internally
+          // (via checkOnlyAtPath) but the treeViewNodeChecked event only contains the
+          // newly selected node. Clear our tracked state so #restoreSelectionState does
+          // not re-check previously selected nodes after a tree replacement.
+          if (node.getAttribute('data-select-variant') === 'single') {
+            this.#checkedNodeIds.clear()
+            this.#checkedNodeFormPayloads.clear()
+          }
+
           this.#checkedNodeIds.set(nodeId, nodeInfo.checkedValue)
           const payload: {path: string[]; value?: string} = {path: nodeInfo.path}
           const dataValue = node.getAttribute('data-value')
@@ -391,12 +401,14 @@ export class FilterableTreeViewElement extends HTMLElement {
   // Applies a previously captured expansion snapshot to the current tree.
   #applyExpansionSnapshot(snapshot: Map<string, boolean>) {
     for (const [nodeId, wasExpanded] of snapshot) {
-      const treeitem = this.querySelector<HTMLElement>(
-        `[role=treeitem][data-node-id="${CSS.escape(nodeId)}"]`,
-      )
+      const treeitem = this.querySelector<HTMLElement>(`[role=treeitem][data-node-id="${CSS.escape(nodeId)}"]`)
       const subTreeNode = treeitem?.closest('tree-view-sub-tree-node') as TreeViewSubTreeNodeElement | null
       if (subTreeNode) {
-        wasExpanded ? subTreeNode.expand() : subTreeNode.collapse()
+        if (wasExpanded) {
+          subTreeNode.expand()
+        } else {
+          subTreeNode.collapse()
+        }
       }
     }
   }

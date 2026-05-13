@@ -138,6 +138,8 @@ module Primer
     class FilterableTreeView < Primer::Component
       delegate :with_leaf, :with_sub_tree, to: :@tree_view
 
+      SUPPORTED_SELECT_VARIANTS = %i[multiple single none].freeze
+
       DEFAULT_FILTER_INPUT_ARGUMENTS = {
         name: :filter,
         label: I18n.t(:button_filter),
@@ -267,13 +269,11 @@ module Primer
         @filter_mode_control.with_item(**system_arguments)
       end
 
-      SUPPORTED_SELECT_VARIANTS = %i[multiple single none].freeze
-
       def with_sub_tree(**system_arguments, &block)
         system_arguments[:select_variant] ||= :multiple
 
         unless SUPPORTED_SELECT_VARIANTS.include?(system_arguments[:select_variant])
-          raise ArgumentError, "FilterableTreeView only supports #{SUPPORTED_SELECT_VARIANTS.map { |v| "`:#{v}`" }.join(", ")} as select_variant"
+          raise ArgumentError, "FilterableTreeView only supports #{SUPPORTED_SELECT_VARIANTS.map(&:inspect).to_sentence} as select_variant"
         end
 
         if system_arguments[:select_variant] != :multiple
@@ -294,7 +294,7 @@ module Primer
         system_arguments[:select_variant] ||= :multiple
 
         unless SUPPORTED_SELECT_VARIANTS.include?(system_arguments[:select_variant])
-          raise ArgumentError, "FilterableTreeView only supports #{SUPPORTED_SELECT_VARIANTS.map { |v| "`:#{v}`" }.join(", ")} as select_variant"
+          raise ArgumentError, "FilterableTreeView only supports #{SUPPORTED_SELECT_VARIANTS.map(&:inspect).to_sentence} as select_variant"
         end
 
         if system_arguments[:select_variant] != :multiple

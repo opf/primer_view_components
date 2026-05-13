@@ -12,7 +12,7 @@ module Primer
           system_arguments[:select_variant] ||= :multiple
 
           unless FilterableTreeView::SUPPORTED_SELECT_VARIANTS.include?(system_arguments[:select_variant])
-            raise ArgumentError, "FilterableTreeView only supports #{FilterableTreeView::SUPPORTED_SELECT_VARIANTS.map { |v| "`:#{v}`" }.join(", ")} as select_variant"
+            raise ArgumentError, "FilterableTreeView only supports #{SUPPORTED_SELECT_VARIANTS.map(&:inspect).to_sentence} as select_variant"
           end
 
           super(
@@ -27,7 +27,7 @@ module Primer
           system_arguments[:select_variant] ||= :multiple
 
           unless FilterableTreeView::SUPPORTED_SELECT_VARIANTS.include?(system_arguments[:select_variant])
-            raise ArgumentError, "FilterableTreeView only supports #{FilterableTreeView::SUPPORTED_SELECT_VARIANTS.map { |v| "`:#{v}`" }.join(", ")} as select_variant"
+            raise ArgumentError, "FilterableTreeView only supports #{SUPPORTED_SELECT_VARIANTS.map(&:inspect).to_sentence} as select_variant"
           end
 
           super(
@@ -37,11 +37,11 @@ module Primer
         end
 
         def with_loading_spinner(**system_arguments)
-          raise ArgumentError, "FilterableTreeView does not support select variants for sub-trees loaded asynchronously. Please make the wole component load asynchronously."
+          raise ArgumentError, "FilterableTreeView does not support select variants for sub-trees loaded asynchronously. Please make the whole component load asynchronously."
         end
 
         def with_loading_skeleton(**system_arguments)
-          raise ArgumentError, "FilterableTreeView does not support select variants for sub-trees loaded asynchronously. Please make the wole component load asynchronously."
+          raise ArgumentError, "FilterableTreeView does not support select variants for sub-trees loaded asynchronously. Please make the whole component load asynchronously."
         end
       end
     end
