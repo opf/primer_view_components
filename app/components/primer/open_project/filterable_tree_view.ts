@@ -336,9 +336,15 @@ export class FilterableTreeViewElement extends HTMLElement {
     }
 
     this.setAttribute('data-loading', '')
+    this.setAttribute('aria-busy', 'true')
 
     try {
-      const response = await fetch(url.toString(), {signal, headers: {Accept: 'text/html'}})
+      const response = await fetch(url.toString(), {
+        signal,
+        headers: {Accept: 'text/html'},
+        credentials: 'same-origin',
+        method: 'GET',
+      })
       if (!response.ok) return
 
       const html = await response.text()
@@ -384,6 +390,7 @@ export class FilterableTreeViewElement extends HTMLElement {
       throw e
     } finally {
       this.removeAttribute('data-loading')
+      this.setAttribute('aria-busy', 'false')
     }
   }
 
