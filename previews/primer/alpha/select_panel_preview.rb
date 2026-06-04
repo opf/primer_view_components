@@ -139,29 +139,61 @@ module Primer
         render_with_template(locals: { open_on_load: open_on_load })
       end
 
-      # @!group Dynamic label
+      # @!group Dynamic label (single select)
 
       # @label With dynamic label
       #
       # @param open_on_load toggle
-      # @param select_variant [Symbol] select [single, multiple]
-      def with_dynamic_label(open_on_load: false, select_variant: :single)
+      def with_dynamic_label(open_on_load: false)
         render_with_template(locals: {
           open_on_load: open_on_load,
-          # .to_sym workaround for https://github.com/lookbook-hq/lookbook/issues/640
-          select_variant: select_variant.to_sym
+          select_variant: :single,
+          dynamic_label_type: :label
         })
       end
 
       # @label With dynamic label and aria prefix
       #
       # @param open_on_load toggle
-      # @param select_variant [Symbol] select [single, multiple]
-      def with_dynamic_label_and_aria_prefix(open_on_load: false, select_variant: :single)
+      def with_dynamic_label_and_aria_prefix(open_on_load: false)
         render_with_template(locals: {
           open_on_load: open_on_load,
+          select_variant: :single,
+          dynamic_label_type: :label
+        })
+      end
+
+      # @!endgroup
+
+      # @!group Dynamic label (mulit-select)
+
+      # @label With dynamic label
+      #
+      # @param open_on_load toggle
+      # @param dynamic_label_type [Symbol] select [label, count]
+      def with_dynamic_label_multi(open_on_load: false, dynamic_label_type: :count)
+        render_with_template(
+          template: "primer/alpha/select_panel_preview/with_dynamic_label",
+          locals: {
+          open_on_load: open_on_load,
+          select_variant: :multiple,
           # .to_sym workaround for https://github.com/lookbook-hq/lookbook/issues/640
-          select_variant: select_variant.to_sym
+          dynamic_label_type: dynamic_label_type.to_sym
+        })
+      end
+
+      # @label With dynamic label and aria prefix
+      #
+      # @param open_on_load toggle
+      # @param dynamic_label_type [Symbol] select [label, count]
+      def with_dynamic_label_and_aria_prefix_multi(open_on_load: false, dynamic_label_type: :count)
+        render_with_template(
+          template: "primer/alpha/select_panel_preview/with_dynamic_label_and_aria_prefix",
+          locals: {
+          open_on_load: open_on_load,
+          select_variant: :multiple,
+          # .to_sym workaround for https://github.com/lookbook-hq/lookbook/issues/640
+          dynamic_label_type: dynamic_label_type.to_sym
         })
       end
 

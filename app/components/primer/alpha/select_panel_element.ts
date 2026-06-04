@@ -76,6 +76,8 @@ export class SelectPanelElement extends HTMLElement {
   @target bannerErrorElement: HTMLElement
   @target bodySpinner: HTMLElement
   @target liveRegion: LiveRegionElement
+  @target counterLabel: HTMLElement
+  @target labelPrefix: HTMLElement
 
   filterFn?: FilterFn
 
@@ -111,7 +113,7 @@ export class SelectPanelElement extends HTMLElement {
   get dynamicLabelPrefix(): string {
     const prefix = this.getAttribute('data-dynamic-label-prefix')
     if (!prefix) return ''
-    return `${prefix}:`
+    return this.dynamicLabelType === 'count' ? prefix : `${prefix}:`
   }
 
   get dynamicAriaLabelPrefix(): string {
@@ -130,6 +132,10 @@ export class SelectPanelElement extends HTMLElement {
 
   set dynamicLabel(value: boolean) {
     this.toggleAttribute('data-dynamic-label', value)
+  }
+
+  get dynamicLabelType(): string {
+    return this.getAttribute('data-dynamic-label-type') || 'count'
   }
 
   get invokerElement(): HTMLButtonElement | null {
@@ -955,13 +961,20 @@ export class SelectPanelElement extends HTMLElement {
     if (!invokerLabel) return
     this.#originalLabel ||= invokerLabel.textContent || ''
     let itemLabel: string | undefined
+
     if (this.selectVariant === 'single') {
       itemLabel = this.querySelector(`[${this.ariaSelectionType}=true] .ActionListItem-label`)?.textContent
-    } else if (this.selectVariant === 'multiple') {
-      itemLabel = Array.from(this.querySelectorAll(`[${this.ariaSelectionType}=true] .ActionListItem-label`))
-        .map(label => label.textContent.trim())
-        .join(', ')
+    } else {
+      if (this.dynamicLabelType === 'count') {
+        this.#setDynamicCountLabel()
+        return
+      } else {
+        itemLabel = Array.from(this.querySelectorAll(`[${this.ariaSelectionType}=true] .ActionListItem-label`))
+          .map(label => label.textContent?.trim() ?? '')
+          .join(', ')
+      }
     }
+
     itemLabel ||= this.#originalLabel
     if (itemLabel) {
       const prefixSpan = document.createElement('span')
@@ -976,6 +989,28 @@ export class SelectPanelElement extends HTMLElement {
       }
     } else {
       invokerLabel.textContent = this.#originalLabel
+    }
+  }
+
+  #setDynamicCountLabel() {
+    if (!this.counterLabel) return
+    const count = this.querySelectorAll(`[${this.ariaSelectionType}=true]`).length
+
+    if (count === 0) {
+      this.counterLabel.hidden = true
+      this.invokerElement?.classList.add('color-fg-muted')
+      this.labelPrefix?.classList.add('color-fg-muted')
+    } else {
+      this.counterLabel.textContent = String(count)
+      this.counterLabel.setAttribute('title', String(count))
+      this.counterLabel.hidden = false
+      this.invokerElement?.classList.remove('color-fg-muted')
+      this.labelPrefix?.classList.remove('color-fg-muted')
+    }
+
+    if (this.dynamicAriaLabelPrefix) {
+      const ariaLabel = count === 0 ? this.dynamicAriaLabelPrefix : `${this.dynamicAriaLabelPrefix} ${count}`
+      this.invokerElement?.setAttribute('aria-label', ariaLabel)
     }
   }
 

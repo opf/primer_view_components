@@ -749,8 +749,8 @@ module Alpha
       assert_selector "select-panel button[aria-controls]", exact_text: "Item: Item 2"
     end
 
-    def test_dynamic_label_for_multiple_select_variant
-      visit_preview(:with_dynamic_label, select_variant: :multiple)
+    def test_dynamic_label_for_multiple_select_label_type
+      visit_preview(:with_dynamic_label_multi, dynamic_label_type: :label)
 
       click_on_invoker_button
 
@@ -763,7 +763,7 @@ module Alpha
     end
 
     def test_dynamic_label_and_aria_prefix_for_single_select_variant
-      visit_preview(:with_dynamic_label_and_aria_prefix, select_variant: :single)
+      visit_preview(:with_dynamic_label_and_aria_prefix)
 
       click_on_invoker_button
 
@@ -774,8 +774,8 @@ module Alpha
       assert_selector "select-panel button[aria-controls][aria-label='Your item: Item 2']"
     end
 
-    def test_dynamic_label_and_aria_prefix_for_multiple_select_variant
-      visit_preview(:with_dynamic_label_and_aria_prefix, select_variant: :multiple)
+    def test_dynamic_label_and_aria_prefix_for_multiple_select_label_type
+      visit_preview(:with_dynamic_label_and_aria_prefix_multi, dynamic_label_type: :label)
 
       click_on_invoker_button
 
@@ -785,6 +785,71 @@ module Alpha
       click_on_third_item
 
       assert_selector "select-panel button[aria-controls][aria-label='Your item: Item 2, Item 3']"
+    end
+
+    def test_dynamic_count_label_shows_only_prefix_when_nothing_selected
+      visit_preview(:with_dynamic_label_multi)
+
+      assert_selector "select-panel button[aria-controls].color-fg-muted"
+      assert_selector "[data-target='select-panel.counterLabel'][hidden]", visible: :all
+      assert_selector "select-panel button[aria-controls]", exact_text: "Item"
+    end
+
+    def test_dynamic_count_label_shows_counter_after_selection
+      visit_preview(:with_dynamic_label_multi)
+
+      click_on_invoker_button
+      click_on_second_item
+      click_on_third_item
+
+      refute_selector "select-panel button[aria-controls].color-fg-muted"
+      assert_selector "[data-target='select-panel.counterLabel']", text: "2"
+      assert_selector "select-panel button[aria-controls]", exact_text: "Item 2"
+    end
+
+    def test_dynamic_count_label_updates_on_deselect
+      visit_preview(:with_dynamic_label_multi)
+
+      click_on_invoker_button
+      click_on_second_item
+      click_on_third_item
+
+      assert_selector "[data-target='select-panel.counterLabel']", text: "2"
+
+      click_on_third_item
+
+      assert_selector "[data-target='select-panel.counterLabel']", text: "1"
+      assert_selector "select-panel button[aria-controls]", exact_text: "Item 1"
+    end
+
+    def test_dynamic_count_label_hides_counter_when_all_deselected
+      visit_preview(:with_dynamic_label_multi)
+
+      click_on_invoker_button
+      click_on_second_item
+
+      assert_selector "[data-target='select-panel.counterLabel']", text: "1"
+
+      click_on_second_item
+
+      assert_selector "select-panel button[aria-controls].color-fg-muted"
+      assert_selector "[data-target='select-panel.counterLabel'][hidden]", visible: :all
+    end
+
+    def test_dynamic_count_label_aria_prefix_when_nothing_selected
+      visit_preview(:with_dynamic_label_and_aria_prefix_multi)
+
+      assert_selector "select-panel button[aria-controls][aria-label='Your item:']"
+    end
+
+    def test_dynamic_count_label_aria_prefix_after_selection
+      visit_preview(:with_dynamic_label_and_aria_prefix_multi)
+
+      click_on_invoker_button
+      click_on_second_item
+      click_on_third_item
+
+      assert_selector "select-panel button[aria-controls][aria-label='Your item: 2']"
     end
 
     ########## JAVASCRIPT API TESTS ############

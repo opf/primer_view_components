@@ -291,6 +291,9 @@ module Primer
         :none,
       ].freeze
 
+      DEFAULT_DYNAMIC_LABEL_TYPE = :count
+      DYNAMIC_LABEL_TYPE_OPTIONS = [:label, :count].freeze
+
       DEFAULT_BANNER_SCHEME = :danger
       BANNER_SCHEME_OPTIONS = [
         DEFAULT_BANNER_SCHEME,
@@ -351,6 +354,7 @@ module Primer
       # @param preload [Boolean] Whether to preload search results when the page loads. If this option is false, results are loaded when the panel is opened.
       # @param dynamic_label [Boolean] Whether or not to display the text of the currently selected item in the show button.
       # @param dynamic_label_prefix [String] If provided, the prefix is prepended to the dynamic label and displayed in the show button.
+      # @param dynamic_label_type [Symbol] Controls what is shown as the dynamic label. `:label` shows the selected item's text; `:count` shows the number of selected items. Only applies when `select_variant: :multiple`. <%= one_of(Primer::Alpha::SelectPanel::DYNAMIC_LABEL_TYPE_OPTIONS) %>
       # @param dynamic_aria_label_prefix [String] If provided, the prefix is prepended to the dynamic label and set as the value of the `aria-label` attribute on the show button.
       # @param body_id [String] The unique ID of the panel body. If not provided, the body ID will be set to the panel ID with a "-body" suffix.
       # @param list_arguments [Hash] Arguments to pass to the underlying <%= link_to_component(Primer::Alpha::ActionList) %> component. Only has an effect for the local fetch strategy.
@@ -374,6 +378,7 @@ module Primer
         preload: DEFAULT_PRELOAD,
         dynamic_label: false,
         dynamic_label_prefix: nil,
+        dynamic_label_type: DEFAULT_DYNAMIC_LABEL_TYPE,
         dynamic_aria_label_prefix: nil,
         body_id: nil,
         list_arguments: {},
@@ -405,6 +410,7 @@ module Primer
         @show_filter = show_filter
         @dynamic_label = dynamic_label
         @dynamic_label_prefix = dynamic_label_prefix
+        @dynamic_label_type = fetch_or_fallback(DYNAMIC_LABEL_TYPE_OPTIONS, dynamic_label_type, DEFAULT_DYNAMIC_LABEL_TYPE)
         @dynamic_aria_label_prefix = dynamic_aria_label_prefix
         @loading_label = loading_label
         @loading_description_id = nil
@@ -435,6 +441,7 @@ module Primer
             data: { select_variant: @select_variant, fetch_strategy: @fetch_strategy, open_on_load: open_on_load }.tap do |data|
               data[:dynamic_label] = dynamic_label if dynamic_label
               data[:dynamic_label_prefix] = dynamic_label_prefix if dynamic_label_prefix.present?
+              data[:dynamic_label_type] = @dynamic_label_type if dynamic_label
               data[:dynamic_aria_label_prefix] = dynamic_aria_label_prefix if dynamic_aria_label_prefix.present?
             end
           }
@@ -517,6 +524,8 @@ module Primer
 
         if icon.present?
           Primer::Beta::IconButton.new(icon: icon, **system_arguments)
+        elsif @dynamic_label && @dynamic_label_type == :count && @select_variant == :multiple
+          ShowButton.new(dynamic_label_prefix: @dynamic_label_prefix, **system_arguments)
         else
           Primer::Beta::Button.new(**system_arguments)
         end
