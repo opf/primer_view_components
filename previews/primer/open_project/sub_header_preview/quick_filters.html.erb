@@ -5,6 +5,14 @@
     "All filters"
   end
 
+  component.with_sort_quick_filter do
+    render(Primer::Beta::IconButton.new(icon: :"sort-desc", "aria-label": "Sort"))
+  end
+
+  component.with_group_quick_filter do
+    render(Primer::Beta::IconButton.new(icon: :rows, "aria-label": "Group"))
+  end
+
   component.with_quick_filter do
     render(Primer::Alpha::SegmentedControl.new("aria-label": "File view")) do |component|
       component.with_item(label: "Monthly", selected: true)
