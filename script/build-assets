@@ -3,6 +3,11 @@
 export INPUT_TYPE=$1
 
 build_css() {
+  # Remove previously generated CSS artifacts so components that were renamed or
+  # removed don't leave orphaned files behind. Stale .css would otherwise be
+  # picked up by export-css-selectors and pollute static/classes.json.
+  find app/components/primer \( -name '*.css' -o -name '*.css.map' -o -name '*.css.json' \) -delete
+
   # Get a list of all the CSS files in the src directory
   CSS_FILES=$(find app/components/primer -name '*.pcss' ! -path '*/primer.pcss')
   npx postcss $CSS_FILES --dir app/components --base app/components --ext css && \
