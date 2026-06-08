@@ -61,3 +61,7 @@ File::NULL
 
 # OpenProject custom rules
 !app/assets/images
+
+# Local Claude instructions
+CLAUDE.local.md
+claude.local.md
