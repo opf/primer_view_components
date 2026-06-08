@@ -92,7 +92,7 @@
     "rollup-plugin-terser": "^7.0.2",
     "stylelint-actions-formatters": "^16.3.1",
     "tslib": "^2.4.0",
-    "typescript": "^5.2.2",
+    "typescript": "^6.0.3",
     "vite": "^8.0.9",
     "vite-plugin-ruby": "^5.2.1"
   },
