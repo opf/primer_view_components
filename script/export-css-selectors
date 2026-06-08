@@ -2,6 +2,7 @@
 
 const postcss = require('postcss')
 const { readFile, writeFile } = require('node:fs/promises')
+const { existsSync } = require('node:fs')
 const {glob} = require('glob')
 const CSSwhat = require('css-what')
 
@@ -12,13 +13,18 @@ const snakeToCamelCase = (s) => s.split('_').map(capitalize).join('')
 const componentNameToRubyClass = (componentName) =>
   'Primer::' + componentName.split('/').map(snakeToCamelCase).join('::')
 
-const exportSelectors = (folder) => {
+const exportSelectors = (folder, {requireSource = false} = {}) => {
   const folderGlob = `${folder}/**/*.css`
   const componentNameRegex = new RegExp(`${folder.replace('/','\\/')}\\/(.*).css`)
 
   return glob(folderGlob).then(files =>
     Promise.all(
-      files.map(async (file) => {
+      files
+        // When the .css is generated from a .pcss, skip any orphaned .css left
+        // behind by a renamed or removed component so its dead selectors don't
+        // leak into static/classes.json.
+        .filter(file => !requireSource || existsSync(file.replace(/\.css$/, '.pcss')))
+        .map(async (file) => {
         console.log(`Processing ${file}`)
         const css = await readFile(file, 'utf8')
         const root = postcss.parse(css)
@@ -66,7 +72,7 @@ const exportSelectors = (folder) => {
 const classShouldBeReserved = className =>
   (className[0].toUpperCase() === className[0])
 
-exportSelectors('app/components/primer')
+exportSelectors('app/components/primer', {requireSource: true})
   .then(classLists => {
     const htmlClassToRubyClasses = {}
 
