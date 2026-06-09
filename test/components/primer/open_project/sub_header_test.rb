@@ -247,9 +247,9 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
       component.with_filter_input(name: "filter", label: "Filter")
     end
 
-    # Without collapsed_search, the trigger has d-sm-none (hidden on desktop).
-    # With collapsed_search, it must not have d-sm-none.
-    assert_no_selector("[data-action='click:sub-header#expandFilterInput'].d-sm-none")
+    # Without collapsed_search, the trigger has d-md-none (hidden on desktop).
+    # With collapsed_search, it must not have d-md-none.
+    assert_no_selector("[data-action='click:sub-header#expandFilterInput'].d-md-none")
   end
 
   def test_default_search_trigger_hidden_on_desktop
@@ -257,8 +257,8 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
       component.with_filter_input(name: "filter", label: "Filter")
     end
 
-    # Without collapsed_search the trigger is mobile-only (d-sm-none)
-    assert_selector("[data-action='click:sub-header#expandFilterInput'].d-sm-none")
+    # Without collapsed_search the trigger is mobile-only (d-md-none)
+    assert_selector("[data-action='click:sub-header#expandFilterInput'].d-md-none")
   end
 
   def test_renders_quick_filters

@@ -101,7 +101,7 @@ module Primer
           system_arguments[:data][:action] += " input:sub-header#toggleFilterInputClearButton focus:sub-header#toggleFilterInputClearButton"
         end
 
-        trigger_display = @collapsed_search ? :inline_flex : [:inline_flex, :none]
+        trigger_display = @collapsed_search ? :inline_flex : [:inline_flex, :inline_flex, :none]
 
         @collapsed_filter_trigger = Primer::Beta::IconButton.new(icon: system_arguments[:leading_visual][:icon],
                                                                  display: trigger_display,
@@ -171,12 +171,16 @@ module Primer
       }
 
       # Quick filters shown in the left pane next to the search bar (0–5 items).
-      # Hidden on mobile. Requires all_filters_button to be set when used.
+      # Hidden on smaller screens. Requires all_filters_button to be set when used.
       # Supports ActionMenus, Buttons, IconButtons, SelectPanels, and SegmentedControls inside the block.
       renders_many :quick_filters, lambda { |**kwargs|
         deny_tag_argument(**kwargs)
         kwargs[:tag] = :div
         kwargs[:mr] ||= 2
+        kwargs[:classes] = class_names(
+          "SubHeader-hiddenOnExpand",
+          kwargs[:classes]
+        )
 
         QuickFilter.new(**kwargs)
       }
