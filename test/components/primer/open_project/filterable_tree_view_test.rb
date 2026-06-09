@@ -111,15 +111,14 @@ module Primer
         assert_selector("label[for='#{id}'].sr-only", text: "Filter")
       end
 
-      def test_filter_input_arguments_can_be_overridden
+      def test_filter_input_arguments_can_be_partially_overridden
         render_inline(
           Primer::OpenProject::FilterableTreeView.new(
-            filter_input_arguments: Primer::OpenProject::FilterableTreeView::DEFAULT_FILTER_INPUT_ARGUMENTS.merge(
-              label: "Filtern"
-            )
+            filter_input_arguments: { label: "Filtern" }
           )
         )
 
+        # defaults still present: type=search and name=filter
         input = page.find_css("input[type=search][name=filter]").first
         assert input
 
