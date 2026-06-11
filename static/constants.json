@@ -1996,7 +1996,7 @@
       "none"
     ],
     "Menu": "Primer::OpenProject::SubHeader::Menu",
-    "QuickFilter": "Primer::OpenProject::SubHeader::QuickFilter",
+    "QuickActionComponent": "Primer::OpenProject::SubHeader::QuickActionComponent",
     "SHOWN_FILTER_TARGET_SELECTOR": "sub-header.shownItemsOnExpandedFilter",
     "SegmentedControl": "Primer::OpenProject::SubHeader::SegmentedControl"
   },
@@ -2009,8 +2009,8 @@
   "Primer::OpenProject::SubHeader::Menu": {
     "GeneratedSlotMethods": "Primer::OpenProject::SubHeader::Menu::GeneratedSlotMethods"
   },
-  "Primer::OpenProject::SubHeader::QuickFilter": {
-    "GeneratedSlotMethods": "Primer::OpenProject::SubHeader::QuickFilter::GeneratedSlotMethods"
+  "Primer::OpenProject::SubHeader::QuickActionComponent": {
+    "GeneratedSlotMethods": "Primer::OpenProject::SubHeader::QuickActionComponent::GeneratedSlotMethods"
   },
   "Primer::OpenProject::SubHeader::SegmentedControl": {
     "GeneratedSlotMethods": "Primer::OpenProject::SubHeader::SegmentedControl::GeneratedSlotMethods"

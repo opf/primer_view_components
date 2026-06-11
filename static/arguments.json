@@ -6600,10 +6600,10 @@
     ]
   },
   {
-    "component": "OpenProject::SubHeader::QuickFilter",
+    "component": "OpenProject::SubHeader::QuickActionComponent",
     "status": "open_project",
     "a11y_reviewed": false,
-    "short_name": "OpenProjectSubHeaderQuickFilter",
+    "short_name": "OpenProjectSubHeaderQuickActionComponent",
     "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/sub_header/quick_filter.rb",
     "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/sub_header/quick_filter/default/",
     "parameters": []

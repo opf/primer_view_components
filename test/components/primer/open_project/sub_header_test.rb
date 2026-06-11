@@ -304,7 +304,6 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
     assert_equal "You must provide a filter_button when using quick_filters.", err.message
   end
 
-
   def test_quick_filters_require_no_filter_button_for_single_quick_filter
     render_inline(Primer::OpenProject::SubHeader.new) do |component|
       component.with_quick_filter { "<span class='MyQuickFilter'>Status</span>".html_safe }
@@ -322,5 +321,70 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
     end
 
     assert_equal "SubHeader supports a maximum of 5 quick_filters, got 6.", err.message
+  end
+
+  def test_renders_sort_quick_filter
+    render_inline(Primer::OpenProject::SubHeader.new) do |component|
+      component.with_quick_sort { "<span class='SortFilter'>Sort</span>".html_safe }
+    end
+
+    assert_selector(".SubHeader-leftPane .SortFilter")
+  end
+
+  def test_renders_group_quick_filter
+    render_inline(Primer::OpenProject::SubHeader.new) do |component|
+      component.with_quick_group { "<span class='GroupFilter'>Group</span>".html_safe }
+    end
+
+    assert_selector(".SubHeader-leftPane .GroupFilter")
+  end
+
+  def test_sort_and_group_quick_filters_render_before_other_quick_filters
+    render_inline(Primer::OpenProject::SubHeader.new) do |component|
+      component.with_filter_button { "Filter" }
+      component.with_quick_filter(classes: "OtherFilter") { "Other" }
+      component.with_quick_group(classes: "GroupFilter") { "Group" }
+      component.with_quick_sort(classes: "SortFilter") { "Sort" }
+    end
+
+    assert_selector(".SortFilter ~ .GroupFilter")
+    assert_selector(".GroupFilter ~ .OtherFilter")
+  end
+
+  def test_sort_and_group_do_not_count_toward_filter_button_requirement
+    render_inline(Primer::OpenProject::SubHeader.new) do |component|
+      component.with_quick_sort { "Sort" }
+      component.with_quick_filter { "Status" }
+    end
+
+    assert_text "Sort"
+    assert_text "Status"
+  end
+
+  def test_sort_and_group_do_not_count_toward_maximum
+    render_inline(Primer::OpenProject::SubHeader.new) do |component|
+      component.with_filter_button { "Filter" }
+      component.with_quick_sort { "Sort" }
+      component.with_quick_group { "Group" }
+      4.times { |i| component.with_quick_filter { "Filter #{i}" } }
+    end
+
+    assert_text "Sort"
+    assert_text "Group"
+    assert_text "Filter 0"
+    assert_text "Filter 1"
+    assert_text "Filter 2"
+    assert_text "Filter 3"
+  end
+
+  def test_sort_and_group_are_not_hidden_on_mobile_when_multiple_quick_filters
+    render_inline(Primer::OpenProject::SubHeader.new) do |component|
+      component.with_filter_button { "Filter" }
+      component.with_quick_sort { "<span class='SortFilter'>Sort</span>".html_safe }
+      component.with_quick_group { "<span class='GroupFilter'>Group</span>".html_safe }
+    end
+
+    assert_no_selector(".d-none.d-md-flex .SortFilter")
+    assert_no_selector(".d-none.d-md-flex .GroupFilter")
   end
 end
