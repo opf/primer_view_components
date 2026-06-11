@@ -7,8 +7,8 @@
 
     <%= render @collapsed_filter_trigger if @collapsed_filter_trigger.present? %>
 
-    <%= sort_quick_filter %>
-    <%= group_quick_filter %>
+    <%= quick_sort %>
+    <%= quick_group %>
     <% quick_filters.each do |quick_filter| %>
       <%= quick_filter %>
     <% end %>

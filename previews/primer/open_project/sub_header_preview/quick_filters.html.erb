@@ -5,11 +5,11 @@
     "All filters"
   end
 
-  component.with_sort_quick_filter do
+  component.with_quick_sort do
     render(Primer::Beta::IconButton.new(icon: :"sort-desc", "aria-label": "Sort"))
   end
 
-  component.with_group_quick_filter do
+  component.with_quick_group do
     render(Primer::Beta::IconButton.new(icon: :rows, "aria-label": "Group"))
   end
 

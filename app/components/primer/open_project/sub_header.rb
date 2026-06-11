@@ -170,37 +170,27 @@ module Primer
         }
       }
 
+      # A slot for a generic sorting component. Will be rendered next to the search input
+      renders_one :quick_sort, lambda { |**kwargs|
+        deny_tag_argument(**kwargs)
+
+        QuickActionComponent.new(**kwargs)
+      }
+
+      # A slot for a generic sorting component. Will be rendered next to the sorting button
+      renders_one :quick_group, lambda { |**kwargs|
+        deny_tag_argument(**kwargs)
+
+        QuickActionComponent.new(**kwargs)
+      }
+
       # Quick filters shown in the left pane next to the search bar (0–5 items total across all types).
       # Hidden on smaller screens when more than one `quick_filter` is provided. Requires `filter_button` when using more than one `quick_filter`.
       # Supports ActionMenus, Buttons, IconButtons, SelectPanels, and SegmentedControls inside the block.
-      #
-      # Use `with_sort_quick_filter` for sort controls (renders first),
-      # `with_group_quick_filter` for group controls (renders second),
-      # and `with_quick_filter` for all others (renders last).
-      renders_one :sort_quick_filter, lambda { |**kwargs|
-        deny_tag_argument(**kwargs)
-        kwargs[:tag] = :div
-        kwargs[:mr] ||= 2
-        QuickFilter.new(**kwargs)
-      }
-
-      renders_one :group_quick_filter, lambda { |**kwargs|
-        deny_tag_argument(**kwargs)
-        kwargs[:tag] = :div
-        kwargs[:mr] ||= 2
-        QuickFilter.new(**kwargs)
-      }
-
       renders_many :quick_filters, lambda { |**kwargs|
         deny_tag_argument(**kwargs)
-        kwargs[:tag] = :div
-        kwargs[:mr] ||= 2
-        kwargs[:classes] = class_names(
-          "SubHeader-hiddenOnExpand",
-          kwargs[:classes]
-        )
 
-        QuickFilter.new(**kwargs)
+        QuickActionComponent.new(**kwargs)
       }
 
       renders_one :segmented_control, lambda { |**system_arguments, &block|
@@ -256,14 +246,14 @@ module Primer
       end
 
       def before_render
-        all_qf = [sort_quick_filter, group_quick_filter].compact + quick_filters
+        all_quick_actions = [quick_sort, quick_group].compact + quick_filters
 
         if quick_filters.size > 1 && filter_button.nil?
           raise ArgumentError, "You must provide a filter_button when using quick_filters."
         end
 
-        if all_qf.size > 5
-          raise ArgumentError, "SubHeader supports a maximum of 5 quick_filters, got #{all_qf.size}."
+        if quick_filters.size > 5
+          raise ArgumentError, "SubHeader supports a maximum of 5 quick_filters, got #{all_quick_actions.size}."
         end
 
         if quick_filters.size > 1
@@ -274,7 +264,7 @@ module Primer
 
         @system_arguments[:classes] = class_names(
           @system_arguments[:classes],
-          "SubHeader--emptyLeftPane" => !segmented_control? && !filter_button && !filter_input && all_qf.empty?
+          "SubHeader--emptyLeftPane" => !segmented_control? && !filter_button && !filter_input && all_quick_actions.empty?
         )
       end
 
