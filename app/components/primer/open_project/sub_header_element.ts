@@ -29,9 +29,10 @@ class SubHeaderElement extends HTMLElement {
 
   expandFilterInput() {
     for (const item of this.shownItemsOnExpandedFilter) {
-      item.classList.remove('d-none')
+      item.classList.remove('d-none', 'd-sm-none')
     }
     for (const item of this.filterExpandButton) {
+      item.classList.remove('d-inline-flex', 'd-sm-inline-flex')
       item.classList.add('d-none')
     }
     this.classList.add('SubHeader--expandedSearch')
@@ -43,7 +44,7 @@ class SubHeaderElement extends HTMLElement {
       item.classList.remove('d-none')
     }
     for (const item of this.shownItemsOnExpandedFilter) {
-      item.classList.add('d-none')
+      item.classList.add('d-none', 'd-sm-none')
     }
     this.classList.remove('SubHeader--expandedSearch')
   }
