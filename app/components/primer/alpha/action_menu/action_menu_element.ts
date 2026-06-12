@@ -472,6 +472,7 @@ export class ActionMenuElement extends HTMLElement {
   #handleIncludeFragmentReplaced() {
     this.#firstItem?.focus()
     this.#softDisableItems()
+    this.overlay?.update()
 
     // async items have loaded, so component is ready
     this.setAttribute('data-ready', 'true')
