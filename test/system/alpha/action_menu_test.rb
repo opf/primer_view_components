@@ -890,6 +890,33 @@ module Alpha
       assert_equal page.evaluate_script("document.activeElement").text, "Copy link"
     end
 
+    def test_deferred_loading_overlay_positioned_within_viewport
+      visit_preview(:with_deferred_content)
+
+      # Move the invoker to the bottom of the viewport so the overlay must open upward
+      page.execute_script(<<~JS)
+        var menu = document.querySelector('action-menu')
+        menu.style.position = 'fixed'
+        menu.style.bottom = '0'
+        menu.style.top = 'auto'
+      JS
+
+      click_on_invoker_button
+
+      # Wait for lazy content to load
+      assert_selector "action-menu ul li", text: "Copy link"
+
+      overlay_in_viewport = page.evaluate_script(<<~JS)
+        (function() {
+          var el = document.querySelector('anchored-position')
+          var rect = el.getBoundingClientRect()
+          return rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
+        })()
+      JS
+
+      assert overlay_in_viewport, "Overlay should be positioned within the viewport after deferred content loads"
+    end
+
     def test_deferred_dialog_opens
       visit_preview(:with_deferred_content)
 
