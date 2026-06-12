@@ -8,13 +8,13 @@
       "dom",
       "dom.iterable"
     ],
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "declaration": true,
     "declarationDir": "./app",
+    "rootDir": "./app",
     "strictPropertyInitialization": false,
     "strict": true,
-    "baseUrl": ".",
     "types": [],
   },
   "include": [
