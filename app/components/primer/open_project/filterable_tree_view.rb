@@ -199,10 +199,10 @@ module Primer
         src: nil,
         tree_view_arguments: {},
         form_arguments: {},
-        filter_input_arguments: DEFAULT_FILTER_INPUT_ARGUMENTS.dup,
-        filter_mode_control_arguments: DEFAULT_FILTER_MODE_CONTROL_ARGUMENTS.dup,
-        include_sub_items_check_box_arguments: DEFAULT_INCLUDE_SUB_ITEMS_CHECK_BOX_ARGUMENTS.dup,
-        no_results_node_arguments: DEFAULT_NO_RESULTS_NODE_ARGUMENTS.dup,
+        filter_input_arguments: {},
+        filter_mode_control_arguments: {},
+        include_sub_items_check_box_arguments: {},
+        no_results_node_arguments: {},
         **system_arguments
       )
         @tree_view_arguments = tree_view_arguments.dup
@@ -218,6 +218,7 @@ module Primer
           **tree_view_arguments
         )
 
+        filter_input_arguments = filter_input_arguments.reverse_merge(DEFAULT_FILTER_INPUT_ARGUMENTS)
         filter_input_arguments[:data] = merge_data(
           filter_input_arguments, {
             data: { target: "filterable-tree-view.filterInput" }
@@ -250,7 +251,7 @@ module Primer
         @system_arguments[:tag] = :"filterable-tree-view"
         @system_arguments[:src] = src if src
 
-        @no_results_node_arguments = no_results_node_arguments
+        @no_results_node_arguments = no_results_node_arguments.reverse_merge(DEFAULT_NO_RESULTS_NODE_ARGUMENTS)
       end
 
       def with_default_filter_modes
