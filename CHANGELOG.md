@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## 0.87.0
+
+### Minor Changes
+
+- [#466](https://github.com/opf/primer_view_components/pull/466) [`226ae5f`](https://github.com/opf/primer_view_components/commit/226ae5f4436fb5935a878a2007aeef134dca57b6) Thanks [@myabc](https://github.com/myabc)! - Support dynamic labels for SelectPanel multiple select variant
+
+- [#469](https://github.com/opf/primer_view_components/pull/469) [`d51cc25`](https://github.com/opf/primer_view_components/commit/d51cc25559846b870a7c531e4649b923217eddbb) Thanks [@HDinger](https://github.com/HDinger)! - Introduce specific slots for sort and group quick filters
+
+- [#465](https://github.com/opf/primer_view_components/pull/465) [`0f57fd3`](https://github.com/opf/primer_view_components/commit/0f57fd390dd9fd64cd931135ceb795a240dd5eb4) Thanks [@myabc](https://github.com/myabc)! - Support dynamic labels for ActionMenu multiple select variant
+
+### Patch Changes
+
+- [#476](https://github.com/opf/primer_view_components/pull/476) [`dc1f28f`](https://github.com/opf/primer_view_components/commit/dc1f28f52c6a6b36f7546c343b1b47351ffe36b2) Thanks [@HDinger](https://github.com/HDinger)! - Show collapsed search icon button on medium screen sizes in Primer::OpenProject::SubHeader
+
+- [#474](https://github.com/opf/primer_view_components/pull/474) [`b9497d6`](https://github.com/opf/primer_view_components/commit/b9497d6be336e7234d18aa8e6936fbed967926e3) Thanks [@HDinger](https://github.com/HDinger)! - Preserve default filter arguments within FilterableTreeView
+
 ## 0.86.2
 
 ### Patch Changes
