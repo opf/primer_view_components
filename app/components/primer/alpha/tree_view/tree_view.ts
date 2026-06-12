@@ -179,7 +179,6 @@ export class TreeViewElement extends HTMLElement {
     // behavior for these element types is user- or browser-defined
     if (!(node instanceof HTMLDivElement)) return
 
-    const path = this.getNodePath(node)
     const nodeInfo = this.infoFromNode(node, 'true')
 
     const checkSuccess = this.dispatchEvent(
@@ -195,7 +194,7 @@ export class TreeViewElement extends HTMLElement {
     if (this.getNodeCheckedValue(node) === 'true') {
       this.setNodeCheckedValue(node, 'false')
     } else {
-      this.checkOnlyAtPath(path)
+      this.#checkNodeOnly(node)
     }
 
     this.dispatchEvent(
@@ -271,7 +270,7 @@ export class TreeViewElement extends HTMLElement {
         } else if (this.selectVariant(node) === 'single') {
           event.preventDefault()
 
-          this.checkOnlyAtPath(this.getNodePath(node))
+          this.#checkNodeOnly(node)
         } else if (node instanceof HTMLAnchorElement) {
           // simulate click on space
           node.click()
@@ -352,11 +351,18 @@ export class TreeViewElement extends HTMLElement {
   }
 
   checkOnlyAtPath(path: string[]) {
+    const node = this.nodeAtPath(path)
+    if (!node) return
+
+    this.#checkNodeOnly(node)
+  }
+
+  #checkNodeOnly(node: Element) {
     for (const el of this.activeNodes) {
-      this.uncheckAtPath(this.getNodePath(el))
+      this.setNodeCheckedValue(el, 'false')
     }
 
-    this.checkAtPath(path)
+    this.setNodeCheckedValue(node, 'true')
   }
 
   toggleCheckedAtPath(path: string[]) {

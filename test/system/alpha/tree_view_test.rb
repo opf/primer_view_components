@@ -652,6 +652,40 @@ module Alpha
       assert_equal details[0]["previousCheckedValue"], "false"
     end
 
+    def test_single_select_with_duplicate_paths_selects_clicked_node
+      visit_preview(:single_select)
+
+      nodes = all(selector_for("action_menu.rb"))
+      assert_equal 2, nodes.size
+
+      nodes[1].click
+
+      assert_equal "true", nodes[1]["aria-checked"], "The clicked (second) node should be selected"
+      assert_equal "false", nodes[0]["aria-checked"], "The first node with the same path should not be selected"
+
+      nodes[0].click
+
+      assert_equal "true", nodes[0]["aria-checked"], "The clicked (first) node should be selected"
+      assert_equal "false", nodes[1]["aria-checked"], "The second node with the same path should not be selected"
+    end
+
+    def test_single_select_with_duplicate_paths_selects_focused_node_on_keyboard
+      visit_preview(:single_select)
+
+      nodes = all(selector_for("action_menu.rb"))
+      assert_equal 2, nodes.size
+
+      nodes[1].send_keys(:space)
+
+      assert_equal "true", nodes[1]["aria-checked"], "The focused (second) node should be selected via keyboard"
+      assert_equal "false", nodes[0]["aria-checked"], "The first node with the same path should not be selected"
+
+      nodes[0].send_keys(:space)
+
+      assert_equal "true", nodes[0]["aria-checked"], "The focused (first) node should be selected via keyboard"
+      assert_equal "false", nodes[1]["aria-checked"], "The second node with the same path should not be selected"
+    end
+
     def test_fires_event_before_checking
       visit_preview(:default, select_variant: :multiple)
 
