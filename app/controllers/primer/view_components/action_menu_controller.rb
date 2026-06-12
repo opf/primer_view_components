@@ -10,6 +10,7 @@ module Primer
       def landing; end
 
       def deferred
+        sleep params[:delay].to_f if params[:delay].present?
         render "primer/view_components/action_menu/deferred"
       end
 

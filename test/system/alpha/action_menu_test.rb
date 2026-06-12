@@ -890,6 +890,17 @@ module Alpha
       assert_equal page.evaluate_script("document.activeElement").text, "Copy link"
     end
 
+    def test_deferred_loading_overlay_positioned_within_viewport
+      visit_preview(:with_deferred_content_near_bottom_of_viewport)
+      click_on_invoker_button
+
+      # Wait for lazy content to load
+      assert_selector "action-menu ul li", text: "Copy link"
+
+      overlay = find("anchored-position").native.node
+      assert overlay.in_viewport?, "Overlay should be positioned within the viewport after deferred content loads"
+    end
+
     def test_deferred_dialog_opens
       visit_preview(:with_deferred_content)
 
