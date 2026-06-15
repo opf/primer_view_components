@@ -71,6 +71,15 @@ module Primer
           menu.with_caption { "Some caption" }
         end
       end
+
+      # @label With error message
+      # @snapshot
+      def with_error_message
+        render(Primer::OpenProject::InputGroup.new) do |menu|
+          menu.with_text_input(name: "a name", label: "My input group", validation_message: "Custom validation message", value: "Copyable value")
+          menu.with_trailing_action_clipboard_copy_button(id: "button", value: "Copyable value", aria: { label: "Copy some text" })
+        end
+      end
     end
   end
 end

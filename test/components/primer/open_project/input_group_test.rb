@@ -53,6 +53,17 @@ class PrimerOpenProjectInputGroupTest < Minitest::Test
     assert_selector(".FormControl-caption")
   end
 
+  def test_renders_validation_message_outside_flex_row
+    render_inline(Primer::OpenProject::InputGroup.new) do |menu|
+      menu.with_text_input(name: "a name", label: "My input group", value: "Copyable value", validation_message: "Custom validation message")
+      menu.with_trailing_action_clipboard_copy_button(id: "button", value: "Copyable value", aria: { label: "Copy some text" })
+    end
+
+    validation_id = page.find(".InputGroup > .FormControl-inlineValidation", text: "Custom validation message")[:id]
+    assert_selector(%(.FormControl-input[aria-describedby~="#{validation_id}"]))
+    assert_selector(".FormControl-input[aria-invalid]")
+  end
+
   def test_does_not_render_caption_from_system_argument
     render_inline(Primer::OpenProject::InputGroup.new(caption: "Some caption")) do |menu|
       menu.with_text_input(name: "a name", label: "My input group", value: "Copyable value")

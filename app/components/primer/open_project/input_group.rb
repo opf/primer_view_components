@@ -49,6 +49,19 @@ module Primer
       renders_one :text_input, lambda { |readonly: true, **system_arguments|
         deny_single_argument(:input_width, "Set the `input_width` on the `InputGroup`", **system_arguments)
         deny_single_argument(:caption, "Set the `caption` on the `InputGroup`", **system_arguments)
+
+        # Extract validation_message so it can be rendered outside the flex row.
+        # This prevents the trailing action from misaligning when validation is present.
+        @text_input_validation_message = system_arguments.delete(:validation_message)
+        if @text_input_validation_message
+          @text_input_validation_message_id = self.class.generate_id(base_name: "input-group-validation")
+          system_arguments[:invalid] = true
+          system_arguments[:aria] = merge_aria(
+            system_arguments,
+            { aria: { describedby: @text_input_validation_message_id } }
+          )
+        end
+
         system_arguments[:input_width] = @system_arguments[:input_width]
 
         system_arguments[:classes] = class_names(

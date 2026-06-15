@@ -4,6 +4,15 @@
     <%= trailing_action %>
   <% end %>
 
+  <% if @text_input_validation_message %>
+    <div class="FormControl-inlineValidation mt-1" id="<%= @text_input_validation_message_id %>">
+      <span class="FormControl-inlineValidation--visual">
+        <%= render(Primer::Beta::Octicon.new(icon: :"alert-fill", size: :xsmall, aria: { hidden: true })) %>
+      </span>
+      <span><%= @text_input_validation_message %></span>
+    </div>
+  <% end %>
+
   <% if caption %>
     <%= caption %>
   <% end %>
