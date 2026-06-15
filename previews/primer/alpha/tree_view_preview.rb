@@ -197,6 +197,12 @@ module Primer
         })
       end
 
+      # @label Doubled paths
+      # @hidden
+      def doubled_path
+        render_with_template
+      end
+
       private
 
       def coerce_bool(value)

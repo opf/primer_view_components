@@ -1,15 +1,15 @@
 <%= form_with(url: primer_view_components.generic_form_submission_path(format: :json)) do |f| %>
   <%= render(Primer::Alpha::Stack.new) do %>
     <%= render(Primer::Alpha::TreeView.new(form_arguments: { builder: f, name: "folder_structure" })) do |tree| %>
-      <% tree.with_sub_tree(label: "src", expanded: expanded, select_variant: select_variant, value: 0) do |sub_tree| %>
-        <% sub_tree.with_leaf(label: "button.rb", select_variant: select_variant, value: 1, checked: true) %>
-        <% sub_tree.with_leaf(label: "icon_button.rb", current: true, select_variant: select_variant, value: 2) %>
+      <% tree.with_sub_tree(label: "src", expanded: expanded, select_variant: select_variant, value: 0, data: { node_id: "src" }) do |sub_tree| %>
+        <% sub_tree.with_leaf(label: "button.rb", select_variant: select_variant, value: 1, checked: true, data: { node_id: "src-button-rb" }) %>
+        <% sub_tree.with_leaf(label: "icon_button.rb", current: true, select_variant: select_variant, value: 2, data: { node_id: "src-icon-button-rb" }) %>
       <% end %>
 
-      <% tree.with_leaf(label: "action_menu.rb", select_variant: select_variant, value: 3) %>
-      <% tree.with_sub_tree(label: "Docs & legal requirements", select_variant: select_variant, value: 4) do |sub_tree| %>
-        <% sub_tree.with_leaf(label: "Readme.md", select_variant: select_variant, value: 5) %>
-        <% sub_tree.with_leaf(label: "Copyright.md", select_variant: select_variant, value: 6) %>
+      <% tree.with_leaf(label: "action_menu.rb", select_variant: select_variant, value: 3, data: { node_id: "action-menu-rb" }) %>
+      <% tree.with_sub_tree(label: "Docs & legal requirements", select_variant: select_variant, value: 4, data: { node_id: "docs" }) do |sub_tree| %>
+        <% sub_tree.with_leaf(label: "Readme.md", select_variant: select_variant, value: 5, data: { node_id: "docs-readme-md" }) %>
+        <% sub_tree.with_leaf(label: "Copyright.md", select_variant: select_variant, value: 6, data: { node_id: "docs-copyright-md" }) %>
       <% end %>
     <% end %>
 

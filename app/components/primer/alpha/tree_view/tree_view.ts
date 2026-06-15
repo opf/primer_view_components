@@ -179,7 +179,8 @@ export class TreeViewElement extends HTMLElement {
     // behavior for these element types is user- or browser-defined
     if (!(node instanceof HTMLDivElement)) return
 
-    const nodeInfo = this.infoFromNode(node, 'true')
+    const newCheckedValue = this.getNodeCheckedValue(node) === 'true' ? 'false' : 'true'
+    const nodeInfo = this.infoFromNode(node, newCheckedValue)
 
     const checkSuccess = this.dispatchEvent(
       new CustomEvent('treeViewBeforeNodeChecked', {
@@ -191,7 +192,7 @@ export class TreeViewElement extends HTMLElement {
 
     if (!checkSuccess) return
 
-    if (this.getNodeCheckedValue(node) === 'true') {
+    if (newCheckedValue === 'false') {
       this.setNodeCheckedValue(node, 'false')
     } else {
       this.#checkNodeOnly(node)
@@ -270,7 +271,11 @@ export class TreeViewElement extends HTMLElement {
         } else if (this.selectVariant(node) === 'single') {
           event.preventDefault()
 
-          this.#checkNodeOnly(node)
+          if (this.getNodeCheckedValue(node) === 'true') {
+            this.setNodeCheckedValue(node, 'false')
+          } else {
+            this.#checkNodeOnly(node)
+          }
         } else if (node instanceof HTMLAnchorElement) {
           // simulate click on space
           node.click()
@@ -312,7 +317,7 @@ export class TreeViewElement extends HTMLElement {
   }
 
   get activeNodes() {
-    return document.querySelectorAll('[aria-checked="true"]')
+    return this.querySelectorAll('[aria-checked="true"]')
   }
 
   expandAtPath(path: string[]) {
@@ -359,6 +364,7 @@ export class TreeViewElement extends HTMLElement {
 
   #checkNodeOnly(node: Element) {
     for (const el of this.activeNodes) {
+      if (el === node) continue
       this.setNodeCheckedValue(el, 'false')
     }
 
@@ -485,9 +491,12 @@ export class TreeViewElement extends HTMLElement {
       newInput.removeAttribute('data-target')
       newInput.removeAttribute('form')
 
-      const payload: {path: string[]; value?: string} = {
+      const payload: {path: string[]; nodeId?: string; value?: string} = {
         path: this.getNodePath(node),
       }
+
+      const nodeId = node.getAttribute('data-node-id')
+      if (nodeId) payload.nodeId = nodeId
 
       const inputValue = this.getFormInputValueForNode(node)
       if (inputValue) payload.value = inputValue

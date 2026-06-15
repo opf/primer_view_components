@@ -653,37 +653,65 @@ module Alpha
     end
 
     def test_single_select_with_duplicate_paths_selects_clicked_node
-      visit_preview(:single_select)
+      visit_preview(:doubled_path)
 
       nodes = all(selector_for("action_menu.rb"))
-      assert_equal 2, nodes.size
+      assert_equal 3, nodes.size
 
       nodes[1].click
 
-      assert_equal "true", nodes[1]["aria-checked"], "The clicked (second) node should be selected"
-      assert_equal "false", nodes[0]["aria-checked"], "The first node with the same path should not be selected"
+      nodes[1].assert_matches_selector("[aria-checked='true']")
+      nodes[0].assert_matches_selector("[aria-checked='false']")
 
       nodes[0].click
 
-      assert_equal "true", nodes[0]["aria-checked"], "The clicked (first) node should be selected"
-      assert_equal "false", nodes[1]["aria-checked"], "The second node with the same path should not be selected"
+      nodes[0].assert_matches_selector("[aria-checked='true']")
+      nodes[1].assert_matches_selector("[aria-checked='false']")
     end
 
     def test_single_select_with_duplicate_paths_selects_focused_node_on_keyboard
-      visit_preview(:single_select)
+      visit_preview(:doubled_path)
 
       nodes = all(selector_for("action_menu.rb"))
-      assert_equal 2, nodes.size
+      assert_equal 3, nodes.size
 
       nodes[1].send_keys(:space)
 
-      assert_equal "true", nodes[1]["aria-checked"], "The focused (second) node should be selected via keyboard"
-      assert_equal "false", nodes[0]["aria-checked"], "The first node with the same path should not be selected"
+      nodes[1].assert_matches_selector("[aria-checked='true']")
+      nodes[0].assert_matches_selector("[aria-checked='false']")
 
       nodes[0].send_keys(:space)
 
-      assert_equal "true", nodes[0]["aria-checked"], "The focused (first) node should be selected via keyboard"
-      assert_equal "false", nodes[1]["aria-checked"], "The second node with the same path should not be selected"
+      nodes[0].assert_matches_selector("[aria-checked='true']")
+      nodes[1].assert_matches_selector("[aria-checked='false']")
+    end
+
+    def test_fires_check_event_after_single_variant_toggle_off
+      visit_preview(:default, select_variant: :single)
+
+      activate_at_path("src")
+      assert_path_checked "src"
+
+      details = capture_event("treeViewNodeChecked") do
+        activate_at_path("src")
+      end
+
+      assert_equal 1, details.size
+      assert details[0]["node"]
+      assert_equal details[0]["path"], ["src"]
+      assert_equal details[0]["checkedValue"], "false"
+      assert_equal details[0]["previousCheckedValue"], "true"
+    end
+
+    def test_keyboard_toggles_off_already_selected_single_variant
+      visit_preview(:doubled_path)
+
+      nodes = all(selector_for("action_menu.rb"))
+      nodes[0].send_keys(:space)
+      nodes[0].assert_matches_selector("[aria-checked='true']")
+
+      nodes[0].send_keys(:space)
+      nodes[0].assert_matches_selector("[aria-checked='false']")
     end
 
     def test_fires_event_before_checking
@@ -876,8 +904,8 @@ module Alpha
       # for some reason the JSON response is wrapped in HTML, I have no idea why
       response = JSON.parse(find("pre").text)
 
-      assert_equal "{\"path\":[\"src\",\"button.rb\"],\"value\":\"1\"}", response.dig("form_params", "folder_structure", 0)
-      assert_equal "{\"path\":[\"action_menu.rb\"],\"value\":\"3\"}", response.dig("form_params", "folder_structure", 1)
+      assert_equal "{\"path\":[\"src\",\"button.rb\"],\"nodeId\":\"src-button-rb\",\"value\":\"1\"}", response.dig("form_params", "folder_structure", 0)
+      assert_equal "{\"path\":[\"action_menu.rb\"],\"nodeId\":\"action-menu-rb\",\"value\":\"3\"}", response.dig("form_params", "folder_structure", 1)
     end
 
     def test_initial_form_state
@@ -890,7 +918,7 @@ module Alpha
       # for some reason the JSON response is wrapped in HTML, I have no idea why
       response = JSON.parse(find("pre").text)
 
-      assert_equal "{\"path\":[\"src\",\"button.rb\"],\"value\":\"1\"}", response.dig("form_params", "folder_structure", 0)
+      assert_equal "{\"path\":[\"src\",\"button.rb\"],\"nodeId\":\"src-button-rb\",\"value\":\"1\"}", response.dig("form_params", "folder_structure", 0)
     end
 
     def test_form_submission_with_single_select_variant
@@ -904,7 +932,7 @@ module Alpha
       # for some reason the JSON response is wrapped in HTML, I have no idea why
       response = JSON.parse(find("pre").text)
 
-      assert_equal "{\"path\":[\"action_menu.rb\"],\"value\":\"3\"}", response.dig("form_params", "folder_structure", 0)
+      assert_equal "{\"path\":[\"action_menu.rb\"],\"nodeId\":\"action-menu-rb\",\"value\":\"3\"}", response.dig("form_params", "folder_structure", 0)
     end
 
     def test_initial_form_state_for_single_select
@@ -917,7 +945,19 @@ module Alpha
       # for some reason the JSON response is wrapped in HTML, I have no idea why
       response = JSON.parse(find("pre").text)
 
-      assert_equal "{\"path\":[\"src\",\"button.rb\"],\"value\":\"1\"}", response.dig("form_params", "folder_structure", 0)
+      assert_equal "{\"path\":[\"src\",\"button.rb\"],\"nodeId\":\"src-button-rb\",\"value\":\"1\"}", response.dig("form_params", "folder_structure", 0)
+    end
+
+    def test_form_payload_includes_node_id_when_present
+      visit_preview(:form_input, expanded: true, select_variant: :single, route_format: :json)
+
+      activate_at_path("action_menu.rb")
+
+      find("button[type=submit]").click
+
+      response = JSON.parse(find("pre").text)
+
+      assert_equal "{\"path\":[\"action_menu.rb\"],\"nodeId\":\"action-menu-rb\",\"value\":\"3\"}", response.dig("form_params", "folder_structure", 0)
     end
 
     def test_single_select_with_special_character
@@ -932,7 +972,7 @@ module Alpha
       # for some reason the JSON response is wrapped in HTML, I have no idea why
       response = JSON.parse(find("pre").text)
 
-      assert_equal "{\"path\":[\"Docs & legal requirements\"],\"value\":\"4\"}", response.dig("form_params", "folder_structure", 0)
+      assert_equal "{\"path\":[\"Docs & legal requirements\"],\"nodeId\":\"docs\",\"value\":\"4\"}", response.dig("form_params", "folder_structure", 0)
     end
 
     def test_keyboard_focus_moves_to_parent_when_include_fragment_with_role_treeitem_is_collapsed
