@@ -675,12 +675,19 @@ module Alpha
       nodes = all(selector_for("action_menu.rb"))
       assert_equal 3, nodes.size
 
-      nodes[1].send_keys(:space)
+      # icon_button.rb has current: true so it owns tabindex=0. Sending keys directly
+      # to a tabindex=-1 node is unreliable: focusZone redirects focus to the aria-current
+      # item on focusin, so Space would land on the wrong node.
+      # Start from icon_button.rb and navigate down with arrow keys instead.
+      find('[aria-current]').send_keys(:down)
+      keyboard.type(:down)
+      keyboard.type(:space)
 
       nodes[1].assert_matches_selector("[aria-checked='true']")
       nodes[0].assert_matches_selector("[aria-checked='false']")
 
-      nodes[0].send_keys(:space)
+      keyboard.type(:up)
+      keyboard.type(:space)
 
       nodes[0].assert_matches_selector("[aria-checked='true']")
       nodes[1].assert_matches_selector("[aria-checked='false']")
@@ -707,10 +714,13 @@ module Alpha
       visit_preview(:doubled_path)
 
       nodes = all(selector_for("action_menu.rb"))
-      nodes[0].send_keys(:space)
+
+      # Navigate from icon_button.rb (aria-current, tabindex=0) to nodes[0]
+      find('[aria-current]').send_keys(:down)
+      keyboard.type(:space)
       nodes[0].assert_matches_selector("[aria-checked='true']")
 
-      nodes[0].send_keys(:space)
+      keyboard.type(:space)
       nodes[0].assert_matches_selector("[aria-checked='false']")
     end
 
