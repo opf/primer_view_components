@@ -363,6 +363,8 @@ module.exports = new Set([
   'TableHead',
   'TableHeader',
   'TableOverflowWrapper',
+  'TablePagination',
+  'TablePaginationRange',
   'TableRow',
   'TableSortButton',
   'TableSortIcon',

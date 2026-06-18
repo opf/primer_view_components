@@ -39,3 +39,5 @@ en:
     next_page: "Next Page"
     page: "Page %{number}"
     page_with_more: "Page %{number}..."
+    range: "%{start} ‒ %{end} of %{total}"
+    range_announcement: "%{start} through %{end} of %{total}"

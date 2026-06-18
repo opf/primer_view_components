@@ -24,7 +24,8 @@
     grid-template-areas:
     'title'
     'subtitle'
-    'table';
+    'table'
+    'footer';
 }
 
 /* TableTitle */
@@ -207,6 +208,34 @@
     font-weight: var(--base-text-weight-semibold);
     color: var(--fgColor-default);
     align-items: center;
+}
+
+/* Pagination footer --------------------------------------------------------- */
+.TablePagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    column-gap: var(--base-size-16);
+    width: 100%;
+    grid-area: footer;
+    padding: var(--base-size-8) var(--base-size-16);
+    border: var(--borderWidth-thin) solid var(--borderColor-default);
+    border-top-width: 0;
+    border-end-start-radius: var(--borderRadius-medium);
+    border-end-end-radius: var(--borderRadius-medium);
+}
+
+.TablePaginationRange {
+    margin: 0;
+    color: var(--fgColor-muted);
+    font-size: var(--text-body-size-small);
+}
+
+/* The embedded pagination drops its standalone vertical margin and sits at the
+   inline end of the footer (after the range summary). */
+.TablePagination .PaginationContainer {
+    margin: 0;
+    margin-inline-start: auto;
 }
 
 /* Grid layout */

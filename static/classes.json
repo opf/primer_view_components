@@ -749,6 +749,12 @@
   "TableOverflowWrapper": [
     "Primer::OpenProject::DataTable"
   ],
+  "TablePagination": [
+    "Primer::OpenProject::DataTable"
+  ],
+  "TablePaginationRange": [
+    "Primer::OpenProject::DataTable"
+  ],
   "TableRow": [
     "Primer::OpenProject::DataTable"
   ],

@@ -8930,6 +8930,32 @@
             "color-contrast"
           ]
         }
+      },
+      {
+        "preview_path": "primer/open_project/data_table/with_pagination",
+        "name": "with_pagination",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/data_table/with_pagination_using_default_page_index",
+        "name": "with_pagination_using_default_page_index",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
       }
     ]
   },

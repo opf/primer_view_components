@@ -20033,6 +20033,11 @@
         "name": "columns",
         "description": null,
         "parameters": []
+      },
+      {
+        "name": "pagination",
+        "description": null,
+        "parameters": []
       }
     ],
     "methods": [
@@ -20080,6 +20085,32 @@
         "preview_path": "primer/open_project/data_table/playground",
         "name": "playground",
         "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/data_table/with_pagination",
+        "name": "with_pagination",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/data_table/with_pagination_using_default_page_index",
+        "name": "with_pagination_using_default_page_index",
+        "snapshot": "true",
         "skip_rules": {
           "wont_fix": [
             "region"
@@ -20226,6 +20257,63 @@
       {
         "name": "with_header",
         "description": "Provide a custom header renderer.",
+        "parameters": [],
+        "return_types": []
+      }
+    ],
+    "previews": [],
+    "subcomponents": []
+  },
+  {
+    "fully_qualified_name": "Primer::OpenProject::DataTable::PaginationFooter",
+    "description": "This component is part of `Primer::OpenProject::DataTable` and should\nnot be used as a standalone component.\n\nIt renders the table's pagination footer: an optional \"range\" summary\n(e.g. \"1 ‒ 10 of 95\") alongside the paginated navigation provided by\n{{#link_to_component}}Primer::OpenProject::Pagination{{/link_to_component}}.",
+    "accessibility_docs": null,
+    "is_form_component": false,
+    "is_published": true,
+    "requires_js": false,
+    "component": "OpenProject::DataTable::PaginationFooter",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectDataTablePaginationFooter",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/data_table/pagination_footer.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/data_table/pagination_footer/default/",
+    "parameters": [
+      {
+        "name": "current_page",
+        "type": "Integer",
+        "default": "N/A",
+        "description": "The page that is currently being viewed (1-based)."
+      },
+      {
+        "name": "total_count",
+        "type": "Integer, nil",
+        "default": "`nil`",
+        "description": "The total number of items across all pages. Required (together with `page_size`) to render the range summary."
+      },
+      {
+        "name": "page_size",
+        "type": "Integer, nil",
+        "default": "`nil`",
+        "description": "The number of items rendered per page. Required (together with `total_count`) to render the range summary."
+      },
+      {
+        "name": "aria_label",
+        "type": "String, nil",
+        "default": "`nil`",
+        "description": "Accessible name for the pagination navigation landmark."
+      },
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "System arguments passed to the root element. All remaining arguments are forwarded to {{#link_to_component}}Primer::OpenProject::Pagination{{/link_to_component}}."
+      }
+    ],
+    "slots": [],
+    "methods": [
+      {
+        "name": "aria_label",
+        "description": "Returns the value of attribute aria_label.",
         "parameters": [],
         "return_types": []
       }
