@@ -1,7 +1,7 @@
 import {controller} from '@github/catalyst'
 import {CollapsibleElement} from '../collapsible'
 
-@controller
+@controller('collapsible-header')
 class CollapsibleHeaderElement extends CollapsibleElement {
   connectedCallback() {
     if (!this.closest('.Box')) {

@@ -3,7 +3,7 @@ import type {LiveRegionElement} from '@primer/live-region-element'
 
 const SUBMIT_BUTTON_SELECTOR = 'input[type=submit],button[type=submit],button[data-submit-dialog-id]'
 
-@controller
+@controller('danger-dialog-form-helper')
 class DangerDialogFormHelperElement extends HTMLElement {
   @target checkbox: HTMLInputElement | undefined
   @target liveRegion: LiveRegionElement

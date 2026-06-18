@@ -1,6 +1,6 @@
 import {controller} from '@github/catalyst'
 
-@controller
+@controller('page-header')
 class PageHeaderElement extends HTMLElement {
   menuItemClick(event: Event) {
     const currentTarget = event.currentTarget as HTMLButtonElement

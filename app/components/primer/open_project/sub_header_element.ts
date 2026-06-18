@@ -1,6 +1,6 @@
 import {controller, target, targets} from '@github/catalyst'
 
-@controller
+@controller('sub-header')
 class SubHeaderElement extends HTMLElement {
   @target filterInput: HTMLInputElement
   @targets shownItemsOnExpandedFilter: HTMLElement[]

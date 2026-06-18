@@ -18,7 +18,7 @@ type NodeState = {
 
 const ASYNC_DEBOUNCE_MS = 300
 
-@controller
+@controller('filterable-tree-view')
 export class FilterableTreeViewElement extends HTMLElement {
   @target filterInput: HTMLInputElement
   @target filterModeControlList: HTMLElement
