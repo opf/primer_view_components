@@ -135,7 +135,7 @@ Use Catalyst for component behaviors:
 ```typescript
 import {controller, target} from '@github/catalyst';
 
-@controller
+@controller('my-component')
 class MyComponentElement extends HTMLElement {
   @target button: HTMLElement
   

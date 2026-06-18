@@ -49,7 +49,7 @@ Catalyst has `controller` and `target` decorators which you have to import from 
 ```ts
 import {controller, target} from '@github/catalyst';
 
-@controller
+@controller('my-component')
 class MyComponentNameElement extends HTMLElement {
   @target button: HTMLElement
 }
