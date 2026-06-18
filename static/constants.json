@@ -1777,7 +1777,9 @@
     "Column": "Primer::OpenProject::DataTable::Column",
     "GeneratedSlotMethods": "Primer::OpenProject::DataTable::GeneratedSlotMethods",
     "Header": "Primer::OpenProject::DataTable::Header",
-    "SortHeader": "Primer::OpenProject::DataTable::SortHeader"
+    "PaginationFooter": "Primer::OpenProject::DataTable::PaginationFooter",
+    "SortHeader": "Primer::OpenProject::DataTable::SortHeader",
+    "Sorting": "Primer::OpenProject::DataTable::Sorting"
   },
   "Primer::OpenProject::DataTable::Column": {
     "COLUMN_WIDTH_OPTIONS": [
@@ -1786,6 +1788,9 @@
       "auto"
     ],
     "GeneratedSlotMethods": "Primer::OpenProject::DataTable::Column::GeneratedSlotMethods"
+  },
+  "Primer::OpenProject::DataTable::PaginationFooter": {
+    "GeneratedSlotMethods": "Primer::OpenProject::DataTable::PaginationFooter::GeneratedSlotMethods"
   },
   "Primer::OpenProject::DataTable::SortHeader": {
     "ARIA_SORT_OPTIONS": {

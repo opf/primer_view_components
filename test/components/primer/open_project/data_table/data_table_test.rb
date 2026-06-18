@@ -369,6 +369,31 @@ class PrimerOpenProjectDataTableTest < Minitest::Test
     assert_selector(".TableCell", text: "Open actions", count: 3)
   end
 
+  def test_renders_pagination_slot_below_table
+    render_component(data: @data) do |data_table|
+      data_table.with_column(field: :subject, header: "Subject")
+      data_table.with_pagination(
+        current_page: 1,
+        page_count: 3,
+        page_size: 1,
+        total_count: 3,
+        href_builder: ->(page) { "#page-#{page}" }
+      )
+    end
+
+    assert_selector(".TableContainer nav.TablePagination")
+    assert_selector("nav.TablePagination .TablePaginationRange")
+    assert_selector("nav.TablePagination .PaginationContainer .Page[aria-current='page']", text: "1")
+  end
+
+  def test_renders_without_pagination_slot
+    render_component(data: @data) do |data_table|
+      data_table.with_column(field: :subject, header: "Subject")
+    end
+
+    assert_no_selector(".TablePagination")
+  end
+
   private
 
   def body_first_column_texts

@@ -6130,9 +6130,9 @@
       },
       {
         "name": "sort_by",
-        "type": "String, Symbol, nil",
+        "type": "Boolean, Symbol, nil",
         "default": "`nil`",
-        "description": "Sort key used for sorting"
+        "description": "Whether this column is sortable, or the sort strategy to use"
       },
       {
         "name": "row_header",
@@ -6151,6 +6151,46 @@
         "type": "Numeric, String, nil",
         "default": "`nil`",
         "description": "Maximum width"
+      }
+    ]
+  },
+  {
+    "component": "OpenProject::DataTable::PaginationFooter",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectDataTablePaginationFooter",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/data_table/pagination_footer.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/data_table/pagination_footer/default/",
+    "parameters": [
+      {
+        "name": "current_page",
+        "type": "Integer",
+        "default": "N/A",
+        "description": "The page that is currently being viewed (1-based)."
+      },
+      {
+        "name": "total_count",
+        "type": "Integer, nil",
+        "default": "`nil`",
+        "description": "The total number of items across all pages. Required (together with `page_size`) to render the range summary."
+      },
+      {
+        "name": "page_size",
+        "type": "Integer, nil",
+        "default": "`nil`",
+        "description": "The number of items rendered per page. Required (together with `total_count`) to render the range summary."
+      },
+      {
+        "name": "aria_label",
+        "type": "String, nil",
+        "default": "`nil`",
+        "description": "Accessible name for the pagination navigation landmark."
+      },
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "System arguments passed to the root element. All remaining arguments are forwarded to [OpenProject::Pagination](/components/openprojectpagination)."
       }
     ]
   },

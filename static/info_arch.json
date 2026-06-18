@@ -20008,6 +20008,11 @@
         "name": "columns",
         "description": null,
         "parameters": []
+      },
+      {
+        "name": "pagination",
+        "description": null,
+        "parameters": []
       }
     ],
     "methods": [
@@ -20055,6 +20060,32 @@
         "preview_path": "primer/open_project/data_table/playground",
         "name": "playground",
         "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/data_table/with_pagination",
+        "name": "with_pagination",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/data_table/with_pagination_using_default_page_index",
+        "name": "with_pagination_using_default_page_index",
+        "snapshot": "true",
         "skip_rules": {
           "wont_fix": [
             "region"
@@ -20113,9 +20144,9 @@
       },
       {
         "name": "sort_by",
-        "type": "String, Symbol, nil",
+        "type": "Boolean, Symbol, nil",
         "default": "`nil`",
-        "description": "Sort key used for sorting"
+        "description": "Whether this column is sortable, or the sort strategy to use"
       },
       {
         "name": "row_header",
@@ -20136,13 +20167,7 @@
         "description": "Maximum width"
       }
     ],
-    "slots": [
-      {
-        "name": "header",
-        "description": null,
-        "parameters": []
-      }
-    ],
+    "slots": [],
     "methods": [
       {
         "name": "id",
@@ -20201,6 +20226,69 @@
       {
         "name": "with_cell",
         "description": "Provide a custom cell renderer.",
+        "parameters": [],
+        "return_types": []
+      },
+      {
+        "name": "with_header",
+        "description": "Provide a custom header renderer.",
+        "parameters": [],
+        "return_types": []
+      }
+    ],
+    "previews": [],
+    "subcomponents": []
+  },
+  {
+    "fully_qualified_name": "Primer::OpenProject::DataTable::PaginationFooter",
+    "description": "This component is part of `Primer::OpenProject::DataTable` and should\nnot be used as a standalone component.\n\nIt renders the table's pagination footer: an optional \"range\" summary\n(e.g. \"1 ‒ 10 of 95\") alongside the paginated navigation provided by\n{{#link_to_component}}Primer::OpenProject::Pagination{{/link_to_component}}.",
+    "accessibility_docs": null,
+    "is_form_component": false,
+    "is_published": true,
+    "requires_js": false,
+    "component": "OpenProject::DataTable::PaginationFooter",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectDataTablePaginationFooter",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/data_table/pagination_footer.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/data_table/pagination_footer/default/",
+    "parameters": [
+      {
+        "name": "current_page",
+        "type": "Integer",
+        "default": "N/A",
+        "description": "The page that is currently being viewed (1-based)."
+      },
+      {
+        "name": "total_count",
+        "type": "Integer, nil",
+        "default": "`nil`",
+        "description": "The total number of items across all pages. Required (together with `page_size`) to render the range summary."
+      },
+      {
+        "name": "page_size",
+        "type": "Integer, nil",
+        "default": "`nil`",
+        "description": "The number of items rendered per page. Required (together with `total_count`) to render the range summary."
+      },
+      {
+        "name": "aria_label",
+        "type": "String, nil",
+        "default": "`nil`",
+        "description": "Accessible name for the pagination navigation landmark."
+      },
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "System arguments passed to the root element. All remaining arguments are forwarded to {{#link_to_component}}Primer::OpenProject::Pagination{{/link_to_component}}."
+      }
+    ],
+    "slots": [],
+    "methods": [
+      {
+        "name": "aria_label",
+        "description": "Returns the value of attribute aria_label.",
         "parameters": [],
         "return_types": []
       }
@@ -22583,7 +22671,7 @@
   },
   {
     "fully_qualified_name": "Primer::OpenProject::Table::Body",
-    "description": "The `Table`'s body.\n\nThis component is should not be used directly, except for advanced user\ncases.",
+    "description": "The `Table`'s body.\n\nThis component should not be used directly, except for advanced use\ncases.",
     "accessibility_docs": null,
     "is_form_component": false,
     "is_published": true,
@@ -22608,7 +22696,7 @@
   },
   {
     "fully_qualified_name": "Primer::OpenProject::Table::Caption",
-    "description": "The `Table`'s caption.\n\nThis component is should not be used directly, except for advanced user\ncases.",
+    "description": "The `Table`'s caption.\n\nThis component should not be used directly, except for advanced use\ncases.",
     "accessibility_docs": null,
     "is_form_component": false,
     "is_published": true,
@@ -22634,7 +22722,7 @@
   },
   {
     "fully_qualified_name": "Primer::OpenProject::Table::Cell",
-    "description": "A `Table` cell.\n\nThis component is should not be used directly, except for advanced user\ncases.",
+    "description": "A `Table` cell.\n\nThis component should not be used directly, except for advanced use\ncases.",
     "accessibility_docs": null,
     "is_form_component": false,
     "is_published": true,
@@ -22660,7 +22748,7 @@
   },
   {
     "fully_qualified_name": "Primer::OpenProject::Table::ColGroup",
-    "description": "A `Table` column group.\n\nThis component is should not be used directly, except for advanced user\ncases.",
+    "description": "A `Table` column group.\n\nThis component should not be used directly, except for advanced use\ncases.",
     "accessibility_docs": null,
     "is_form_component": false,
     "is_published": true,
@@ -22685,7 +22773,7 @@
   },
   {
     "fully_qualified_name": "Primer::OpenProject::Table::ColGroup::Col",
-    "description": "A `Table` column.\n\nThis component is should not be used directly, except for advanced\nuser cases.",
+    "description": "A `Table` column.\n\nThis component should not be used directly, except for advanced use\ncases.",
     "accessibility_docs": null,
     "is_form_component": false,
     "is_published": true,
@@ -22704,7 +22792,7 @@
   },
   {
     "fully_qualified_name": "Primer::OpenProject::Table::Foot",
-    "description": "The `Table`'s footer.\n\nThis component is should not be used directly, except for advanced user\ncases.",
+    "description": "The `Table`'s footer.\n\nThis component should not be used directly, except for advanced use\ncases.",
     "accessibility_docs": null,
     "is_form_component": false,
     "is_published": true,
@@ -22729,7 +22817,7 @@
   },
   {
     "fully_qualified_name": "Primer::OpenProject::Table::Head",
-    "description": "The `Table`'s head (`thead`) (not to be confused with header cells).\n\nThis component is should not be used directly, except for advanced user\ncases.",
+    "description": "The `Table`'s head (`thead`) (not to be confused with header cells).\n\nThis component should not be used directly, except for advanced use\ncases.",
     "accessibility_docs": null,
     "is_form_component": false,
     "is_published": true,
@@ -22754,7 +22842,7 @@
   },
   {
     "fully_qualified_name": "Primer::OpenProject::Table::Header",
-    "description": "A `Table`'s header cell.\n\nThis component is should not be used directly, except for advanced user\ncases.",
+    "description": "A `Table`'s header cell.\n\nThis component should not be used directly, except for advanced use\ncases.",
     "accessibility_docs": null,
     "is_form_component": false,
     "is_published": true,
@@ -22773,7 +22861,7 @@
   },
   {
     "fully_qualified_name": "Primer::OpenProject::Table::HeaderRow",
-    "description": "The `Table`'s header row.\n\nThis component is should not be used directly, except for advanced user\ncases.",
+    "description": "The `Table`'s header row.\n\nThis component should not be used directly, except for advanced use\ncases.",
     "accessibility_docs": null,
     "is_form_component": false,
     "is_published": true,
@@ -22798,7 +22886,7 @@
   },
   {
     "fully_qualified_name": "Primer::OpenProject::Table::Row",
-    "description": "A `Table` row.\n\nThis component is should not be used directly, except for advanced user\ncases.",
+    "description": "A `Table` row.\n\nThis component should not be used directly, except for advanced use\ncases.",
     "accessibility_docs": null,
     "is_form_component": false,
     "is_published": true,

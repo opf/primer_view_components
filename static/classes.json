@@ -241,9 +241,6 @@
   "ButtonGroup": [
     "Primer::Beta::ButtonGroup"
   ],
-  "ButtonReset": [
-    "Primer::OpenProject::DataTable"
-  ],
   "CollapsibleHeader": [
     "Primer::OpenProject::BorderBox::CollapsibleHeader"
   ],
@@ -729,6 +726,12 @@
     "Primer::OpenProject::DataTable"
   ],
   "TableOverflowWrapper": [
+    "Primer::OpenProject::DataTable"
+  ],
+  "TablePagination": [
+    "Primer::OpenProject::DataTable"
+  ],
+  "TablePaginationRange": [
     "Primer::OpenProject::DataTable"
   ],
   "TableRow": [

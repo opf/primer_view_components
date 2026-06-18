@@ -50,7 +50,51 @@ module Primer
         )
       end
 
+      # @label With Pagination
+      # @snapshot
+      # @param page [Integer] number
+      def with_pagination(page: 1)
+        render_pagination_example(page: page, total_count: 95, page_size: 10, default_page: 1)
+      end
+
+      # @label With Pagination Using Default Page Index
+      # @snapshot
+      # @param page [Integer] number
+      def with_pagination_using_default_page_index(page: nil)
+        render_pagination_example(page: page, total_count: 1000, page_size: 10, default_page: 50)
+      end
+
       private
+
+      def render_pagination_example(page:, total_count:, page_size:, default_page:)
+        page_count = (total_count.to_f / page_size).ceil
+        current_page = (page.presence || default_page).to_i.clamp(1, page_count)
+        offset = (current_page - 1) * page_size
+
+        render_with_template(
+          template: "primer/open_project/data_table_preview/pagination_example",
+          locals: {
+            rows: paginated_sample_rows(total_count)[offset, page_size],
+            current_page: current_page,
+            page_count: page_count,
+            page_size: page_size,
+            total_count: total_count
+          }
+        )
+      end
+
+      def paginated_sample_rows(count)
+        now = Time.now
+
+        count.times.map do |i|
+          DemoProject.new(
+            id: i + 1,
+            name: "Project #{i + 1}",
+            status_code: %w[active on_track at_risk off_track].fetch(i % 4),
+            created_at: now - (i * 86_400) # i days ago
+          )
+        end
+      end
 
       def sample_rows
         now = Time.now

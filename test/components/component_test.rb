@@ -271,6 +271,7 @@ class PrimerComponentTest < Minitest::Test
       "Primer::OpenProject::DangerDialog::FormWrapper",
       "Primer::OpenProject::FilterableTreeView::SubTree",
       "Primer::OpenProject::DataTable::Column",
+      "Primer::OpenProject::DataTable::PaginationFooter",
       "Primer::OpenProject::DataTable::Sorting",
       "Primer::OpenProject::DataTable::SortHeader",
       "Primer::OpenProject::Table::Body",

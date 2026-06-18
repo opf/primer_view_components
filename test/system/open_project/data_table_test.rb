@@ -55,6 +55,45 @@ class IntegrationOpenProjectDataTableTest < System::TestCase
     assert_equal("Project 10", first_column_texts.first)
   end
 
+  def test_with_pagination_preview_renders
+    visit_preview(:with_pagination)
+
+    assert_selector(".TablePagination .TablePaginationRange")
+    range = page.find(".TablePaginationRange")
+    assert_includes(range.text, "1")
+    assert_includes(range.text, "10")
+    assert_includes(range.text, "95")
+
+    assert_equal(10, body_rows.size)
+    assert_equal("Project 1", first_column_texts.first)
+    assert_selector("nav.TablePagination .Page[aria-current='page']", text: "1")
+  end
+
+  def test_with_pagination_navigates_to_next_page
+    visit_preview(:with_pagination)
+
+    page.find("nav.TablePagination .Page", text: "2", exact_text: true).click
+
+    assert_selector("nav.TablePagination .Page[aria-current='page']", text: "2")
+    assert_equal("Project 11", first_column_texts.first)
+
+    range = page.find(".TablePaginationRange")
+    assert_includes(range.text, "11")
+    assert_includes(range.text, "20")
+  end
+
+  def test_with_pagination_using_default_page_index_renders
+    visit_preview(:with_pagination_using_default_page_index)
+
+    assert_selector("nav.TablePagination .Page[aria-current='page']", text: "50")
+    assert_equal("Project 491", first_column_texts.first)
+
+    range = page.find(".TablePaginationRange")
+    assert_includes(range.text, "491")
+    assert_includes(range.text, "500")
+    assert_includes(range.text, "1000")
+  end
+
   private
 
   def body_rows

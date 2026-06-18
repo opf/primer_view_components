@@ -151,6 +151,7 @@
   "Primer::OpenProject::DangerDialog::FormWrapper": "open_project",
   "Primer::OpenProject::DataTable": "open_project",
   "Primer::OpenProject::DataTable::Column": "open_project",
+  "Primer::OpenProject::DataTable::PaginationFooter": "open_project",
   "Primer::OpenProject::DataTable::SortHeader": "open_project",
   "Primer::OpenProject::DragHandle": "open_project",
   "Primer::OpenProject::FeedbackDialog": "open_project",

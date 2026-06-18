@@ -63,6 +63,8 @@ module Primer
         column
       }
 
+      renders_one :pagination, Primer::OpenProject::DataTable::PaginationFooter
+
       # @param data [Array, ActiveRecord::Relation]
       #   A collection of rows that will be rendered inside the table
       # @param cell_padding [Symbol]
