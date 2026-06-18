@@ -288,7 +288,7 @@ module Primer
       end
 
       def render_mobile_menu?
-        actions.count > 1
+        actions.many?
       end
 
       def show_state?
