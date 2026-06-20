@@ -7982,6 +7982,18 @@
             "description": "Name of {{link_to_octicons}} to use instead of text. If an [icon](https://primer.style/octicons/usage-guidelines/) is provided, a {{#link_to_component}}Primer::Beta::IconButton{{/link_to_component}} will be rendered. Otherwise a {{#link_to_component}}Primer::Beta::Button{{/link_to_component}} will be rendered."
           },
           {
+            "name": "counter",
+            "type": "Boolean",
+            "default": "N/A",
+            "description": "When true, renders a dynamic selection counter on the show button that updates as items are selected."
+          },
+          {
+            "name": "counter_arguments",
+            "type": "Hash",
+            "default": "N/A",
+            "description": "System arguments forwarded to the trailing Counter (e.g. `scheme:`, `limit:`). The `data-target` wiring is applied automatically and cannot be overridden."
+          },
+          {
             "name": "system_arguments",
             "type": "Hash",
             "default": "N/A",
@@ -8268,6 +8280,19 @@
       {
         "preview_path": "primer/alpha/select_panel/with_dynamic_label_and_aria_prefix",
         "name": "with_dynamic_label_and_aria_prefix",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/alpha/select_panel/with_counter",
+        "name": "with_counter",
         "snapshot": "false",
         "skip_rules": {
           "wont_fix": [
