@@ -20383,25 +20383,25 @@
       {
         "name": "filter_input_arguments",
         "type": "Hash",
-        "default": "`DEFAULT_FILTER_INPUT_ARGUMENTS.dup`",
+        "default": "`{}`",
         "description": "Arguments that will be passed to the {{#link_to_component}}Primer::Alpha::TextField{{/link_to_component}} component."
       },
       {
         "name": "filter_mode_control_arguments",
         "type": "Hash",
-        "default": "`DEFAULT_FILTER_MODE_CONTROL_ARGUMENTS.dup`",
+        "default": "`{}`",
         "description": "Arguments that will be passed to the {{#link_to_component}}Primer::Alpha::SegmentedControl{{/link_to_component}} component."
       },
       {
         "name": "include_sub_items_check_box_arguments",
         "type": "Hash",
-        "default": "`DEFAULT_INCLUDE_SUB_ITEMS_CHECK_BOX_ARGUMENTS.dup`",
+        "default": "`{}`",
         "description": "Arguments that will be passed to the {{#link_to_component}}Primer::Alpha::CheckBox{{/link_to_component}} component."
       },
       {
         "name": "no_results_node_arguments",
         "type": "Hash",
-        "default": "`DEFAULT_NO_RESULTS_NODE_ARGUMENTS.dup`",
+        "default": "`{}`",
         "description": "Arguments that will be passed to a {{#link_to_component}}Primer::Alpha::TreeView::LeafNode{{/link_to_component}} component that appears when no items match the filter criteria."
       }
     ],
@@ -21059,6 +21059,19 @@
         "preview_path": "primer/open_project/input_group/with_caption",
         "name": "with_caption",
         "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/input_group/with_error_message",
+        "name": "with_error_message",
+        "snapshot": "true",
         "skip_rules": {
           "wont_fix": [
             "region"
@@ -21801,8 +21814,18 @@
         "parameters": []
       },
       {
+        "name": "quick_sort",
+        "description": "A slot for a generic sorting component. Will be rendered next to the search input",
+        "parameters": []
+      },
+      {
+        "name": "quick_group",
+        "description": "A slot for a generic sorting component. Will be rendered next to the sorting button",
+        "parameters": []
+      },
+      {
         "name": "quick_filters",
-        "description": "Quick filters shown in the left pane next to the search bar (0–5 items).\nHidden on mobile. Requires all_filters_button to be set when used.\nSupports ActionMenus, Buttons, IconButtons, SelectPanels, and SegmentedControls inside the block.",
+        "description": "Quick filters shown in the left pane next to the search bar (0–5 items total across all types).\nHidden on smaller screens when more than one `quick_filter` is provided. Requires `filter_button` when using more than one `quick_filter`.\nSupports ActionMenus, Buttons, IconButtons, SelectPanels, and SegmentedControls inside the block.",
         "parameters": []
       },
       {
@@ -22114,12 +22137,12 @@
     "is_form_component": false,
     "is_published": true,
     "requires_js": false,
-    "component": "OpenProject::SubHeader::QuickActionComponent",
+    "component": "OpenProject::SubHeader::QuickAction",
     "status": "open_project",
     "a11y_reviewed": false,
-    "short_name": "OpenProjectSubHeaderQuickActionComponent",
-    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/sub_header/quick_filter.rb",
-    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/sub_header/quick_filter/default/",
+    "short_name": "OpenProjectSubHeaderQuickAction",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/sub_header/quick_action_component.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/sub_header/quick_action/default/",
     "parameters": [],
     "slots": [],
     "methods": [],

@@ -6188,25 +6188,25 @@
       {
         "name": "filter_input_arguments",
         "type": "Hash",
-        "default": "`DEFAULT_FILTER_INPUT_ARGUMENTS.dup`",
+        "default": "`{}`",
         "description": "Arguments that will be passed to the [TextField](/components/alpha/textfield) component."
       },
       {
         "name": "filter_mode_control_arguments",
         "type": "Hash",
-        "default": "`DEFAULT_FILTER_MODE_CONTROL_ARGUMENTS.dup`",
+        "default": "`{}`",
         "description": "Arguments that will be passed to the [SegmentedControl](/components/alpha/segmentedcontrol) component."
       },
       {
         "name": "include_sub_items_check_box_arguments",
         "type": "Hash",
-        "default": "`DEFAULT_INCLUDE_SUB_ITEMS_CHECK_BOX_ARGUMENTS.dup`",
+        "default": "`{}`",
         "description": "Arguments that will be passed to the [CheckBox](/components/alpha/checkbox) component."
       },
       {
         "name": "no_results_node_arguments",
         "type": "Hash",
-        "default": "`DEFAULT_NO_RESULTS_NODE_ARGUMENTS.dup`",
+        "default": "`{}`",
         "description": "Arguments that will be passed to a [TreeView::LeafNode](/components/alpha/treeviewleafnode) component that appears when no items match the filter criteria."
       }
     ]
@@ -6600,12 +6600,12 @@
     ]
   },
   {
-    "component": "OpenProject::SubHeader::QuickActionComponent",
+    "component": "OpenProject::SubHeader::QuickAction",
     "status": "open_project",
     "a11y_reviewed": false,
-    "short_name": "OpenProjectSubHeaderQuickActionComponent",
-    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/sub_header/quick_filter.rb",
-    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/sub_header/quick_filter/default/",
+    "short_name": "OpenProjectSubHeaderQuickAction",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/sub_header/quick_action_component.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/sub_header/quick_action/default/",
     "parameters": []
   },
   {
