@@ -297,6 +297,8 @@ module Primer
         :warning
       ].freeze
 
+      DEFAULT_COUNTER_ARGUMENTS = { hide_if_zero: true }.freeze
+
       # The URL to fetch search results from.
       #
       # @return [String]
@@ -506,8 +508,10 @@ module Primer
       # Adds a show button (i.e. a button) that will open the panel when clicked.
       #
       # @param icon [String] Name of <%= link_to_octicons %> to use instead of text. If an [icon](https://primer.style/octicons/usage-guidelines/) is provided, a <%= link_to_component(Primer::Beta::IconButton) %> will be rendered. Otherwise a <%= link_to_component(Primer::Beta::Button) %> will be rendered.
+      # @param counter [Boolean] When true, renders a dynamic selection counter on the show button that updates as items are selected.
+      # @param counter_arguments [Hash] System arguments forwarded to the trailing Counter (e.g. `scheme:`, `limit:`). The `data-target` wiring is applied automatically and cannot be overridden.
       # @param system_arguments [Hash] The arguments accepted by <%= link_to_component(Primer::Beta::Button) %>.
-      renders_one :show_button, lambda { |icon: nil, **system_arguments|
+      renders_one :show_button, lambda { |icon: nil, counter: false, counter_arguments: {}, **system_arguments|
         system_arguments[:id] = "#{@panel_id}-button"
 
         system_arguments[:aria] = merge_aria(
@@ -515,10 +519,16 @@ module Primer
           { aria: { controls: "#{@panel_id}-dialog", "haspopup": "dialog", "expanded": "false" } }
         )
 
+        if counter && icon.present? && should_raise_error?
+          raise ArgumentError, "`counter:` is not supported on icon show buttons"
+        end
+
         if icon.present?
           Primer::Beta::IconButton.new(icon: icon, **system_arguments)
         else
-          Primer::Beta::Button.new(**system_arguments)
+          button = Primer::Beta::Button.new(**system_arguments)
+          button.with_trailing_visual_counter(**dynamic_counter_arguments(counter_arguments)) if counter
+          button
         end
       }
 
@@ -544,6 +554,12 @@ module Primer
 
       def multi_select?
         select_variant == :multiple
+      end
+
+      def dynamic_counter_arguments(counter_arguments)
+        merged = DEFAULT_COUNTER_ARGUMENTS.merge(counter_arguments)
+        merged[:data] = merge_data(merged, { data: { targets: "select-panel.dynamicLabelCounts" } })
+        merged
       end
     end
   end

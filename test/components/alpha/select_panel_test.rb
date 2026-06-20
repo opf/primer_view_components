@@ -189,6 +189,41 @@ module Primer
 
          assert_selector(".Button--iconOnly")
       end
+
+      def test_counter_renders_wired_trailing_counter
+        render_inline(Primer::Alpha::SelectPanel.new(fetch_strategy: :local, select_variant: :multiple)) do |panel|
+          panel.with_show_button(counter: true) { "Assignees" }
+        end
+
+        assert_selector("span.Counter[data-targets~='select-panel.dynamicLabelCounts'][hidden]", visible: :all)
+      end
+
+      def test_counter_is_absent_by_default
+        render_inline(Primer::Alpha::SelectPanel.new(fetch_strategy: :local, select_variant: :multiple)) do |panel|
+          panel.with_show_button { "Assignees" }
+        end
+
+        refute_selector("span.Counter[data-targets~='select-panel.dynamicLabelCounts']", visible: :all)
+      end
+
+      def test_counter_arguments_merge_and_force_target
+        render_inline(Primer::Alpha::SelectPanel.new(fetch_strategy: :local, select_variant: :multiple)) do |panel|
+          panel.with_show_button(counter: true, counter_arguments: { scheme: :primary, data: { foo: "bar" } }) { "Assignees" }
+        end
+
+        # caller data preserved AND target forced in
+        assert_selector("span.Counter.Counter--primary[data-targets~='select-panel.dynamicLabelCounts'][data-foo='bar']", visible: :all)
+      end
+
+      def test_counter_with_icon_raises
+        error = assert_raises(ArgumentError) do
+          render_inline(Primer::Alpha::SelectPanel.new(fetch_strategy: :local, select_variant: :multiple)) do |panel|
+            panel.with_show_button(counter: true, icon: :gear) { "Assignees" }
+          end
+        end
+
+        assert_match(/counter/i, error.message)
+      end
     end
   end
 end
