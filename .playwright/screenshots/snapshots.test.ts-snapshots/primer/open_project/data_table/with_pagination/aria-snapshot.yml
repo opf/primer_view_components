@@ -7,46 +7,46 @@
       - columnheader "Status"
       - columnheader "Created"
   - rowgroup:
-    - row "Project 1 active 2026-06-18":
+    - row "Project 1 active 2026-06-20":
       - rowheader "Project 1"
       - cell "active"
-      - cell "2026-06-18"
-    - row "Project 2 on_track 2026-06-17":
+      - cell "2026-06-20"
+    - row "Project 2 on_track 2026-06-19":
       - rowheader "Project 2"
       - cell "on_track"
-      - cell "2026-06-17"
-    - row "Project 3 at_risk 2026-06-16":
+      - cell "2026-06-19"
+    - row "Project 3 at_risk 2026-06-18":
       - rowheader "Project 3"
       - cell "at_risk"
-      - cell "2026-06-16"
-    - row "Project 4 off_track 2026-06-15":
+      - cell "2026-06-18"
+    - row "Project 4 off_track 2026-06-17":
       - rowheader "Project 4"
       - cell "off_track"
-      - cell "2026-06-15"
-    - row "Project 5 active 2026-06-14":
+      - cell "2026-06-17"
+    - row "Project 5 active 2026-06-16":
       - rowheader "Project 5"
       - cell "active"
-      - cell "2026-06-14"
-    - row "Project 6 on_track 2026-06-13":
+      - cell "2026-06-16"
+    - row "Project 6 on_track 2026-06-15":
       - rowheader "Project 6"
       - cell "on_track"
-      - cell "2026-06-13"
-    - row "Project 7 at_risk 2026-06-12":
+      - cell "2026-06-15"
+    - row "Project 7 at_risk 2026-06-14":
       - rowheader "Project 7"
       - cell "at_risk"
-      - cell "2026-06-12"
-    - row "Project 8 off_track 2026-06-11":
+      - cell "2026-06-14"
+    - row "Project 8 off_track 2026-06-13":
       - rowheader "Project 8"
       - cell "off_track"
-      - cell "2026-06-11"
-    - row "Project 9 active 2026-06-10":
+      - cell "2026-06-13"
+    - row "Project 9 active 2026-06-12":
       - rowheader "Project 9"
       - cell "active"
-      - cell "2026-06-10"
-    - row "Project 10 on_track 2026-06-09":
+      - cell "2026-06-12"
+    - row "Project 10 on_track 2026-06-11":
       - rowheader "Project 10"
       - cell "on_track"
-      - cell "2026-06-09"
+      - cell "2026-06-11"
 - navigation "Pagination":
   - paragraph: 1 through 10 of 95
   - link "Page 1":
