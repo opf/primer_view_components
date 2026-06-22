@@ -1,6 +1,6 @@
 import {controller, target} from '@github/catalyst'
 
-@controller
+@controller('zen-mode-button')
 class ZenModeButtonElement extends HTMLElement {
   @target button: HTMLElement
   inZenMode = false

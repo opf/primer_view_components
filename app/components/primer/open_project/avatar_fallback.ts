@@ -13,7 +13,7 @@ import {controller} from '@github/catalyst'
  * due to a Catalyst bug where @attr accessors aren't properly initialized
  * when elements have pre-existing attribute values.
  */
-@controller
+@controller('avatar-fallback')
 export class AvatarFallbackElement extends HTMLElement {
   private img: HTMLImageElement | null = null
   private testImage: HTMLImageElement | null = null
