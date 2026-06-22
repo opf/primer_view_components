@@ -269,9 +269,7 @@ module Primer
           key = :"page-#{page[:num]}-break"
           content = "…"
 
-          props.merge!(
-            role: "presentation"
-          )
+          props[:role] = "presentation"
         end
 
         props[:class] = class_names("Page", props[:class])

@@ -40,7 +40,7 @@ module Primer
               @mobile_actions ||= []
               mobile_component =  Primer::Beta::IconButton.new(display: MOBILE_ACTIONS_DISPLAY,
                                                                **icon_args)
-              @mobile_actions.push({ component: mobile_component, block: block})
+              @mobile_actions.push({ component: mobile_component, block: block })
 
               Primer::OpenProject::SubHeader::Button.new(display: DESKTOP_ACTIONS_DISPLAY, **kwargs)
             end
@@ -65,9 +65,9 @@ module Primer
             mobile_component =  Primer::OpenProject::SubHeader::Menu.new(icon_only: true,
                                                                          display: MOBILE_ACTIONS_DISPLAY,
                                                                          **kwargs)
-            @mobile_actions.push({ component: mobile_component, block: block})
+            @mobile_actions.push({ component: mobile_component, block: block })
 
-            Primer::OpenProject::SubHeader::Menu.new(icon_only: icon_only,display: DESKTOP_ACTIONS_DISPLAY, **kwargs)
+            Primer::OpenProject::SubHeader::Menu.new(icon_only: icon_only, display: DESKTOP_ACTIONS_DISPLAY, **kwargs)
           },
         }
       }
@@ -146,7 +146,7 @@ module Primer
             if icon_only
               Primer::Beta::IconButton.new(**icon_args)
             else
-              @mobile_filter_button =  Primer::Beta::IconButton.new(display: MOBILE_ACTIONS_DISPLAY,
+              @mobile_filter_button = Primer::Beta::IconButton.new(display: MOBILE_ACTIONS_DISPLAY,
                                                                     **icon_args)
 
               Primer::OpenProject::SubHeader::Button.new(display: DESKTOP_ACTIONS_DISPLAY, **kwargs)
@@ -194,18 +194,18 @@ module Primer
       }
 
       renders_one :segmented_control, lambda { |**system_arguments, &block|
-          deny_tag_argument(**system_arguments)
-          system_arguments[:mr] ||= 2
-          system_arguments = set_as_hidden_filter_target(system_arguments)
+        deny_tag_argument(**system_arguments)
+        system_arguments[:mr] ||= 2
+        system_arguments = set_as_hidden_filter_target(system_arguments)
 
-          @segmented_control_block = block
-          @mobile_segmented_control = Primer::OpenProject::SubHeader::SegmentedControl.new(
-            hide_labels: true,
-            display: MOBILE_ACTIONS_DISPLAY,
-            **system_arguments
-          )
+        @segmented_control_block = block
+        @mobile_segmented_control = Primer::OpenProject::SubHeader::SegmentedControl.new(
+          hide_labels: true,
+          display: MOBILE_ACTIONS_DISPLAY,
+          **system_arguments
+        )
 
-          Primer::OpenProject::SubHeader::SegmentedControl.new(display: DESKTOP_ACTIONS_DISPLAY, **system_arguments)
+        Primer::OpenProject::SubHeader::SegmentedControl.new(display: DESKTOP_ACTIONS_DISPLAY, **system_arguments)
       }
 
       renders_one :text, lambda { |**system_arguments|

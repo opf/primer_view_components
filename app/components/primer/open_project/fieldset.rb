@@ -18,7 +18,7 @@ module Primer
       # @param legend_text [String] A legend should be short and concise. The String will also be read by assistive technology.
       # @param visually_hide_legend [Boolean] Controls if the legend is visible. If `true`, screen reader only text will be added.
       # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
-      def initialize(legend_text: nil, visually_hide_legend: false, **system_arguments) # rubocop:disable Lint/MissingSuper
+      def initialize(legend_text: nil, visually_hide_legend: false, **system_arguments)
         @legend_text = legend_text
         @visually_hide_legend = visually_hide_legend
         @system_arguments = deny_tag_argument(**system_arguments)
@@ -40,7 +40,7 @@ module Primer
 
         attr_reader :text
 
-        def initialize(text: nil, visually_hide_legend: false, **system_arguments) # rubocop:disable Lint/MissingSuper
+        def initialize(text: nil, visually_hide_legend: false, **system_arguments)
           @text = text
 
           @system_arguments = deny_tag_argument(**system_arguments)

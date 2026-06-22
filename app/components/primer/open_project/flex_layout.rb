@@ -29,10 +29,10 @@ module Primer
         # no slot provided
         return false if rows.empty? && columns.empty? && boxes.empty?
 
-        if [rows, columns, boxes].count { |arr| !arr.empty? } == 1
+        if [rows, columns, boxes].one? { |arr| !arr.empty? }
           # only rows or columns or boxes are used
           true
-        elsif [rows, columns, boxes].count { |arr| !arr.empty? } > 1
+        elsif [rows, columns, boxes].many? { |arr| !arr.empty? }
           # rows, columns and boxes are used together, which is not allowed
           raise ArgumentError, "You can't mix row, column and box slots"
         end
