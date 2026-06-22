@@ -1,5 +1,5 @@
 ---
-'@openproject/primer-view-components': patch
+'@openproject/primer-view-components': minor
 ---
 
 Fix selection of nodes with the same path in Primer::Alpha::TreeView
