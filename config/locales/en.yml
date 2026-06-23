@@ -5,6 +5,7 @@ en:
   button_close: "Close"
   button_delete: "Delete"
   button_delete_permanently: "Delete permanently"
+  button_all_filters: "All filters"
   button_filter: "Filter"
   button_save: "Save"
 

@@ -131,9 +131,10 @@ module Primer
       # To render custom content, call the `with_filter_component` method and pass a block that returns HTML.
       renders_one :filter_button, types: {
         button: {
-          renders: lambda { |icon_only: false, leading_icon: :filter, mobile_label: I18n.t("button_filter"), **kwargs|
+          renders: lambda { |icon_only: false, leading_icon: :filter, mobile_label: I18n.t("button_all_filters"), **kwargs|
             kwargs[:mr] ||= 2
             kwargs[:icon] = leading_icon
+            kwargs[:scheme] ||= :invisible
 
             kwargs[:aria] ||= merge_aria(
               kwargs,
@@ -226,7 +227,7 @@ module Primer
 
       # @param collapsed_search [Boolean] When true, the search bar starts collapsed as an icon button on all screen sizes. Clicking expands it.
       # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
-      def initialize(collapsed_search: false, **system_arguments)
+      def initialize(collapsed_search: true, **system_arguments)
         @collapsed_search = collapsed_search
         @system_arguments = system_arguments
         @system_arguments[:tag] = :"sub-header"

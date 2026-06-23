@@ -17,7 +17,7 @@ class IntegrationOpenProjectSubHeaderTest < System::TestCase
   end
 
   def test_clear_button_functionality
-    visit_preview(:playground, show_clear_button: true)
+    visit_preview(:playground, show_clear_button: true, collapsed_search: false)
     # no clear button with empty value
     assert_no_selector("button.FormControl-input-trailingAction")
 

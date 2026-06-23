@@ -137,6 +137,14 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
     assert_selector(".SubHeader-leftPane .Button--iconOnly .octicon-filter")
   end
 
+  def test_filter_button_uses_invisible_scheme
+    render_inline(Primer::OpenProject::SubHeader.new) do |component|
+      component.with_filter_button { "Filter" }
+    end
+
+    assert_selector(".SubHeader .Button--invisible")
+  end
+
   def test_renders_a_custom_filter_button
     render_inline(Primer::OpenProject::SubHeader.new) do |component|
       component.with_filter_component do
@@ -229,8 +237,8 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
     assert_no_selector(".FormControl-input-trailingAction[data-action=\"click:primer-text-field#clearContents\"]")
   end
 
-  def test_renders_collapsed_search
-    render_inline(Primer::OpenProject::SubHeader.new(collapsed_search: true)) do |component|
+  def test_renders_collapsed_search_per_default
+    render_inline(Primer::OpenProject::SubHeader.new) do |component|
       component.with_filter_input(name: "filter", label: "Filter")
     end
 
@@ -243,7 +251,7 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
   end
 
   def test_collapsed_search_trigger_visible_on_all_screen_sizes
-    render_inline(Primer::OpenProject::SubHeader.new(collapsed_search: true)) do |component|
+    render_inline(Primer::OpenProject::SubHeader.new) do |component|
       component.with_filter_input(name: "filter", label: "Filter")
     end
 
@@ -252,8 +260,8 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
     assert_no_selector("[data-action='click:sub-header#expandFilterInput'].d-md-none")
   end
 
-  def test_default_search_trigger_hidden_on_desktop
-    render_inline(Primer::OpenProject::SubHeader.new) do |component|
+  def test_expanded_search_trigger_hidden_on_desktop
+    render_inline(Primer::OpenProject::SubHeader.new(collapsed_search: false)) do |component|
       component.with_filter_input(name: "filter", label: "Filter")
     end
 
@@ -386,5 +394,30 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
 
     assert_no_selector(".d-none.d-md-flex .SortFilter")
     assert_no_selector(".d-none.d-md-flex .GroupFilter")
+  end
+
+  def test_collapsed_search_auto_enabled_when_quick_filter_present
+    render_inline(Primer::OpenProject::SubHeader.new) do |component|
+      component.with_filter_input(name: "filter", label: "Filter")
+      component.with_quick_filter { "<span class='MyQuickFilter'>Status</span>".html_safe }
+    end
+
+    # Filter container is hidden (collapsed_search auto-detected as true)
+    assert_selector(".SubHeader-filterContainer.d-none")
+    assert_no_selector(".SubHeader-filterContainer.d-md-flex")
+    # Trigger is visible on all screen sizes (no d-sm-none)
+    assert_no_selector("[data-action='click:sub-header#expandFilterInput'].d-md-none")
+  end
+
+  def test_explicit_collapsed_search_false_overrides_auto_collapse
+    render_inline(Primer::OpenProject::SubHeader.new(collapsed_search: false)) do |component|
+      component.with_filter_input(name: "filter", label: "Filter")
+      component.with_quick_filter { "<span class='MyQuickFilter'>Status</span>".html_safe }
+    end
+
+    # Filter container is NOT hidden despite quick_filter being present
+    assert_selector(".SubHeader-filterContainer.d-md-flex")
+    # Trigger is mobile-only (d-sm-none) since collapsed_search is false
+    assert_selector("[data-action='click:sub-header#expandFilterInput'].d-md-none")
   end
 end
