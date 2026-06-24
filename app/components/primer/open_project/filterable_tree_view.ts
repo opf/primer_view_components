@@ -119,7 +119,8 @@ export class FilterableTreeViewElement extends HTMLElement {
           }
 
           this.#checkedNodeIds.set(nodeId, nodeInfo.checkedValue)
-          const payload: {path: string[]; value?: string} = {path: nodeInfo.path}
+          const payload: {path: string[]; nodeId?: string; value?: string} = {path: nodeInfo.path}
+          payload.nodeId = nodeId
           const dataValue = node.getAttribute('data-value')
           if (dataValue) payload.value = dataValue
           this.#checkedNodeFormPayloads.set(nodeId, payload)
