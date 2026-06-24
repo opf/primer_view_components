@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## 0.88.0
+
+### Minor Changes
+
+- [#475](https://github.com/opf/primer_view_components/pull/475) [`971cce2`](https://github.com/opf/primer_view_components/commit/971cce293e17f5d50e171aa8bfe17a39d2353ae7) Thanks [@HDinger](https://github.com/HDinger)! - Fix selection of nodes with the same path in Primer::Alpha::TreeView
+
+  When a `[role=treeitem]` element carries a `data-node-id` attribute, that id is now included as `nodeId` in the hidden form input payload (`{path, nodeId?, value?}`). Trees with duplicate-path nodes should set `data-node-id` to a stable unique identifier so the server can distinguish which node was selected.
+
+  **Breaking change in `TreeViewElement#checkOnlyAtPath`:** if the given path is not found the method is now a no-op. Previously it would uncheck all active nodes before failing to check the missing node, which could be used as an indirect "clear selection" mechanism. Use explicit `setNodeCheckedValue(node, 'false')` calls if that behaviour is needed.
+
+### Patch Changes
+
+- [#477](https://github.com/opf/primer_view_components/pull/477) [`5877f1b`](https://github.com/opf/primer_view_components/commit/5877f1bf19827ab15f4f6ea3617a761c429db467) Thanks [@HDinger](https://github.com/HDinger)! - Align Primer::OpenProject::InputGroup with error messages
+
 ## 0.87.0
 
 ### Minor Changes
