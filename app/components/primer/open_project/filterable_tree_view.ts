@@ -69,6 +69,10 @@ export class FilterableTreeViewElement extends HTMLElement {
     return !!this.#src
   }
 
+  get #clientHighlightsEnabled(): boolean {
+    return this.getAttribute('data-show-search-highlighting') !== 'false'
+  }
+
   handleEvent(event: Event) {
     if (event.target === this.filterModeControl) {
       this.#handleFilterModeEvent(event)
@@ -372,12 +376,12 @@ export class FilterableTreeViewElement extends HTMLElement {
 
       if (requestWasFiltered) {
         this.#expandAllSubTrees()
-        this.#applyAsyncHighlights(query)
+        if (this.#clientHighlightsEnabled) this.#applyAsyncHighlights(query)
         const hasResults = !!this.treeViewList?.querySelector('[role=treeitem]')
         this.noResultsMessage.toggleAttribute('hidden', hasResults)
         this.treeViewList?.toggleAttribute('hidden', !hasResults)
       } else {
-        this.#removeHighlights()
+        if (this.#clientHighlightsEnabled) this.#removeHighlights()
         this.#restoreExpansionState()
         this.noResultsMessage.setAttribute('hidden', 'hidden')
         this.treeViewList?.removeAttribute('hidden')
