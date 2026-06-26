@@ -284,25 +284,29 @@
 
     /* The visual icons should appear vertically centered for single-line items, but remain at the top for items that wrap
     across more lines. */
+    align-self: baseline;
     height: var(--custom-line-height, 1.3rem);
     color: var(--fgColor-muted);
     align-items: center;
   }
 
   & .TreeViewItemLeadingAction {
-    display: flex;
-    color: var(--fgColor-muted);
     grid-area: leadingAction;
-
-    & > button {
-      flex-shrink: 1;
-    }
   }
 
   & .TreeViewItemTrailingAction {
+    grid-area: trailingAction;
+  }
+
+  & .TreeViewItemTrailingAction,
+  & .TreeViewItemLeadingAction {
     display: flex;
     color: var(--fgColor-muted);
-    grid-area: trailingAction;
+    /* The dynamic top and bottom padding to maintain the minimum item height for single line items while cancelling out the invisible area of the button */
+    /* stylelint-disable-next-line primer/spacing */
+    padding-top: calc((var(--min-item-height) - var(--custom-line-height, 1.3rem) - 12px) / 2);
+    /* stylelint-disable-next-line primer/spacing */
+    padding-bottom: calc((var(--min-item-height) - var(--custom-line-height, 1.3rem) - 12px) / 2);
 
     & > button {
       flex-shrink: 1;
