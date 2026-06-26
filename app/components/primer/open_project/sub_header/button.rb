@@ -35,7 +35,7 @@ module Primer
       def call
         render(@button) do |button|
           button.with_leading_visual_icon(icon: @icon)
-          content
+          content || I18n.t("button_all_filters")
         end
       end
     end

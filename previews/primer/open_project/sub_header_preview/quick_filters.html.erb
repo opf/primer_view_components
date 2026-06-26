@@ -1,7 +1,7 @@
-<%= render(Primer::OpenProject::SubHeader.new(collapsed_search: true)) do |component|
+<%= render(Primer::OpenProject::SubHeader.new) do |component|
   component.with_filter_input(name: "filter", label: "Filter")
 
-  component.with_filter_button(mobile_label: "All filters") do
+  component.with_filter_button do
     "All filters"
   end
 

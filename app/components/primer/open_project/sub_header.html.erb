@@ -7,6 +7,14 @@
 
     <%= render @collapsed_filter_trigger if @collapsed_filter_trigger.present? %>
 
+    <%= segmented_control %>
+
+    <% if @segmented_control_block.present? %>
+      <%= render(@mobile_segmented_control) do |control| %>
+        <% @segmented_control_block.call(control) %>
+      <% end %>
+    <% end %>
+
     <%= quick_sort %>
     <%= quick_group %>
     <% quick_filters.each do |quick_filter| %>
@@ -15,14 +23,6 @@
 
     <%= render(@mobile_filter_button) if @mobile_filter_button.present? %>
     <%= filter_button %>
-
-    <%= segmented_control %>
-
-    <% if @segmented_control_block.present? %>
-      <%= render(@mobile_segmented_control) do |control| %>
-        <% @segmented_control_block.call(control) %>
-      <% end %>
-    <% end %>
   </div>
 
   <div class="SubHeader-middlePane SubHeader-hiddenOnExpand">

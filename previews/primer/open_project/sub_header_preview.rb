@@ -22,16 +22,17 @@ module Primer
         show_filter_button: true,
         show_quick_filter: true,
         show_action_button: true,
-        collapsed_search: false,
+        collapsed_search: true,
         text: nil,
         value: nil
       )
-        render_with_template(locals: {show_filter_input: show_filter_input,
-                                      show_clear_button: show_clear_button,
-                                      show_filter_button: show_filter_button,
-                                      show_quick_filter: show_quick_filter,
-                                      show_action_button: show_action_button,
-                                      collapsed_search: collapsed_search,
+        bool = ActiveModel::Type::Boolean.new
+        render_with_template(locals: {show_filter_input: bool.cast(show_filter_input),
+                                      show_clear_button: bool.cast(show_clear_button),
+                                      show_filter_button: bool.cast(show_filter_button),
+                                      show_quick_filter: bool.cast(show_quick_filter),
+                                      show_action_button: bool.cast(show_action_button),
+                                      collapsed_search: bool.cast(collapsed_search),
                                       text: text,
                                       value: value})
       end
@@ -42,7 +43,6 @@ module Primer
           component.with_filter_input(name: "filter", label: "Filter")
           component.with_filter_button do |button|
             button.with_trailing_visual_counter(count: "15")
-            "Filter"
           end
 
           component.with_action_button(leading_icon: :plus, label: "Create", scheme: :primary) do
@@ -93,11 +93,11 @@ module Primer
         end
       end
 
-      # @label With collapsed search
-      def collapsed_search
-        render(Primer::OpenProject::SubHeader.new(collapsed_search: true)) do |component|
+      # @label With expanded search
+      def expanded_search
+        render(Primer::OpenProject::SubHeader.new(collapsed_search: false)) do |component|
           component.with_filter_input(name: "filter", label: "Filter")
-          component.with_filter_button do |button|
+          component.with_filter_button(scheme: :default) do |button|
             button.with_trailing_visual_counter(count: "15")
             "Filter"
           end
