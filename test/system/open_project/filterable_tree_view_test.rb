@@ -5,7 +5,13 @@ require "test_helpers/tree_view_helpers"
 
 module OpenProject
   class IntegrationFilterableTreeViewTest < System::TestCase
+    include Primer::DriverTestHelpers
+    include Primer::KeyboardTestHelpers
     include Primer::TreeViewHelpers
+
+    def active_element
+      page.evaluate_script("document.activeElement")
+    end
 
     def test_filtering_matches_sub_trees
       visit_preview(:default)
@@ -368,6 +374,47 @@ module OpenProject
 
       character = JSON.parse(character_list[1])
       assert_equal character["path"], ["Students", "Slytherin", "Draco Malfoy"]
+    end
+
+    # ─── Keyboard navigation ──────────────────────────────────────────────────
+
+    def test_arrow_down_from_filter_input_focuses_first_treeitem
+      visit_preview(:default)
+
+      find_field("Filter").click
+      keyboard.type(:down)
+
+      assert_equal "treeitem", active_element["role"]
+      assert_equal "Students", label_of(active_element)
+    end
+
+    def test_arrow_up_from_filter_input_focuses_last_treeitem
+      visit_preview(:default)
+
+      find_field("Filter").click
+      keyboard.type(:up)
+
+      assert_equal "treeitem", active_element["role"]
+      assert_equal "Rubeus Hagrid", label_of(active_element)
+    end
+
+    def test_arrow_down_after_filtering_focuses_first_visible_treeitem
+      visit_preview(:default)
+
+      fill_in "Filter", with: "Luna"
+      keyboard.type(:down)
+
+      assert_equal "treeitem", active_element["role"]
+      assert_equal "Students", label_of(active_element)
+    end
+
+    def test_escape_from_treeitem_returns_focus_to_filter_input
+      visit_preview(:default)
+
+      node_at_path("Students").evaluate_script("this.focus()")
+      keyboard.type(:escape)
+
+      assert_equal "input", active_element.tag_name
     end
 
     # ─── Async: initial load ─────────────────────────────────────────────────
