@@ -189,6 +189,7 @@ module Primer
       DEFAULT_NO_RESULTS_NODE_ARGUMENTS.freeze
 
       # @param src [String] URL of the server endpoint that returns a filtered `<tree-view>` HTML fragment. When set, activates async (server-side) filtering mode. See "Async loading strategy" above.
+      # @param show_search_highlighting [Boolean] Only relevant in async mode (`src:` must be set). When `true` (default), the client highlights matching text using the CSS Custom Highlight API or `<mark>` elements. When `false`, the client skips highlighting entirely; the server is responsible for including highlight markup (e.g. `<mark>` tags) in the returned HTML fragment.
       # @param tree_view_arguments [Hash] Arguments that will be passed to the underlying <%= link_to_component(Primer::Alpha::TreeView) %> component.
       # @param form_arguments [Hash] Form arguments that will be passed to the underlying <%= link_to_component(Primer::Alpha::TreeView) %> component. These arguments allow the selections made within a `FilterableTreeView` to be submitted to the server as part of a Rails form. Pass the `builder:` and `name:` options to this hash. `builder:` should be an instance of `ActionView::Helpers::FormBuilder`, which are created by the standard Rails `#form_with` and `#form_for` helpers. The `name:` option is the desired name of the field that will be included in the params sent to the server on form submission.
       # @param filter_input_arguments [Hash] Arguments that will be passed to the <%= link_to_component(Primer::Alpha::TextField) %> component.
@@ -197,6 +198,7 @@ module Primer
       # @param no_results_node_arguments [Hash] Arguments that will be passed to a <%= link_to_component(Primer::Alpha::TreeView::LeafNode) %> component that appears when no items match the filter criteria.
       def initialize(
         src: nil,
+        show_search_highlighting: true,
         tree_view_arguments: {},
         form_arguments: {},
         filter_input_arguments: {},
@@ -250,6 +252,11 @@ module Primer
         @system_arguments = deny_tag_argument(**system_arguments)
         @system_arguments[:tag] = :"filterable-tree-view"
         @system_arguments[:src] = src if src
+        @system_arguments[:data] = merge_data(
+          @system_arguments, {
+            data: { show_search_highlighting: false }
+          }
+        ) unless show_search_highlighting
 
         @no_results_node_arguments = no_results_node_arguments.reverse_merge(DEFAULT_NO_RESULTS_NODE_ARGUMENTS)
       end

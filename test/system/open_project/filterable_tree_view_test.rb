@@ -431,6 +431,29 @@ module OpenProject
       assert_path(HOGWARTS, "Students", "Gryffindor", "Harry Potter")
     end
 
+    # ─── Server-side highlighting ─────────────────────────────────────────────
+
+    def test_server_highlights_renders_mark_tags_in_matching_nodes
+      visit_preview(:async_server_highlights, select_variant: :single)
+      assert_path(HOGWARTS)
+
+      fill_in "Filter", with: "Harry"
+
+      assert_selector "[role=treeitem] mark", text: "Harry"
+    end
+
+    def test_server_highlights_does_not_render_mark_tags_when_filter_is_cleared
+      visit_preview(:async_server_highlights, select_variant: :single)
+      assert_path(HOGWARTS)
+
+      fill_in "Filter", with: "Harry"
+      assert_selector "[role=treeitem] mark", text: "Harry"
+
+      find(".FormControl button[aria-label='Clear']").click
+
+      assert_no_selector "[role=treeitem] mark"
+    end
+
     # ─── Expansion state persistence ─────────────────────────────────────────
 
     def test_restores_expansion_state_when_filter_is_cleared

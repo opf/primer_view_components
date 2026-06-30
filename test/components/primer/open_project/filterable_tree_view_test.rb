@@ -274,6 +274,26 @@ module Primer
         assert_selector "segmented-control li", text: "Foo"
       end
 
+      # ─── show_search_highlighting ──────────────────────────────────────────
+
+      def test_show_search_highlighting_true_by_default_sets_no_data_attribute
+        render_inline(Primer::OpenProject::FilterableTreeView.new)
+
+        assert_selector "filterable-tree-view:not([data-show-search-highlighting])"
+      end
+
+      def test_show_search_highlighting_false_sets_data_attribute
+        render_inline(Primer::OpenProject::FilterableTreeView.new(show_search_highlighting: false))
+
+        assert_selector "filterable-tree-view[data-show-search-highlighting='false']"
+      end
+
+      def test_show_search_highlighting_true_sets_no_data_attribute
+        render_inline(Primer::OpenProject::FilterableTreeView.new(show_search_highlighting: true))
+
+        assert_selector "filterable-tree-view:not([data-show-search-highlighting])"
+      end
+
       # ─── Async mode ────────────────────────────────────────────────────────
 
       def test_src_attribute_is_set_when_src_is_provided

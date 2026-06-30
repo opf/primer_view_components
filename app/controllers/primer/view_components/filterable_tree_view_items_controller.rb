@@ -165,14 +165,31 @@ module Primer
       def index
         query = params[:query].to_s.strip
         select_variant = (params[:select_variant].presence || "multiple").to_sym
+        server_highlights = params[:server_highlights] == "true"
         nodes = TREE.filter_map { |node| node.filter(query) }
 
-        render locals: {
-          nodes: nodes,
-          query: query,
-          select_variant: select_variant
-        }
+        if server_highlights && query.present?
+          html = render_to_string locals: { nodes:, query:, select_variant: }
+          render html: inject_highlights(html, query)
+        else
+          render locals: { nodes:, query:, select_variant: }
+        end
       end
+
+      private
+
+      # Post-processes the rendered tree HTML to wrap matching label text in <mark> tags.
+      # This avoids html_safety issues with passing markup through ViewComponent's label slot.
+      # Only called in the demo endpoint when server_highlights=true is requested.
+      def inject_highlights(html, query)
+        escaped_query = Regexp.escape(CGI.escapeHTML(query))
+        html.gsub(
+          /(<span class="TreeViewItemContentText">)([^<]*)(#{escaped_query})([^<]*)(<\/span>)/i,
+          '\1\2<mark>\3</mark>\4\5'
+        ).html_safe
+      end
+
+      public
 
       def async_form_tree
         query = params[:query].to_s.strip
