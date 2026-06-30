@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## 0.89.0
+
+### Minor Changes
+
+- [#484](https://github.com/opf/primer_view_components/pull/484) [`63a2bcb`](https://github.com/opf/primer_view_components/commit/63a2bcb800452a1cfba991255d02e6d74f40c1ca) Thanks [@HDinger](https://github.com/HDinger)! - Introduce possibility to let the server highlight search results for async FilterableTreeView
+
+### Patch Changes
+
+- [#486](https://github.com/opf/primer_view_components/pull/486) [`6caf253`](https://github.com/opf/primer_view_components/commit/6caf253bc356be8c0ee7d2f9470e4c68bb8aa39c) Thanks [@HDinger](https://github.com/HDinger)! - Fix alignment of Visuals and Action items within the TreeView
+
+- [#483](https://github.com/opf/primer_view_components/pull/483) [`f04c60c`](https://github.com/opf/primer_view_components/commit/f04c60c822ca080247f9b94d72a551d6a67da16e) Thanks [@HDinger](https://github.com/HDinger)! - Change defaults for `Primer::OpenProject::SubHeader` for
+  - `collapsed_search` to `true`
+  - `scheme` of the filter button to `invisible`
+  - `label` of the filter button to `All filters`
+
 ## 0.88.0
 
 ### Minor Changes
