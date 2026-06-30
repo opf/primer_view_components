@@ -13,7 +13,7 @@ export class TreeViewIconPairElement extends HTMLElement {
       this,
       () => Boolean(this.collapsedIcon) && Boolean(this.expandedIcon),
       () => {
-        this.expanded = this.collapsedIcon.hidden
+        this.expanded = Boolean(this.collapsedIcon.hidden)
       },
     )
   }
