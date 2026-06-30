@@ -1,0 +1,80 @@
+- heading "Projects" [level=2]
+- text: A subtitle could appear here to give extra context to the data.
+- table "Projects":
+  - rowgroup:
+    - row "Name Status Created":
+      - columnheader "Name"
+      - columnheader "Status"
+      - columnheader "Created"
+  - rowgroup:
+    - row "Project 491 at_risk 2025-02-15":
+      - rowheader "Project 491"
+      - cell "at_risk"
+      - cell "2025-02-15"
+    - row "Project 492 off_track 2025-02-14":
+      - rowheader "Project 492"
+      - cell "off_track"
+      - cell "2025-02-14"
+    - row "Project 493 active 2025-02-13":
+      - rowheader "Project 493"
+      - cell "active"
+      - cell "2025-02-13"
+    - row "Project 494 on_track 2025-02-12":
+      - rowheader "Project 494"
+      - cell "on_track"
+      - cell "2025-02-12"
+    - row "Project 495 at_risk 2025-02-11":
+      - rowheader "Project 495"
+      - cell "at_risk"
+      - cell "2025-02-11"
+    - row "Project 496 off_track 2025-02-10":
+      - rowheader "Project 496"
+      - cell "off_track"
+      - cell "2025-02-10"
+    - row "Project 497 active 2025-02-09":
+      - rowheader "Project 497"
+      - cell "active"
+      - cell "2025-02-09"
+    - row "Project 498 on_track 2025-02-08":
+      - rowheader "Project 498"
+      - cell "on_track"
+      - cell "2025-02-08"
+    - row "Project 499 at_risk 2025-02-07":
+      - rowheader "Project 499"
+      - cell "at_risk"
+      - cell "2025-02-07"
+    - row "Project 500 off_track 2025-02-06":
+      - rowheader "Project 500"
+      - cell "off_track"
+      - cell "2025-02-06"
+- navigation "Pagination":
+  - paragraph: 491 through 500 of 1000
+  - link "Previous Page":
+    - /url: "?page=49"
+    - text: Previous
+  - link "Page 1...":
+    - /url: "?page=1"
+    - text: "1"
+  - text: …
+  - link "Page 48":
+    - /url: "?page=48"
+    - text: "48"
+  - link "Page 49":
+    - /url: "?page=49"
+    - text: "49"
+  - link "Page 50":
+    - /url: "?page=50"
+    - text: "50"
+  - link "Page 51":
+    - /url: "?page=51"
+    - text: "51"
+  - link "Page 52...":
+    - /url: "?page=52"
+    - text: "52"
+  - text: …
+  - link "Page 100":
+    - /url: "?page=100"
+    - text: "100"
+  - link "Next Page":
+    - /url: "?page=51"
+    - text: Next

@@ -1,0 +1,8 @@
+<nav class="TablePagination" aria-label="<%= aria_label %>">
+  <% if show_range? %>
+    <p class="TablePaginationRange">
+      <%= range_start %><span class="sr-only"> through </span><span aria-hidden="true">‒</span><%= range_end %> of <%= @total_count %>
+    </p>
+  <% end %>
+  <%= render(Primer::OpenProject::Pagination.new(**@pagination_arguments)) %>
+</nav>

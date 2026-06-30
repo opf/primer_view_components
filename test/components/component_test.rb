@@ -69,6 +69,19 @@ class PrimerComponentTest < Minitest::Test
     }],
     [Primer::OpenProject::FilterableTreeView, {}],
     [Primer::OpenProject::Pagination, { page_count: 10, current_page: 2 }],
+    [Primer::OpenProject::DataTable, {
+      data: [Data.define(:id, :subject).new(id: 1, subject: "Hello")]
+    }, proc { |component|
+      component.with_column(field: :subject, header: "Subject")
+    }],
+    [Primer::OpenProject::Table, {}, proc { |table|
+      table.with_head do |thead|
+        thead.with_row { |tr| tr.with_header { "Header" } }
+      end
+      table.with_body do |tbody|
+        tbody.with_row { |tr| tr.with_cell { "Cell" } }
+      end
+    }],
     [Primer::Alpha::SkeletonBox, {}],
     [Primer::Alpha::TreeView, {}],
     [Primer::Alpha::FileTreeView, {}],
@@ -257,6 +270,21 @@ class PrimerComponentTest < Minitest::Test
       "Primer::OpenProject::SidePanel::Section",
       "Primer::OpenProject::DangerDialog::FormWrapper",
       "Primer::OpenProject::FilterableTreeView::SubTree",
+      "Primer::OpenProject::DataTable::Column",
+      "Primer::OpenProject::DataTable::PaginationFooter",
+      "Primer::OpenProject::DataTable::Sorting",
+      "Primer::OpenProject::DataTable::SortHeader",
+      "Primer::OpenProject::Table::Body",
+      "Primer::OpenProject::Table::Caption",
+      "Primer::OpenProject::Table::Cell",
+      "Primer::OpenProject::Table::ColGroup",
+      "Primer::OpenProject::Table::ColGroup::Col",
+      "Primer::OpenProject::Table::Foot",
+      "Primer::OpenProject::Table::Head",
+      "Primer::OpenProject::Table::Header",
+      "Primer::OpenProject::Table::HeaderRow",
+      "Primer::OpenProject::Table::Row",
+      "Primer::OpenProject::Table::RowGroup",
     ]
 
     primer_component_files = Dir.chdir("app/components") { Dir["**/*.rb"] }.reject { |p| p.include?("/experimental/") }
@@ -291,7 +319,9 @@ class PrimerComponentTest < Minitest::Test
     default_args = { style: "width: 100%;" }
     COMPONENTS_WITH_ARGS.each do |component, args, proc|
       render_component(component, default_args.merge(args), proc)
-      assert_selector("[style='width: 100%;']", visible: :all, message: "#{component.name} does not support inline styles")
+
+      style_selector = component == Primer::OpenProject::DataTable ? "[style*='width: 100%;']" : "[style='width: 100%;']"
+      assert_selector(style_selector, visible: :all, message: "#{component.name} does not support inline styles")
     end
   end
 
