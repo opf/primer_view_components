@@ -704,7 +704,7 @@ export class FilterableTreeViewElement extends HTMLElement {
       this.treeViewList.removeAttribute('hidden')
       this.noResultsMessage.setAttribute('hidden', 'hidden')
 
-      this.#applyHighlights(allRanges)
+      if (this.#clientHighlightsEnabled) this.#applyHighlights(allRanges)
     }
   }
 
