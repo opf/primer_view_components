@@ -165,6 +165,18 @@ module Primer
         })
       end
 
+      # @label With counter
+      #
+      # @param open_on_load toggle
+      # @param select_variant [Symbol] select [single, multiple]
+      def with_counter(open_on_load: false, select_variant: :multiple)
+        render_with_template(locals: {
+          open_on_load: open_on_load,
+          # .to_sym workaround for https://github.com/lookbook-hq/lookbook/issues/640
+          select_variant: select_variant.to_sym
+        })
+      end
+
       # @!endgroup
 
       # @label Footer buttons

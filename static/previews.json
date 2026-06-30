@@ -7633,6 +7633,19 @@
         }
       },
       {
+        "preview_path": "primer/alpha/select_panel/with_counter",
+        "name": "with_counter",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
         "preview_path": "primer/alpha/select_panel/footer_buttons",
         "name": "footer_buttons",
         "snapshot": "false",

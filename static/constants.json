@@ -714,6 +714,9 @@
       "warning"
     ],
     "DEFAULT_BANNER_SCHEME": "danger",
+    "DEFAULT_COUNTER_ARGUMENTS": {
+      "hide_if_zero": true
+    },
     "DEFAULT_FETCH_STRATEGY": "remote",
     "DEFAULT_PRELOAD": false,
     "DEFAULT_SELECT_VARIANT": "single",
