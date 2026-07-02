@@ -49,6 +49,7 @@ export class FilterableTreeViewElement extends HTMLElement {
     this.addEventListener('treeViewNodeChecked', this, {signal})
     this.addEventListener('itemActivated', this, {signal})
     this.addEventListener('input', this, {signal})
+    this.addEventListener('keydown', this, {signal})
 
     if (this.#isAsyncMode) {
       void this.#fetchAndReplaceTree()
@@ -77,11 +78,17 @@ export class FilterableTreeViewElement extends HTMLElement {
     if (event.target === this.filterModeControl) {
       this.#handleFilterModeEvent(event)
     } else if (event.target === this.filterInput) {
-      this.#handleFilterInputEvent(event)
+      if (event.type === 'keydown') {
+        this.#handleFilterInputKeyDown(event as KeyboardEvent)
+      } else {
+        this.#handleFilterInputEvent(event)
+      }
     } else if (event.target === this.includeSubItemsCheckBox) {
       this.#handleIncludeSubItemsCheckBoxEvent(event)
     } else if (event.target instanceof TreeViewElement || event.target instanceof TreeViewSubTreeNodeElement) {
       this.#handleTreeViewEvent(event)
+    } else if (event.type === 'keydown' && this.treeViewList?.contains(event.target as Node)) {
+      this.#handleTreeKeyDown(event as KeyboardEvent)
     }
   }
 
@@ -229,6 +236,25 @@ export class FilterableTreeViewElement extends HTMLElement {
     } else {
       this.#applyFilterOptions()
     }
+  }
+
+  #handleFilterInputKeyDown(event: KeyboardEvent) {
+    if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return
+
+    const treeitems = [...(this.treeViewList?.querySelectorAll<HTMLElement>('[role=treeitem]') ?? [])]
+    const visibleItems = treeitems.filter(item => !item.closest('[hidden]'))
+
+    if (visibleItems.length === 0) return
+
+    event.preventDefault()
+    const focusTarget = event.key === 'ArrowDown' ? visibleItems[0] : visibleItems[visibleItems.length - 1]
+    focusTarget.focus()
+  }
+
+  #handleTreeKeyDown(event: KeyboardEvent) {
+    if (event.key !== 'Escape') return
+    event.preventDefault()
+    this.filterInput.focus()
   }
 
   #handleIncludeSubItemsCheckBoxEvent(event: Event) {
