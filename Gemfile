@@ -31,7 +31,7 @@ else
 end
 
 # Use Puma as the app server
-gem "puma", "~> 8.0.1"
+gem "puma", "~> 8.0.2"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", ">= 1.4.2", require: false
@@ -47,7 +47,7 @@ gem "kramdown", "~> 2.5"
 gem "sourcemap", "~> 0.1"
 
 gem "cssbundling-rails", "~> 1.4"
-gem "vite_rails", "~> 3.0"
+gem "vite_rails", "~> 3.11"
 
 group :test do
   gem "webmock"
@@ -78,5 +78,5 @@ group :development do
   gem "sprockets-rails"
   gem "thor"
   gem "timecop"
-  gem "yard", "~> 0.9.43"
+  gem "yard", "~> 0.9.44"
 end
