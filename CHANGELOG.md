@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.89.1
+
+### Patch Changes
+
+- [#487](https://github.com/opf/primer_view_components/pull/487) [`faeb2b0`](https://github.com/opf/primer_view_components/commit/faeb2b09b937721f6715ce05c76222a2e5d410fd) Thanks [@HDinger](https://github.com/HDinger)! - Allow navigation with the FilterableTreeView from the input to the tree (and back)
+
 ## 0.89.0
 
 ### Minor Changes
