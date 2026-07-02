@@ -4440,7 +4440,7 @@
       {
         "preview_path": "primer/open_project/filterable_tree_view/default",
         "name": "default",
-        "snapshot": "interactive",
+        "snapshot": "true",
         "skip_rules": {
           "wont_fix": [
             "region"
@@ -7203,7 +7203,7 @@
       {
         "preview_path": "primer/alpha/segmented_control/icons_and_text_medium",
         "name": "icons_and_text_medium",
-        "snapshot": "true",
+        "snapshot": "false",
         "skip_rules": {
           "wont_fix": [
             "region"
@@ -7216,7 +7216,7 @@
       {
         "preview_path": "primer/alpha/segmented_control/trailing_label_width_small",
         "name": "trailing_label_width_small",
-        "snapshot": "true",
+        "snapshot": "false",
         "skip_rules": {
           "wont_fix": [
             "region"
@@ -7229,7 +7229,7 @@
       {
         "preview_path": "primer/alpha/segmented_control/trailing_label_width_medium",
         "name": "trailing_label_width_medium",
-        "snapshot": "true",
+        "snapshot": "false",
         "skip_rules": {
           "wont_fix": [
             "region"
