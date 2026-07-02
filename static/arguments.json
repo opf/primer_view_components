@@ -6174,6 +6174,12 @@
         "description": "URL of the server endpoint that returns a filtered `<tree-view>` HTML fragment. When set, activates async (server-side) filtering mode. See \"Async loading strategy\" above."
       },
       {
+        "name": "show_search_highlighting",
+        "type": "Boolean",
+        "default": "`true`",
+        "description": "Only relevant in async mode (`src:` must be set). When `true` (default), the client highlights matching text using the CSS Custom Highlight API or `<mark>` elements. When `false`, the client skips highlighting entirely; the server is responsible for including highlight markup (e.g. `<mark>` tags) in the returned HTML fragment."
+      },
+      {
         "name": "tree_view_arguments",
         "type": "Hash",
         "default": "`{}`",
@@ -6498,7 +6504,7 @@
       {
         "name": "collapsed_search",
         "type": "Boolean",
-        "default": "`false`",
+        "default": "`true`",
         "description": "When true, the search bar starts collapsed as an icon button on all screen sizes. Clicking expands it."
       },
       {
