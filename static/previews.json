@@ -4516,6 +4516,19 @@
         }
       },
       {
+        "preview_path": "primer/open_project/filterable_tree_view/async_server_highlights",
+        "name": "async_server_highlights",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
         "preview_path": "primer/open_project/filterable_tree_view/async_form_input",
         "name": "async_form_input",
         "snapshot": "false",
@@ -4889,40 +4902,6 @@
   },
   {
     "name": "heading",
-    "component": "OpenProject::Heading",
-    "status": "open_project",
-    "lookup_path": "primer/open_project/heading",
-    "examples": [
-      {
-        "preview_path": "primer/open_project/heading/playground",
-        "name": "playground",
-        "snapshot": "false",
-        "skip_rules": {
-          "wont_fix": [
-            "region"
-          ],
-          "will_fix": [
-            "color-contrast"
-          ]
-        }
-      },
-      {
-        "preview_path": "primer/open_project/heading/default",
-        "name": "default",
-        "snapshot": "true",
-        "skip_rules": {
-          "wont_fix": [
-            "region"
-          ],
-          "will_fix": [
-            "color-contrast"
-          ]
-        }
-      }
-    ]
-  },
-  {
-    "name": "heading",
     "component": "Heading",
     "status": "beta",
     "lookup_path": "primer/beta/heading",
@@ -4942,6 +4921,40 @@
       },
       {
         "preview_path": "primer/beta/heading/default",
+        "name": "default",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "heading",
+    "component": "OpenProject::Heading",
+    "status": "open_project",
+    "lookup_path": "primer/open_project/heading",
+    "examples": [
+      {
+        "preview_path": "primer/open_project/heading/playground",
+        "name": "playground",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/heading/default",
         "name": "default",
         "snapshot": "true",
         "skip_rules": {
@@ -8235,8 +8248,8 @@
         }
       },
       {
-        "preview_path": "primer/open_project/sub_header/collapsed_search",
-        "name": "collapsed_search",
+        "preview_path": "primer/open_project/sub_header/expanded_search",
+        "name": "expanded_search",
         "snapshot": "false",
         "skip_rules": {
           "wont_fix": [
@@ -9799,6 +9812,19 @@
       {
         "preview_path": "primer/alpha/tree_view/form_input",
         "name": "form_input",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/alpha/tree_view/doubled_path",
+        "name": "doubled_path",
         "snapshot": "false",
         "skip_rules": {
           "wont_fix": [
