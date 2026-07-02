@@ -21,7 +21,7 @@ module Primer
 
       # @label Default
       #
-      # @snapshot interactive
+      # @snapshot
       # @param expanded [Boolean] toggle
       def default(expanded: true)
         render_with_template(locals: {
