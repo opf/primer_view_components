@@ -7301,7 +7301,7 @@
       {
         "preview_path": "primer/alpha/segmented_control/icons_and_text_medium",
         "name": "icons_and_text_medium",
-        "snapshot": "true",
+        "snapshot": "false",
         "skip_rules": {
           "wont_fix": [
             "region"
@@ -7314,7 +7314,7 @@
       {
         "preview_path": "primer/alpha/segmented_control/trailing_label_width_small",
         "name": "trailing_label_width_small",
-        "snapshot": "true",
+        "snapshot": "false",
         "skip_rules": {
           "wont_fix": [
             "region"
@@ -7327,7 +7327,7 @@
       {
         "preview_path": "primer/alpha/segmented_control/trailing_label_width_medium",
         "name": "trailing_label_width_medium",
-        "snapshot": "true",
+        "snapshot": "false",
         "skip_rules": {
           "wont_fix": [
             "region"
@@ -10860,6 +10860,19 @@
       {
         "preview_path": "primer/alpha/tree_view/form_input",
         "name": "form_input",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/alpha/tree_view/doubled_path",
+        "name": "doubled_path",
         "snapshot": "false",
         "skip_rules": {
           "wont_fix": [
@@ -20369,6 +20382,12 @@
         "description": "URL of the server endpoint that returns a filtered `<tree-view>` HTML fragment. When set, activates async (server-side) filtering mode. See \"Async loading strategy\" above."
       },
       {
+        "name": "show_search_highlighting",
+        "type": "Boolean",
+        "default": "`true`",
+        "description": "Only relevant in async mode (`src:` must be set). When `true` (default), the client highlights matching text using the CSS Custom Highlight API or `<mark>` elements. When `false`, the client skips highlighting entirely; the server is responsible for including highlight markup (e.g. `<mark>` tags) in the returned HTML fragment."
+      },
+      {
         "name": "tree_view_arguments",
         "type": "Hash",
         "default": "`{}`",
@@ -20424,7 +20443,7 @@
       {
         "preview_path": "primer/open_project/filterable_tree_view/default",
         "name": "default",
-        "snapshot": "interactive",
+        "snapshot": "true",
         "skip_rules": {
           "wont_fix": [
             "region"
@@ -20489,6 +20508,19 @@
       {
         "preview_path": "primer/open_project/filterable_tree_view/async",
         "name": "async",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/filterable_tree_view/async_server_highlights",
+        "name": "async_server_highlights",
         "snapshot": "false",
         "skip_rules": {
           "wont_fix": [
@@ -21787,7 +21819,7 @@
       {
         "name": "collapsed_search",
         "type": "Boolean",
-        "default": "`false`",
+        "default": "`true`",
         "description": "When true, the search bar starts collapsed as an icon button on all screen sizes. Clicking expands it."
       },
       {
@@ -21938,8 +21970,8 @@
         }
       },
       {
-        "preview_path": "primer/open_project/sub_header/collapsed_search",
-        "name": "collapsed_search",
+        "preview_path": "primer/open_project/sub_header/expanded_search",
+        "name": "expanded_search",
         "snapshot": "false",
         "skip_rules": {
           "wont_fix": [

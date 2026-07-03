@@ -58,7 +58,6 @@ module Primer
       # @!endgroup
 
       # @!group Icons and text
-      # @label Size small
       # @snapshot
       def icons_and_text_small
         render(Primer::Alpha::SegmentedControl.new("aria-label": "File view", size: :small)) do |component|
@@ -69,7 +68,6 @@ module Primer
       end
 
       # @label Size medium
-      # @snapshot
       def icons_and_text_medium
         render(Primer::Alpha::SegmentedControl.new("aria-label": "File view", size: :medium)) do |component|
           component.with_item(label: "Preview", icon: :eye, selected: true)
@@ -81,7 +79,6 @@ module Primer
 
       # @!group Trailing Label
       # @label Size small
-      # @snapshot
       def trailing_label_width_small
         render(Primer::Alpha::SegmentedControl.new("aria-label": "Billing duration", size: :small)) do |component|
           component.with_item(label: "Monthly")
@@ -92,7 +89,6 @@ module Primer
       end
 
       # @label Size medium
-      # @snapshot
       def trailing_label_width_medium
         render(Primer::Alpha::SegmentedControl.new("aria-label": "Billing duration", size: :medium)) do |component|
           component.with_item(label: "Monthly")

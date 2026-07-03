@@ -18,7 +18,7 @@ module Alpha
       assert_selector("tool-tip.position-absolute.sr-only", visible: :hidden)
       assert(!find("tool-tip", visible: :hidden)["style"].present?) # position not set on initial load
 
-      find("button").send_keys("tab") # sends focus to button
+      find("button").hover
 
       assert_selector("tool-tip.position-absolute", visible: true)
       refute_selector("tool-tip.position-absolute.sr-only", visible: true)
@@ -45,7 +45,7 @@ module Alpha
     def test_hides_tooltip_on_escape
       visit_preview(:default)
 
-      find("button").send_keys("tab") # focus
+      find("button").hover
       assert_selector("tool-tip", visible: true)
 
       find("button").send_keys(:escape)
@@ -83,7 +83,7 @@ module Alpha
       assert_selector("tool-tip.sr-only", visible: :hidden)
       refute_selector("tool-tip.sr-only[aria-hidden]", visible: :hidden)
 
-      find("button").send_keys("tab") # focus
+      find("button").hover
 
       refute_selector("tool-tip.sr-only", visible: :hidden)
       assert_selector("tool-tip", visible: :visible)
@@ -108,7 +108,7 @@ module Alpha
       assert_selector("tool-tip.sr-only[for='button-2']", visible: :hidden)
       assert_selector("tool-tip.sr-only[for='button-3']", visible: :hidden)
 
-      find("button#button-1").send_keys("tab") # focus
+      find("button#button-1").hover
 
       assert_selector("tool-tip[for='button-1']", visible: :visible)
       assert_selector("tool-tip.sr-only[for='button-2']", visible: :hidden)
@@ -150,7 +150,7 @@ module Alpha
 
       assert_selector("tool-tip[for='overlay-button']", visible: :visible)
 
-      find("button#overlay-button").send_keys(:escape)
+      page.driver.browser.keyboard.type(:Escape)
 
       assert_selector("tool-tip[for='overlay-button']", visible: :hidden)
 
