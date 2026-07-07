@@ -1,0 +1,9 @@
+<%= render(Primer::OpenProject::FilterableTreeView.new(
+  src: primer_view_components.filterable_tree_view_items_tree_path(select_variant: :single)
+)) do |tree_view| %>
+  <% tree_view.with_loading_indicator do %>
+    <%= render(Primer::Alpha::Stack.new(align: :center, p: 3)) do %>
+      <%= render(Primer::Beta::Spinner.new) %>
+    <% end %>
+  <% end %>
+<% end %>
