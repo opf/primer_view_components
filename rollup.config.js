@@ -12,7 +12,10 @@ export default {
   },
   plugins: [
     resolve(),
-    typescript(),
+    // Declarations are emitted by the separate `tsc` step (see script/build-assets),
+    // so disable them here. Avoids @rollup/plugin-typescript v12 requiring
+    // declarationDir to sit alongside the bundle output.
+    typescript({declaration: false, declarationDir: undefined}),
     terser({keep_classnames: /Element$/}) // comment out terser in dev if you want debugger statements
   ],
   onwarn: (warning, warn) => {
