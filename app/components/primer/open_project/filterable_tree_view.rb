@@ -133,10 +133,18 @@ module Primer
     # ```erb
     # <%= render(Primer::OpenProject::FilterableTreeView.new(
     #   src: my_path
-    # )) %>
+    # )) do |tree_view| %>
+    #   <% tree_view.with_loading_indicator do %>
+    #     <%= render(Primer::Beta::Spinner.new) %>
+    #   <% end %>
+    # <% end %>
     # ```
     class FilterableTreeView < Primer::Component
       delegate :with_leaf, :with_sub_tree, to: :@tree_view
+
+      # An optional loading indicator shown while an async filter request is in progress. When omitted, a skeleton
+      # loader is rendered. This slot is only used when `src` is set.
+      renders_one :loading_indicator
 
       SUPPORTED_SELECT_VARIANTS = %i[multiple single none].freeze
 

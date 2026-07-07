@@ -27,12 +27,16 @@
           <% tree.with_leaf(**@no_results_node_arguments) %>
         <% end %>
       <% end %>
-      <div class="FilterableTreeViewLoadingSkeleton" aria-hidden="true">
-        <% [0, 8, 8, 16, 8, 0, 8, 8].each do |indent| %>
-          <span class="TreeViewSkeletonItemContainerStyle" style="padding-left: <%= indent %>px">
-            <%= render(Primer::Alpha::SkeletonBox.new(width: "16px")) %>
-            <%= render(Primer::Alpha::SkeletonBox.new(classes: "TreeItemSkeletonTextStyles")) %>
-          </span>
+      <div class="FilterableTreeViewLoadingIndicator FilterableTreeViewLoadingSkeleton" aria-hidden="true">
+        <% if loading_indicator? %>
+          <%= loading_indicator %>
+        <% else %>
+          <% [0, 8, 8, 16, 8, 0, 8, 8].each do |indent| %>
+            <span class="TreeViewSkeletonItemContainerStyle" style="padding-left: <%= indent %>px">
+              <%= render(Primer::Alpha::SkeletonBox.new(width: "16px")) %>
+              <%= render(Primer::Alpha::SkeletonBox.new(classes: "TreeItemSkeletonTextStyles")) %>
+            </span>
+          <% end %>
         <% end %>
       </div>
       <%= render(@tree_view) %>
