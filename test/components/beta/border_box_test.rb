@@ -91,6 +91,24 @@ class PrimerBetaBorderBoxTest < Minitest::Test
     assert_selector("li.Box-row", count: 1)
   end
 
+  def test_warns_when_list_id_param_passed
+    with_silence_deprecations(false) do
+      ::Primer::ViewComponents.deprecation.expects(:warn).with("The `list_id:` param is deprecated. Use `list_arguments: { id: ... }` instead. It will be removed in a future version.").once
+      render_inline(Primer::Beta::BorderBox.new(list_id: "an-id")) do |component|
+        component.with_row { "First" }
+      end
+    end
+  end
+
+  def test_list_arguments_id_takes_precedence_over_deprecated_list_id
+    render_inline(Primer::Beta::BorderBox.new(list_id: "old-id", list_arguments: { id: "new-id" })) do |component|
+      component.with_row { "First" }
+    end
+
+    assert_selector("ul#new-id", count: 1)
+    assert_no_selector("ul#old-id")
+  end
+
   def test_renders_condensed
     render_inline(Primer::Beta::BorderBox.new(padding: :condensed)) do |component|
       component.with_body { "Body" }
