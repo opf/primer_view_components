@@ -33,21 +33,26 @@ module Primer
         end
 
         def self.sort_rows(rows, column:, direction:)
-          rows.to_a.each_with_index.sort do |(row_a, index_a), (row_b, index_b)|
-            result = compare_rows(row_a, row_b, column: column, direction: direction)
+          # Precompute each row's sort value once (Schwartzian transform) so a
+          # user-supplied `sort_value` proc is not re-evaluated O(n log n) times.
+          decorated = rows.to_a.each_with_index.map do |row, index|
+            [column.sort_value(row), index, row]
+          end
+
+          strategy = column.sort_strategy
+
+          decorated.sort do |(value_a, index_a), (value_b, index_b)|
+            result = compare_sort_values(value_a, value_b, strategy: strategy, direction: direction)
             result.zero? ? index_a <=> index_b : result
-          end.map(&:first)
+          end.map(&:last)
         end
 
-        def self.compare_rows(row_a, row_b, column:, direction:)
-          value_a = column.sort_value(row_a)
-          value_b = column.sort_value(row_b)
-
+        def self.compare_sort_values(value_a, value_b, strategy:, direction:)
           value_a_blank = blank_value?(value_a)
           value_b_blank = blank_value?(value_b)
 
           if !value_a_blank && !value_b_blank
-            result = compare_values(value_a, value_b, column.sort_strategy)
+            result = compare_values(value_a, value_b, strategy)
             return direction == :ASC ? result : -result
           end
 

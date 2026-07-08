@@ -42,4 +42,16 @@ class PrimerOpenProjectDataTableSortingTest < Minitest::Test
     assert_equal(0, Sorting.alphanumeric("Project 7", "Project 7"))
     assert_equal(-1, Sorting.alphanumeric("Project 7", "Project 7a"))
   end
+
+  def test_sorts_fieldless_column_by_sort_value_proc
+    row_klass = Data.define(:a, :b)
+    rows = [row_klass.new(a: 1, b: 9), row_klass.new(a: 5, b: 1), row_klass.new(a: 2, b: 2)]
+    column = Primer::OpenProject::DataTable::Column.new(
+      id: "sum", sort_by: true, sort_value: ->(r) { r.a + r.b }
+    )
+
+    sorted = Sorting.sort_rows(rows, column: column, direction: :ASC)
+
+    assert_equal [4, 6, 10], sorted.map { |r| r.a + r.b }
+  end
 end

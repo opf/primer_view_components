@@ -79,6 +79,20 @@ class PrimerOpenProjectDataTableColumnTest < Minitest::Test
     assert_nil column.identifier
   end
 
+  def test_sort_value_uses_proc_when_given
+    row = Data.define(:a, :b).new(a: 2, b: 3)
+    column = Primer::OpenProject::DataTable::Column.new(
+      id: "sum", sort_by: true, sort_value: ->(r) { r.a + r.b }
+    )
+    assert_equal 5, column.sort_value(row)
+  end
+
+  def test_sort_value_falls_back_to_field
+    row = Data.define(:subject).new(subject: "hi")
+    column = Primer::OpenProject::DataTable::Column.new(field: :subject)
+    assert_equal "hi", column.sort_value(row)
+  end
+
   private
 
   def ice_cream_klass

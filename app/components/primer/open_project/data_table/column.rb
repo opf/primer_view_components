@@ -33,6 +33,8 @@ module Primer
         # @param header [String, nil] Column header text (rendered in the table header)
         # @param width [Numeric, String, Symbol, nil] Width value or one of COLUMN_WIDTH_OPTIONS
         # @param sort_by [Boolean, Symbol, nil] Whether this column is sortable, or the sort strategy to use
+        # @param sort_value [Proc, nil] Optional `->(row)` returning the value used when sorting this column.
+        #   Enables sorting of computed/fieldless columns. Falls back to `field` when omitted.
         # @param row_header [Boolean] Whether this column is a row header (`<th scope="row">`)
         # @param min_width [Numeric, String, nil] Minimum width
         # @param max_width [Numeric, String, nil] Maximum width
@@ -43,12 +45,14 @@ module Primer
           header: nil,
           width: nil,
           sort_by: nil,
+          sort_value: nil,
           row_header: false,
           min_width: nil,
           max_width: nil
         )
           @id = id
           @field = field
+          @sort_value_proc = sort_value
           @align = align
           @header = header
 
@@ -93,6 +97,7 @@ module Primer
         end
 
         def sort_value(row)
+          return @sort_value_proc.call(row) if @sort_value_proc
           return unless field
 
           row.public_send(field) # rubocop:disable GitHub/AvoidObjectSendWithDynamicMethod
