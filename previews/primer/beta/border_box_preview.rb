@@ -6,11 +6,11 @@ module Primer
     class BorderBoxPreview < ViewComponent::Preview
       # @label Playground
       #
+      # @param list_id text
       # @param padding [Symbol] select [default, condensed, spacious]
       # @param scheme [Symbol] select [default, neutral, info, warning]
-      # @param list_id [String] text
-      def playground(padding: :default, scheme: :default, list_id: nil)
-        render(Primer::Beta::BorderBox.new(padding: padding, list_id: list_id)) do |component|
+      def playground(padding: :default, scheme: :default, list_id: "my-list")
+        render(Primer::Beta::BorderBox.new(padding: padding, list_arguments: { id: list_id })) do |component|
           component.with_header { "Header" }
           component.with_body { "Body" }
           component.with_row(scheme: scheme) { "#{scheme.to_s.capitalize} row one" }

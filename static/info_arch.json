@@ -13510,6 +13510,18 @@
         "description": "One of `:condensed`, `:default`, or `:spacious`."
       },
       {
+        "name": "list_arguments",
+        "type": "Hash",
+        "default": "`{}`",
+        "description": "{{link_to_system_arguments_docs}}"
+      },
+      {
+        "name": "list_id",
+        "type": "String",
+        "default": "N/A",
+        "description": "Deprecated. Use <code>list_arguments: { id: ... }</code> instead."
+      },
+      {
         "name": "system_arguments",
         "type": "Hash",
         "default": "N/A",

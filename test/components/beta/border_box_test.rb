@@ -33,6 +33,28 @@ class PrimerBetaBorderBoxTest < Minitest::Test
     assert_selector "ul[aria-labelledby='#{id}']"
   end
 
+  def test_renders_list_with_list_arguments
+    render_inline(Primer::Beta::BorderBox.new(list_arguments: { id: "fake-tbody", role: "rowgroup" })) do |component|
+      component.with_row { "Row" }
+    end
+
+    assert_selector "ul#fake-tbody"
+    assert_selector 'ul[role="rowgroup"]'
+  end
+
+  def test_labels_list_with_header_and_additional_label
+    render_inline(Primer::Beta::BorderBox.new(list_arguments: { aria: { labelledby: "my-footer" } })) do |component|
+      component.with_header { "Header" }
+      component.with_row { "Row" }
+      component.with_footer(id: "my-footer") { "Footer" }
+    end
+
+    header_id = page.find_css(".Box-header").first[:id]
+    footer_id = page.find_css(".Box-footer").first[:id]
+    assert_selector "ul[aria-labelledby*='#{header_id}']"
+    assert_selector "ul[aria-labelledby*='#{footer_id}']"
+  end
+
   def test_renders_body
     render_inline(Primer::Beta::BorderBox.new) do |component|
       component.with_body { "Body" }
@@ -67,6 +89,24 @@ class PrimerBetaBorderBoxTest < Minitest::Test
 
     assert_selector("ul#an-id", count: 1)
     assert_selector("li.Box-row", count: 1)
+  end
+
+  def test_warns_when_list_id_param_passed
+    with_silence_deprecations(false) do
+      ::Primer::ViewComponents.deprecation.expects(:warn).with("The `list_id:` param is deprecated. Use `list_arguments: { id: ... }` instead. It will be removed in a future version.").once
+      render_inline(Primer::Beta::BorderBox.new(list_id: "an-id")) do |component|
+        component.with_row { "First" }
+      end
+    end
+  end
+
+  def test_list_arguments_id_takes_precedence_over_deprecated_list_id
+    render_inline(Primer::Beta::BorderBox.new(list_id: "old-id", list_arguments: { id: "new-id" })) do |component|
+      component.with_row { "First" }
+    end
+
+    assert_selector("ul#new-id", count: 1)
+    assert_no_selector("ul#old-id")
   end
 
   def test_renders_condensed
