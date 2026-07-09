@@ -48,13 +48,16 @@ first one whose parent isn't already in `main`. (`main` usually sits exactly at
 the previous batch's boundary, i.e. the parent of the *oldest* unmerged
 version-bump — that's a no-op, so skip it and take the next.)
 
-- view_components: version-bump commits are titled **`Release tracking`**
+- view_components: version-bump commits are titled **`Release Tracking`**
 - octicons: titled **`Version Packages`**
+
+The `--grep` below is case-insensitive (`-i`): upstream has used both
+`Release Tracking` and `Release tracking` casings over time.
 
 ```bash
 git fetch upstream
-GREP="Release tracking"   # octicons: "Version Packages"
-for vp in $(git log upstream/main --grep="$GREP" --not main --reverse --format=%H); do
+GREP="Release Tracking"   # octicons: "Version Packages"
+for vp in $(git log upstream/main -i --grep="$GREP" --not main --reverse --format=%H); do
   parent=$(git rev-parse "$vp^")
   git merge-base --is-ancestor "$parent" main && continue   # parent already merged → skip
   echo "TARGET: $parent  ($(git log -1 --format='%h %s' "$vp")'s parent)"
@@ -153,7 +156,7 @@ fork's Dependabot uses).
 ```bash
 git fetch upstream
 # TARGET = parent of the OLDEST unmerged version-bump whose parent isn't in main:
-for vp in $(git log upstream/main --grep="Release tracking" --not main --reverse --format=%H); do
+for vp in $(git log upstream/main -i --grep="Release Tracking" --not main --reverse --format=%H); do
   p=$(git rev-parse "$vp^"); git merge-base --is-ancestor "$p" main && continue; echo "$p"; break
 done
 script/merge-upstream <TARGET> gsed
@@ -168,7 +171,7 @@ script/setup && git add -A && git commit
 - **Jumping to the parent of the *latest* version-bump.** That drags in every
   intervening version-bump, which already deleted its changesets — the fork loses
   them. Sync the *oldest* unmerged batch first (see Core principle).
-- **Merging a version-bump commit itself** (e.g. `Release tracking`) instead of
+- **Merging a version-bump commit itself** (e.g. `Release Tracking`) instead of
   its parent — pulls upstream's bump and conflicts with the fork's `changeset:version`.
 - **Assuming the changeset rename worked.** Upstream changesets use *single*
   quotes (`'@primer/view-components'`); a double-quote-only sed silently no-ops.
@@ -201,7 +204,7 @@ This skill and `script/merge-upstream` are mirrored between view_components and
 octicons. When you change one, port the change to the other. The repo
 differences to account for:
 
-- **Commit-title grep term:** `Release tracking` (view_components) vs
+- **Commit-title grep term:** `Release Tracking` (view_components) vs
   `Version Packages` (octicons).
 - **Package managers / lockfiles:** view_components uses Ruby Bundler
   (`Gemfile.lock`, `demo/Gemfile.lock`) plus npm (`package-lock.json`,
