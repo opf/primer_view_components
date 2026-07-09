@@ -1,3 +1,4 @@
 - text: Select a fruit
-- combobox "Select a fruit"
+- textbox "Select a fruit":
+  - /placeholder: Placeholder text
 - button "Clear"
