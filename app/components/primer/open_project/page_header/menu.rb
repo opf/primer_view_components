@@ -19,7 +19,7 @@ module Primer
           end
         end
 
-        def render_in(view_context, &block)
+        def render_in(view_context, **_kwargs, &block)
           super(view_context) do
             block&.call(@menu, @button)
           end
