@@ -7,7 +7,6 @@
     - listitem:
       - link "Slurm":
         - /url: /foods/slurm
-  - button "Show more foods"
   - heading "My favorite snacks" [level=3]
   - list "My favorite snacks":
     - listitem:
@@ -16,4 +15,3 @@
     - listitem:
       - link "Slurm":
         - /url: /foods/slurm
-  - button "Show more snacks"

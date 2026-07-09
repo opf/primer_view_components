@@ -280,14 +280,14 @@ GEM
       date
       stringio
     public_suffix (7.0.2)
-    puma (8.0.1)
+    puma (8.0.2)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.1.21)
     rack-cors (3.0.0)
       logger
       rack (>= 3.0.14)
-    rack-proxy (0.7.7)
+    rack-proxy (0.8.3)
       rack
     rack-session (2.1.2)
       base64 (>= 0.1.0)
@@ -337,7 +337,7 @@ GEM
       faraday (>= 0.17.5, < 3.a)
       jwt (>= 1.5, < 3.0)
       multi_json (~> 1.10)
-    spring (4.4.2)
+    spring (4.7.0)
     spring-watcher-listen (2.1.0)
       listen (>= 2.7, < 4.0)
       spring (>= 4)
@@ -366,7 +366,7 @@ GEM
       actionview (>= 7.1.0)
       activesupport (>= 7.1.0)
       concurrent-ruby (~> 1)
-    vite_rails (3.10.0)
+    vite_rails (3.11.1)
       railties (>= 5.1, < 9)
       vite_ruby (~> 3.0, >= 3.2.2)
     vite_ruby (3.10.2)
@@ -411,18 +411,18 @@ DEPENDENCIES
   lookbook (~> 2.3.14)
   openproject-primer_view_components!
   pry-byebug
-  puma (~> 8.0.1)
+  puma (~> 8.0.2)
   rack-cors
   railties (= 7.2.2.1)
   rake (~> 13.4)
-  spring (~> 4.4)
+  spring (~> 4.6)
   spring-watcher-listen (~> 2.1)
   sprockets
   sprockets-rails
   stimulus-rails
   turbo-rails
   view_component (= 4.9.0)
-  vite_rails (~> 3.0)
+  vite_rails (~> 3.11)
 
 BUNDLED WITH
    2.5.5
