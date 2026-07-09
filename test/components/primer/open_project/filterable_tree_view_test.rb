@@ -311,23 +311,17 @@ module Primer
       def test_uses_a_skeleton_as_the_default_loading_indicator
         render_inline(Primer::OpenProject::FilterableTreeView.new(src: "/my/tree"))
 
-        assert_selector ".FilterableTreeViewLoadingIndicator .TreeViewSkeletonItemContainerStyle", count: 8
+        assert_selector ".FilterableTreeViewLoadingSkeleton[aria-hidden='true']" do
+          assert_selector ".TreeViewSkeletonItemContainerStyle", count: 8
+        end
       end
 
       def test_loading_indicator_can_be_overridden
-        render_inline(Primer::OpenProject::FilterableTreeView.new(src: "/my/tree")) do |tree|
-          tree.with_loading_indicator do
-            '<span data-test-selector="custom-loading-indicator">Loading</span>'.html_safe
-          end
-        end
-
-        assert_selector ".FilterableTreeViewLoadingIndicator [data-test-selector='custom-loading-indicator']"
-      end
-
-      def test_custom_loading_indicator_preview
         render_preview(:async_custom_loading_indicator)
 
-        assert_selector ".FilterableTreeViewLoadingIndicator svg.anim-rotate"
+        assert_selector ".FilterableTreeViewLoadingSkeleton[aria-hidden='true']" do
+          assert_selector "svg.anim-rotate"
+        end
       end
 
       def test_include_sub_items_checkbox_is_excluded_from_form_in_non_async_mode
