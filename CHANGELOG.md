@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## 0.89.2
+
+### Patch Changes
+
+- [#495](https://github.com/opf/primer_view_components/pull/495) [`4cb914d`](https://github.com/opf/primer_view_components/commit/4cb914d847891178009e0a0b2cf47fc9b223b184) Thanks [@myabc](https://github.com/myabc)! - Teach BorderBox component a list_arguments param
+
+- [#4091](https://github.com/primer/view_components/pull/4091) [`ff6cc0d`](https://github.com/opf/primer_view_components/commit/ff6cc0d8cd5cb6323d10ecd0790e19e5ebec36e9) Thanks [@issyl0](https://github.com/issyl0)! - Accept keyword arguments in `render_in` methods
+
+- [#493](https://github.com/opf/primer_view_components/pull/493) [`417fbaf`](https://github.com/opf/primer_view_components/commit/417fbaffed058411c1419f107ba23bc15e7ee206) Thanks [@bsatarnejad](https://github.com/bsatarnejad)! - [Dream-705] Configurable loading indication for filterable tree views with async filter input
+
+- [#470](https://github.com/opf/primer_view_components/pull/470) [`b96fe34`](https://github.com/opf/primer_view_components/commit/b96fe341fadce7458bb40d8f4a641998a93f9879) Thanks [@myabc](https://github.com/myabc)! - Support TypeScript 6.0
+
+- [#4069](https://github.com/primer/view_components/pull/4069) [`24b8fbf`](https://github.com/opf/primer_view_components/commit/24b8fbf36d53482c1646b4331be33fb34e3dba9a) Thanks [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Revert Dialog body scroll-lock styling from broad `:has(...)` to explicit body classes
+
+- [#4093](https://github.com/primer/view_components/pull/4093) [`3ad026e`](https://github.com/opf/primer_view_components/commit/3ad026ef5ce9b1cdb1e34492eec5af6e1b0c7475) Thanks [@jonrohan](https://github.com/jonrohan)! - Update `@github/clipboard-copy-element` to `^1.3.1` (resolves to 1.3.2)
+
 ## 0.89.1
 
 ### Patch Changes
