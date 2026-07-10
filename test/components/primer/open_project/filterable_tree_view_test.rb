@@ -308,6 +308,22 @@ module Primer
         assert_selector "filterable-tree-view:not([src])"
       end
 
+      def test_uses_a_skeleton_as_the_default_loading_indicator
+        render_inline(Primer::OpenProject::FilterableTreeView.new(src: "/my/tree"))
+
+        assert_selector ".FilterableTreeViewLoadingSkeleton[aria-hidden='true']" do
+          assert_selector ".TreeViewSkeletonItemContainerStyle", count: 8
+        end
+      end
+
+      def test_loading_indicator_can_be_overridden
+        render_preview(:async_custom_loading_indicator)
+
+        assert_selector ".FilterableTreeViewLoadingSkeleton[aria-hidden='true']" do
+          assert_selector "svg.anim-rotate"
+        end
+      end
+
       def test_include_sub_items_checkbox_is_excluded_from_form_in_non_async_mode
         render_preview(:form_input)
 

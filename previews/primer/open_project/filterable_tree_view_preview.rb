@@ -123,6 +123,13 @@ module Primer
         })
       end
 
+      # @label Async (with custom loading indicator)
+      #
+      # Demonstrates replacing the default skeleton loader with arbitrary content.
+      def async_custom_loading_indicator
+        render_with_template
+      end
+
       # @label Async (with server-side highlighting)
       #
       # Demonstrates `show_search_highlighting: false`: the client skips its own highlight logic
