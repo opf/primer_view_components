@@ -363,6 +363,7 @@ const classNames = new Set([
   'TableCellPlaceholder',
   'TableContainer',
   'TableDivider',
+  'TableEmptyState',
   'TableHead',
   'TableHeader',
   'TableOverflowWrapper',

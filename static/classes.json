@@ -749,6 +749,9 @@
   "TableDivider": [
     "Primer::OpenProject::DataTable"
   ],
+  "TableEmptyState": [
+    "Primer::OpenProject::DataTable"
+  ],
   "TableHead": [
     "Primer::OpenProject::DataTable"
   ],

@@ -9,6 +9,9 @@ en:
   button_filter: "Filter"
   button_save: "Save"
 
+  data_table:
+    empty_state_title: "No data available"
+
   drag_handle:
     button_drag: "Drag to reorder"
 

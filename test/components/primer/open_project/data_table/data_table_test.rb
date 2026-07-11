@@ -460,6 +460,51 @@ class PrimerOpenProjectDataTableTest < Minitest::Test
     assert_no_selector(".TableDivider")
   end
 
+  def test_renders_default_empty_state_without_rows
+    render_component([]) do |data_table|
+      data_table.with_column(field: :subject, header: "Subject")
+      data_table.with_title { "Projects" }
+    end
+
+    assert_selector(".TableContainer .TableEmptyState .blankslate h4", text: "No data available")
+    assert_no_selector("table")
+    assert_no_selector("[aria-labelledby]")
+  end
+
+  def test_renders_custom_empty_state_without_rows
+    render_component([]) do |data_table|
+      data_table.with_column(field: :subject, header: "Subject")
+      data_table.with_empty_state(
+        title: "Nothing here",
+        description: "Create a project to get started.",
+        icon: :book
+      )
+    end
+
+    assert_selector(".TableEmptyState h4", text: "Nothing here")
+    assert_selector(".TableEmptyState p", text: "Create a project to get started.")
+    assert_selector(".TableEmptyState .octicon-book")
+  end
+
+  def test_interactive_empty_state_announces_politely
+    render_component([]) do |data_table|
+      data_table.with_column(field: :subject, header: "Subject")
+      data_table.with_empty_state(title: "Nothing here", interactive: true)
+    end
+
+    assert_selector(".TableEmptyState [role='status'][aria-live='polite']")
+  end
+
+  def test_ignores_empty_state_when_rows_present
+    render_component(@data) do |data_table|
+      data_table.with_column(field: :subject, header: "Subject")
+      data_table.with_empty_state(title: "Nothing here")
+    end
+
+    assert_selector("table")
+    assert_no_selector(".TableEmptyState")
+  end
+
   def test_renders_placeholder_for_blank_cell_values
     row_klass = Data.define(:subject, :assignee)
     data = [row_klass.new(subject: "First", assignee: nil)]

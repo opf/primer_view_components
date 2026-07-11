@@ -68,8 +68,14 @@
     grid-area: divider;
 }
 
+/* TableEmptyState */
+.TableEmptyState {
+    grid-area: table;
+}
+
 /* Spacing before the table */
-.TableContainer > .TableOverflowWrapper:not(:first-child) {
+.TableContainer > .TableOverflowWrapper:not(:first-child),
+.TableContainer > .TableEmptyState:not(:first-child) {
     margin-block-start: var(--base-size-8);
 }
 

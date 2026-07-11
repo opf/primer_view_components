@@ -83,6 +83,20 @@ module Primer
         menu: Primer::Alpha::ActionMenu
       }
 
+      # Empty-state content rendered instead of the table when there are no
+      # rows. Without this slot, an empty table renders a default
+      # <%= link_to_component(Primer::OpenProject::DataTable::EmptyState) %>.
+      # Ignored while rows are present.
+      renders_one :empty_state, ->(title:, description: nil, icon: nil, interactive: false, **system_arguments) {
+        EmptyState.new(
+          title: title,
+          description: description,
+          icon: icon,
+          interactive: interactive,
+          **system_arguments
+        )
+      }
+
       renders_one :pagination, Primer::OpenProject::DataTable::PaginationFooter
 
       # @param data [Array, ActiveRecord::Relation]
@@ -144,6 +158,8 @@ module Primer
         @initial_sort_state = build_initial_sort_state
         @headers = build_headers
         @rows = sorted_rows
+
+        with_empty_state(title: I18n.t("data_table.empty_state_title")) if @rows.empty? && !empty_state?
 
         @system_arguments[:style] = join_style_arguments(
           @system_arguments[:style],

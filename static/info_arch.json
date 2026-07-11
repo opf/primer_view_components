@@ -20046,6 +20046,11 @@
         "parameters": []
       },
       {
+        "name": "empty_state",
+        "description": "Empty-state content rendered instead of the table when there are no\nrows. Without this slot, an empty table renders a default\n{{#link_to_component}}Primer::OpenProject::DataTable::EmptyState{{/link_to_component}}.\nIgnored while rows are present.",
+        "parameters": []
+      },
+      {
         "name": "pagination",
         "description": null,
         "parameters": []
@@ -20108,6 +20113,19 @@
       {
         "preview_path": "primer/open_project/data_table/with_actions",
         "name": "with_actions",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/data_table/empty_state",
+        "name": "empty_state",
         "snapshot": "true",
         "skip_rules": {
           "wont_fix": [
@@ -20342,6 +20360,56 @@
         "return_types": []
       }
     ],
+    "previews": [],
+    "subcomponents": []
+  },
+  {
+    "fully_qualified_name": "Primer::OpenProject::DataTable::EmptyState",
+    "description": "Empty-state content rendered as a Primer Blankslate when the table\nhas no rows. The API mirrors OpenProject's `BorderBoxListComponent`\nempty state so both components share one idiom.\n\nThis component is part of `Primer::OpenProject::DataTable` and should\nnot be used as a standalone component.",
+    "accessibility_docs": null,
+    "is_form_component": false,
+    "is_published": true,
+    "requires_js": false,
+    "component": "OpenProject::DataTable::EmptyState",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectDataTableEmptyState",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/data_table/empty_state.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/data_table/empty_state/default/",
+    "parameters": [
+      {
+        "name": "title",
+        "type": "String",
+        "default": "N/A",
+        "description": "Empty-state heading"
+      },
+      {
+        "name": "description",
+        "type": "String, nil",
+        "default": "`nil`",
+        "description": "Optional supporting text"
+      },
+      {
+        "name": "icon",
+        "type": "Symbol, nil",
+        "default": "`nil`",
+        "description": "Optional Primer icon"
+      },
+      {
+        "name": "interactive",
+        "type": "Boolean",
+        "default": "`false`",
+        "description": "Whether empty-state updates should be announced politely to assistive technology"
+      },
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "System arguments passed to the underlying `Primer::Beta::Blankslate`"
+      }
+    ],
+    "slots": [],
+    "methods": [],
     "previews": [],
     "subcomponents": []
   },

@@ -363,6 +363,7 @@ module.exports = new Set([
   'TableCellPlaceholder',
   'TableContainer',
   'TableDivider',
+  'TableEmptyState',
   'TableHead',
   'TableHeader',
   'TableOverflowWrapper',

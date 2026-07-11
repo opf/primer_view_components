@@ -57,6 +57,13 @@ module Primer
         render_with_template(locals: { projects: sample_rows.first(3) })
       end
 
+      # @label Empty State
+      # @snapshot
+      # @param custom toggle
+      def empty_state(custom: false)
+        render_with_template(locals: { custom: custom })
+      end
+
       # @label With Cell Placeholder
       # @snapshot
       def with_cell_placeholder

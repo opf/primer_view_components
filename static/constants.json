@@ -1776,6 +1776,7 @@
     "Cell": "Primer::OpenProject::DataTable::Cell",
     "CellPlaceholder": "Primer::OpenProject::DataTable::CellPlaceholder",
     "Column": "Primer::OpenProject::DataTable::Column",
+    "EmptyState": "Primer::OpenProject::DataTable::EmptyState",
     "GeneratedSlotMethods": "Primer::OpenProject::DataTable::GeneratedSlotMethods",
     "Header": "Primer::OpenProject::DataTable::Header",
     "PaginationFooter": "Primer::OpenProject::DataTable::PaginationFooter",
@@ -1799,6 +1800,9 @@
       "auto"
     ],
     "GeneratedSlotMethods": "Primer::OpenProject::DataTable::Column::GeneratedSlotMethods"
+  },
+  "Primer::OpenProject::DataTable::EmptyState": {
+    "GeneratedSlotMethods": "Primer::OpenProject::DataTable::EmptyState::GeneratedSlotMethods"
   },
   "Primer::OpenProject::DataTable::PaginationFooter": {
     "GeneratedSlotMethods": "Primer::OpenProject::DataTable::PaginationFooter::GeneratedSlotMethods"

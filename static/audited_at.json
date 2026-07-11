@@ -152,6 +152,7 @@
   "Primer::OpenProject::DataTable": "",
   "Primer::OpenProject::DataTable::CellPlaceholder": "",
   "Primer::OpenProject::DataTable::Column": "",
+  "Primer::OpenProject::DataTable::EmptyState": "",
   "Primer::OpenProject::DataTable::PaginationFooter": "",
   "Primer::OpenProject::DataTable::SortHeader": "",
   "Primer::OpenProject::DragHandle": "",

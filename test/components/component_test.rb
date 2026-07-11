@@ -272,6 +272,7 @@ class PrimerComponentTest < Minitest::Test
       "Primer::OpenProject::FilterableTreeView::SubTree",
       "Primer::OpenProject::DataTable::CellPlaceholder",
       "Primer::OpenProject::DataTable::Column",
+      "Primer::OpenProject::DataTable::EmptyState",
       "Primer::OpenProject::DataTable::PaginationFooter",
       "Primer::OpenProject::DataTable::Sorting",
       "Primer::OpenProject::DataTable::SortHeader",
