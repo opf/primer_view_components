@@ -18,10 +18,11 @@
     "types": [],
   },
   "include": [
-    "app/components/primer/*.ts",
+    "app/components/primer/**/*.ts",
     "app/lib/primer/forms/*.ts"
   ],
   "exclude": [
+    "**/*.d.ts",
     "demo/**/*",
     "vendor/**/*"
   ]
