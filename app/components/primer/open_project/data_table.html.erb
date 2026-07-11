@@ -37,7 +37,7 @@
           <% end %>
           <% table.with_body(classes: "TableBody") do |tbody| %>
             <% rows.each do |row| %>
-              <% tbody.with_row(classes: "TableRow") do |tr| %>
+              <% tbody.with_row(**row_arguments(row)) do |tr| %>
                 <% cells_for(row).each do |cell| %>
                   <% cell_arguments = { classes: "TableCell", align: cell.column.align } %>
                   <% cell_arguments[:data] = cell.sort_data if cell.sortable? %>

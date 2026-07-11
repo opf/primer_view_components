@@ -460,6 +460,50 @@ class PrimerOpenProjectDataTableTest < Minitest::Test
     assert_no_selector(".TableDivider")
   end
 
+  def test_emits_data_row_id_with_row_id_proc
+    render_component(@data, row_id: ->(row) { row.id }) do |data_table|
+      data_table.with_column(field: :subject, header: "Subject")
+    end
+
+    assert_selector("tbody tr[data-row-id='1']")
+    assert_selector("tbody tr[data-row-id='3']")
+    assert_no_selector("tbody tr[id]")
+  end
+
+  def test_emits_namespaced_dom_id_with_row_dom_id
+    render_component(@data, id: "my-table", row_id: ->(row) { row.id }, row_dom_id: true) do |data_table|
+      data_table.with_column(field: :subject, header: "Subject")
+    end
+
+    assert_selector("tbody tr#my-table-row-1[data-row-id='1']")
+  end
+
+  def test_emits_no_row_attributes_without_row_id_proc
+    render_component(@data) do |data_table|
+      data_table.with_column(field: :subject, header: "Subject")
+    end
+
+    assert_no_selector("tbody tr[data-row-id]")
+  end
+
+  def test_skips_row_attributes_for_blank_row_id
+    row_klass = Data.define(:id, :subject)
+    data = [row_klass.new(id: nil, subject: "First"), row_klass.new(id: 2, subject: "Second")]
+
+    render_component(data, row_id: ->(row) { row.id }) do |data_table|
+      data_table.with_column(field: :subject, header: "Subject")
+    end
+
+    assert_selector("tbody tr[data-row-id='2']")
+    assert_selector("tbody tr[data-row-id]", count: 1)
+  end
+
+  def test_raises_for_row_dom_id_without_row_id
+    assert_raises(ArgumentError) do
+      Primer::OpenProject::DataTable.new(@data, row_dom_id: true)
+    end
+  end
+
   def test_renders_default_empty_state_without_rows
     render_component([]) do |data_table|
       data_table.with_column(field: :subject, header: "Subject")

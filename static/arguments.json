@@ -6095,6 +6095,18 @@
         "description": "Whether to render a presentational divider line below the title row, ported from Primer React's `Table.Divider`"
       },
       {
+        "name": "row_id",
+        "type": "Proc, nil",
+        "default": "`nil`",
+        "description": "Optional `->(row)` returning an identifier for each row, emitted as a `data-row-id` attribute on the row's `<tr>`. Unlike Primer React's `getRowId` (which feeds virtual-DOM keys), this addresses rows in the DOM, e.g. for Turbo Stream targets or test selectors. Rows for which the proc returns a blank value get no attribute."
+      },
+      {
+        "name": "row_dom_id",
+        "type": "Boolean",
+        "default": "`false`",
+        "description": "Whether each `<tr>` additionally gets a DOM `id`, namespaced by the table id to stay unique across tables. Requires `row_id`."
+      },
+      {
         "name": "html_data",
         "type": "Hash",
         "default": "`{}`",

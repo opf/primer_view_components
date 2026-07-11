@@ -4,7 +4,8 @@
       rows,
       cell_padding: cell_padding,
       initial_sort_column: initial_sort_column,
-      initial_sort_direction: initial_sort_direction
+      initial_sort_direction: initial_sort_direction,
+      row_id: ->(row) { row.id }
     )
   ) do |data_table|
 %>

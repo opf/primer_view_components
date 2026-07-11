@@ -112,6 +112,15 @@ module Primer
       # @param divider [Boolean]
       #   Whether to render a presentational divider line below the title row,
       #   ported from Primer React's `Table.Divider`
+      # @param row_id [Proc, nil]
+      #   Optional `->(row)` returning an identifier for each row, emitted as a
+      #   `data-row-id` attribute on the row's `<tr>`. Unlike Primer React's
+      #   `getRowId` (which feeds virtual-DOM keys), this addresses rows in the
+      #   DOM, e.g. for Turbo Stream targets or test selectors. Rows for which
+      #   the proc returns a blank value get no attribute.
+      # @param row_dom_id [Boolean]
+      #   Whether each `<tr>` additionally gets a DOM `id`, namespaced by the
+      #   table id to stay unique across tables. Requires `row_id`.
       # @param html_data [Hash]
       #   HTML data attributes to be passed to the table
       # @param system_arguments [Hash]
@@ -122,6 +131,8 @@ module Primer
         initial_sort_column: nil,
         initial_sort_direction: nil,
         divider: false,
+        row_id: nil,
+        row_dom_id: false,
         html_data: {},
         **system_arguments
       )
@@ -130,6 +141,9 @@ module Primer
         @initial_sort_column = initial_sort_column
         @initial_sort_direction = initial_sort_direction
         @divider = fetch_or_fallback_boolean(divider, false)
+        @row_id_proc = row_id
+        @row_dom_id = fetch_or_fallback_boolean(row_dom_id, false)
+        raise ArgumentError, "`row_dom_id` requires a `row_id` proc" if @row_dom_id && @row_id_proc.nil?
         @id = system_arguments[:id] ||= self.class.generate_id(base_name: "data-table")
 
         @container_arguments = {}
@@ -284,6 +298,18 @@ module Primer
           # If we reach this point, the consumer is passing an explicit width value.
           column_width.is_a?(Numeric) ? "#{column_width}px" : column_width
         end
+      end
+
+      def row_arguments(row)
+        arguments = { classes: "TableRow" }
+        return arguments unless @row_id_proc
+
+        value = @row_id_proc.call(row).to_s
+        return arguments if value.blank?
+
+        arguments[:data] = { row_id: value }
+        arguments[:id] = "#{@id}-row-#{value}" if @row_dom_id
+        arguments
       end
 
       def cell_content(cell, row)
