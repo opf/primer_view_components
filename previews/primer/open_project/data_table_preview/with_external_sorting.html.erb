@@ -1,0 +1,20 @@
+<%=
+  render(
+    Primer::OpenProject::DataTable.new(
+      rows,
+      sorting: :external,
+      initial_sort_column: sort_column,
+      initial_sort_direction: sort_direction,
+      sort_href_builder: ->(column_id, direction) { "?sort_column=#{column_id}&sort_direction=#{direction}" }
+    )
+  ) do |data_table|
+    data_table.with_title(tag: :h2) { "Projects" }
+    data_table.with_subtitle { "The server owns the sort order; headers are plain links (Preview-only: links round-trip via preview params)." }
+
+    data_table.with_column(field: :name, header: "Name", row_header: true, sort_by: true)
+    data_table.with_column(field: :status_code, header: "Status", sort_by: true)
+    data_table.with_column(field: :created_at, header: "Created", align: :end, sort_by: true) do |column|
+      column.with_cell { |row| row.created_at.strftime("%Y-%m-%d") }
+    end
+  end
+%>

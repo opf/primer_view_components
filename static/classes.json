@@ -776,6 +776,9 @@
   "TableSortIcon": [
     "Primer::OpenProject::DataTable"
   ],
+  "TableSortLink": [
+    "Primer::OpenProject::DataTable"
+  ],
   "TableSubtitle": [
     "Primer::OpenProject::DataTable"
   ],

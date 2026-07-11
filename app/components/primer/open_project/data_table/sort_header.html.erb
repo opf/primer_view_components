@@ -1,12 +1,5 @@
 <%= render(Primer::OpenProject::Table::Header.new(**@system_arguments)) do %>
-  <%=
-    render(
-      Primer::Beta::BaseButton.new(
-        classes: "TableSortButton",
-        data: { action: "click:data-table#toggleSort" }
-      )
-    ) do
-  %>
+  <%= render(sort_control) do %>
     <%= content %>
     <%=
       render(

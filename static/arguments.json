@@ -6089,6 +6089,18 @@
         "description": "Sort direction for the initially sorted column. Options: :ASC, :DESC"
       },
       {
+        "name": "sorting",
+        "type": "Symbol",
+        "default": "`:client`",
+        "description": "How sorting is performed. `:client` sorts rows in Ruby for the initial render and re-sorts in the browser. `:external` leaves row order to the caller (e.g. SQL ordering): sortable headers become links built by `sort_href_builder`, and `initial_sort_column`/`initial_sort_direction` only drive the rendered sort state. Options: :client, :external"
+      },
+      {
+        "name": "sort_href_builder",
+        "type": "Proc, nil",
+        "default": "`nil`",
+        "description": "`->(column_id, direction)` returning the URL a sortable header links to, where `direction` is the direction the link requests next. Required when `sorting: :external` and any column is sortable."
+      },
+      {
         "name": "divider",
         "type": "Boolean",
         "default": "`false`",
@@ -6305,6 +6317,12 @@
         "type": "Symbol",
         "default": "`:ASC`",
         "description": "select [:ASC, :DESC, :NONE] Specify the sort direction for the header."
+      },
+      {
+        "name": "href",
+        "type": "String, nil",
+        "default": "`nil`",
+        "description": "When given, the header renders a plain sort link to this URL instead of the client-side sort button (used for external sorting)."
       },
       {
         "name": "system_arguments",

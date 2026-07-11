@@ -76,6 +76,22 @@ module Primer
         render_with_template(locals: { rows: rows })
       end
 
+      # @label With External Sorting
+      # @snapshot
+      # @param sort_column [Symbol] select [name, status_code, created_at]
+      # @param sort_direction [Symbol] select [ASC, DESC]
+      def with_external_sorting(sort_column: :name, sort_direction: :ASC)
+        column = sort_column.to_sym
+        direction = sort_direction.to_s.upcase == "DESC" ? :DESC : :ASC
+
+        rows = sample_rows.sort_by { |row| row.public_send(column).to_s } # rubocop:disable GitHub/AvoidObjectSendWithDynamicMethod
+        rows.reverse! if direction == :DESC
+
+        render_with_template(
+          locals: { rows: rows, sort_column: column, sort_direction: direction }
+        )
+      end
+
       # @label With Pagination
       # @snapshot
       # @param page [Integer] number

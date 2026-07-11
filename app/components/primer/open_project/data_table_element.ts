@@ -16,11 +16,15 @@ const DEFAULT_SORT_DIRECTION = SortDirection.ASC
 @controller('data-table')
 export class DataTableElement extends HTMLElement {
   connectedCallback() {
+    if (this.externalSorting) return
+
     sortTableByAriaSort(this.table)
     updateSortIcons(this.table)
   }
 
   toggleSort(event: MouseEvent) {
+    if (this.externalSorting) return
+
     const header = (event.target as Element).closest('th')!
     const direction = getSortDirection(header)
     const nextDirection =
@@ -44,6 +48,10 @@ export class DataTableElement extends HTMLElement {
 
   get table(): HTMLTableElement {
     return this.querySelector('table')!
+  }
+
+  get externalSorting(): boolean {
+    return this.hasAttribute('data-external-sorting')
   }
 }
 

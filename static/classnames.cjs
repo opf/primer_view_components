@@ -374,6 +374,7 @@ module.exports = new Set([
   'TableSortIcon',
   'TableSortIcon--ascending',
   'TableSortIcon--descending',
+  'TableSortLink',
   'TableSubtitle',
   'TableTitle',
   'TimelineItem',

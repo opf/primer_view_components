@@ -460,6 +460,88 @@ class PrimerOpenProjectDataTableTest < Minitest::Test
     assert_no_selector(".TableDivider")
   end
 
+  def test_external_sorting_renders_sort_links_with_next_direction
+    render_component(
+      @data,
+      sorting: :external,
+      sort_href_builder: ->(column_id, direction) { "?sort=#{column_id}&direction=#{direction}" },
+      initial_sort_column: :subject,
+      initial_sort_direction: :ASC
+    ) do |data_table|
+      data_table.with_column(field: :subject, header: "Subject", sort_by: true)
+      data_table.with_column(field: :id, header: "Id", sort_by: true)
+    end
+
+    # sorted ASC -> link requests DESC; unsorted -> link requests ASC
+    assert_selector("th[aria-sort='ascending'] a.TableSortLink[href='?sort=subject&direction=DESC']")
+    assert_selector("th a.TableSortLink[href='?sort=id&direction=ASC']")
+    assert_no_selector("th button.TableSortButton")
+  end
+
+  def test_external_sorting_descending_links_back_to_ascending
+    render_component(
+      @data,
+      sorting: :external,
+      sort_href_builder: ->(column_id, direction) { "?sort=#{column_id}&direction=#{direction}" },
+      initial_sort_column: :subject,
+      initial_sort_direction: :DESC
+    ) do |data_table|
+      data_table.with_column(field: :subject, header: "Subject", sort_by: true)
+    end
+
+    assert_selector("th[aria-sort='descending'] a.TableSortLink[href='?sort=subject&direction=ASC']")
+  end
+
+  def test_external_sorting_emits_no_client_sort_metadata
+    render_component(
+      @data,
+      sorting: :external,
+      sort_href_builder: ->(column_id, direction) { "?sort=#{column_id}&direction=#{direction}" }
+    ) do |data_table|
+      data_table.with_column(field: :subject, header: "Subject", sort_by: true)
+    end
+
+    assert_selector("data-table[data-external-sorting]")
+    assert_no_selector("th[data-sort-strategy]")
+    assert_no_selector("td[data-sort-value]")
+    assert_no_selector("[data-action*='toggleSort']")
+  end
+
+  def test_external_sorting_does_not_reorder_rows
+    row_klass = Data.define(:subject)
+    data = [row_klass.new(subject: "b"), row_klass.new(subject: "a"), row_klass.new(subject: "c")]
+
+    Primer::OpenProject::DataTable::Sorting.stub(:sort_rows, ->(*) { raise "sort_rows must not be called" }) do
+      render_component(
+        data,
+        sorting: :external,
+        sort_href_builder: ->(column_id, direction) { "?sort=#{column_id}&direction=#{direction}" },
+        initial_sort_column: :subject,
+        initial_sort_direction: :ASC
+      ) do |data_table|
+        data_table.with_column(field: :subject, header: "Subject", sort_by: true)
+      end
+    end
+
+    assert_equal(%w[b a c], body_first_column_texts)
+  end
+
+  def test_external_sorting_requires_href_builder_for_sortable_columns
+    assert_raises(ArgumentError) do
+      render_component(@data, sorting: :external) do |data_table|
+        data_table.with_column(field: :subject, header: "Subject", sort_by: true)
+      end
+    end
+  end
+
+  def test_external_sorting_without_sortable_columns_needs_no_builder
+    render_component(@data, sorting: :external) do |data_table|
+      data_table.with_column(field: :subject, header: "Subject")
+    end
+
+    assert_selector("table")
+  end
+
   def test_emits_data_row_id_with_row_id_proc
     render_component(@data, row_id: ->(row) { row.id }) do |data_table|
       data_table.with_column(field: :subject, header: "Subject")

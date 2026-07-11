@@ -1780,6 +1780,11 @@
     "GeneratedSlotMethods": "Primer::OpenProject::DataTable::GeneratedSlotMethods",
     "Header": "Primer::OpenProject::DataTable::Header",
     "PaginationFooter": "Primer::OpenProject::DataTable::PaginationFooter",
+    "SORTING_DEFAULT": "client",
+    "SORTING_OPTIONS": [
+      "client",
+      "external"
+    ],
     "SUBTITLE_TAG_DEFAULT": "div",
     "SUBTITLE_TAG_OPTIONS": [
       "div",

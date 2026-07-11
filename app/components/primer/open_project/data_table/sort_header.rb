@@ -15,10 +15,14 @@ module Primer
 
         # @param direction [Symbol] select [:ASC, :DESC, :NONE]
         #   Specify the sort direction for the header.
+        # @param href [String, nil]
+        #   When given, the header renders a plain sort link to this URL instead
+        #   of the client-side sort button (used for external sorting).
         # @param system_arguments [Hash]
         #   System arguments passed to the root element
-        def initialize(direction: DEFAULT_DIRECTION, **system_arguments)
+        def initialize(direction: DEFAULT_DIRECTION, href: nil, **system_arguments)
           @direction = fetch_or_fallback(DIRECTION_OPTIONS, direction, DEFAULT_DIRECTION)
+          @href = href
           aria_sort = ARIA_SORT_OPTIONS.fetch(@direction, nil)
 
           @system_arguments = system_arguments
@@ -29,6 +33,23 @@ module Primer
           @system_arguments[:aria] = merge_aria(
             @system_arguments, { aria: { sort: aria_sort } }
           )
+        end
+
+        private
+
+        def sort_control
+          if @href
+            Primer::Beta::Link.new(
+              href: @href,
+              muted: true,
+              classes: "TableSortButton TableSortLink"
+            )
+          else
+            Primer::Beta::BaseButton.new(
+              classes: "TableSortButton",
+              data: { action: "click:data-table#toggleSort" }
+            )
+          end
         end
       end
     end

@@ -33,6 +33,9 @@ module Primer
       CELL_PADDING_DEFAULT = :normal
       CELL_PADDING_OPTIONS = [:condensed, CELL_PADDING_DEFAULT, :spacious].freeze
 
+      SORTING_DEFAULT = :client
+      SORTING_OPTIONS = [SORTING_DEFAULT, :external].freeze
+
       TITLE_TAG_DEFAULT = :h2
 
       SUBTITLE_TAG_DEFAULT = :div
@@ -109,6 +112,17 @@ module Primer
       # @param initial_sort_direction [Symbol, nil]
       #   Sort direction for the initially sorted column.
       #   Options: :ASC, :DESC
+      # @param sorting [Symbol]
+      #   How sorting is performed. `:client` sorts rows in Ruby for the initial
+      #   render and re-sorts in the browser. `:external` leaves row order to the
+      #   caller (e.g. SQL ordering): sortable headers become links built by
+      #   `sort_href_builder`, and `initial_sort_column`/`initial_sort_direction`
+      #   only drive the rendered sort state.
+      #   Options: :client, :external
+      # @param sort_href_builder [Proc, nil]
+      #   `->(column_id, direction)` returning the URL a sortable header links to,
+      #   where `direction` is the direction the link requests next. Required when
+      #   `sorting: :external` and any column is sortable.
       # @param divider [Boolean]
       #   Whether to render a presentational divider line below the title row,
       #   ported from Primer React's `Table.Divider`
@@ -130,6 +144,8 @@ module Primer
         cell_padding: CELL_PADDING_DEFAULT,
         initial_sort_column: nil,
         initial_sort_direction: nil,
+        sorting: SORTING_DEFAULT,
+        sort_href_builder: nil,
         divider: false,
         row_id: nil,
         row_dom_id: false,
@@ -140,6 +156,8 @@ module Primer
         @cell_padding = fetch_or_fallback(CELL_PADDING_OPTIONS, cell_padding, CELL_PADDING_DEFAULT)
         @initial_sort_column = initial_sort_column
         @initial_sort_direction = initial_sort_direction
+        @sorting = fetch_or_fallback(SORTING_OPTIONS, sorting, SORTING_DEFAULT)
+        @sort_href_builder = sort_href_builder
         @divider = fetch_or_fallback_boolean(divider, false)
         @row_id_proc = row_id
         @row_dom_id = fetch_or_fallback_boolean(row_dom_id, false)
@@ -168,6 +186,10 @@ module Primer
 
       def before_render
         return unless render?
+
+        if external_sorting? && @sort_href_builder.nil? && columns.any?(&:sortable?)
+          raise ArgumentError, "`sorting: :external` requires a `sort_href_builder` when columns are sortable"
+        end
 
         @initial_sort_state = build_initial_sort_state
         @headers = build_headers
@@ -249,6 +271,7 @@ module Primer
       end
 
       def sorted_rows
+        return @rows if external_sorting?
         return @rows unless @initial_sort_state
 
         Sorting.sort_rows(
@@ -256,6 +279,30 @@ module Primer
           column: @initial_sort_state[:column],
           direction: @initial_sort_state[:direction]
         )
+      end
+
+      def external_sorting?
+        @sorting == :external
+      end
+
+      def next_direction_for(header)
+        header.sort_direction == :ASC ? :DESC : :ASC
+      end
+
+      def sort_header_arguments(header)
+        arguments = {
+          component_klass: Primer::OpenProject::DataTable::SortHeader,
+          align: header.column.align,
+          direction: header.sort_direction
+        }
+
+        if external_sorting?
+          arguments[:href] = @sort_href_builder.call(header.id, next_direction_for(header))
+        else
+          arguments[:data] = { sort_strategy: header.sort_strategy }
+        end
+
+        arguments
       end
 
       def grid_template_from_columns(columns)
@@ -321,7 +368,7 @@ module Primer
 
       def cells_for(row)
         headers.map do |header|
-          sort_metadata = header.sortable? ? header.column.sort_metadata(row) : {}
+          sort_metadata = header.sortable? && !external_sorting? ? header.column.sort_metadata(row) : {}
 
           Cell.new(
             column: header.column,
