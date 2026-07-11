@@ -422,6 +422,44 @@ class PrimerOpenProjectDataTableTest < Minitest::Test
     assert_equal({ test_selector: "my-table" }, html_data)
   end
 
+  def test_renders_placeholder_for_blank_cell_values
+    row_klass = Data.define(:subject, :assignee)
+    data = [row_klass.new(subject: "First", assignee: nil)]
+
+    render_component(data) do |data_table|
+      data_table.with_column(field: :subject, header: "Subject")
+      data_table.with_column(field: :assignee, header: "Assignee", placeholder: "Unassigned")
+    end
+
+    assert_selector("td span.TableCellPlaceholder", text: "Unassigned")
+    assert_no_selector("td span.TableCellPlaceholder", text: "First")
+  end
+
+  def test_does_not_render_placeholder_for_present_values
+    row_klass = Data.define(:assignee)
+    data = [row_klass.new(assignee: "Ada")]
+
+    render_component(data) do |data_table|
+      data_table.with_column(field: :assignee, header: "Assignee", placeholder: "Unassigned")
+    end
+
+    assert_selector("td", text: "Ada")
+    assert_no_selector(".TableCellPlaceholder")
+  end
+
+  def test_renders_placeholder_when_custom_cell_block_is_blank
+    row_klass = Data.define(:assignee)
+    data = [row_klass.new(assignee: nil)]
+
+    render_component(data) do |data_table|
+      data_table.with_column(id: "assignee", header: "Assignee", placeholder: "Unassigned") do |column|
+        column.with_cell { |row| row.assignee }
+      end
+    end
+
+    assert_selector("td span.TableCellPlaceholder", text: "Unassigned")
+  end
+
   def test_renders_pagination_slot_below_table
     render_component(@data) do |data_table|
       data_table.with_column(field: :subject, header: "Subject")

@@ -20095,6 +20095,19 @@
         }
       },
       {
+        "preview_path": "primer/open_project/data_table/with_cell_placeholder",
+        "name": "with_cell_placeholder",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
         "preview_path": "primer/open_project/data_table/with_pagination",
         "name": "with_pagination",
         "snapshot": "true",
@@ -20121,6 +20134,32 @@
         }
       }
     ],
+    "subcomponents": []
+  },
+  {
+    "fully_qualified_name": "Primer::OpenProject::DataTable::CellPlaceholder",
+    "description": "Renders muted placeholder text inside a table cell, standing in for\nan empty value. Ported from Primer React's `Table.CellPlaceholder`.\n\nThis component is part of `Primer::OpenProject::DataTable` and should\nnot be used as a standalone component. Use it inside a custom cell\nrenderer, or set `placeholder:` on a column to substitute blank\nvalues automatically.",
+    "accessibility_docs": null,
+    "is_form_component": false,
+    "is_published": true,
+    "requires_js": false,
+    "component": "OpenProject::DataTable::CellPlaceholder",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectDataTableCellPlaceholder",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/data_table/cell_placeholder.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/data_table/cell_placeholder/default/",
+    "parameters": [
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "System arguments passed to the root element"
+      }
+    ],
+    "slots": [],
+    "methods": [],
+    "previews": [],
     "subcomponents": []
   },
   {
@@ -20186,6 +20225,12 @@
         "description": "Whether this column is a row header (`<th scope=\"row\">`)"
       },
       {
+        "name": "placeholder",
+        "type": "String, nil",
+        "default": "`nil`",
+        "description": "Placeholder text substituted for blank cell values, rendered as a muted {{#link_to_component}}Primer::OpenProject::DataTable::CellPlaceholder{{/link_to_component}}. Display-only: blank values still sort as blank."
+      },
+      {
         "name": "min_width",
         "type": "Numeric, String, nil",
         "default": "`nil`",
@@ -20227,6 +20272,12 @@
       {
         "name": "min_width",
         "description": "Returns the value of attribute min_width.",
+        "parameters": [],
+        "return_types": []
+      },
+      {
+        "name": "placeholder",
+        "description": "Returns the value of attribute placeholder.",
         "parameters": [],
         "return_types": []
       },

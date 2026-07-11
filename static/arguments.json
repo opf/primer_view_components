@@ -6103,6 +6103,22 @@
     ]
   },
   {
+    "component": "OpenProject::DataTable::CellPlaceholder",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectDataTableCellPlaceholder",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/data_table/cell_placeholder.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/data_table/cell_placeholder/default/",
+    "parameters": [
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "System arguments passed to the root element"
+      }
+    ]
+  },
+  {
     "component": "OpenProject::DataTable::Column",
     "status": "open_project",
     "a11y_reviewed": false,
@@ -6157,6 +6173,12 @@
         "type": "Boolean",
         "default": "`false`",
         "description": "Whether this column is a row header (`<th scope=\"row\">`)"
+      },
+      {
+        "name": "placeholder",
+        "type": "String, nil",
+        "default": "`nil`",
+        "description": "Placeholder text substituted for blank cell values, rendered as a muted [OpenProject::DataTable::CellPlaceholder](/components/openprojectdatatablecellplaceholder). Display-only: blank values still sort as blank."
       },
       {
         "name": "min_width",

@@ -93,6 +93,15 @@ class PrimerOpenProjectDataTableColumnTest < Minitest::Test
     assert_equal "hi", column.sort_value(row)
   end
 
+  def test_placeholder_does_not_affect_sort_blankness
+    row = Data.define(:assignee).new(assignee: nil)
+    column = Primer::OpenProject::DataTable::Column.new(
+      field: :assignee, sort_by: true, placeholder: "Unassigned"
+    )
+
+    assert column.sort_metadata(row)[:blank]
+  end
+
   private
 
   def ice_cream_klass

@@ -359,6 +359,7 @@ module.exports = new Set([
   'Table',
   'TableBody',
   'TableCell',
+  'TableCellPlaceholder',
   'TableContainer',
   'TableHead',
   'TableHeader',

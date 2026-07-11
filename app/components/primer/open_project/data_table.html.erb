@@ -27,9 +27,9 @@
                 <% cell_arguments = { classes: "TableCell", align: cell.column.align } %>
                 <% cell_arguments[:data] = cell.sort_data if cell.sortable? %>
                 <% if cell.row_header? %>
-                  <% tr.with_row_header(**cell_arguments) { cell.column.render_cell(row).to_s } %>
+                  <% tr.with_row_header(**cell_arguments) { cell_content(cell, row) } %>
                 <% else %>
-                  <% tr.with_cell(**cell_arguments) { cell.column.render_cell(row).to_s } %>
+                  <% tr.with_cell(**cell_arguments) { cell_content(cell, row) } %>
                 <% end %>
               <% end %>
             <% end %>

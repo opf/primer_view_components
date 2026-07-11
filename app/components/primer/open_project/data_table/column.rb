@@ -10,7 +10,7 @@ module Primer
 
         COLUMN_WIDTH_OPTIONS = %i[grow grow_collapse auto].freeze
 
-        attr_reader :id, :align, :field, :max_width, :min_width, :row_header, :sort_by, :width, :cell_block
+        attr_reader :id, :align, :field, :max_width, :min_width, :placeholder, :row_header, :sort_by, :width, :cell_block
 
         # Provide a custom cell renderer.
         #
@@ -36,6 +36,9 @@ module Primer
         # @param sort_value [Proc, nil] Optional `->(row)` returning the value used when sorting this column.
         #   Enables sorting of computed/fieldless columns. Falls back to `field` when omitted.
         # @param row_header [Boolean] Whether this column is a row header (`<th scope="row">`)
+        # @param placeholder [String, nil] Placeholder text substituted for blank cell values,
+        #   rendered as a muted <%= link_to_component(Primer::OpenProject::DataTable::CellPlaceholder) %>.
+        #   Display-only: blank values still sort as blank.
         # @param min_width [Numeric, String, nil] Minimum width
         # @param max_width [Numeric, String, nil] Maximum width
         def initialize(
@@ -47,12 +50,14 @@ module Primer
           sort_by: nil,
           sort_value: nil,
           row_header: false,
+          placeholder: nil,
           min_width: nil,
           max_width: nil
         )
           @id = id
           @field = field
           @sort_value_proc = sort_value
+          @placeholder = placeholder
           @align = align
           @header = header
 

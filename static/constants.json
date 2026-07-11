@@ -1774,6 +1774,7 @@
       "spacious"
     ],
     "Cell": "Primer::OpenProject::DataTable::Cell",
+    "CellPlaceholder": "Primer::OpenProject::DataTable::CellPlaceholder",
     "Column": "Primer::OpenProject::DataTable::Column",
     "GeneratedSlotMethods": "Primer::OpenProject::DataTable::GeneratedSlotMethods",
     "Header": "Primer::OpenProject::DataTable::Header",
@@ -1787,6 +1788,9 @@
     "SortHeader": "Primer::OpenProject::DataTable::SortHeader",
     "Sorting": "Primer::OpenProject::DataTable::Sorting",
     "TITLE_TAG_DEFAULT": "h2"
+  },
+  "Primer::OpenProject::DataTable::CellPlaceholder": {
+    "GeneratedSlotMethods": "Primer::OpenProject::DataTable::CellPlaceholder::GeneratedSlotMethods"
   },
   "Primer::OpenProject::DataTable::Column": {
     "COLUMN_WIDTH_OPTIONS": [

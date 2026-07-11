@@ -5,6 +5,7 @@ module Primer
     # @component Primer::OpenProject::DataTable
     class DataTablePreview < ViewComponent::Preview
       DemoProject = Data.define(:id, :name, :status_code, :created_at)
+      DemoAssignment = Data.define(:id, :name, :assignee)
 
       # @label Default
       # @snapshot
@@ -48,6 +49,18 @@ module Primer
             show_subtitle: show_subtitle
           }
         )
+      end
+
+      # @label With Cell Placeholder
+      # @snapshot
+      def with_cell_placeholder
+        rows = [
+          DemoAssignment.new(id: 1, name: "Project 1", assignee: "Ada Lovelace"),
+          DemoAssignment.new(id: 2, name: "Project 2", assignee: nil),
+          DemoAssignment.new(id: 3, name: "Project 3", assignee: "Grace Hopper")
+        ]
+
+        render_with_template(locals: { rows: rows })
       end
 
       # @label With Pagination

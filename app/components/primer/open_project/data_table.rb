@@ -251,6 +251,13 @@ module Primer
         end
       end
 
+      def cell_content(cell, row)
+        value = cell.column.render_cell(row).to_s
+        return value if value.present? || cell.column.placeholder.blank?
+
+        render(CellPlaceholder.new) { cell.column.placeholder }
+      end
+
       def cells_for(row)
         headers.map do |header|
           sort_metadata = header.sortable? ? header.column.sort_metadata(row) : {}

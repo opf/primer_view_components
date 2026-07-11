@@ -150,6 +150,7 @@
   "Primer::OpenProject::DangerDialog::ConfirmationCheckBox": "open_project",
   "Primer::OpenProject::DangerDialog::FormWrapper": "open_project",
   "Primer::OpenProject::DataTable": "open_project",
+  "Primer::OpenProject::DataTable::CellPlaceholder": "open_project",
   "Primer::OpenProject::DataTable::Column": "open_project",
   "Primer::OpenProject::DataTable::PaginationFooter": "open_project",
   "Primer::OpenProject::DataTable::SortHeader": "open_project",

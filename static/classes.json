@@ -737,6 +737,9 @@
   "TableCell": [
     "Primer::OpenProject::DataTable"
   ],
+  "TableCellPlaceholder": [
+    "Primer::OpenProject::DataTable"
+  ],
   "TableContainer": [
     "Primer::OpenProject::DataTable"
   ],
