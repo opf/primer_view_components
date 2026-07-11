@@ -20006,6 +20006,12 @@
         "description": "Sort direction for the initially sorted column. Options: :ASC, :DESC"
       },
       {
+        "name": "divider",
+        "type": "Boolean",
+        "default": "`false`",
+        "description": "Whether to render a presentational divider line below the title row, ported from Primer React's `Table.Divider`"
+      },
+      {
         "name": "html_data",
         "type": "Hash",
         "default": "`{}`",
@@ -20032,6 +20038,11 @@
       {
         "name": "columns",
         "description": null,
+        "parameters": []
+      },
+      {
+        "name": "actions",
+        "description": "Actions rendered at the end of the table's title row, ported from\nPrimer React's `Table.Actions`.\n\nUse:\n\n- `button` for a labelled {{#link_to_component}}Primer::Beta::Button{{/link_to_component}}.\n- `icon_button` for an icon-only {{#link_to_component}}Primer::Beta::IconButton{{/link_to_component}}.\n- `menu` for a {{#link_to_component}}Primer::Alpha::ActionMenu{{/link_to_component}}.",
         "parameters": []
       },
       {
@@ -20085,6 +20096,19 @@
         "preview_path": "primer/open_project/data_table/playground",
         "name": "playground",
         "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/data_table/with_actions",
+        "name": "with_actions",
+        "snapshot": "true",
         "skip_rules": {
           "wont_fix": [
             "region"

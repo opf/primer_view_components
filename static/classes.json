@@ -731,6 +731,9 @@
   "Table": [
     "Primer::OpenProject::DataTable"
   ],
+  "TableActions": [
+    "Primer::OpenProject::DataTable"
+  ],
   "TableBody": [
     "Primer::OpenProject::DataTable"
   ],
@@ -741,6 +744,9 @@
     "Primer::OpenProject::DataTable"
   ],
   "TableContainer": [
+    "Primer::OpenProject::DataTable"
+  ],
+  "TableDivider": [
     "Primer::OpenProject::DataTable"
   ],
   "TableHead": [

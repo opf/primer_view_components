@@ -69,6 +69,20 @@ module Primer
         column
       }
 
+      # Actions rendered at the end of the table's title row, ported from
+      # Primer React's `Table.Actions`.
+      #
+      # Use:
+      #
+      # - `button` for a labelled <%= link_to_component(Primer::Beta::Button) %>.
+      # - `icon_button` for an icon-only <%= link_to_component(Primer::Beta::IconButton) %>.
+      # - `menu` for a <%= link_to_component(Primer::Alpha::ActionMenu) %>.
+      renders_many :actions, types: {
+        button: Primer::Beta::Button,
+        icon_button: Primer::Beta::IconButton,
+        menu: Primer::Alpha::ActionMenu
+      }
+
       renders_one :pagination, Primer::OpenProject::DataTable::PaginationFooter
 
       # @param data [Array, ActiveRecord::Relation]
@@ -81,6 +95,9 @@ module Primer
       # @param initial_sort_direction [Symbol, nil]
       #   Sort direction for the initially sorted column.
       #   Options: :ASC, :DESC
+      # @param divider [Boolean]
+      #   Whether to render a presentational divider line below the title row,
+      #   ported from Primer React's `Table.Divider`
       # @param html_data [Hash]
       #   HTML data attributes to be passed to the table
       # @param system_arguments [Hash]
@@ -90,6 +107,7 @@ module Primer
         cell_padding: CELL_PADDING_DEFAULT,
         initial_sort_column: nil,
         initial_sort_direction: nil,
+        divider: false,
         html_data: {},
         **system_arguments
       )
@@ -97,6 +115,7 @@ module Primer
         @cell_padding = fetch_or_fallback(CELL_PADDING_OPTIONS, cell_padding, CELL_PADDING_DEFAULT)
         @initial_sort_column = initial_sort_column
         @initial_sort_direction = initial_sort_direction
+        @divider = fetch_or_fallback_boolean(divider, false)
         @id = system_arguments[:id] ||= self.class.generate_id(base_name: "data-table")
 
         @container_arguments = {}

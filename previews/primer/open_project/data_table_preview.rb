@@ -51,6 +51,12 @@ module Primer
         )
       end
 
+      # @label With Actions
+      # @snapshot
+      def with_actions
+        render_with_template(locals: { projects: sample_rows.first(3) })
+      end
+
       # @label With Cell Placeholder
       # @snapshot
       def with_cell_placeholder

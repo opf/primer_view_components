@@ -6089,6 +6089,12 @@
         "description": "Sort direction for the initially sorted column. Options: :ASC, :DESC"
       },
       {
+        "name": "divider",
+        "type": "Boolean",
+        "default": "`false`",
+        "description": "Whether to render a presentational divider line below the title row, ported from Primer React's `Table.Divider`"
+      },
+      {
         "name": "html_data",
         "type": "Hash",
         "default": "`{}`",

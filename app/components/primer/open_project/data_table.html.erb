@@ -1,5 +1,15 @@
 <%= render(Primer::Box.new(**@container_arguments)) do %>
   <%= title %>
+  <% if actions.any? %>
+    <div class="TableActions">
+      <% actions.each do |action| %>
+        <%= action %>
+      <% end %>
+    </div>
+  <% end %>
+  <% if @divider %>
+    <div class="TableDivider" role="presentation"></div>
+  <% end %>
   <%= subtitle %>
   <%= render(Primer::BaseComponent.new(**@wrapper_arguments)) do %>
     <data-table>

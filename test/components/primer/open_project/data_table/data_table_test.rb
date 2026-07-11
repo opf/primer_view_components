@@ -422,6 +422,44 @@ class PrimerOpenProjectDataTableTest < Minitest::Test
     assert_equal({ test_selector: "my-table" }, html_data)
   end
 
+  def test_renders_actions_in_title_area
+    render_component(@data) do |data_table|
+      data_table.with_column(field: :subject, header: "Subject")
+      data_table.with_title { "Projects" }
+      data_table.with_action_button { "Export" }
+      data_table.with_action_icon_button(icon: :pencil, "aria-label": "Edit")
+    end
+
+    assert_selector(".TableContainer .TableActions button", text: "Export")
+    assert_selector(".TableActions button .octicon-pencil")
+    assert_selector(".TableActions tool-tip", text: "Edit", visible: :all)
+  end
+
+  def test_renders_no_actions_container_without_actions
+    render_component(@data) do |data_table|
+      data_table.with_column(field: :subject, header: "Subject")
+    end
+
+    assert_no_selector(".TableActions")
+  end
+
+  def test_renders_divider_when_enabled
+    render_component(@data, divider: true) do |data_table|
+      data_table.with_column(field: :subject, header: "Subject")
+      data_table.with_title { "Projects" }
+    end
+
+    assert_selector(".TableContainer .TableDivider[role='presentation']")
+  end
+
+  def test_renders_no_divider_by_default
+    render_component(@data) do |data_table|
+      data_table.with_column(field: :subject, header: "Subject")
+    end
+
+    assert_no_selector(".TableDivider")
+  end
+
   def test_renders_placeholder_for_blank_cell_values
     row_klass = Data.define(:subject, :assignee)
     data = [row_klass.new(subject: "First", assignee: nil)]

@@ -21,11 +21,13 @@
 /* Container ---------------------------------------------------------------- */
 .TableContainer {
     display: grid;
+    grid-template-columns: 1fr auto;
     grid-template-areas:
-    'title'
-    'subtitle'
-    'table'
-    'footer';
+    'title actions'
+    'divider divider'
+    'subtitle subtitle'
+    'table table'
+    'footer footer';
 }
 
 /* TableTitle */
@@ -49,9 +51,25 @@
     grid-area: subtitle;
 }
 
+/* TableActions */
+.TableActions {
+    display: flex;
+    align-self: center;
+    justify-self: end;
+    column-gap: var(--base-size-8);
+    grid-area: actions;
+}
+
+/* TableDivider */
+.TableDivider {
+    height: 0;
+    margin-block: var(--base-size-16) var(--base-size-8);
+    border-block-start: var(--borderWidth-thin) solid var(--borderColor-default);
+    grid-area: divider;
+}
+
 /* Spacing before the table */
-.TableTitle + .TableOverflowWrapper,
-.TableSubtitle + .TableOverflowWrapper {
+.TableContainer > .TableOverflowWrapper:not(:first-child) {
     margin-block-start: var(--base-size-8);
 }
 
