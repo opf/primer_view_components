@@ -24,8 +24,8 @@ class PrimerOpenProjectTableBodyTest < Minitest::Test
       end
     end
 
-    assert_selector("tbody[role='rowgroup']")
-    assert_selector("tr[role='row']")
+    assert_selector("tbody")
+    assert_selector("tr")
   end
 
   #
@@ -37,7 +37,7 @@ class PrimerOpenProjectTableBodyTest < Minitest::Test
       tag.tr
     end
 
-    assert_selector("tbody[role='rowgroup']")
+    assert_selector("tbody")
     assert_selector("tr")
   end
 

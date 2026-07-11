@@ -13,7 +13,13 @@ module Primer
         DEFAULT_SCOPE = :col
         SCOPE_OPTIONS = [DEFAULT_SCOPE, :row].freeze
 
-        def initialize(scope: DEFAULT_SCOPE, align: Cell::DEFAULT_ALIGNMENT, **system_arguments)
+        # @param scope [Symbol] Whether the header labels a column or a row
+        # @param align [Symbol] Horizontal alignment of the header content
+        # @param explicit_roles [Boolean] Whether the header cell renders its implicit
+        #   ARIA role as an explicit `role` attribute
+        # @param system_arguments [Hash]
+        #   System arguments passed to the root element
+        def initialize(scope: DEFAULT_SCOPE, align: Cell::DEFAULT_ALIGNMENT, explicit_roles: false, **system_arguments)
           resolved_scope = fetch_or_fallback(SCOPE_OPTIONS, scope, DEFAULT_SCOPE)
           resolved_align = fetch_or_fallback(
             Cell::ALIGNMENT_OPTIONS,
@@ -24,7 +30,7 @@ module Primer
           @system_arguments = deny_tag_argument(**system_arguments)
           @system_arguments[:tag] = :th
           @system_arguments[:scope] = resolved_scope
-          @system_arguments[:role] = resolved_scope == :row ? :rowheader : :columnheader
+          @system_arguments[:role] = (resolved_scope == :row ? :rowheader : :columnheader) if explicit_roles
           @system_arguments[:data] = merge_data(
             @system_arguments, data: { cell_align: resolved_align }
           )

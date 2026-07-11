@@ -20,7 +20,7 @@ class PrimerOpenProjectTableHeaderTest < Minitest::Test
   def test_renders_column_header_by_default
     render_component { "Column Header" }
 
-    assert_selector("th[role='columnheader']", text: "Column Header")
+    assert_selector("th[scope='col']", text: "Column Header")
   end
 
   #
@@ -30,7 +30,7 @@ class PrimerOpenProjectTableHeaderTest < Minitest::Test
   def test_renders_row_header_when_scope_is_row
     render_component(scope: :row) { "Row Header" }
 
-    assert_selector("th[role='rowheader']", text: "Row Header")
+    assert_selector("th[scope='row']", text: "Row Header")
   end
 
   #

@@ -20,7 +20,7 @@ class PrimerOpenProjectTableHeaderRowTest < Minitest::Test
       tr.with_cell { "Cell" }
     end
 
-    assert_selector("tr[role='row']")
+    assert_selector("tr")
   end
 
   def test_renders_column_headers

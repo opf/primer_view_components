@@ -25,8 +25,8 @@ class PrimerOpenProjectTableHeadTest < Minitest::Test
       end
     end
 
-    assert_selector("thead[role='rowgroup']")
-    assert_selector("tr[role='row']")
+    assert_selector("thead")
+    assert_selector("tr")
   end
 
   #
@@ -38,7 +38,7 @@ class PrimerOpenProjectTableHeadTest < Minitest::Test
       tag.tr
     end
 
-    assert_selector("thead[role='rowgroup']")
+    assert_selector("thead")
     assert_selector("tr")
   end
 

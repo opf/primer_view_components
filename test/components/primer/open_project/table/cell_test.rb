@@ -15,18 +15,18 @@ class PrimerOpenProjectTableCellTest < Minitest::Test
   def test_renders_cell_with_content
     render_component { "Cell content" }
 
-    assert_selector("td[role='cell']", text: "Cell content")
+    assert_selector("td", text: "Cell content")
   end
 
   def test_renders_cell_with_text
     render_component(text: "Cell text")
 
-    assert_selector("td[role='cell']", text: "Cell text")
+    assert_selector("td", text: "Cell text")
   end
 
   def test_renders_empty_cell_without_content_or_text
     render_component
 
-    assert_selector("td[role='cell']", text: "")
+    assert_selector("td", text: "")
   end
 end

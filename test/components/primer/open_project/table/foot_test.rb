@@ -25,8 +25,8 @@ class PrimerOpenProjectTableFootTest < Minitest::Test
       end
     end
 
-    assert_selector("tfoot[role='rowgroup']")
-    assert_selector("tr[role='row']")
+    assert_selector("tfoot")
+    assert_selector("tr")
   end
 
   #
@@ -38,7 +38,7 @@ class PrimerOpenProjectTableFootTest < Minitest::Test
       tag.tr
     end
 
-    assert_selector("tfoot[role='rowgroup']")
+    assert_selector("tfoot")
     assert_selector("tr")
   end
 

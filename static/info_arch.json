@@ -22860,7 +22860,20 @@
     "short_name": "OpenProjectTable",
     "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table.rb",
     "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/default/",
-    "parameters": [],
+    "parameters": [
+      {
+        "name": "explicit_roles",
+        "type": "Boolean",
+        "default": "`false`",
+        "description": "Whether the table and its descendants render their implicit ARIA roles as explicit `role` attributes. Needed when CSS strips the native table semantics, as {{#link_to_component}}Primer::OpenProject::DataTable{{/link_to_component}}'s grid layout does."
+      },
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "System arguments passed to the root element"
+      }
+    ],
     "slots": [
       {
         "name": "caption",
@@ -22988,7 +23001,32 @@
     "short_name": "OpenProjectTableCell",
     "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table/cell.rb",
     "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/cell/default/",
-    "parameters": [],
+    "parameters": [
+      {
+        "name": "text",
+        "type": "String, nil",
+        "default": "`nil`",
+        "description": "Cell content, alternatively to a block"
+      },
+      {
+        "name": "align",
+        "type": "Symbol",
+        "default": "`:start`",
+        "description": "Horizontal alignment of the cell content"
+      },
+      {
+        "name": "explicit_roles",
+        "type": "Boolean",
+        "default": "`false`",
+        "description": "Whether the cell renders its implicit ARIA role as an explicit `role` attribute"
+      },
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "System arguments passed to the root element"
+      }
+    ],
     "slots": [],
     "methods": [
       {
@@ -23108,7 +23146,32 @@
     "short_name": "OpenProjectTableHeader",
     "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table/header.rb",
     "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/header/default/",
-    "parameters": [],
+    "parameters": [
+      {
+        "name": "scope",
+        "type": "Symbol",
+        "default": "`:col`",
+        "description": "Whether the header labels a column or a row"
+      },
+      {
+        "name": "align",
+        "type": "Symbol",
+        "default": "`Cell::DEFAULT_ALIGNMENT`",
+        "description": "Horizontal alignment of the header content"
+      },
+      {
+        "name": "explicit_roles",
+        "type": "Boolean",
+        "default": "`false`",
+        "description": "Whether the header cell renders its implicit ARIA role as an explicit `role` attribute"
+      },
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "System arguments passed to the root element"
+      }
+    ],
     "slots": [],
     "methods": [],
     "previews": [],
@@ -23127,7 +23190,20 @@
     "short_name": "OpenProjectTableHeaderRow",
     "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table/header_row.rb",
     "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/header_row/default/",
-    "parameters": [],
+    "parameters": [
+      {
+        "name": "explicit_roles",
+        "type": "Boolean",
+        "default": "`false`",
+        "description": "Whether the row and its cells render their implicit ARIA roles as explicit `role` attributes"
+      },
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "System arguments passed to the root element"
+      }
+    ],
     "slots": [
       {
         "name": "cells",
@@ -23152,7 +23228,20 @@
     "short_name": "OpenProjectTableRow",
     "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table/row.rb",
     "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/row/default/",
-    "parameters": [],
+    "parameters": [
+      {
+        "name": "explicit_roles",
+        "type": "Boolean",
+        "default": "`false`",
+        "description": "Whether the row and its cells render their implicit ARIA roles as explicit `role` attributes"
+      },
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "System arguments passed to the root element"
+      }
+    ],
     "slots": [
       {
         "name": "cells",
@@ -23177,7 +23266,20 @@
     "short_name": "OpenProjectTableRowGroup",
     "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/table/row_group.rb",
     "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/table/row_group/default/",
-    "parameters": [],
+    "parameters": [
+      {
+        "name": "explicit_roles",
+        "type": "Boolean",
+        "default": "`false`",
+        "description": "Whether the row group and its rows render their implicit ARIA roles as explicit `role` attributes"
+      },
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "System arguments passed to the root element"
+      }
+    ],
     "slots": [],
     "methods": [],
     "previews": [],

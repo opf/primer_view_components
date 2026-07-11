@@ -10,7 +10,9 @@ module Primer
       class Head < RowGroup
         status :open_project
 
-        renders_many :rows, HeaderRow
+        renders_many :rows, ->(**system_arguments) {
+          HeaderRow.new(explicit_roles: @explicit_roles, **system_arguments)
+        }
 
         def initialize(**system_arguments)
           system_arguments = deny_tag_argument(**system_arguments)

@@ -10,7 +10,9 @@ module Primer
       class Body < ::Primer::OpenProject::Table::RowGroup
         status :open_project
 
-        renders_many :rows, ::Primer::OpenProject::Table::Row
+        renders_many :rows, ->(**system_arguments) {
+          ::Primer::OpenProject::Table::Row.new(explicit_roles: @explicit_roles, **system_arguments)
+        }
 
         def initialize(**system_arguments)
           system_arguments = deny_tag_argument(**system_arguments)
