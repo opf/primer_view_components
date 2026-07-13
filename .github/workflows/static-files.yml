@@ -21,9 +21,11 @@ jobs:
           private-key: ${{ secrets.PRIMER_APP_PRIVATE_KEY_SHARED }}
           owner: opf
           repositories: primer_view_components
+          permission-contents: write
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
       - uses: ruby/setup-ruby@6aaa311d81eba98ae12eaffbcb63296ace0efcde # v1
         with:
           ruby-version: '3.4'
