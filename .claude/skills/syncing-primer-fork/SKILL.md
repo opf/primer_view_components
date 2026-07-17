@@ -151,6 +151,20 @@ the fork's Dependabot. Leave everything non-urgent to the weekly Dependabot cycl
 These are dependency bumps, so no changeset (matches the `skip changeset` label the
 fork's Dependabot uses).
 
+### 5. If asked to push and open a PR
+
+The SHA is meaningless to a reviewer — title the PR with the upstream package
+version the batch reaches instead, read from `package.json` **at TARGET**
+(TARGET sits right before the *next* version-bump, so its `version` field is
+the last upstream release this batch actually includes):
+
+```bash
+git show <TARGET>:package.json | grep '"version"'
+```
+
+e.g. TARGET's version `0.51.6` → title `Sync Primer view_components upstream through v0.51.6`,
+not `...through 6733f3c0`. The SHA can still go in the PR body for traceability.
+
 ## Quick Reference
 
 ```bash
@@ -197,6 +211,8 @@ script/setup && git add -A && git commit
   <path>` and resolve it by hand.
 - **Inventing a PR/release flow.** The job ends at the local merge commit on
   `bump/primer-upstream`; release is a separate changeset-driven process.
+- **Titling the PR with the merge SHA.** A hex SHA tells a reviewer nothing.
+  Use the upstream package version at TARGET instead (see step 5).
 
 ## Keeping the two forks aligned
 
