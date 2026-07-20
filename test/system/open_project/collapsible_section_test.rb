@@ -64,4 +64,23 @@ class IntegrationOpenProjectCollapsibleSectionTest < System::TestCase
     assert_equal "true", trigger[:'aria-expanded']
     assert_selector("##{controlled_id}", visible: true)
   end
+
+  def test_link_in_title_does_not_collapse
+    visit_preview(:with_link_in_title)
+
+    assert_no_selector(".CollapsibleSection--collapsed")
+
+    # Clicking the trigger area (not the link) should still collapse
+    trigger = find(".CollapsibleSection--triggerArea")
+    trigger.click
+    assert_selector(".CollapsibleSection--collapsed")
+
+    # Expand again
+    trigger.click
+    assert_no_selector(".CollapsibleSection--collapsed")
+
+    # Clicking the link should NOT collapse the section
+    find(".CollapsibleSection--triggerArea a").click
+    assert_no_selector(".CollapsibleSection--collapsed")
+  end
 end

@@ -52,6 +52,15 @@ module Primer
           locals: { }
         )
       end
+
+      # @label With link in title
+      # @hidden
+      def with_link_in_title
+        render_with_template(
+          template: "primer/open_project/collapsible_section_preview/with_link_in_title",
+          locals: { }
+        )
+      end
     end
   end
 end
