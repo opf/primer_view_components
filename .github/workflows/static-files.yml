@@ -22,10 +22,13 @@ jobs:
           owner: opf
           repositories: primer_view_components
           permission-contents: write
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      # persist-credentials must stay on: git-auto-commit-action below pushes
+      # via the credentials actions/checkout writes to git config. The token is
+      # a scoped app-token (contents:write, this repo only), not GITHUB_TOKEN.
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6 # zizmor: ignore[artipacked]
         with:
           token: ${{ steps.app-token.outputs.token }}
-          persist-credentials: false
+          persist-credentials: true
       - uses: ruby/setup-ruby@6aaa311d81eba98ae12eaffbcb63296ace0efcde # v1
         with:
           ruby-version: '3.4'
