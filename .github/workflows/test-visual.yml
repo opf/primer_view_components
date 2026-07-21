@@ -13,12 +13,21 @@ concurrency:
 
 env:
   FERRUM_PROCESS_TIMEOUT: 30
+  # Regeneration is opt-in: add the `regen-snapshots` label to a same-repo PR to
+  # rewrite and commit the baseline. Without it (or on fork PRs, which cannot be
+  # committed back to) the job only asserts against the committed snapshots and
+  # fails loudly on a real diff — it never commits. The same-repo guard here
+  # stops a labelled fork PR from running a regen that can never commit and
+  # skips the assert, giving a misleading green.
+  REGEN: ${{ github.event.pull_request.head.repo.full_name == github.repository && contains(github.event.pull_request.labels.*.name, 'regen-snapshots') }}
 
 jobs:
   visual:
     name: Visual and Semantic Markup Regressions
     if: ${{ github.event_name == 'pull_request' }}
-    timeout-minutes: 20
+    # 2-core ubuntu-latest: a full suite does not finish inside 20 min. Raised
+    # so a run completes instead of timing out and committing a partial baseline.
+    timeout-minutes: 45
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -52,12 +61,20 @@ jobs:
           gem install overmind
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-      - name: Run Playwright tests
-        id: playwright-run
-        continue-on-error: true
+      # Default path: compare against the committed baseline. No
+      # continue-on-error — a genuine over-threshold diff fails the job so drift
+      # surfaces loudly instead of being silently auto-committed.
+      - name: Run Playwright tests (assert)
+        id: playwright-assert
+        if: ${{ env.REGEN != 'true' }}
         run: ./script/run-playwright
+      # Opt-in path (regen-snapshots label): rewrite the baseline, then commit it.
+      - name: Run Playwright tests (regenerate)
+        id: playwright-regen
+        if: ${{ env.REGEN == 'true' }}
+        run: ./script/run-playwright --update-snapshots
       - name: Update to latest branch tip
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        if: ${{ env.REGEN == 'true' }}
         run: |
           set -e
           BRANCH="${GITHUB_EVENT_PULL_REQUEST_HEAD_REF}"
@@ -73,7 +90,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_EVENT_PULL_REQUEST_HEAD_REF: ${{ github.event.pull_request.head.ref }}
       - id: auto-commit
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        if: ${{ env.REGEN == 'true' }}
         uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9 # v7.1.0
         with:
           commit_message: Generating component snapshots
@@ -81,7 +98,7 @@ jobs:
           push_options: --force-with-lease
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: "Changes detected"
-        if: steps.auto-commit.outputs.changes_detected == 'true'
+        if: ${{ env.REGEN == 'true' && steps.auto-commit.outputs.changes_detected == 'true' }}
         uses: phulsechinmay/rewritable-pr-comment@a1b041997fa84ec3e524ee9dee5ba0b5f4e73604 # v0.3.0
         with:
           message: |
@@ -92,11 +109,10 @@ jobs:
             [Review differences](https://github.com/opf/primer_view_components/pull/${{ github.event.number }}/files?file-filters%5B%5D=.png&file-filters%5B%5D=.yml&show-viewed-files=false)
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COMMENT_IDENTIFIER: "visual-comparison-diff"
+      # Uploaded on assert failures too, so authors can inspect the diff report.
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        if: ${{ !cancelled() }}
         with:
           name: playwright-report
           path: .playwright/report/
           retention-days: 30
-      - name: Failure
-        if: ${{ steps.auto-commit.outputs.changes_detected == 'true' || steps.playwright-run.outcome == 'failure' }}
-        run: exit 1

@@ -18,7 +18,13 @@ const config: PlaywrightTestConfig = {
   /* Run tests in files in parallel */
   fullyParallel: true,
   workers: process.env.CI ? 4 : undefined,
-  updateSnapshots: 'all',
+  // Assert against the committed baseline. 'none' means a missing baseline
+  // fails rather than being silently created, so new snapshots must be added
+  // via the regen path (the `regen-snapshots` PR label in test-visual.yml,
+  // which passes --update-snapshots and overrides this). Never rewrite
+  // unconditionally — 'all' rewrote every file every run and committed
+  // byte-churn.
+  updateSnapshots: 'none',
   use: {
     baseURL: 'http://127.0.0.1:4000',
     browserName: 'chromium',
@@ -30,7 +36,12 @@ const config: PlaywrightTestConfig = {
       animations: 'disabled',
     },
     toMatchSnapshot: {
+      // `threshold` sets per-pixel colour sensitivity; `maxDiffPixelRatio` sets
+      // how many pixels may differ before failing. Without a max-diff budget a
+      // single anti-aliased pixel of non-deterministic Chromium rasterisation
+      // fails the run. Tune if genuine small changes slip through.
       threshold: 0.1,
+      maxDiffPixelRatio: 0.01,
     },
   },
   /* Retry on CI only */

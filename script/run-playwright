@@ -1,4 +1,6 @@
 #! /bin/bash
 
 ./script/stop-existing-processes
-exec npx playwright test --workers 6
+# Worker count comes from playwright.config.ts (CI-aware); forward extra args
+# (e.g. --update-snapshots for the regen path in CI).
+exec npx playwright test "$@"
