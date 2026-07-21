@@ -187,6 +187,38 @@ the fork's Dependabot. Leave everything non-urgent to the weekly Dependabot cycl
 These are dependency bumps, so no changeset (matches the `skip changeset` label the
 fork's Dependabot uses).
 
+### 5. Push and open a PR — reference the released upstream *version*, not a PR number
+
+The merge commit's identity is the upstream *release* it lands on, not any single
+upstream PR merged along the way (a batch often bundles several). Title and
+body must key off that version — never an upstream PR/issue number standing in
+for "which sync this is."
+
+Read the version off **`CHANGELOG.md` at `<TARGET>`** (its top `## X.Y.Z`
+heading — the changeset-driven changelog upstream commits alongside the code,
+so it's already sitting at the version TARGET belongs to, no separate version
+file path to know per-repo):
+
+```bash
+git show <TARGET>:CHANGELOG.md | head -5   # top heading = the version this batch releases as
+```
+
+Push and open the PR:
+
+```bash
+git push -u origin bump/primer-upstream
+gh pr create --title "Sync Primer view_components upstream through vX.Y.Z" --body "..."
+```
+
+(octicons: same shape, `Sync Primer octicons upstream through vX.Y.Z`.)
+
+Body: prefix with 🤖 (posting under the user's identity — see global git
+posting rules), state the merge target SHA, list the upstream PRs *folded
+into* this version bump (that's where individual `#NNNN` references belong —
+describing what changed, not naming the sync), and call out anything
+hand-folded into the merge commit (tsconfig widen, dependency replays, etc.)
+per step 4 and the Common Mistakes below.
+
 ## Quick Reference
 
 ```bash
@@ -259,8 +291,13 @@ script/setup && git add -A && git commit
   afterwards (but never fixes `classnames.*`, which CI doesn't regenerate).
   Always `git clean -fdx -- app/` before rebuilding (see 3a), and grep
   `static/` for any component name that isn't in this batch.
-- **Inventing a PR/release flow.** The job ends at the local merge commit on
-  `bump/primer-upstream`; release is a separate changeset-driven process.
+- **Inventing a release flow, or titling the PR after an upstream PR number.**
+  The job ends at pushing `bump/primer-upstream` and opening one PR against
+  `main` (step 5) — actually cutting the fork's own release afterward is a
+  separate changeset-driven process, not part of this skill. And when opening
+  that PR: title/reference the released upstream *version* (`CHANGELOG.md` at
+  `<TARGET>`), never a `#NNNN` upstream PR/issue number — a batch usually
+  bundles several upstream PRs, so no single one identifies "this sync."
 
 ## Keeping the two forks aligned
 
