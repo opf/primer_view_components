@@ -10,7 +10,7 @@ module Primer
     module GeneratePreviews
       class << self
         def call
-          Lookbook.previews.filter_map do |preview|
+          Lookbook.previews.sort_by(&:lookup_path).filter_map do |preview|
             next if preview.preview_class == Primer::FormsPreview
             next if Primer::Accessibility.ignore_preview?(preview.preview_class)
 
