@@ -29,6 +29,8 @@ updates:
       - "dependencies"
       - "skip changeset"
       - "npm"
+    ignore:
+      - dependency-name: "@oddbird/popover-polyfill"
     groups:
       production-dependencies:
         dependency-type: "production"
