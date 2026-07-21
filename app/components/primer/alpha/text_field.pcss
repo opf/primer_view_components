@@ -78,6 +78,7 @@
 }
 
 /* shared among all form control components (input, select, textarea, checkbox, radio) */
+/* stylelint-disable nesting-selector-no-missing-scoping-root */
 @define-mixin Field {
   color: var(--fgColor-default);
   background-color: var(--bgColor-default);
@@ -118,6 +119,7 @@
     @mixin focusBoxShadowInset;
   }
 }
+/* stylelint-enable nesting-selector-no-missing-scoping-root */
 
 /* TextInput structure
 ** ===================
@@ -238,6 +240,7 @@
 }
 
 /* widths */
+/* stylelint-disable nesting-selector-no-missing-scoping-root -- inside @define-mixin the & resolves at the @mixin include site, so there is a scoping root */
 @define-mixin FormControl-input-width {
   &.FormControl-input-width--auto {
     width: auto;
@@ -267,6 +270,7 @@
     max-width: min(960px, 100vw - 2rem);
   }
 }
+/* stylelint-enable nesting-selector-no-missing-scoping-root */
 
 /* positioning for leading/trailing items for TextInput */
 .FormControl-input-wrap {
@@ -673,16 +677,19 @@
   grid-template-columns: min-content auto;
   gap: var(--base-size-8);
 
-  & .FormControl-checkbox-labelWrap,
-  & .FormControl-radio-labelWrap {
-    display: flex;
-    flex-direction: column;
-    gap: var(--base-size-4);
-  }
-
   & .FormControl-label {
     cursor: pointer;
   }
+}
+
+/* Expanded per-class so the subject buckets by a single class during style
+** recalc, instead of compiling to a merged `:is(...)` subject that Blink
+** cannot fast-reject. */
+.FormControl-checkbox-wrap .FormControl-checkbox-labelWrap,
+.FormControl-radio-wrap .FormControl-radio-labelWrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--base-size-4);
 }
 
 .FormControl-radio-group-wrap {
