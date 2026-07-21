@@ -195,6 +195,22 @@ script/setup && git add -A && git commit
   YAML; with `rerere.autoupdate` it's even auto-staged). Diff every rerere-touched
   hunk before staging; if a replayed resolution looks stale, `git rerere forget
   <path>` and resolve it by hand.
+- **Losing the fork's widened `tsconfig.json` `include`.** Upstream's
+  `tsconfig.json` matches only *top-level* component TS
+  (`app/components/primer/*.ts`); the fork widens it to `**/*.ts` (recursive,
+  plus `**/*.d.ts` in `exclude`) so nested components (`alpha/`, `beta/`,
+  `open_project/`) are covered. A sync that takes upstream's `tsconfig.json`
+  silently reverts this. Under Vite 8/rolldown the demo build then transforms
+  the un-matched nested TS **without** `experimentalDecorators`, so Catalyst
+  `@controller(...)` reaches terser un-downleveled →
+  `RolldownError: Unexpected character '@'` → demo build dies → **every** chrome
+  system test fails (no JS assets, nothing renders). It's a silent revert, not a
+  conflict, so nothing flags it. After each sync, verify:
+  ```bash
+  grep -A3 '"include"' tsconfig.json   # must list app/components/primer/**/*.ts (recursive); exclude must list **/*.d.ts
+  ```
+  If reverted, re-apply commit `ba86b76eb` (PR #409 / WP 590):
+  `git cherry-pick -x ba86b76eb`.
 - **Inventing a PR/release flow.** The job ends at the local merge commit on
   `bump/primer-upstream`; release is a separate changeset-driven process.
 
