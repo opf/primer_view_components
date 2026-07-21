@@ -25,7 +25,7 @@ jobs:
       # persist-credentials must stay on: git-auto-commit-action below pushes
       # via the credentials actions/checkout writes to git config. The token is
       # a scoped app-token (contents:write, this repo only), not GITHUB_TOKEN.
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6 # zizmor: ignore[artipacked]
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7 # zizmor: ignore[artipacked]
         with:
           token: ${{ steps.app-token.outputs.token }}
           persist-credentials: true
