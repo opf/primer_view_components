@@ -106,11 +106,47 @@ automatically (fork wins). For the rest:
 every lockfile and the generated docs. The mirror repo (octicons) instead uses
 yarn at the root plus npm for `octicons_angular`.
 
-After resolving, re-stage, run setup, and commit:
+After resolving, re-stage and run setup:
 
 ```bash
 git add -A
 script/setup             # regenerates lockfiles + docs from the merged sources
+```
+
+Then regenerate generated files **from a clean tree** and fold in the fork's
+own fixes *before* committing (see 3a), so the sync lands as one
+self-contained merge commit — not a merge followed by `cherry-pick` /
+CI-autocommit cleanup commits.
+
+### 3a. Regenerate static/generated files from a *clean* tree
+
+`script/export-css-selectors` (invoked by `script/setup` → `npm install` →
+the `prepare` build) scans the **compiled** `app/components/**/*.css` —
+gitignored build artifacts, not the `.pcss` sources. Stale compiled CSS left
+in the working tree from an *earlier branch* — a component not in this batch,
+e.g. a fork-only `Primer::OpenProject::DataTable` — is picked up and injected
+into `static/classes.json` and `static/classnames.{js,cjs,d.ts}`. Wipe
+artifacts before regenerating:
+
+```bash
+git clean -fdx -- app/          # remove stale compiled .css/.js/.d.ts/.map
+script/build-assets             # recompile CSS/JS from the merged sources
+bundle exec rake utilities:build docs:build static:dump
+```
+
+Then confirm nothing phantom leaked — for a batch that does **not** add
+DataTable, this must be empty:
+
+```bash
+git grep -i "OpenProject::DataTable" -- static/ && echo "POLLUTED — reclean and rebuild"
+```
+
+The `static-files` CI job only regenerates and commits `static/*.json` (plus
+`utilities.yml`) — **not** `static/classnames.{js,cjs,d.ts}`. Those must be
+correct *in the merge commit itself*; a dirty-tree pollution there is never
+auto-corrected downstream. Finally stage and finish the merge:
+
+```bash
 git add -A
 git commit          # finishes the deferred merge commit
 ```
@@ -209,8 +245,20 @@ script/setup && git add -A && git commit
   ```bash
   grep -A3 '"include"' tsconfig.json   # must list app/components/primer/**/*.ts (recursive); exclude must list **/*.d.ts
   ```
-  If reverted, re-apply commit `ba86b76eb` (PR #409 / WP 590):
-  `git cherry-pick -x ba86b76eb`.
+  If reverted, re-apply the widen (from `ba86b76eb`, PR #409 / WP 590) **in the
+  working tree before finishing the merge commit** — edit `tsconfig.json` and
+  `git add` it into the deferred merge, don't `cherry-pick` it as a *trailing*
+  commit. The sync should be one self-contained merge commit.
+- **Polluting `static/` by regenerating on a dirty tree.**
+  `script/export-css-selectors` reads the *compiled* `app/components/**/*.css`
+  (gitignored build artifacts), so stale CSS from a previous branch — a
+  component not in this batch, e.g. a fork-only `DataTable` — leaks phantom
+  classes into `static/classes.json` and `static/classnames.{js,cjs,d.ts}`.
+  Symptom: the merge adds class entries for components absent from `main`, and
+  the `static-files` CI job auto-commits their removal from `static/*.json`
+  afterwards (but never fixes `classnames.*`, which CI doesn't regenerate).
+  Always `git clean -fdx -- app/` before rebuilding (see 3a), and grep
+  `static/` for any component name that isn't in this batch.
 - **Inventing a PR/release flow.** The job ends at the local merge commit on
   `bump/primer-upstream`; release is a separate changeset-driven process.
 
