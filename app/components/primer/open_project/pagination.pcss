@@ -1,3 +1,5 @@
+/* stylelint-disable selector-max-type -- pagination arrows are styled via `.Page[rel] > svg`; the svg icon can only be targeted by its type selector */
+
 .Page {
   min-width: var(--base-size-32);
   height: var(--base-size-32);
@@ -7,7 +9,7 @@
   white-space: nowrap;
   vertical-align: middle;
   cursor: pointer;
-  border-radius: var(--borderRadius-medium,.375rem);
+  border-radius: var(--borderRadius-medium);
   transition: background-color 0.2s cubic-bezier(0.3, 0, 0.5, 1);
   display: inline-flex;
   align-items: center;
@@ -62,6 +64,7 @@
 
 .Page[aria-current]:focus-visible {
   outline: 2px solid var(--bgColor-accent-emphasis);
+  /* stylelint-disable-next-line primer/box-shadow -- custom focus-ring built from Primer size/color primitives; no single Primer box-shadow token matches */
   box-shadow: inset 0 0 0 var(--base-size-2) var(--fgColor-onEmphasis);
 }
 

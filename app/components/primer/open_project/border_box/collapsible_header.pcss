@@ -1,5 +1,7 @@
 /* CSS for BorderBox::CollapsibleHeader  */
 
+/* stylelint-disable selector-nested-pattern -- component nests descendant class selectors (and `.X > &`) inside container queries, not &-prefixed selectors */
+
 .CollapsibleHeader {
   display: block;
   container-name: collapsible-header-container;
@@ -60,7 +62,7 @@
 
   .CollapsibleHeader-description {
     overflow: visible;
-    text-overflow: initial;
+    text-overflow: clip;
     white-space: normal;
     width: 100%;
   }
