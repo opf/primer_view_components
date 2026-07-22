@@ -4933,6 +4933,19 @@
         }
       },
       {
+        "preview_path": "primer/alpha/tree_view/async_form_input",
+        "name": "async_form_input",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
         "preview_path": "primer/alpha/tree_view/doubled_path",
         "name": "doubled_path",
         "snapshot": "false",
