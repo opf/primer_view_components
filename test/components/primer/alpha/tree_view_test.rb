@@ -159,16 +159,46 @@ module Primer
         assert_selector("[role=treeitem] .TreeViewItemVisual svg.octicon-sparkle-fill")
       end
 
-      def test_disallows_multi_select_for_async_sub_trees
-        error = assert_raises(ArgumentError) do
+      def test_disallows_multi_select_with_descendants_strategy_for_async_sub_trees
+        [:descendants, :mixed_descendants].each do |strategy|
+          error = assert_raises(ArgumentError) do
+            render_inline(Primer::Alpha::TreeView.new) do |tree|
+              tree.with_sub_tree(label: "src", select_variant: :multiple, select_strategy: strategy) do |sub_tree|
+                sub_tree.with_loading_spinner(src: "/foobar")
+              end
+            end
+          end
+
+          assert_equal error.message, "TreeView does not currently support the multiple select variant with #{strategy.inspect} select strategy for sub-trees loaded asynchronously."
+        end
+      end
+
+      def test_allows_valid_select_variant_and_strategy_combinations_for_async_sub_trees
+        # No assertions needed, the scenarios simply do not throw an error
+        # :none — always allowed regardless of strategy
+        Primer::Alpha::TreeView::SubTreeNode::SELECT_STRATEGIES.each do |strategy|
           render_inline(Primer::Alpha::TreeView.new) do |tree|
-            tree.with_sub_tree(label: "src", select_variant: :multiple) do |sub_tree|
+            tree.with_sub_tree(label: "src", select_variant: :none, select_strategy: strategy) do |sub_tree|
               sub_tree.with_loading_spinner(src: "/foobar")
             end
           end
         end
 
-        assert_equal error.message, "TreeView does not currently support select variants for sub-trees loaded asynchronously."
+        # :single — always allowed regardless of strategy
+        Primer::Alpha::TreeView::SubTreeNode::SELECT_STRATEGIES.each do |strategy|
+          render_inline(Primer::Alpha::TreeView.new) do |tree|
+            tree.with_sub_tree(label: "src", select_variant: :single, select_strategy: strategy) do |sub_tree|
+              sub_tree.with_loading_spinner(src: "/foobar")
+            end
+          end
+        end
+
+        # :multiple — only allowed with :self
+        render_inline(Primer::Alpha::TreeView.new) do |tree|
+          tree.with_sub_tree(label: "src", select_variant: :multiple, select_strategy: :self) do |sub_tree|
+            sub_tree.with_loading_spinner(src: "/foobar")
+          end
+        end
       end
 
       def test_supports_anchor_tags
