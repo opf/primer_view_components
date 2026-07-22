@@ -30,6 +30,7 @@ class IntegrationOpenProjectCollapsibleHeaderTest < System::TestCase
     visit_preview(:default, module_prefix: "border_box")
 
     trigger = find(".CollapsibleHeader-triggerArea")
+    toggle_button = find(".CollapsibleHeader-triggerArea [data-collapsible-toggle]")
 
     # First, make sure it is not collapsed
     assert_no_selector(".CollapsibleHeader--collapsed")
@@ -37,7 +38,7 @@ class IntegrationOpenProjectCollapsibleHeaderTest < System::TestCase
     assert_selector(".octicon.octicon-chevron-up", visible: true)
 
     # Check aria-expanded is true when expanded
-    assert_equal "true", trigger[:'aria-expanded']
+    assert_equal "true", toggle_button[:'aria-expanded']
 
     # Collapse it
     trigger.click
@@ -46,7 +47,7 @@ class IntegrationOpenProjectCollapsibleHeaderTest < System::TestCase
     assert_selector(".octicon.octicon-chevron-up", visible: false)
     assert_selector(".octicon.octicon-chevron-down", visible: true)
 
-    assert_equal "false", trigger[:'aria-expanded']
+    assert_equal "false", toggle_button[:'aria-expanded']
 
     # Expand it again
     trigger.click
@@ -56,7 +57,7 @@ class IntegrationOpenProjectCollapsibleHeaderTest < System::TestCase
     assert_selector(".octicon.octicon-chevron-up", visible: true)
 
     # aria-expanded should be true again
-    trigger = find(".CollapsibleHeader-triggerArea")
-    assert_equal "true", trigger[:'aria-expanded']
+    toggle_button = find(".CollapsibleHeader-triggerArea [data-collapsible-toggle]")
+    assert_equal "true", toggle_button[:'aria-expanded']
   end
 end

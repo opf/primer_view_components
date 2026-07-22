@@ -15,7 +15,13 @@ export abstract class CollapsibleElement extends HTMLElement {
   }
 
   toggle(event?: Event) {
-    if (event && event.target instanceof Element && event.target.closest('a, button')) return
+    if (
+      event &&
+      event.target instanceof Element &&
+      !event.target.closest('[data-collapsible-toggle]') &&
+      event.target.closest('a, button')
+    )
+      return
     event?.preventDefault()
     this.collapsed = !this.collapsed
   }

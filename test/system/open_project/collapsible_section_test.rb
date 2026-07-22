@@ -21,14 +21,15 @@ class IntegrationOpenProjectCollapsibleSectionTest < System::TestCase
     visit_preview(:default)
 
     trigger = find('.CollapsibleSection--triggerArea')
+    toggle_button = find('.CollapsibleSection--triggerArea [data-collapsible-toggle]')
 
     # Check aria-expanded is true when expanded
-    assert_equal "true", trigger[:'aria-expanded']
+    assert_equal "true", toggle_button[:'aria-expanded']
 
     # Check aria-controls is present and not empty
-    assert trigger[:'aria-controls'].present?, "Expected aria-controls attribute to be present"
+    assert toggle_button[:'aria-controls'].present?, "Expected aria-controls attribute to be present"
 
-    controlled_id = trigger[:'aria-controls']
+    controlled_id = toggle_button[:'aria-controls']
     assert_selector("##{controlled_id}", visible: true)
 
     # First, make sure it is not collapsed
@@ -46,7 +47,7 @@ class IntegrationOpenProjectCollapsibleSectionTest < System::TestCase
     assert_no_text("How did you hear about us?")
 
     # aria-expanded should now be false
-    assert_equal "false", trigger[:'aria-expanded']
+    assert_equal "false", toggle_button[:'aria-expanded']
 
     # Controlled element should now be hidden
     assert_selector("##{controlled_id}", visible: false)
@@ -60,8 +61,8 @@ class IntegrationOpenProjectCollapsibleSectionTest < System::TestCase
     assert_text("How did you hear about us?")
 
     # aria-expanded should be true again
-    trigger = find('.CollapsibleSection--triggerArea')
-    assert_equal "true", trigger[:'aria-expanded']
+    toggle_button = find('.CollapsibleSection--triggerArea [data-collapsible-toggle]')
+    assert_equal "true", toggle_button[:'aria-expanded']
     assert_selector("##{controlled_id}", visible: true)
   end
 

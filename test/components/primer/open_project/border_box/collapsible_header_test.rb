@@ -91,7 +91,7 @@ class Primer::OpenProject::BorderBox::CollapsibleHeaderTest < Minitest::Test
       header.with_title { "Backlog" }
     end
 
-    assert_selector(".CollapsibleHeader-triggerArea[aria-controls='body-id list-id']")
+    assert_selector(".CollapsibleHeader-triggerArea [data-collapsible-toggle][aria-controls='body-id list-id']")
   end
 
   def test_nil_collapsible_id_omits_aria_controls
@@ -99,7 +99,7 @@ class Primer::OpenProject::BorderBox::CollapsibleHeaderTest < Minitest::Test
       header.with_title { "Backlog" }
     end
 
-    assert_no_selector(".CollapsibleHeader-triggerArea[aria-controls]")
+    assert_no_selector(".CollapsibleHeader-triggerArea [data-collapsible-toggle][aria-controls]")
   end
 
   def test_renders_with_description
