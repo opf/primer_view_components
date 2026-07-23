@@ -762,6 +762,27 @@ module Alpha
       assert_selector "select-panel button[aria-controls]", exact_text: "Item: Item 2, Item 3"
     end
 
+    def test_counter_updates_on_selection
+      visit_preview(:with_counter, select_variant: :multiple)
+
+      click_on_invoker_button
+
+      # hidden at zero
+      assert_selector "select-panel .Counter[hidden]", visible: :all
+
+      click_on_second_item
+      click_on_third_item
+
+      # shows the tracked count, visible
+      assert_selector "select-panel .Counter", exact_text: "2"
+      refute_selector "select-panel .Counter[hidden]", visible: :all
+
+      # deselecting back to zero hides it again
+      click_on_second_item
+      click_on_third_item
+      assert_selector "select-panel .Counter[hidden]", visible: :all
+    end
+
     def test_dynamic_label_and_aria_prefix_for_single_select_variant
       visit_preview(:with_dynamic_label_and_aria_prefix, select_variant: :single)
 

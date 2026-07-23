@@ -1,5 +1,5 @@
 import {getAnchoredPosition} from '@primer/behaviors'
-import {controller, target} from '@github/catalyst'
+import {controller, target, targets} from '@github/catalyst'
 import {IncludeFragmentElement} from '@github/include-fragment-element'
 import type {PrimerTextFieldElement} from '../../../lib/primer/forms/primer_text_field'
 import type {AnchorAlignment, AnchorSide} from '@primer/behaviors'
@@ -76,6 +76,7 @@ export class SelectPanelElement extends HTMLElement {
   @target bannerErrorElement: HTMLElement
   @target bodySpinner: HTMLElement
   @target liveRegion: LiveRegionElement
+  @targets dynamicLabelCounts: HTMLElement[]
 
   filterFn?: FilterFn
 
@@ -193,6 +194,7 @@ export class SelectPanelElement extends HTMLElement {
     this.addEventListener('remote-input-error', this, {signal})
     this.addEventListener('loadstart', this, {signal})
     this.#setDynamicLabel()
+    this.#setDynamicCounter()
     this.#updateInput()
     this.#softDisableItems()
     updateWhenVisible(this)
@@ -723,6 +725,7 @@ export class SelectPanelElement extends HTMLElement {
     }
 
     this.#hasLoadedData = true
+    this.#setDynamicCounter()
 
     if (!this.noResults) return
 
@@ -906,6 +909,7 @@ export class SelectPanelElement extends HTMLElement {
         }
 
         this.#setDynamicLabel()
+        this.#setDynamicCounter()
       }
     } else {
       // multi-select mode allows unchecking a checked item
@@ -918,6 +922,7 @@ export class SelectPanelElement extends HTMLElement {
       }
 
       this.#setDynamicLabel()
+      this.#setDynamicCounter()
     }
 
     this.#updateInput()
@@ -976,6 +981,16 @@ export class SelectPanelElement extends HTMLElement {
       }
     } else {
       invokerLabel.textContent = this.#originalLabel
+    }
+  }
+
+  #setDynamicCounter() {
+    const counters = this.dynamicLabelCounts
+    if (!counters.length) return
+    const count = this.#selectedItems.size
+    for (const counter of counters) {
+      counter.textContent = `${count}`
+      counter.hidden = count === 0
     }
   }
 
