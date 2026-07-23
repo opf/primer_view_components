@@ -1,0 +1,19 @@
+<%=
+  render(
+    Primer::OpenProject::DataTable.new([])
+  ) do |data_table|
+    data_table.with_title(tag: :h2) { "Projects" }
+    data_table.with_subtitle { "An empty table renders a blankslate instead of the grid." }
+
+    if custom
+      data_table.with_empty_state(
+        title: "No projects yet",
+        description: "Create your first project to see it listed here.",
+        icon: :book
+      )
+    end
+
+    data_table.with_column(field: :name, header: "Name", row_header: true)
+    data_table.with_column(field: :status_code, header: "Status")
+  end
+%>

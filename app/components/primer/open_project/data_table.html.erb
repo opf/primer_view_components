@@ -1,0 +1,54 @@
+<%= render(Primer::Box.new(**@container_arguments)) do %>
+  <%= title %>
+  <% if actions.any? %>
+    <div class="TableActions">
+      <% actions.each do |action| %>
+        <%= action %>
+      <% end %>
+    </div>
+  <% end %>
+  <% if @divider %>
+    <div class="TableDivider" role="presentation"></div>
+  <% end %>
+  <%= subtitle %>
+  <% if rows.empty? %>
+    <div class="TableEmptyState">
+      <%= empty_state %>
+    </div>
+  <% else %>
+    <%= render(Primer::BaseComponent.new(**@wrapper_arguments)) do %>
+      <data-table<% if external_sorting? %> data-external-sorting=""<% end %>>
+        <%# Explicit ARIA roles restore the table semantics that the grid layout strips. %>
+        <%= render(Primer::OpenProject::Table.new(explicit_roles: true, **@system_arguments)) do |table| %>
+          <% table.with_head(classes: "TableHead") do |thead| %>
+            <% thead.with_row(classes: "TableRow") do |tr| %>
+              <% headers.each do |header| %>
+                <% if header.sortable? %>
+                  <% tr.with_header(**sort_header_arguments(header)) { header.column.header.to_s } %>
+                <% else %>
+                  <% tr.with_header(classes: "TableHeader", align: header.column.align) { header.column.header.to_s } %>
+                <% end %>
+              <% end %>
+            <% end %>
+          <% end %>
+          <% table.with_body(classes: "TableBody") do |tbody| %>
+            <% rows.each do |row| %>
+              <% tbody.with_row(**row_arguments(row)) do |tr| %>
+                <% cells_for(row).each do |cell| %>
+                  <% cell_arguments = { classes: "TableCell", align: cell.column.align } %>
+                  <% cell_arguments[:data] = cell.sort_data if cell.sortable? %>
+                  <% if cell.row_header? %>
+                    <% tr.with_row_header(**cell_arguments) { cell_content(cell, row) } %>
+                  <% else %>
+                    <% tr.with_cell(**cell_arguments) { cell_content(cell, row) } %>
+                  <% end %>
+                <% end %>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% end %>
+      </data-table>
+    <% end %>
+  <% end %>
+  <%= pagination %>
+<% end %>
