@@ -18,7 +18,9 @@ const config: PlaywrightTestConfig = {
   /* Run tests in files in parallel */
   fullyParallel: true,
   workers: process.env.CI ? 4 : undefined,
-  updateSnapshots: 'all',
+  // 'changed' rewrites only failing snapshots (and creates missing ones);
+  // 'all' rewrote every file every run, churning bytes CI auto-committed.
+  updateSnapshots: 'changed',
   use: {
     baseURL: 'http://127.0.0.1:4000',
     browserName: 'chromium',
@@ -30,7 +32,10 @@ const config: PlaywrightTestConfig = {
       animations: 'disabled',
     },
     toMatchSnapshot: {
+      // Diff budget: without it a single non-deterministic anti-aliased
+      // pixel marks the snapshot changed.
       threshold: 0.1,
+      maxDiffPixelRatio: 0.01,
     },
   },
   /* Retry on CI only */

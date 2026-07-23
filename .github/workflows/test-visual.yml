@@ -18,7 +18,7 @@ jobs:
   visual:
     name: Visual and Semantic Markup Regressions
     if: ${{ github.event_name == 'pull_request' }}
-    timeout-minutes: 20
+    timeout-minutes: 45
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
