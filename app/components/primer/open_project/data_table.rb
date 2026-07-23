@@ -90,9 +90,10 @@ module Primer
       # rows. Without this slot, an empty table renders a default
       # <%= link_to_component(Primer::OpenProject::DataTable::EmptyState) %>.
       # Ignored while rows are present.
-      renders_one :empty_state, ->(title:, description: nil, icon: nil, interactive: false, **system_arguments) {
+      renders_one :empty_state, ->(title:, heading_tag: EmptyState::HEADING_TAG_DEFAULT, description: nil, icon: nil, interactive: false, **system_arguments) {
         EmptyState.new(
           title: title,
+          heading_tag: heading_tag,
           description: description,
           icon: icon,
           interactive: interactive,

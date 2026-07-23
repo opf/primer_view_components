@@ -12,7 +12,12 @@ module Primer
       class EmptyState < Primer::Component
         status :open_project
 
+        HEADING_TAG_DEFAULT = :h3
+
         # @param title [String] Empty-state heading
+        # @param heading_tag [Symbol] Heading level of the empty-state title.
+        #   Defaults to `:h3` so it nests under the table's `:h2` title without
+        #   skipping a level.
         # @param description [String, nil] Optional supporting text
         # @param icon [Symbol, nil] Optional Primer icon
         # @param interactive [Boolean] Whether empty-state updates should be
@@ -21,12 +26,14 @@ module Primer
         #   System arguments passed to the underlying `Primer::Beta::Blankslate`
         def initialize(
           title:,
+          heading_tag: HEADING_TAG_DEFAULT,
           description: nil,
           icon: nil,
           interactive: false,
           **system_arguments
         )
           @title = title
+          @heading_tag = heading_tag
           @description = description
           @icon = icon
 
@@ -50,7 +57,9 @@ module Primer
 
         def blankslate
           blankslate = Primer::Beta::Blankslate.new(**@system_arguments)
-          blankslate.with_heading(tag: :h4).with_content(@title)
+          # `Primer::Beta::Blankslate` validates the tag against its own
+          # heading options.
+          blankslate.with_heading(tag: @heading_tag).with_content(@title)
           blankslate.with_description_content(@description) if @description
           blankslate.with_visual_icon(icon: @icon) if @icon
 

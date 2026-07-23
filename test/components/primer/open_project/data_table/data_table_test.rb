@@ -592,7 +592,7 @@ class PrimerOpenProjectDataTableTest < Minitest::Test
       data_table.with_title { "Projects" }
     end
 
-    assert_selector(".TableContainer .TableEmptyState .blankslate h4", text: "No data available")
+    assert_selector(".TableContainer .TableEmptyState .blankslate h3", text: "No data available")
     assert_no_selector("table")
     assert_no_selector("[aria-labelledby]")
   end
@@ -607,9 +607,18 @@ class PrimerOpenProjectDataTableTest < Minitest::Test
       )
     end
 
-    assert_selector(".TableEmptyState h4", text: "Nothing here")
+    assert_selector(".TableEmptyState h3", text: "Nothing here")
     assert_selector(".TableEmptyState p", text: "Create a project to get started.")
     assert_selector(".TableEmptyState .octicon-book")
+  end
+
+  def test_renders_empty_state_with_custom_heading_tag
+    render_component([]) do |data_table|
+      data_table.with_column(field: :subject, header: "Subject")
+      data_table.with_empty_state(title: "Nothing here", heading_tag: :h4)
+    end
+
+    assert_selector(".TableEmptyState h4", text: "Nothing here")
   end
 
   def test_interactive_empty_state_announces_politely

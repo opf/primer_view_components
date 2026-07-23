@@ -20421,6 +20421,12 @@
         "description": "Empty-state heading"
       },
       {
+        "name": "heading_tag",
+        "type": "Symbol",
+        "default": "`:h3`",
+        "description": "Heading level of the empty-state title. Defaults to `:h3` so it nests under the table's `:h2` title without skipping a level."
+      },
+      {
         "name": "description",
         "type": "String, nil",
         "default": "`nil`",

@@ -1807,7 +1807,8 @@
     "GeneratedSlotMethods": "Primer::OpenProject::DataTable::Column::GeneratedSlotMethods"
   },
   "Primer::OpenProject::DataTable::EmptyState": {
-    "GeneratedSlotMethods": "Primer::OpenProject::DataTable::EmptyState::GeneratedSlotMethods"
+    "GeneratedSlotMethods": "Primer::OpenProject::DataTable::EmptyState::GeneratedSlotMethods",
+    "HEADING_TAG_DEFAULT": "h3"
   },
   "Primer::OpenProject::DataTable::PaginationFooter": {
     "GeneratedSlotMethods": "Primer::OpenProject::DataTable::PaginationFooter::GeneratedSlotMethods"
