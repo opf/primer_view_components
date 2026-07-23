@@ -185,8 +185,8 @@ module Primer
         def render_in(*args, **_kwargs, &block)
           super.tap do
             # check this _after_ rendering so @sub_tree's slots are defined
-            if @node.select_variant != :none && @sub_tree.defer?
-              raise ArgumentError, "TreeView does not currently support select variants for sub-trees loaded asynchronously."
+            if @node.select_variant == :multiple && @sub_tree.defer? && @select_strategy != :self
+              raise ArgumentError, "TreeView does not currently support the multiple select variant with #{@select_strategy} select strategy for sub-trees loaded asynchronously."
             end
           end
         end

@@ -724,6 +724,27 @@ module Alpha
       nodes[0].assert_matches_selector("[aria-checked='false']")
     end
 
+    def test_single_select_works_after_async_loading
+      visit_preview(:async_alpha, select_variant: :single)
+
+      # Select "primer" first, then expand to trigger async load
+      activate_at_path("primer")
+      expand_at_path("primer")
+
+      # Wait for async content to appear but selection remains
+      assert_path("primer", "alpha")
+      assert_path_checked("primer")
+
+      # Expand down to the leaf nodes
+      expand_at_path("primer", "alpha")
+      expand_at_path("primer", "alpha", "action_menu")
+
+      # Select first leaf
+      activate_at_path("primer", "alpha", "action_menu", "group.rb")
+      assert_path_checked("primer", "alpha", "action_menu", "group.rb")
+      refute_path_checked("primer")
+    end
+
     def test_fires_event_before_checking
       visit_preview(:default, select_variant: :multiple)
 
@@ -983,6 +1004,62 @@ module Alpha
       response = JSON.parse(find("pre").text)
 
       assert_equal "{\"path\":[\"Docs & legal requirements\"],\"nodeId\":\"docs\",\"value\":\"4\"}", response.dig("form_params", "folder_structure", 0)
+    end
+
+    def test_single_select_form_submission_after_async_loading
+      visit_preview(:async_form_input, route_format: :json)
+
+      activate_at_path("primer")
+
+      # Expand "primer" to trigger async load
+      activate_at_path("primer")
+      expand_at_path("primer")
+
+      # Wait for async content
+      assert_path("primer", "alpha")
+
+      # Expand down to leaf nodes
+      expand_at_path("primer", "alpha")
+      expand_at_path("primer", "alpha", "action_menu")
+
+      # Select a leaf — "primer" sub-tree should be deselected
+      activate_at_path("primer", "alpha", "action_menu", "group.rb")
+      assert_path_checked("primer", "alpha", "action_menu", "group.rb")
+      refute_path_checked("primer")
+
+      find("button[type=submit]").click
+
+      response = JSON.parse(find("pre").text)
+
+      assert_equal 1, response.dig("form_params", "folder_structure").size
+      assert_equal "{\"path\":[\"primer\",\"alpha\",\"action_menu\",\"group.rb\"]}", response.dig("form_params", "folder_structure", 0)
+    end
+
+    def test_multi_select_form_submission_after_async_loading
+      visit_preview(:async_form_input, select_variant: :multiple, route_format: :json)
+
+      check_at_path("primer")
+      expand_at_path("primer")
+
+      # Wait for async content
+      assert_path("primer", "alpha")
+
+      expand_at_path("primer", "alpha")
+      expand_at_path("primer", "alpha", "action_menu")
+
+      # Check two leaf nodes independently (select_strategy: :self means no cascade)
+      check_at_path("primer", "alpha", "action_menu", "group.rb")
+      check_at_path("primer", "alpha", "action_menu", "heading.rb")
+
+      find("button[type=submit]").click
+
+      response = JSON.parse(find("pre").text)
+      payloads = response.dig("form_params", "folder_structure")
+
+      assert_equal 3, payloads.size
+      assert_includes payloads, "{\"path\":[\"primer\"]}"
+      assert_includes payloads, "{\"path\":[\"primer\",\"alpha\",\"action_menu\",\"group.rb\"]}"
+      assert_includes payloads, "{\"path\":[\"primer\",\"alpha\",\"action_menu\",\"heading.rb\"]}"
     end
 
     def test_keyboard_focus_moves_to_parent_when_include_fragment_with_role_treeitem_is_collapsed
