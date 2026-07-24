@@ -5,7 +5,7 @@
       <% if count? %>
         <%= count %>
       <% end %>
-      <%= render(Primer::BaseComponent.new(tag: :div)) do %>
+      <%= render(Primer::Beta::Button.new(**@toggle_button_arguments)) do %>
         <%= render(Primer::Beta::Octicon.new(icon: "chevron-up", hidden: @collapsed, data: { target: "collapsible-header.arrowUp" })) %>
         <%= render(Primer::Beta::Octicon.new(icon: "chevron-down", hidden: !@collapsed, data: { target: "collapsible-header.arrowDown" })) %>
       <% end %>

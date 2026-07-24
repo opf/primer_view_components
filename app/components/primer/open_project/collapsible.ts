@@ -1,6 +1,5 @@
 import {attr, target, targets} from '@github/catalyst'
 
-// eslint-disable-next-line custom-elements/expose-class-on-global
 export abstract class CollapsibleElement extends HTMLElement {
   @target arrowDown: Element
   @target arrowUp: Element
@@ -11,12 +10,19 @@ export abstract class CollapsibleElement extends HTMLElement {
 
   toggleViaKeyboard(event: KeyboardEvent) {
     if (event.code === 'Enter' || event.code === 'Space') {
-      event.preventDefault()
-      this.toggle()
+      this.toggle(event)
     }
   }
 
-  toggle() {
+  toggle(event?: Event) {
+    if (
+      event &&
+      event.target instanceof Element &&
+      !event.target.closest('[data-collapsible-toggle]') &&
+      event.target.closest('a, button')
+    )
+      return
+    event?.preventDefault()
     this.collapsed = !this.collapsed
   }
 

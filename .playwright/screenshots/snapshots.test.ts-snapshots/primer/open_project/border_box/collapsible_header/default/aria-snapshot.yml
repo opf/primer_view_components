@@ -1,5 +1,5 @@
-- button "Backlog" [expanded]:
-  - heading "Backlog" [level=3]
+- heading "Backlog" [level=3]
+- button "Backlog" [expanded]
 - text: Body
 - list "Backlog":
   - listitem: Row 1

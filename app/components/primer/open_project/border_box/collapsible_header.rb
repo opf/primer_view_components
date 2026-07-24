@@ -16,6 +16,7 @@ module Primer
         # @param tag [Symbol] <%= one_of(Primer::OpenProject::BorderBox::CollapsibleHeader::TITLE_TAG_OPTIONS) %>
         # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
         renders_one :title, lambda { |tag: TITLE_TAG_DEFAULT, **system_arguments|
+          system_arguments[:id] ||= @heading_id
           system_arguments[:classes] = class_names(
             system_arguments[:classes],
             "CollapsibleHeader-title",
@@ -29,7 +30,6 @@ module Primer
         #
         # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
         renders_one :count, lambda { |**system_arguments|
-          system_arguments[:mr] ||= 2
           system_arguments[:scheme] ||= :primary
           system_arguments[:classes] = class_names(
             system_arguments[:classes],
@@ -65,6 +65,7 @@ module Primer
 
           @collapsed = collapsed
           @collapsible_id = collapsible_id
+          @heading_id = "#{id}-heading"
 
           @system_arguments = deny_tag_argument(**system_arguments)
           @system_arguments[:tag] = :"collapsible-header"
@@ -87,16 +88,16 @@ module Primer
           end
 
           @trigger_area_arguments = { tag: :div }
-          @trigger_area_arguments[:role] = "button"
-          @trigger_area_arguments[:tabindex] = 0
           @trigger_area_arguments[:classes] = "CollapsibleHeader-triggerArea"
-          @trigger_area_arguments[:aria] = {
-            controls: @collapsible_id,
-            expanded: !@collapsed
-          }
           @trigger_area_arguments[:data] = {
-            target: "collapsible-header.triggerElement",
-            action: "click:collapsible-header#toggle keydown:collapsible-header#toggleViaKeyboard"
+            action: "click:collapsible-header#toggle"
+          }
+
+          @toggle_button_arguments = {
+            scheme: :invisible,
+            type: :button,
+            data: { target: "collapsible-header.triggerElement", "collapsible-toggle": "" },
+            aria: { expanded: !@collapsed, controls: @collapsible_id, labelledby: @heading_id }
           }
         end
 

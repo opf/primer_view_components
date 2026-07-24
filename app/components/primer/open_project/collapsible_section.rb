@@ -53,6 +53,7 @@ module Primer
       def initialize(id: self.class.generate_id, collapsed: false, **system_arguments)
         @title_id = "#{id}-title"
         @content_id = "#{id}-content"
+        @heading_id = "#{id}-heading"
         @collapsed = collapsed
 
         @system_arguments = deny_tag_argument(**system_arguments)
@@ -66,6 +67,13 @@ module Primer
 
         @system_arguments[:data] ||= {}
         @system_arguments[:data][:collapsed] = true if @collapsed
+
+        @toggle_button_arguments = {
+          scheme: :invisible,
+          type: :button,
+          data: { target: "collapsible-section.triggerElement", "collapsible-toggle": "" },
+          aria: { expanded: !@collapsed, controls: @content_id, labelledby: @heading_id }
+        }
       end
 
       private

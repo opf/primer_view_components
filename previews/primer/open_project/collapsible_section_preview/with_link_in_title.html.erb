@@ -1,0 +1,6 @@
+<%= render(Primer::OpenProject::CollapsibleSection.new) do |section| %>
+  <% section.with_title { render(Primer::Beta::Link.new(href: "#")) { "Feedback" } } %>
+  <% section.with_collapsible_content do %>
+    <%= render(Primer::Alpha::Banner.new(mb: 3)) { "Please take one minute to answer this question" } %>
+  <% end %>
+<% end %>
