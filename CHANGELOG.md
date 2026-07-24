@@ -1,5 +1,33 @@
 # CHANGELOG
 
+## 0.90.0
+
+### Minor Changes
+
+- [#4110](https://github.com/primer/view_components/pull/4110) [`bf92d87`](https://github.com/opf/primer_view_components/commit/bf92d870743b8d683867e376379e67ebc79220cc) Thanks [@dylanatsmith](https://github.com/dylanatsmith)! - `Blankslate`: The heading and body text now use the smaller compact sizes by default, and the redundant responsive `@container` block has been removed since the compact typography it produced is now the default
+
+- [#4096](https://github.com/primer/view_components/pull/4096) [`3ba48a2`](https://github.com/opf/primer_view_components/commit/3ba48a24494e2bb2bb4ed1aff5c612b55c237980) Thanks [@jonrohan](https://github.com/jonrohan)! - Add `static/classnames.js`, which default-exports a `Set` of every unique CSS class name in the library for consumers and tooling. It is available via the `@openproject/primer-view-components/classnames` import subpath.
+
+### Patch Changes
+
+- [#3696](https://github.com/primer/view_components/pull/3696) [`8b8d542`](https://github.com/opf/primer_view_components/commit/8b8d54286d10f90b52030e9100f27f401121fe1f) Thanks [@myabc](https://github.com/myabc)! - Fix incorrect label `for` attribute value when `scope_id_to_model: false`
+
+- [#508](https://github.com/opf/primer_view_components/pull/508) [`f5dc269`](https://github.com/opf/primer_view_components/commit/f5dc269e370a19c85f64f6e153e1393a25f2b3fd) Thanks [@myabc](https://github.com/myabc)! - Sort `static/previews.json` entries by `lookup_path` so the output order is deterministic across platforms, instead of following `Lookbook.previews`' filesystem glob order (which differs between macOS and Linux for previews sharing the same name across statuses, e.g. `beta/heading` and `open_project/heading`).
+
+- [#4133](https://github.com/primer/view_components/pull/4133) [`0098814`](https://github.com/opf/primer_view_components/commit/009881433982689358d9b1de31ba74b74b2aa922) Thanks [@jonrohan](https://github.com/jonrohan)! - Downgrade `@oddbird/popover-polyfill` to `^0.5.2` and pin it via Dependabot ignore so it won't get bumped again.
+
+- [#4095](https://github.com/primer/view_components/pull/4095) [`6733f3c`](https://github.com/opf/primer_view_components/commit/6733f3c0e902523dd23e5b94d3cd8fab7443aea2) Thanks [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Improve CSS style-recalc performance by removing selectors with universal subjects and expanding merged `:is()` selector lists so the browser can fast-reject them. Affects `autocomplete-item`, `Popover-message--*`, `breadcrumb-item`, and `FormControl-checkbox-wrap`/`FormControl-radio-wrap` styles.
+
+- [#501](https://github.com/opf/primer_view_components/pull/501) [`de5c8cf`](https://github.com/opf/primer_view_components/commit/de5c8cf4816414382d0f94393407f7e2bd6bfc3c) Thanks [@HDinger](https://github.com/HDinger)! - Links in collapsible areas do not trigger collapse anymore
+
+- [#4113](https://github.com/primer/view_components/pull/4113) [`7c52375`](https://github.com/opf/primer_view_components/commit/7c523756a4edf46ce490da48c74f2c35ffb57f79) Thanks [@liuliu-dev](https://github.com/liuliu-dev)! - Reject `javascript:` and `vbscript:` URI schemes in `href` (defense in depth). When a component (e.g. `Primer::Beta::Label`, `Primer::Beta::Button`, `Primer::Beta::Link`) is rendered as an anchor with an unsafe `href`, the value is now rejected — raising in non-production environments and silently dropped (rendered as an anchor with no `href`) in production.
+
+- [#4101](https://github.com/primer/view_components/pull/4101) [`ad81c6d`](https://github.com/opf/primer_view_components/commit/ad81c6d39dc7e9f413fd41098e4d983e4792167f) Thanks [@jonrohan](https://github.com/jonrohan)! - Update package.json import paths for app files
+
+- [#4099](https://github.com/primer/view_components/pull/4099) [`91c1e26`](https://github.com/opf/primer_view_components/commit/91c1e261ae3a279feb1b9a2dac8975cf1c595c65) Thanks [@jonrohan](https://github.com/jonrohan)! - Add path mapping for app directory in package.json
+
+- [#4107](https://github.com/primer/view_components/pull/4107) [`222a846`](https://github.com/opf/primer_view_components/commit/222a846247905892afd0f26c4410924a6450647d) Thanks [@dylanatsmith](https://github.com/dylanatsmith)! - Fix `ToggleSwitch` knob spacing and border-radius to match `primer/react`
+
 ## 0.89.2
 
 ### Patch Changes
