@@ -47,6 +47,7 @@
   flex: 1 auto;
 }
 
+/* stylelint-disable-next-line selector-max-type -- description holds rich text; links can only be targeted by the `a` type selector */
 .PageHeader-description--underlined-links a {
   /* Ensure the accessibility is met, given that the description is written in light grey */
   text-decoration: underline;
@@ -94,6 +95,7 @@
 /* Match the title bar and actions height with the toggle menu button for proper vertical alignment */
 .PageHeader--noBreadcrumb {
   & .PageHeader-titleBar {
+    /* stylelint-disable-next-line primer/typography -- control size var intentionally matches the toggle-menu button height for vertical alignment */
     line-height: var(--control-small-size);
   }
 

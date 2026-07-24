@@ -30,12 +30,14 @@ filterable-tree-view {
 
 /* Highlight style for CSS Custom Highlight API */
 ::highlight(primer-filterable-tree-view-search-results) {
+  /* stylelint-disable-next-line primer/no-display-colors, primer/colors -- intentional yellow search-match highlight; no Primer semantic token exists for this */
   background-color: var(--display-yellow-scale-2);
 }
 
 /* Fallback: <mark> elements used when CSS Custom Highlight API is unavailable */
 /* stylelint-disable-next-line selector-max-type */
 filterable-tree-view mark {
+  /* stylelint-disable-next-line primer/no-display-colors, primer/colors -- intentional yellow search-match highlight; no Primer semantic token exists for this */
   background-color: var(--display-yellow-scale-2);
   color: inherit;
 }

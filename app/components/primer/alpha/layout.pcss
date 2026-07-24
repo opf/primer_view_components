@@ -1,5 +1,7 @@
 /* Layout */
 
+/* stylelint-disable nesting-selector-no-missing-scoping-root -- inside @define-mixin the & resolves at the @mixin include site, so there is a scoping root */
+
 @define-mixin flow-as-row {
   grid-auto-flow: row;
   grid-template-columns: 1fr !important;
@@ -104,7 +106,7 @@
 
   grid-auto-flow: column;
   grid-template-columns: auto 0 minmax(0, calc(100% - var(--Layout-sidebar-width) - var(--Layout-gutter))); /* sidebar column, separator, main column */
-  grid-gap: var(--Layout-gutter);
+  gap: var(--Layout-gutter);
 
   & .Layout-sidebar {
     grid-column: 1;

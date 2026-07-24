@@ -3,26 +3,28 @@
 .BorderGrid {
     display: table;
     width: 100%;
-    margin-top: -16px;
-    margin-bottom: -16px;
+    margin-top: calc(-1 * var(--base-size-16));
+    margin-bottom: calc(-1 * var(--base-size-16));
     table-layout: fixed;
+    /* stylelint-disable-next-line primer/borders -- table border-collapse keyword, not a border size */
     border-collapse: collapse;
+    /* stylelint-disable-next-line primer/borders -- table border-style keyword, not a border size */
     border-style: hidden
 }
 
 .BorderGrid .BorderGrid-cell {
-    padding-top: 16px;
-    padding-bottom: 16px
+    padding-top: var(--base-size-16);
+    padding-bottom: var(--base-size-16)
 }
 
 .BorderGrid--spacious {
-    margin-top: -24px;
-    margin-bottom: -24px
+    margin-top: calc(-1 * var(--base-size-24));
+    margin-bottom: calc(-1 * var(--base-size-24))
 }
 
 .BorderGrid--spacious .BorderGrid-cell {
-    padding-top: 24px;
-    padding-bottom: 24px
+    padding-top: var(--base-size-24);
+    padding-bottom: var(--base-size-24)
 }
 
 .BorderGrid-row {
@@ -31,5 +33,5 @@
 
 .BorderGrid-cell {
     display: table-cell;
-    border: 1px solid var(--borderColor-muted)
+    border: var(--borderWidth-thin) solid var(--borderColor-muted)
 }
