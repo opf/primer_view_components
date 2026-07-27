@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.90.1
+
+### Patch Changes
+
+- [#504](https://github.com/opf/primer_view_components/pull/504) [`b0ffd4a`](https://github.com/opf/primer_view_components/commit/b0ffd4ad1afb2c6ca16910c093e46ca8e7faf7f2) Thanks [@myabc](https://github.com/myabc)! - Fix stylelint violations across component pcss
+
 ## 0.90.0
 
 ### Minor Changes
