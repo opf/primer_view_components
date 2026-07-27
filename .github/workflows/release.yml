@@ -44,6 +44,8 @@ jobs:
       - name: NPM install
         run: |
           npm ci
+      - name: Install Ruby dependencies
+        run: bundle install
       - name: Publish Gem
         run: bundle exec rake release
       - name: Publish NPM
