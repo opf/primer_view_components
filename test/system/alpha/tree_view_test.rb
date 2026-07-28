@@ -952,6 +952,32 @@ module Alpha
       assert_equal "{\"path\":[\"src\",\"button.rb\"],\"nodeId\":\"src-button-rb\",\"value\":\"1\"}", response.dig("form_params", "folder_structure", 0)
     end
 
+    def test_form_state_updates_when_checked_nodes_are_inserted
+      visit_preview(:form_input, expanded: true, route_format: :json)
+
+      evaluate_multiline_script(<<~JS)
+        const tree = document.querySelector("tree-view")
+        const checkedNode = tree.querySelector("[role=treeitem][aria-checked=true]")
+        const clone = checkedNode.closest("li").cloneNode(true)
+        const clonedTreeItem = clone.querySelector("[role=treeitem]")
+
+        clonedTreeItem.removeAttribute("id")
+        clonedTreeItem.removeAttribute("data-node-id")
+        clonedTreeItem.removeAttribute("data-value")
+        clonedTreeItem.setAttribute("data-path", JSON.stringify(["async.rb"]))
+
+        tree.querySelector(":scope > ul").append(clone)
+      JS
+
+      assert_selector("[data-target='tree-view.formInputContainer'] input", count: 2, visible: :all)
+
+      find("button[type=submit]").click
+
+      response = JSON.parse(find("pre").text)
+
+      assert_includes response.dig("form_params", "folder_structure"), "{\"path\":[\"async.rb\"]}"
+    end
+
     def test_form_submission_with_single_select_variant
       visit_preview(:form_input, expanded: true, select_variant: :single, route_format: :json)
 

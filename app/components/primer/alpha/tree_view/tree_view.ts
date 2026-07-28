@@ -38,6 +38,17 @@ export class TreeViewElement extends HTMLElement {
       // nodes based on the component's select strategy. These two observers can conflict and cause infinite
       // looping, so we make sure something actually changed before computing inputs again.
       const somethingChanged = mutations.some(m => {
+        if (m.type === 'childList') {
+          return [...m.addedNodes].some(node => {
+            if (!(node instanceof Element)) return false
+
+            return (
+              node.matches('[role=treeitem][aria-checked=true]') ||
+              Boolean(node.querySelector('[role=treeitem][aria-checked=true]'))
+            )
+          })
+        }
+
         if (!(m.target instanceof HTMLElement)) return false
         return m.target.getAttribute('aria-checked') !== m.oldValue
       })
