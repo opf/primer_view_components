@@ -114,9 +114,11 @@ module Primer
       # @label Async alpha
       #
       # @param action_menu_expanded [Boolean] toggle
-      def async_alpha(action_menu_expanded: false)
+      # @param select_variant [Symbol] select [none, single, multiple]
+      def async_alpha(action_menu_expanded: false, select_variant: :none)
         render_with_template(locals: {
-          action_menu_expanded: coerce_bool(action_menu_expanded)
+          action_menu_expanded: coerce_bool(action_menu_expanded),
+          select_variant: select_variant.to_sym
         })
       end
 
@@ -194,6 +196,15 @@ module Primer
         render_with_template(locals: {
           select_variant: select_variant.to_sym,
           expanded: coerce_bool(expanded)
+        })
+      end
+
+      # @label Async form input
+      # @hidden
+      # @param select_variant [Symbol] select [single, multiple]
+      def async_form_input(select_variant: :single)
+        render_with_template(locals: {
+          select_variant: select_variant.to_sym
         })
       end
 
