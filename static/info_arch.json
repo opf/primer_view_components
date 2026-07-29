@@ -20036,6 +20036,18 @@
         "description": "Whether each `<tr>` additionally gets a DOM `id`, namespaced by the table id to stay unique across tables. Requires `row_id`."
       },
       {
+        "name": "row_classes",
+        "type": "Proc, nil",
+        "default": "`nil`",
+        "description": "Optional `->(row)` returning extra CSS classes for the row's `<tr>`."
+      },
+      {
+        "name": "row_data",
+        "type": "Proc, nil",
+        "default": "`nil`",
+        "description": "Optional `->(row)` returning a Hash of data attributes for the row's `<tr>`."
+      },
+      {
         "name": "html_data",
         "type": "Hash",
         "default": "`{}`",
@@ -20320,6 +20332,18 @@
         "type": "Numeric, String, nil",
         "default": "`nil`",
         "description": "Maximum width"
+      },
+      {
+        "name": "cell_classes",
+        "type": "Proc, nil",
+        "default": "`nil`",
+        "description": "Optional `->(row)` returning extra CSS classes for this column's cell on the given row. Callable rather than static so callers can vary a cell's classes per row."
+      },
+      {
+        "name": "cell_data",
+        "type": "Proc, nil",
+        "default": "`nil`",
+        "description": "Optional `->(row)` returning a Hash of data attributes for this column's cell on the given row."
       }
     ],
     "slots": [],
