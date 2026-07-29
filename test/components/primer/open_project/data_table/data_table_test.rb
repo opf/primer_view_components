@@ -730,6 +730,40 @@ class PrimerOpenProjectDataTableTest < Minitest::Test
     assert_selector(".TableCell[data-sort-value='First'][data-extra='yes']")
   end
 
+  def test_applies_row_classes_from_the_proc
+    render_component(@data, row_classes: ->(row) { "row-#{row.id}" }) do |table|
+      table.with_column(field: :subject, header: "Subject")
+    end
+
+    assert_selector(".TableBody .TableRow.row-1")
+    assert_selector(".TableBody .TableRow.row-3")
+  end
+
+  def test_applies_row_data_from_the_proc
+    render_component(@data, row_data: ->(row) { { subject_slug: row.subject.downcase } }) do |table|
+      table.with_column(field: :subject, header: "Subject")
+    end
+
+    assert_selector(".TableRow[data-subject-slug='first']")
+  end
+
+  def test_row_data_coexists_with_row_id
+    render_component(@data, row_id: ->(row) { row.id }, row_data: ->(_row) { { extra: "yes" } }) do |table|
+      table.with_column(field: :subject, header: "Subject")
+    end
+
+    assert_selector(".TableRow[data-row-id='1'][data-extra='yes']")
+  end
+
+  def test_row_hooks_are_optional
+    render_component(@data) do |table|
+      table.with_column(field: :subject, header: "Subject")
+    end
+
+    assert_selector(".TableBody .TableRow", count: 3)
+    refute_selector(".TableBody .TableRow[data-row-id]")
+  end
+
   private
 
   def body_first_column_texts

@@ -136,6 +136,10 @@ module Primer
       # @param row_dom_id [Boolean]
       #   Whether each `<tr>` additionally gets a DOM `id`, namespaced by the
       #   table id to stay unique across tables. Requires `row_id`.
+      # @param row_classes [Proc, nil]
+      #   Optional `->(row)` returning extra CSS classes for the row's `<tr>`.
+      # @param row_data [Proc, nil]
+      #   Optional `->(row)` returning a Hash of data attributes for the row's `<tr>`.
       # @param html_data [Hash]
       #   HTML data attributes to be passed to the table
       # @param system_arguments [Hash]
@@ -150,6 +154,8 @@ module Primer
         divider: false,
         row_id: nil,
         row_dom_id: false,
+        row_classes: nil,
+        row_data: nil,
         html_data: {},
         **system_arguments
       )
@@ -161,6 +167,8 @@ module Primer
         @sort_href_builder = sort_href_builder
         @divider = fetch_or_fallback_boolean(divider, false)
         @row_id_proc = row_id
+        @row_classes_proc = row_classes
+        @row_data_proc = row_data
         @row_dom_id = fetch_or_fallback_boolean(row_dom_id, false)
         raise ArgumentError, "`row_dom_id` requires a `row_id` proc" if @row_dom_id && @row_id_proc.nil?
         @id = system_arguments[:id] ||= self.class.generate_id(base_name: "data-table")
@@ -349,14 +357,19 @@ module Primer
       end
 
       def row_arguments(row)
-        arguments = { classes: "TableRow" }
-        return arguments unless @row_id_proc
+        arguments = { classes: class_names("TableRow", @row_classes_proc&.call(row)) }
 
-        value = @row_id_proc.call(row).to_s
-        return arguments if value.blank?
+        data = (@row_data_proc&.call(row) || {}).to_h
 
-        arguments[:data] = { row_id: value }
-        arguments[:id] = "#{@id}-row-#{value}" if @row_dom_id
+        if @row_id_proc
+          value = @row_id_proc.call(row).to_s
+          if value.present?
+            data = data.merge(row_id: value)
+            arguments[:id] = "#{@id}-row-#{value}" if @row_dom_id
+          end
+        end
+
+        arguments[:data] = data if data.any?
         arguments
       end
 
