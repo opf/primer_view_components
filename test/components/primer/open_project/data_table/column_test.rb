@@ -102,6 +102,38 @@ class PrimerOpenProjectDataTableColumnTest < Minitest::Test
     assert column.sort_metadata(row)[:blank]
   end
 
+  def test_cell_classes_for_returns_nil_without_a_proc
+    assert_nil(@component.cell_classes_for(row))
+  end
+
+  def test_cell_classes_for_calls_the_proc_with_the_row
+    component = Primer::OpenProject::DataTable::Column.new(
+      field: :name,
+      cell_classes: ->(r) { "cell-#{r.name.downcase}" }
+    )
+
+    assert_equal("cell-chocolate", component.cell_classes_for(row))
+  end
+
+  def test_cell_data_for_returns_an_empty_hash_without_a_proc
+    assert_empty(@component.cell_data_for(row))
+  end
+
+  def test_cell_data_for_calls_the_proc_with_the_row
+    component = Primer::OpenProject::DataTable::Column.new(
+      field: :name,
+      cell_data: ->(r) { { flavour: r.name } }
+    )
+
+    assert_equal({ flavour: "Chocolate" }, component.cell_data_for(row))
+  end
+
+  def test_cell_data_for_tolerates_a_proc_returning_nil
+    component = Primer::OpenProject::DataTable::Column.new(field: :name, cell_data: ->(_r) { nil })
+
+    assert_empty(component.cell_data_for(row))
+  end
+
   private
 
   def ice_cream_klass

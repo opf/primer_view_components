@@ -41,6 +41,11 @@ module Primer
         #   Display-only: blank values still sort as blank.
         # @param min_width [Numeric, String, nil] Minimum width
         # @param max_width [Numeric, String, nil] Maximum width
+        # @param cell_classes [Proc, nil] Optional `->(row)` returning extra CSS classes for this
+        #   column's cell on the given row. Callable rather than static so callers can vary a cell's
+        #   classes per row.
+        # @param cell_data [Proc, nil] Optional `->(row)` returning a Hash of data attributes for
+        #   this column's cell on the given row.
         def initialize(
           id: nil,
           field: nil,
@@ -52,7 +57,9 @@ module Primer
           row_header: false,
           placeholder: nil,
           min_width: nil,
-          max_width: nil
+          max_width: nil,
+          cell_classes: nil,
+          cell_data: nil
         )
           @id = id
           @field = field
@@ -72,6 +79,8 @@ module Primer
           @row_header = row_header
           @max_width = max_width
           @min_width = min_width
+          @cell_classes_proc = cell_classes
+          @cell_data_proc = cell_data
         end
 
         def header
@@ -110,6 +119,14 @@ module Primer
 
         def sort_metadata(row)
           Sorting.metadata_for(sort_value(row), sort_strategy)
+        end
+
+        def cell_classes_for(row)
+          @cell_classes_proc&.call(row)
+        end
+
+        def cell_data_for(row)
+          (@cell_data_proc&.call(row) || {}).to_h
         end
       end
     end

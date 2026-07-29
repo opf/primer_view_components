@@ -703,6 +703,33 @@ class PrimerOpenProjectDataTableTest < Minitest::Test
     assert_no_selector(".TablePagination")
   end
 
+  def test_applies_cell_classes_from_the_column_proc
+    render_component(@data) do |table|
+      table.with_column(field: :subject, header: "Subject", cell_classes: ->(row) { "subject-#{row.id}" })
+    end
+
+    assert_selector(".TableCell.subject-1")
+    assert_selector(".TableCell.subject-2")
+    assert_selector(".TableCell.subject-3")
+  end
+
+  def test_applies_cell_data_from_the_column_proc
+    render_component(@data) do |table|
+      table.with_column(field: :subject, header: "Subject", cell_data: ->(row) { { row_number: row.id } })
+    end
+
+    assert_selector(".TableCell[data-row-number='1']")
+    assert_selector(".TableCell[data-row-number='3']")
+  end
+
+  def test_cell_data_does_not_displace_sort_metadata
+    render_component(@data, initial_sort_column: :subject, initial_sort_direction: :ASC) do |table|
+      table.with_column(field: :subject, header: "Subject", sort_by: true, cell_data: ->(_row) { { extra: "yes" } })
+    end
+
+    assert_selector(".TableCell[data-sort-value='First'][data-extra='yes']")
+  end
+
   private
 
   def body_first_column_texts
