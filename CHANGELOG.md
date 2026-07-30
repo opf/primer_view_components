@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.91.0
+
+### Minor Changes
+
+- [#512](https://github.com/opf/primer_view_components/pull/512) [`22fbe59`](https://github.com/opf/primer_view_components/commit/22fbe5973c85d47a2d9c6369e6b769076b997190) Thanks [@HDinger](https://github.com/HDinger)! - Support async TreeViews for select variant :single and :multiple for select strategy :self
+
 ## 0.90.1
 
 ### Patch Changes
