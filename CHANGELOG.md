@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.91.1
+
+### Patch Changes
+
+- [#478](https://github.com/opf/primer_view_components/pull/478) [`fc5ccdd`](https://github.com/opf/primer_view_components/commit/fc5ccdde134f8030c80d38d93bb1b3b80650f43a) Thanks [@dombesz](https://github.com/dombesz)! - Fix lazy loaded action-menu positioning when opened at the bottom of the page.
+
 ## 0.91.0
 
 ### Minor Changes
