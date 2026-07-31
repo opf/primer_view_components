@@ -633,6 +633,19 @@
         }
       },
       {
+        "preview_path": "primer/alpha/action_menu/with_deferred_content_near_bottom_of_viewport",
+        "name": "with_deferred_content_near_bottom_of_viewport",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
         "preview_path": "primer/alpha/action_menu/with_deferred_preloaded_content",
         "name": "with_deferred_preloaded_content",
         "snapshot": "false",

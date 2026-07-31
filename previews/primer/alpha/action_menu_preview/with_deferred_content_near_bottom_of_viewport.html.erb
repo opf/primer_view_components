@@ -1,0 +1,10 @@
+<%# The invoker is pinned near the bottom of the viewport, leaving enough room for the loading %>
+<%# spinner placeholder to fit below it but not enough for the full deferred content, reproducing %>
+<%# the scenario from DREAM-729. The `delay` param forces the fragment response to arrive after the %>
+<%# overlay has already been positioned using the placeholder's size, instead of racing the fetch %>
+<%# against the initial position calculation. %>
+<div style="position: fixed; bottom: 100px; right: 0;">
+  <%= render(Primer::Alpha::ActionMenu.new(menu_id: "deferred-bottom", src: primer_view_components.action_menu_deferred_path(delay: 0.3))) do |menu| %>
+    <% menu.with_show_button { "Menu with deferred content" } %>
+  <% end %>
+</div>

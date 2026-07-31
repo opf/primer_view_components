@@ -310,6 +310,13 @@ module Primer
         render_with_template(locals: { nest_in_sub_menu: nest_in_sub_menu })
       end
 
+      # @label With deferred content near the bottom of the viewport
+      #
+      # @hidden
+      def with_deferred_content_near_bottom_of_viewport
+        render_with_template
+      end
+
       # @label With deferred preloaded content
       #
       def with_deferred_preloaded_content
