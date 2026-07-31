@@ -65,3 +65,9 @@ File::NULL
 # Local Claude instructions
 CLAUDE.local.md
 claude.local.md
+.ds-sync/
+.ds-gen/
+ds-bundle/
+.design-sync/.cache/
+.design-sync/learnings/
+.design-sync/node_modules
