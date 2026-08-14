@@ -978,6 +978,27 @@ module Alpha
       assert_includes response.dig("form_params", "folder_structure"), "{\"path\":[\"async.rb\"]}"
     end
 
+    def test_form_state_updates_when_checked_nodes_are_removed
+      visit_preview(:form_input, expanded: true, route_format: :json)
+
+      assert_selector("[data-target='tree-view.formInputContainer'] input", count: 1, visible: :all)
+
+      evaluate_multiline_script(<<~JS)
+        const tree = document.querySelector("tree-view")
+        const checkedNode = tree.querySelector("[role=treeitem][aria-checked=true]")
+
+        checkedNode.closest("li").remove()
+      JS
+
+      assert_selector("[data-target='tree-view.formInputContainer'] input", count: 0, visible: :all)
+
+      find("button[type=submit]").click
+
+      response = JSON.parse(find("pre").text)
+
+      assert_nil response.dig("form_params", "folder_structure")
+    end
+
     def test_form_submission_with_single_select_variant
       visit_preview(:form_input, expanded: true, select_variant: :single, route_format: :json)
 
