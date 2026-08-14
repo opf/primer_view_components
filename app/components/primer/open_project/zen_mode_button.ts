@@ -5,7 +5,6 @@ class ZenModeButtonElement extends HTMLElement {
   @target button: HTMLElement
   inZenMode = false
 
-  // eslint-disable-next-line custom-elements/no-constructor
   constructor() {
     super()
     document.addEventListener('fullscreenchange', this.fullscreenChangeEventHandler.bind(this))

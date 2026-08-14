@@ -2,7 +2,7 @@ import {controller} from '@github/catalyst'
 import {CollapsibleElement} from './collapsible'
 
 @controller('collapsible-section')
-class CollapsibleSectionElement extends CollapsibleElement {
+export class CollapsibleSectionElement extends CollapsibleElement {
   get baseClass(): string {
     return 'CollapsibleSection'
   }
