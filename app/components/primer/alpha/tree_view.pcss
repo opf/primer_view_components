@@ -288,6 +288,13 @@
     height: var(--custom-line-height, 1.3rem);
     color: var(--fgColor-muted);
     align-items: center;
+
+    /* Unlike leading visuals, the single-select checkmark should align with the first line's box instead of
+    participating in baseline alignment. A second baseline-aligned visual changes the row height and causes the
+    node label to appear lower than its toggle. */
+    &.TreeViewItem-singleSelectCheckmark {
+      align-self: flex-start;
+    }
   }
 
   & .TreeViewItemLeadingAction {

@@ -259,6 +259,16 @@ module Primer
 
         assert_equal error.message, "Trailing visuals can't be used in combination with single select mode as the icon is reserved."
       end
+
+      def test_single_select_checkmark_is_the_trailing_visual
+        render_inline(Primer::Alpha::TreeView.new) do |tree|
+          tree.with_leaf(label: "src", select_variant: :single)
+        end
+
+        assert_selector ".TreeViewItemContent > .TreeViewItemVisual.TreeViewItem-singleSelectCheckmark" do |visual|
+          visual.assert_selector "svg.octicon-check"
+        end
+      end
     end
   end
 end
