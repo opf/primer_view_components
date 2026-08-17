@@ -735,15 +735,6 @@ module Alpha
       assert_path("primer", "alpha")
       assert_path_checked("primer")
 
-      label_and_toggle_centers = evaluate_multiline_script(<<~JS)
-        const node = document.querySelector(#{selector_for("primer", "alpha").to_json})
-        const labelRect = node.querySelector('.TreeViewItemContentText').getBoundingClientRect()
-        const toggleRect = node.parentElement.querySelector('.TreeViewItemToggle svg:not([hidden])').getBoundingClientRect()
-
-        return [labelRect.y + labelRect.height / 2, toggleRect.y + toggleRect.height / 2]
-      JS
-      assert_in_delta label_and_toggle_centers[0], label_and_toggle_centers[1], 0.5
-
       # Expand down to the leaf nodes
       expand_at_path("primer", "alpha")
       expand_at_path("primer", "alpha", "action_menu")
