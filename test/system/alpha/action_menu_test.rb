@@ -122,10 +122,11 @@ module Alpha
     def activate_via(*keys, expect_focus_change: true)
       current_item = page.evaluate_script("document.activeElement")
       sub_menu_id = current_item["popovertarget"]
+      current_item_disabled = current_item["aria-disabled"]
 
       keyboard.type(*keys)
 
-      return if !expect_focus_change || current_item["aria-disabled"]
+      return if !expect_focus_change || current_item_disabled
       return unless sub_menu_id
 
       # make sure the first list item in the sub-menu is the active element
