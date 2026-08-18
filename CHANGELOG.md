@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 0.91.2
+
+### Patch Changes
+
+- [#4152](https://github.com/primer/view_components/pull/4152) [`0c0462d`](https://github.com/opf/primer_view_components/commit/0c0462d3a2e50fdcc9e0ecab9429aeb001c682cf) Thanks [@gabrielhl](https://github.com/gabrielhl)! - Reserve height as well as width in `.ToggleSwitch-statusIcon` so the switch doesn't jump when the loading spinner is shown
+
+- [#515](https://github.com/opf/primer_view_components/pull/515) [`849bb15`](https://github.com/opf/primer_view_components/commit/849bb155805600614343cc272fe80e192a95b39b) Thanks [@myabc](https://github.com/myabc)! - Fix TreeView hidden form inputs falling out of sync when checked nodes are inserted or removed after the component connects.
+
 ## 0.91.1
 
 ### Patch Changes
