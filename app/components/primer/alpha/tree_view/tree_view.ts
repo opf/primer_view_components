@@ -1,5 +1,5 @@
 import {controller, target} from '@github/catalyst'
-import {SelectStrategy, SelectVariant, TreeViewSubTreeNodeElement} from './tree_view_sub_tree_node_element'
+import {type SelectStrategy, type SelectVariant, TreeViewSubTreeNodeElement} from './tree_view_sub_tree_node_element'
 import {useRovingTabIndex} from './tree_view_roving_tab_index'
 import type {TreeViewCheckedValue, TreeViewNodeInfo, TreeViewNodeType} from '../../shared_events'
 
@@ -24,7 +24,6 @@ export class TreeViewElement extends HTMLElement {
         for (const addedNode of mutation.addedNodes) {
           if (!(addedNode instanceof HTMLElement)) continue
 
-          // eslint-disable-next-line custom-elements/no-dom-traversal-in-connectedcallback
           if (addedNode.querySelector('[aria-expanded=true]')) {
             this.#autoExpandFrom(addedNode)
           }
@@ -485,7 +484,6 @@ export class TreeViewElement extends HTMLElement {
   updateHiddenFormInputs() {
     const newInputs = []
 
-    // eslint-disable-next-line custom-elements/no-dom-traversal-in-connectedcallback
     for (const node of this.querySelectorAll('[role=treeitem][aria-checked=true]')) {
       const newInput = this.formInputPrototype.cloneNode() as HTMLInputElement
       newInput.removeAttribute('data-target')
