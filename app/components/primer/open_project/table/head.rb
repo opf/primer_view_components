@@ -1,0 +1,26 @@
+# frozen_string_literal: true
+
+module Primer
+  module OpenProject
+    class Table
+      # The `Table`'s head (`thead`) (not to be confused with header cells).
+      #
+      # This component should not be used directly, except for advanced use
+      # cases.
+      class Head < RowGroup
+        status :open_project
+
+        renders_many :rows, ->(**system_arguments) {
+          HeaderRow.new(explicit_roles: @explicit_roles, **system_arguments)
+        }
+
+        def initialize(**system_arguments)
+          system_arguments = deny_tag_argument(**system_arguments)
+          system_arguments[:tag] = :thead
+
+          super
+        end
+      end
+    end
+  end
+end

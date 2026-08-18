@@ -36,6 +36,7 @@ primer_view_components*.gem
 
 # Logfiles and tempfiles
 *.log
+.byebug_history
 log/
 tmp/
 !log/.keep

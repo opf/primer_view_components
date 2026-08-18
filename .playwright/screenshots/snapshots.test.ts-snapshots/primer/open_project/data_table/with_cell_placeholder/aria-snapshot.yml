@@ -1,0 +1,17 @@
+- heading "Projects" [level=2]
+- text: Blank assignees render a muted placeholder.
+- table "Projects":
+  - rowgroup:
+    - row "Name Assignee":
+      - columnheader "Name"
+      - columnheader "Assignee"
+  - rowgroup:
+    - row "Project 1 Ada Lovelace":
+      - rowheader "Project 1"
+      - cell "Ada Lovelace"
+    - row "Project 2 Unassigned":
+      - rowheader "Project 2"
+      - cell "Unassigned"
+    - row "Project 3 Grace Hopper":
+      - rowheader "Project 3"
+      - cell "Grace Hopper"

@@ -1,0 +1,11 @@
+<nav class="TablePagination" aria-label="<%= aria_label %>">
+  <% if show_range? %>
+    <p class="TablePaginationRange">
+      <span aria-hidden="true"><%= I18n.t("pagination.range", start: range_start, end: range_end, total: @total_count) %></span>
+      <span class="sr-only"><%= I18n.t("pagination.range_announcement", start: range_start, end: range_end, total: @total_count) %></span>
+    </p>
+  <% end %>
+  <% if show_pagination? %>
+    <%= render(Primer::OpenProject::Pagination.new(**@pagination_arguments)) %>
+  <% end %>
+</nav>

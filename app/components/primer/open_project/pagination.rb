@@ -30,6 +30,7 @@ module Primer
         show_pages: true,
         surrounding_page_count: DEFAULT_SURROUNDING_PAGE_COUNT,
         link_arguments: {},
+        tag: :nav,
         **system_arguments
       )
         @page_count = cast_integer!(page_count, "page_count")
@@ -41,12 +42,15 @@ module Primer
         @link_arguments = link_arguments
         @system_arguments = system_arguments
 
-        @system_arguments[:tag] = :nav
+        @system_arguments[:tag] = tag
         @system_arguments[:classes] = class_names(
           "PaginationContainer",
           @system_arguments[:classes]
         )
-        @system_arguments["aria-label"] = I18n.t("pagination.label")
+        # Only the <nav> variant acts as a navigation landmark and needs a label.
+        # When embedded (e.g. inside the DataTable pagination footer) the wrapping
+        # element provides the landmark, so we avoid a duplicate accessible name.
+        @system_arguments["aria-label"] = I18n.t("pagination.label") if tag == :nav
 
         validate_arguments!
       end

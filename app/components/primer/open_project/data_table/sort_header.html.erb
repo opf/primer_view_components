@@ -1,0 +1,24 @@
+<%= render(Primer::OpenProject::Table::Header.new(**@system_arguments)) do %>
+  <%= render(sort_control) do %>
+    <%= content %>
+    <%=
+      render(
+        Primer::Beta::Octicon.new(
+          icon: :"sort-asc",
+          classes: ["TableSortIcon", "TableSortIcon--ascending", { "d-none": !@direction.in?(%i[NONE ASC]) }]
+        )
+      )
+    %>
+    <% if @direction == :NONE %>
+      <span class="sr-only">sort ascending</span>
+    <% end %>
+    <%=
+      render(
+        Primer::Beta::Octicon.new(
+          icon: :"sort-desc",
+          classes: ["TableSortIcon", "TableSortIcon--descending", { "d-none": @direction != :DESC }]
+        )
+      )
+    %>
+  <% end %>
+<% end %>
