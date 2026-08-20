@@ -46,7 +46,7 @@ module Primer
 
         render(
           locals: {
-            action_menu_expanded: params[:action_menu_expanded] == "true",
+            nested_child_expanded: params[:nested_child_expanded] == "true",
             select_variant: (params[:select_variant] || :none).to_sym
           }
         )

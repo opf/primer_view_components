@@ -5,7 +5,7 @@
       <% icons.with_collapsed_icon(icon: :"file-directory-fill", color: :accent) %>
     <% end %>
 
-    <% sub_tree.with_sub_tree(label: "action_menu", expanded: action_menu_expanded, select_variant: select_variant, select_strategy: :self) do |sub_tree| %>
+    <% sub_tree.with_sub_tree(label: "action_menu", expanded: nested_child_expanded, select_variant: select_variant, select_strategy: :self) do |sub_tree| %>
       <% sub_tree.with_leading_visual_icons do |icons| %>
         <% icons.with_expanded_icon(icon: :"file-directory-open-fill", color: :accent) %>
         <% icons.with_collapsed_icon(icon: :"file-directory-fill", color: :accent) %>

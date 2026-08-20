@@ -117,7 +117,7 @@ module Alpha
 
     # This explicitly tests the MutationObserver in tree_view.ts that listens for expanded nodes
     def test_automatically_expands_all_ancestors_when_async_items_have_expanded_child
-      visit_preview(:async_alpha, action_menu_expanded: true)
+      visit_preview(:async_alpha, nested_child_expanded: true)
 
       activate_at_path("primer")
       assert node_at_path("primer", "alpha", "action_menu", "heading.rb")
