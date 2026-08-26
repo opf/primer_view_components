@@ -284,14 +284,10 @@
 
     /* The visual icons should appear vertically centered for single-line items, but remain at the top for items that wrap
     across more lines. */
-    align-self: baseline;
+    align-self: flex-start;
     height: var(--custom-line-height, 1.3rem);
     color: var(--fgColor-muted);
     align-items: center;
-
-    &.TreeViewItem-singleSelectCheckmark {
-      align-self: flex-start;
-    }
   }
 
   & .TreeViewItemLeadingAction {
