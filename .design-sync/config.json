@@ -1,0 +1,23 @@
+{
+  "pkg": "@openproject/primer-view-components-ds",
+  "projectId": "faa7973d-d340-44b1-9878-b41d54405a5d",
+  "globalName": "PrimerViewComponents",
+  "shape": "package",
+  "buildCmd": "node .design-sync/generate-adapter.mjs",
+  "cssEntry": "dist/css/primer-ds.css",
+  "docsDir": "docs",
+  "readmeHeader": ".design-sync/conventions.md",
+  "guidelinesGlob": [],
+  "overrides": {
+    "Dialog": { "cardMode": "single", "primaryStory": "InitallyOpen", "viewport": "1200x900" },
+    "Overlay": { "cardMode": "single", "primaryStory": "Default", "viewport": "600x200" },
+    "OpenProjectDangerDialog": { "cardMode": "single", "primaryStory": "Default", "viewport": "600x200" },
+    "OpenProjectFeedbackDialog": { "cardMode": "single", "primaryStory": "Default", "viewport": "600x200" },
+    "Button": { "cardMode": "column" },
+    "FormControl": { "cardMode": "column" },
+    "Layout": { "cardMode": "column" },
+    "Tooltip": { "cardMode": "column" },
+    "OpenProjectPageHeader": { "cardMode": "column" },
+    "OpenProjectSubHeader": { "cardMode": "column" }
+  }
+}
