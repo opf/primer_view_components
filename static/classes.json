@@ -797,9 +797,6 @@
   "TreeViewFailureMessage": [
     "Primer::Alpha::TreeView"
   ],
-  "TreeViewItem-singleSelectCheckmark": [
-    "Primer::Alpha::TreeView"
-  ],
   "TreeViewRootUlStyles": [
     "Primer::Alpha::TreeView"
   ],
