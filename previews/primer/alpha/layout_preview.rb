@@ -131,6 +131,22 @@ module Primer
           component.with_sidebar(width: :wide, bg: :accent, p: 6) { "Sidebar content" }
         end
       end
+
+      # @label XWide
+      def sidebar_width_xwide
+        render(Primer::Alpha::Layout.new) do |component|
+          component.with_main(bg: :attention, p: 6) { "Main content" }
+          component.with_sidebar(width: :xwide, bg: :accent, p: 6) { "Sidebar content" }
+        end
+      end
+
+      # @label XXWide
+      def sidebar_width_xxwide
+        render(Primer::Alpha::Layout.new) do |component|
+          component.with_main(bg: :attention, p: 6) { "Main content" }
+          component.with_sidebar(width: :xxwide, bg: :accent, p: 6) { "Sidebar content" }
+        end
+      end
       #
       # @!endgroup
 
