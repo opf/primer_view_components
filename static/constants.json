@@ -469,12 +469,16 @@
     "SIDEBAR_WIDTH_MAPPINGS": {
       "default": "",
       "narrow": "Layout--sidebar-narrow",
-      "wide": "Layout--sidebar-wide"
+      "wide": "Layout--sidebar-wide",
+      "xwide": "Layout--sidebar-xwide",
+      "xxwide": "Layout--sidebar-xxwide"
     },
     "SIDEBAR_WIDTH_OPTIONS": [
       "default",
       "narrow",
-      "wide"
+      "wide",
+      "xwide",
+      "xxwide"
     ],
     "STACKING_BREAKPOINT_DEFAULT": "md",
     "STACKING_BREAKPOINT_MAPPINGS": {

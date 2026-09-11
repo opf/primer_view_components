@@ -2297,6 +2297,32 @@
         }
       },
       {
+        "preview_path": "primer/alpha/layout/sidebar_width_xwide",
+        "name": "sidebar_width_xwide",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/alpha/layout/sidebar_width_xxwide",
+        "name": "sidebar_width_xxwide",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
         "preview_path": "primer/alpha/layout/sidebar_col_placement_start",
         "name": "sidebar_col_placement_start",
         "snapshot": "true",

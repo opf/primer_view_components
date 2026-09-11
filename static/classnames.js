@@ -208,6 +208,8 @@ const classNames = new Set([
   'Layout--gutter-spacious',
   'Layout--sidebar-narrow',
   'Layout--sidebar-wide',
+  'Layout--sidebar-xwide',
+  'Layout--sidebar-xxwide',
   'Layout--sidebarPosition-end',
   'Layout--sidebarPosition-flowRow-end',
   'Layout--sidebarPosition-flowRow-none',

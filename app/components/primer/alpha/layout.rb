@@ -50,7 +50,9 @@ module Primer
       SIDEBAR_WIDTH_MAPPINGS = {
         SIDEBAR_WIDTH_DEFAULT => "",
         :narrow => "Layout--sidebar-narrow",
-        :wide => "Layout--sidebar-wide"
+        :wide => "Layout--sidebar-wide",
+        :xwide => "Layout--sidebar-xwide",
+        :xxwide => "Layout--sidebar-xxwide"
       }.freeze
       SIDEBAR_WIDTH_OPTIONS = SIDEBAR_WIDTH_MAPPINGS.keys.freeze
 
