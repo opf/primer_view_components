@@ -81,6 +81,12 @@ module Primer
       def empty
       end
 
+      # @label Empty iconless
+      #
+      # @snapshot interactive
+      def empty_iconless
+      end
+
       # @label Loading failure
       #
       # @snapshot interactive

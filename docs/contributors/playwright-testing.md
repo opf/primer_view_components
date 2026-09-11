@@ -5,13 +5,13 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 ## Table of Contents
 
-- [Testing](#testing)
-  - [Table of Contents](#table-of-contents)
-  - [Visual testing](#visual-testing)
-    - [Prerequisites](#prerequisites)
-    - [Continuous Integration](#continuous-integration)
-  - [Other tests](#other-tests)
-    - [System tests](#system-tests)
+* [Testing](#testing)
+  * [Table of Contents](#table-of-contents)
+  * [Visual testing](#visual-testing)
+    * [Prerequisites](#prerequisites)
+    * [Continuous Integration](#continuous-integration)
+  * [Other tests](#other-tests)
+    * [System tests](#system-tests)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 <!-- prettier-ignore-end -->
@@ -32,6 +32,7 @@ available, check out the table below.
 | :---------------------------------------------------- | :---------------------------------------------- |
 | Run playwright tests                                  | `npx playwright test`                           |
 | Run a specific test                                   | `npx playwright test path/to/test`              |
+| Run a specific preview test                           | `npx playwright test -g "<preview name>"`       |
 | View the report from a test run                       | `npx playwright show-report .playwright/report` |
 
 ### Prerequisites
