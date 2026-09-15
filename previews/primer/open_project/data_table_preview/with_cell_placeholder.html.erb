@@ -1,0 +1,11 @@
+<%=
+  render(
+    Primer::OpenProject::DataTable.new(rows)
+  ) do |data_table|
+    data_table.with_title(tag: :h2) { "Projects" }
+    data_table.with_subtitle { "Blank assignees render a muted placeholder." }
+
+    data_table.with_column(field: :name, header: "Name", row_header: true)
+    data_table.with_column(field: :assignee, header: "Assignee", placeholder: "Unassigned")
+  end
+%>

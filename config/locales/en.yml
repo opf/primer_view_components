@@ -9,6 +9,9 @@ en:
   button_filter: "Filter"
   button_save: "Save"
 
+  data_table:
+    empty_state_title: "No data available"
+
   drag_handle:
     button_drag: "Drag to reorder"
 
@@ -39,3 +42,5 @@ en:
     next_page: "Next Page"
     page: "Page %{number}"
     page_with_more: "Page %{number}..."
+    range: "%{start} ‒ %{end} of %{total}"
+    range_announcement: "%{start} through %{end} of %{total}"

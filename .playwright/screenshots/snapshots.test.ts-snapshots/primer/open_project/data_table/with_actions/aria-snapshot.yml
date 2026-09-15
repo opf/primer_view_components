@@ -1,0 +1,20 @@
+- heading "Projects" [level=2]
+- button "Download"
+- button "New project"
+- button "More actions"
+- text: Actions render at the end of the title row.
+- table "Projects":
+  - rowgroup:
+    - row "Name Status":
+      - columnheader "Name"
+      - columnheader "Status"
+  - rowgroup:
+    - row "Project 1 active":
+      - rowheader "Project 1"
+      - cell "active"
+    - row "Project 2 on_track":
+      - rowheader "Project 2"
+      - cell "on_track"
+    - row "Project 3 at_risk":
+      - rowheader "Project 3"
+      - cell "at_risk"

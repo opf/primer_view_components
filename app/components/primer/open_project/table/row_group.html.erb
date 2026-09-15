@@ -1,0 +1,6 @@
+<%= render(Primer::BaseComponent.new(**@system_arguments)) do %>
+  <% rows.each do |row| %>
+    <%= row %>
+  <% end %>
+  <%= content %>
+<% end %>
