@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.91.3
+
+### Patch Changes
+
+- [#524](https://github.com/opf/primer_view_components/pull/524) [`cc4f33e`](https://github.com/opf/primer_view_components/commit/cc4f33e2146aeb8ced87f784d03be84fed93a875) Thanks [@HDinger](https://github.com/HDinger)! - Add a tooltip to the clearbutton of text fields
+
 ## 0.91.2
 
 ### Patch Changes
