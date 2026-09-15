@@ -13,6 +13,13 @@ module OpenProject
       page.evaluate_script("document.activeElement")
     end
 
+    # The clear button no longer carries an aria-label; it is labelled by a
+    # tool-tip instead, so we find it by its accessible name (the tooltip text).
+    def click_button_with_accessible_name(name)
+      tooltip_id = find("tool-tip", text: name, visible: false)["id"]
+      find("button[aria-labelledby='#{tooltip_id}']").click
+    end
+
     def test_filtering_matches_sub_trees
       visit_preview(:default)
 
@@ -169,7 +176,7 @@ module OpenProject
       check_at_path("Students", "Ravenclaw")
       assert_path_checked("Students", "Ravenclaw")
 
-      find(".FormControl button[aria-label='Clear']").click
+      click_button_with_accessible_name(I18n.t(:button_clear))
 
       assert_path_checked("Students", "Ravenclaw")
       assert_path_checked("Students", "Ravenclaw", "Luna Lovegood")
@@ -463,7 +470,7 @@ module OpenProject
       fill_in "Filter", with: "zzz_no_match"
       assert_selector "[data-target='filterable-tree-view.noResultsMessage']", visible: true
 
-      find(".FormControl button[aria-label='Clear']").click
+      click_button_with_accessible_name(I18n.t(:button_clear))
 
       assert_path(HOGWARTS)
       assert_no_selector "[data-target='filterable-tree-view.noResultsMessage']", visible: true
@@ -498,7 +505,7 @@ module OpenProject
       fill_in "Filter", with: "Harry"
       assert_selector "[role=treeitem] mark", text: "Harry"
 
-      find(".FormControl button[aria-label='Clear']").click
+      click_button_with_accessible_name(I18n.t(:button_clear))
 
       assert_no_selector "[role=treeitem] mark"
     end
@@ -519,7 +526,7 @@ module OpenProject
       fill_in "Filter", with: "Harry"
       assert_path(HOGWARTS, "Students", "Gryffindor", "Harry Potter")
 
-      find(".FormControl button[aria-label='Clear']").click
+      click_button_with_accessible_name(I18n.t(:button_clear))
 
       # Pre-filter expansion is restored
       assert_path(HOGWARTS, "Students", "Gryffindor", "Harry Potter")
@@ -547,7 +554,7 @@ module OpenProject
       # Node is still checked after the tree has been replaced
       assert_path_checked(HOGWARTS, "Students", "Gryffindor", "Harry Potter")
 
-      find(".FormControl button[aria-label='Clear']").click
+      click_button_with_accessible_name(I18n.t(:button_clear))
 
       # Both, Harry and Ron are still checked after the tree has been replaced
       assert_path_checked(HOGWARTS, "Students", "Gryffindor", "Harry Potter")
@@ -688,7 +695,7 @@ module OpenProject
       assert_path_checked(DURMSTRANG, "Students", "Viktor Krum")
 
       # Clear filter — full tree is restored via another replacement
-      find(".FormControl button[aria-label='Clear']").click
+      click_button_with_accessible_name(I18n.t(:button_clear))
       assert_path(HOGWARTS)
 
       # Only Viktor Krum must be checked; Harry Potter must NOT be checked
@@ -791,7 +798,7 @@ module OpenProject
       fill_in "Filter", with: "gry"
       refute_path(DURMSTRANG)
 
-      find(".FormControl button[aria-label='Clear']").click
+      click_button_with_accessible_name(I18n.t(:button_clear))
 
       # Expansion state is restored – Durmstrang and Students are already open
       uncheck_at_path(DURMSTRANG, "Students", "Viktor Krum")

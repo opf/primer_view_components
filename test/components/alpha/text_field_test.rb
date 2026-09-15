@@ -52,11 +52,12 @@ class PrimerAlphaTextFieldTest < Minitest::Test
     render_inline(
       Primer::Alpha::TextField.new(
         **@default_params,
-        show_clear_button: true
+        show_clear_button: true,
+        clear_button_id: "clear-button-id"
       )
     )
 
-    assert_selector "button[aria-label='Clear']"
+    assert_selector("tool-tip[for='clear-button-id']", text: I18n.t(:button_clear), visible: false)
   end
 
   def test_renders_clear_button_with_custom_aria_label
@@ -64,11 +65,12 @@ class PrimerAlphaTextFieldTest < Minitest::Test
       Primer::Alpha::TextField.new(
         **@default_params,
         show_clear_button: true,
-        clear_button_label: "Effacer"
+        clear_button_label: "Effacer",
+        clear_button_id: "clear-button-id"
       )
     )
 
-    assert_selector "button[aria-label='Effacer']"
+    assert_selector("tool-tip[for='clear-button-id']", text: "Effacer", visible: false)
   end
 
   def test_renders_the_component_full_width
