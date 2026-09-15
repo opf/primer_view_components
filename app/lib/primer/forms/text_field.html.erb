@@ -16,7 +16,7 @@
       <%= render(Primer::Beta::IconButton.new(size: :small,
                                               scheme: :invisible,
                                               icon: :"x-circle-fill",
-                                              "aria-label": @input.clear_button_label || 'Clear',
+                                              "aria-label": @input.clear_button_label || I18n.t(:button_clear),
                                               id: @input.clear_button_id,
                                               classes: "FormControl-input-trailingAction",
                                               data: { action: "click:primer-text-field#clearContents" })) %>

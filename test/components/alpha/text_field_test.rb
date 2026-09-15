@@ -57,7 +57,7 @@ class PrimerAlphaTextFieldTest < Minitest::Test
       )
     )
 
-    assert_selector("tool-tip[for='clear-button-id']", text: "Clear", visible: false)
+    assert_selector("tool-tip[for='clear-button-id']", text: I18n.t(:button_clear), visible: false)
   end
 
   def test_renders_clear_button_with_custom_aria_label
