@@ -113,11 +113,11 @@ module Primer
 
       # @label Async alpha
       #
-      # @param nested_child_expanded [Boolean] toggle
+      # @param nested_children_expanded [Boolean] toggle
       # @param select_variant [Symbol] select [none, single, multiple]
-      def async_alpha(nested_child_expanded: false, select_variant: :none)
+      def async_alpha(nested_children_expanded: false, select_variant: :none)
         render_with_template(locals: {
-          nested_child_expanded: coerce_bool(nested_child_expanded),
+          nested_children_expanded: coerce_bool(nested_children_expanded),
           select_variant: select_variant.to_sym
         })
       end
