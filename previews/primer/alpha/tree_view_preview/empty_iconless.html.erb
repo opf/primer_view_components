@@ -1,0 +1,5 @@
+<div style="max-width: 400px">
+  <%= render(Primer::Alpha::TreeView.new) do |tree_view| %>
+    <% tree_view.with_sub_tree(label: "docs") %>
+  <% end %>
+</div>
