@@ -1,0 +1,19 @@
+<%=
+  render(
+    Primer::OpenProject::DataTable.new(projects, divider: true)
+  ) do |data_table|
+    data_table.with_title(tag: :h2) { "Projects" }
+    data_table.with_subtitle { "Actions render at the end of the title row." }
+
+    data_table.with_action_icon_button(icon: :download, "aria-label": "Download")
+    data_table.with_action_button(leading_visual_icon: :plus) { "New project" }
+    data_table.with_action_menu(anchor_align: :end) do |menu|
+      menu.with_show_button(icon: :"kebab-horizontal", "aria-label": "More actions")
+      menu.with_item(label: "Import projects")
+      menu.with_item(label: "Manage columns")
+    end
+
+    data_table.with_column(field: :name, header: "Name", row_header: true)
+    data_table.with_column(field: :status_code, header: "Status")
+  end
+%>
