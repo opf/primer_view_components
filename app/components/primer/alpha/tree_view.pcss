@@ -260,17 +260,6 @@
         }
       }
     }
-
-  }
-
-  /*
-   * Align the "no items" placeholder with its parent's label when the parent renders a
-   * leading icon.
-   */
-  /* stylelint-disable-next-line selector-max-specificity, selector-max-compound-selectors */
-  & .TreeViewItemContainer:has(.TreeViewItemVisual + .TreeViewItemContentText) + [role='group'] .TreeViewItemContent[data-no-items='true']::before {
-    content: ' ';
-    width: var(--base-size-16);
   }
 
   & .TreeViewItemContentText {

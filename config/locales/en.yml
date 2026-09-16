@@ -40,4 +40,5 @@ en:
     page: "Page %{number}"
     page_with_more: "Page %{number}..."
 
-  label_empty_sub_tree: "No items"
+  tree_view:
+    label_empty_sub_tree: "No items"

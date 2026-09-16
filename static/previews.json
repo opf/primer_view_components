@@ -4855,19 +4855,6 @@
         }
       },
       {
-        "preview_path": "primer/alpha/tree_view/empty_iconless",
-        "name": "empty_iconless",
-        "snapshot": "interactive",
-        "skip_rules": {
-          "wont_fix": [
-            "region"
-          ],
-          "will_fix": [
-            "color-contrast"
-          ]
-        }
-      },
-      {
         "preview_path": "primer/alpha/tree_view/loading_failure",
         "name": "loading_failure",
         "snapshot": "interactive",

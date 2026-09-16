@@ -1,4 +1,0 @@
-- tree:
-  - treeitem "docs" [expanded] [level=1] [selected]
-  - group:
-    - treeitem "No items" [disabled] [level=1]

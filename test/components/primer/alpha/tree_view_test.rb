@@ -159,6 +159,14 @@ module Primer
         assert_selector("[role=treeitem] .TreeViewItemVisual svg.octicon-sparkle-fill")
       end
 
+      def test_sub_tree_empty
+        render_inline(Primer::Alpha::TreeView.new) do |tree|
+          tree.with_sub_tree(label: "src", expanded: true)
+        end
+
+        assert_selector "[role=treeitem][aria-level='2'] .TreeViewItemContentText", text: I18n.t("tree_view.label_empty_sub_tree")
+      end
+
       def test_disallows_multi_select_with_descendants_strategy_for_async_sub_trees
         [:descendants, :mixed_descendants].each do |strategy|
           error = assert_raises(ArgumentError) do

@@ -501,7 +501,7 @@ module Alpha
       activate_at_path("primer")
       refute_selector("tree-view-include-fragment") # wait for fragment to load
 
-      assert_selector "#{selector_for("primer")} .TreeViewItemContentText", text: I18n.t("label_empty_sub_tree")
+      assert_selector "#{selector_for("primer", "no_items")} .TreeViewItemContentText", text: I18n.t("tree_view.label_empty_sub_tree")
     end
 
     def test_loading_skeleton
@@ -553,7 +553,7 @@ module Alpha
 
       activate_at_path("primer")
 
-      assert_selector "#{selector_for("primer")} .TreeViewItemContentText", text: I18n.t("label_empty_sub_tree")
+      assert_selector "#{selector_for("primer", "no_items")} .TreeViewItemContentText", text: I18n.t("tree_view.label_empty_sub_tree")
     end
 
     def test_empty
@@ -561,15 +561,8 @@ module Alpha
 
       activate_at_path("src")
 
-      assert_selector "#{selector_for("src")} .TreeViewItemContentText", text: I18n.t("label_empty_sub_tree")
-    end
-
-    def test_empty_iconless
-      visit_preview(:empty_iconless)
-
-      activate_at_path("docs")
-
-      assert_selector "#{selector_for("docs")} .TreeViewItemContentText", text: I18n.t("label_empty_sub_tree")
+      assert_selector "#{selector_for("src", "no_items")} .TreeViewItemContentText", text: I18n.t("tree_view.label_empty_sub_tree")
+      assert_selector "#{selector_for("src", "no_items")}[aria-level='2']"
     end
 
     ##### JAVASCRIPT EVENTS #####
