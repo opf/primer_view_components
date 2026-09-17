@@ -501,7 +501,7 @@ module Alpha
       activate_at_path("primer")
       refute_selector("tree-view-include-fragment") # wait for fragment to load
 
-      assert_selector "#{selector_for("primer")} .TreeViewItemContentText", text: "No items"
+      assert_selector "#{selector_for("primer", "no_items")} .TreeViewItemContentText", text: I18n.t("tree_view.label_empty_sub_tree")
     end
 
     def test_loading_skeleton
@@ -553,7 +553,7 @@ module Alpha
 
       activate_at_path("primer")
 
-      assert_selector "#{selector_for("primer")} .TreeViewItemContentText", text: "No items"
+      assert_selector "#{selector_for("primer", "no_items")} .TreeViewItemContentText", text: I18n.t("tree_view.label_empty_sub_tree")
     end
 
     def test_empty
@@ -561,7 +561,8 @@ module Alpha
 
       activate_at_path("src")
 
-      assert_selector "#{selector_for("src")} .TreeViewItemContentText", text: "No items"
+      assert_selector "#{selector_for("src", "no_items")} .TreeViewItemContentText", text: I18n.t("tree_view.label_empty_sub_tree")
+      assert_selector "#{selector_for("src", "no_items")}[aria-level='2']"
     end
 
     ##### JAVASCRIPT EVENTS #####
@@ -679,7 +680,7 @@ module Alpha
       # to a tabindex=-1 node is unreliable: focusZone redirects focus to the aria-current
       # item on focusin, so Space would land on the wrong node.
       # Start from icon_button.rb and navigate down with arrow keys instead.
-      find('[aria-current]').send_keys(:down)
+      find("[aria-current]").send_keys(:down)
       keyboard.type(:down)
       keyboard.type(:space)
 
@@ -716,7 +717,7 @@ module Alpha
       nodes = all(selector_for("action_menu.rb"))
 
       # Navigate from icon_button.rb (aria-current, tabindex=0) to nodes[0]
-      find('[aria-current]').send_keys(:down)
+      find("[aria-current]").send_keys(:down)
       keyboard.type(:space)
       nodes[0].assert_matches_selector("[aria-checked='true']")
 

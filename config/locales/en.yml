@@ -39,3 +39,6 @@ en:
     next_page: "Next Page"
     page: "Page %{number}"
     page_with_more: "Page %{number}..."
+
+  tree_view:
+    label_empty_sub_tree: "No items"

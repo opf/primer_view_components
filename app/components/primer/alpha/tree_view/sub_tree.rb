@@ -107,6 +107,12 @@ module Primer
         def defer?
           loader?
         end
+
+        private
+
+        def no_items_message_path
+          path + %w(no_items)
+        end
       end
     end
   end
