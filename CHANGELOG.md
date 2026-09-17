@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 0.91.3
+
+### Patch Changes
+
+- [#522](https://github.com/opf/primer_view_components/pull/522) [`494d7d7`](https://github.com/opf/primer_view_components/commit/494d7d7a7099e4721d0201031e23ec3dd8e7df53) Thanks [@bsatarnejad](https://github.com/bsatarnejad)! - Align asynchronously loaded single-select TreeView labels with their toggles
+
+- [#527](https://github.com/opf/primer_view_components/pull/527) [`a2e2a12`](https://github.com/opf/primer_view_components/commit/a2e2a12305c62ee9e2edd6324bcc3e124c7c48f4) Thanks [@lwassermann](https://github.com/lwassermann)! - Introduce translation "tree_view.label_empty_sub_tree" to use as a default
+  message when a tree view sub tree is empty. Adjust the empty message alignment
+  to match other children, and mark it as disabled.
+
+- [#524](https://github.com/opf/primer_view_components/pull/524) [`cc4f33e`](https://github.com/opf/primer_view_components/commit/cc4f33e2146aeb8ced87f784d03be84fed93a875) Thanks [@HDinger](https://github.com/HDinger)! - Add a tooltip to the clearbutton of text fields
+
 ## 0.91.2
 
 ### Patch Changes
