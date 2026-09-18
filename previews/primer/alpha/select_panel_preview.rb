@@ -165,6 +165,23 @@ module Primer
         })
       end
 
+      # @label With counter
+      #
+      # @param open_on_load toggle
+      # @param select_variant [Symbol] select [single, multiple]
+      # @param fetch_strategy [Symbol] select [local, remote]
+      # @param preselected_items text
+      def with_counter(open_on_load: false, select_variant: :multiple, fetch_strategy: :local, preselected_items: "")
+        render_with_template(locals: {
+          open_on_load: open_on_load,
+          # .to_sym workaround for https://github.com/lookbook-hq/lookbook/issues/640
+          select_variant: select_variant.to_sym,
+          fetch_strategy: fetch_strategy.to_sym,
+          selected_items: preselected_items,
+          preselected_values: preselected_items.split(",").map(&:strip)
+        })
+      end
+
       # @!endgroup
 
       # @label Footer buttons
