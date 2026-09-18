@@ -57,6 +57,28 @@ module Primer
         end
       end
 
+      # Only the first and last element may round the corners of the box.
+      # Toggle the slots to check that the rounding follows.
+      #
+      # @label Roundedness playground
+      # @hidden
+      # @param header [Boolean] toggle
+      # @param body [Boolean] toggle
+      # @param rows [Boolean] toggle
+      # @param footer [Boolean] toggle
+      def roundedness_playground(header: true, body: false, rows: true, footer: false)
+        render(Primer::Beta::BorderBox.new) do |component|
+          component.with_header { "Header" } if coerce_bool(header)
+          component.with_body { "Body" } if coerce_bool(body)
+          if coerce_bool(rows)
+            component.with_row { "Row one" }
+            component.with_row { "Row two" }
+            component.with_row { "Row three" }
+          end
+          component.with_footer { "Footer" } if coerce_bool(footer)
+        end
+      end
+
       # @!group Padding
       #
       # @label Default
@@ -98,6 +120,18 @@ module Primer
       end
       #
       # @!endgroup
+
+      private
+
+      # URL params are always strings; coerce to actual booleans before passing to the component.
+      def coerce_bool(value)
+        case value
+        when true, false then value
+        when "true" then true
+        when "false" then false
+        else false
+        end
+      end
     end
   end
 end
