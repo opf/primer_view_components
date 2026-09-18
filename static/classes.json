@@ -148,6 +148,12 @@
   "Box-header--blue": [
     "Primer::Beta::BorderBox"
   ],
+  "Box-list--roundedBottom": [
+    "Primer::Beta::BorderBox"
+  ],
+  "Box-list--roundedTop": [
+    "Primer::Beta::BorderBox"
+  ],
   "Box-row": [
     "Primer::Beta::BorderBox"
   ],

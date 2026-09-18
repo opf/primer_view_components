@@ -100,6 +100,12 @@ module Primer
       private
 
       def before_render
+        @list_arguments[:classes] = class_names(
+          @list_arguments[:classes],
+          "Box-list--roundedTop" => header.blank? && body.blank?,
+          "Box-list--roundedBottom" => footer.blank?
+        )
+
         return unless header
 
         @list_arguments[:aria] = merge_aria(
