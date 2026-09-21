@@ -8,6 +8,8 @@ module Primer
     module BorderBox
       # @label CollapsibleHeader
       class CollapsibleHeaderPreview < ViewComponent::Preview
+        include Primer::PreviewHelpers
+
         # @label Playground
         # @param title [String]
         # @param description [String]
@@ -90,18 +92,6 @@ module Primer
               multi_line: coerce_bool(multi_line)
             }
           )
-        end
-
-        private
-
-        # URL params are always strings; coerce to actual booleans before passing to the component.
-        def coerce_bool(value)
-          case value
-          when true, false then value
-          when "true" then true
-          when "false" then false
-          else false
-          end
         end
       end
     end

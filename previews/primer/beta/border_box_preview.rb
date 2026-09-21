@@ -4,6 +4,8 @@ module Primer
   module Beta
     # @label BorderBox
     class BorderBoxPreview < ViewComponent::Preview
+      include Primer::PreviewHelpers
+
       # @label Playground
       #
       # @param list_id text
@@ -120,18 +122,6 @@ module Primer
       end
       #
       # @!endgroup
-
-      private
-
-      # URL params are always strings; coerce to actual booleans before passing to the component.
-      def coerce_bool(value)
-        case value
-        when true, false then value
-        when "true" then true
-        when "false" then false
-        else false
-        end
-      end
     end
   end
 end
