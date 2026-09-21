@@ -1,4 +1,4 @@
-<%= render(Primer::OpenProject::SubHeader.new(collapsed_search: collapsed_search)) do |component|
+<%= render(Primer::OpenProject::SubHeader.new) do |component|
   component.with_filter_input(name: "filter",
                               label: "Filter",
                               show_clear_button: show_clear_button,
