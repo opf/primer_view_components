@@ -9979,7 +9979,7 @@
       {
         "preview_path": "primer/open_project/sub_header/default",
         "name": "default",
-        "snapshot": "false",
+        "snapshot": "true",
         "skip_rules": {
           "wont_fix": [
             "region"
@@ -10057,7 +10057,7 @@
       {
         "preview_path": "primer/open_project/sub_header/expanded_search",
         "name": "expanded_search",
-        "snapshot": "false",
+        "snapshot": "true",
         "skip_rules": {
           "wont_fix": [
             "region"

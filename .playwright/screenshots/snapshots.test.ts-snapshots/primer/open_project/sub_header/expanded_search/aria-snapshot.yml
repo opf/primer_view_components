@@ -1,0 +1,5 @@
+- text: Filter
+- textbox "Filter": Some search term
+- button "Clear"
+- button "All filters": Filter ( 15 )
+- button "Create"

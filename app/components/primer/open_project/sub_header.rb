@@ -101,24 +101,9 @@ module Primer
           system_arguments[:data][:action] += " input:sub-header#toggleFilterInputClearButton focus:sub-header#toggleFilterInputClearButton"
         end
 
-        trigger_display = @collapsed_search ? :inline_flex : [:inline_flex, :inline_flex, :none]
-
-        @collapsed_filter_trigger = Primer::Beta::IconButton.new(icon: system_arguments[:leading_visual][:icon],
-                                                                 display: trigger_display,
-                                                                 aria: { label: label },
-                                                                 mr: 2,
-                                                                 "data-action": "click:sub-header#expandFilterInput",
-                                                                 "data-targets": FILTER_EXPAND_BUTTON_TARGET_SELECTOR)
-
-        @collapsed_filter_cancel = Primer::Beta::IconButton.new(icon: :x,
-                                                                "aria-label": I18n.t(:button_cancel),
-                                                                scheme: :invisible,
-                                                                display: :none,
-                                                                data: {
-                                                                  targets: SHOWN_FILTER_TARGET_SELECTOR,
-                                                                  action: "click:sub-header#collapseFilterInput"
-                                                                })
-
+        @filter_input_label = label
+        @filter_input_icon = system_arguments[:leading_visual][:icon]
+        @filter_input_value = system_arguments[:value]
 
         Primer::Alpha::TextField.new(name: name, label: label, **system_arguments)
       }
@@ -225,26 +210,18 @@ module Primer
         Primer::BaseComponent.new(**system_arguments)
       }
 
-      # @param collapsed_search [Boolean] When true, the search bar starts collapsed as an icon button on all screen sizes. Clicking expands it.
       # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
-      def initialize(collapsed_search: true, **system_arguments)
-        @collapsed_search = collapsed_search
+      def initialize(**system_arguments)
         @system_arguments = system_arguments
         @system_arguments[:tag] = :"sub-header"
-
-        filter_container_display = collapsed_search ? :none : DESKTOP_ACTIONS_DISPLAY
-
-        @filter_container = Primer::BaseComponent.new(tag: :div,
-                                                      classes: "SubHeader-filterContainer",
-                                                      display: filter_container_display,
-                                                      mr: 2,
-                                                      data: { targets: SHOWN_FILTER_TARGET_SELECTOR })
 
         @system_arguments[:classes] = class_names(
           "SubHeader",
           system_arguments[:classes]
         )
       end
+
+      private
 
       def before_render
         all_quick_actions = [quick_sort, quick_group].compact + quick_filters
@@ -263,6 +240,8 @@ module Primer
           end
         end
 
+        setup_filter_input_collapse if filter_input.present?
+
         @system_arguments[:classes] = class_names(
           @system_arguments[:classes],
           "SubHeader--emptyLeftPane" => !segmented_control? && !filter_button && !filter_input && all_quick_actions.empty?
@@ -272,6 +251,35 @@ module Primer
       def set_as_hidden_filter_target(system_arguments)
         system_arguments[:classes] = class_names(system_arguments[:classes], "SubHeader-hiddenOnExpand")
         system_arguments
+      end
+
+      def setup_filter_input_collapse
+        collapsed_search = (filter_button.present? || quick_filters.present?) && @filter_input_value.blank?
+
+        filter_container_display = collapsed_search ? :none : DESKTOP_ACTIONS_DISPLAY
+        @filter_container = Primer::BaseComponent.new(tag: :div,
+                                                      classes: "SubHeader-filterContainer",
+                                                      display: filter_container_display,
+                                                      mr: 2,
+                                                      data: { targets: SHOWN_FILTER_TARGET_SELECTOR })
+
+        trigger_display = collapsed_search ? :inline_flex : [:inline_flex, :inline_flex, :none]
+
+        @collapsed_filter_trigger = Primer::Beta::IconButton.new(icon: @filter_input_icon,
+                                                                 display: trigger_display,
+                                                                 aria: { label: @filter_input_label },
+                                                                 mr: 2,
+                                                                 "data-action": "click:sub-header#expandFilterInput",
+                                                                 "data-targets": FILTER_EXPAND_BUTTON_TARGET_SELECTOR)
+
+        @collapsed_filter_cancel = Primer::Beta::IconButton.new(icon: :x,
+                                                                "aria-label": I18n.t(:button_cancel),
+                                                                scheme: :invisible,
+                                                                display: :none,
+                                                                data: {
+                                                                  targets: SHOWN_FILTER_TARGET_SELECTOR,
+                                                                  action: "click:sub-header#collapseFilterInput"
+                                                                })
       end
     end
   end
