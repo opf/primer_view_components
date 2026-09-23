@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.91.4
+
+### Patch Changes
+
+- [#529](https://github.com/opf/primer_view_components/pull/529) [`b9754c9`](https://github.com/opf/primer_view_components/commit/b9754c94a4f348441331a89b5604b2f0d610934d) Thanks [@lwassermann](https://github.com/lwassermann)! - Fix BorderBox rounding corners on elements that have siblings.
+
 ## 0.91.3
 
 ### Patch Changes
