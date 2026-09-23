@@ -90,13 +90,19 @@
 .Box-body {
   padding: var(--stack-padding-normal);
   border-bottom: var(--borderWidth-thin) solid var(--borderColor-default);
+}
 
-  /* Ensures bottom-border doesn't poke out when .Box-body used without box-footer */
-  &:last-of-type {
-    margin-bottom: calc(var(--borderWidth-thin) * -1);
-    border-bottom-right-radius: var(--borderRadius-medium);
-    border-bottom-left-radius: var(--borderRadius-medium);
-  }
+/* Ensures a top border/background doesn't poke out when the body is the first element. */
+.Box-body:first-child {
+  border-top-left-radius: var(--borderRadius-medium);
+  border-top-right-radius: var(--borderRadius-medium);
+}
+
+/* Ensures bottom-border doesn't poke out when the element is the last element. */
+.Box-header:last-child, .Box-body:last-child {
+  margin-bottom: calc(var(--borderWidth-thin) * -1);
+  border-bottom-right-radius: var(--borderRadius-medium);
+  border-bottom-left-radius: var(--borderRadius-medium);
 }
 
 /* Box rows */
@@ -107,16 +113,6 @@
   border-top-color: var(--borderColor-muted);
   border-top-style: solid;
   border-top-width: var(--borderWidth-thin);
-
-  &:first-of-type {
-    border-top-left-radius: var(--borderRadius-medium);
-    border-top-right-radius: var(--borderRadius-medium);
-  }
-
-  &:last-of-type {
-    border-bottom-right-radius: var(--borderRadius-medium);
-    border-bottom-left-radius: var(--borderRadius-medium);
-  }
 
   /* Adds a blue vertical line to the left of the row
   ** For indicating a row item is unread */
@@ -209,6 +205,23 @@
   border-top-style: solid;
   border-top-width: var(--borderWidth-thin);
   border-radius: 0 0 var(--borderRadius-medium) var(--borderRadius-medium);
+}
+
+/* Outer corners for rows.
+** The list only claims a corner when Ruby says it sits at that edge of the box
+** (`Box-list--roundedTop` / `Box-list--roundedBottom`, set in
+** BorderBox#before_render), so header/body/footer automatically win when present. */
+
+/* First row of a list that starts the box */
+.Box-list--roundedTop > .Box-row:first-of-type {
+  border-top-left-radius: var(--borderRadius-medium);
+  border-top-right-radius: var(--borderRadius-medium);
+}
+
+/* Last row of a list that ends the box */
+.Box-list--roundedBottom > .Box-row:last-of-type {
+  border-bottom-right-radius: var(--borderRadius-medium);
+  border-bottom-left-radius: var(--borderRadius-medium);
 }
 
 /* Option for a box with scrolling content */

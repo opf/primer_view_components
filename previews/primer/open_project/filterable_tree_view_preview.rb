@@ -4,6 +4,8 @@ module Primer
   module OpenProject
     # @label FilterableTreeView
     class FilterableTreeViewPreview < ViewComponent::Preview
+      include Primer::PreviewHelpers
+
       # @label Playground
       #
       # @param expanded [Boolean] toggle
@@ -169,21 +171,6 @@ module Primer
         render_with_template(locals: {
           expanded: coerce_bool(expanded)
         })
-      end
-
-      private
-
-      def coerce_bool(value)
-        case value
-        when true, false
-          value
-        when "true"
-          true
-        when "false"
-          false
-        else
-          false
-        end
       end
     end
   end

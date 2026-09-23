@@ -4,6 +4,8 @@ module Primer
   module Alpha
     # @label TreeView
     class TreeViewPreview < ViewComponent::Preview
+      include Primer::PreviewHelpers
+
       # @label Default
       #
       # @snapshot interactive
@@ -215,19 +217,6 @@ module Primer
       end
 
       private
-
-      def coerce_bool(value)
-        case value
-        when true, false
-          value
-        when "true"
-          true
-        when "false"
-          false
-        else
-          false
-        end
-      end
 
       def populate(node, data, node_arguments)
         return unless data
