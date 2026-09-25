@@ -13,7 +13,6 @@ module Primer
       # @param show_quick_filter toggle
       # @param show_action_button toggle
       # @param show_clear_button toggle
-      # @param collapsed_search toggle
       # @param text text
       # @param value text
       def playground(
@@ -22,22 +21,21 @@ module Primer
         show_filter_button: true,
         show_quick_filter: true,
         show_action_button: true,
-        collapsed_search: true,
         text: nil,
         value: nil
       )
         bool = ActiveModel::Type::Boolean.new
-        render_with_template(locals: {show_filter_input: bool.cast(show_filter_input),
+        render_with_template(locals: { show_filter_input: bool.cast(show_filter_input),
                                       show_clear_button: bool.cast(show_clear_button),
                                       show_filter_button: bool.cast(show_filter_button),
                                       show_quick_filter: bool.cast(show_quick_filter),
                                       show_action_button: bool.cast(show_action_button),
-                                      collapsed_search: bool.cast(collapsed_search),
                                       text: text,
-                                      value: value})
+                                      value: value })
       end
 
       # @label Default
+      # @snapshot
       def default
         render(Primer::OpenProject::SubHeader.new) do |component|
           component.with_filter_input(name: "filter", label: "Filter")
@@ -93,21 +91,6 @@ module Primer
         end
       end
 
-      # @label With expanded search
-      def expanded_search
-        render(Primer::OpenProject::SubHeader.new(collapsed_search: false)) do |component|
-          component.with_filter_input(name: "filter", label: "Filter")
-          component.with_filter_button(scheme: :default) do |button|
-            button.with_trailing_visual_counter(count: "15")
-            "Filter"
-          end
-
-          component.with_action_button(leading_icon: :plus, label: "Create", scheme: :primary) do
-            "Create"
-          end
-        end
-      end
-
       # @label With QuickFilters
       def quick_filters
         render_with_template(locals: {})
@@ -124,6 +107,22 @@ module Primer
           component.with_filter_input(name: "filter", label: "Filter")
 
           component.with_text { "Hello world!" }
+
+          component.with_action_button(leading_icon: :plus, label: "Create", scheme: :primary) do
+            "Create"
+          end
+        end
+      end
+
+      # @label With filter value (expanded)
+      # @snapshot
+      def expanded_search
+        render(Primer::OpenProject::SubHeader.new) do |component|
+          component.with_filter_input(name: "filter", label: "Filter", value: "Some search term")
+          component.with_filter_button(scheme: :default) do |button|
+            button.with_trailing_visual_counter(count: "15")
+            "Filter"
+          end
 
           component.with_action_button(leading_icon: :plus, label: "Create", scheme: :primary) do
             "Create"

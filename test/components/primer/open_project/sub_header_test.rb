@@ -59,7 +59,7 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
 
   def test_renders_a_menu_as_action
     render_inline(Primer::OpenProject::SubHeader.new) do |component|
-      component.with_action_menu(leading_icon: :plus, label: "Create", button_arguments: { scheme: :primary, "aria-label": "Menu"}) do |menu|
+      component.with_action_menu(leading_icon: :plus, label: "Create", button_arguments: { scheme: :primary, "aria-label": "Menu" }) do |menu|
         menu.with_item(label: "Foo") do |item|
           item.with_leading_visual_icon(icon: :paste)
         end
@@ -79,7 +79,7 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
   def test_renders_a_menu_without_label
     err = assert_raises ArgumentError do
       render_inline(Primer::OpenProject::SubHeader.new) do |component|
-        component.with_action_menu(leading_icon: :plus, label: "", button_arguments: { scheme: :primary, "aria-label": "Menu"}) do |menu|
+        component.with_action_menu(leading_icon: :plus, label: "", button_arguments: { scheme: :primary, "aria-label": "Menu" }) do |menu|
           menu.with_item(label: "Foo") do |item|
             item.with_leading_visual_icon(icon: :paste)
           end
@@ -237,35 +237,15 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
     assert_no_selector(".FormControl-input-trailingAction[data-action=\"click:primer-text-field#clearContents\"]")
   end
 
-  def test_renders_collapsed_search_per_default
+  def test_renders_expanded_search_by_default
     render_inline(Primer::OpenProject::SubHeader.new) do |component|
       component.with_filter_input(name: "filter", label: "Filter")
     end
 
     assert_selector(".SubHeader")
-    # Trigger is rendered and wired to expand
-    assert_selector("[data-action='click:sub-header#expandFilterInput']")
-    # Filter container starts hidden on all screen sizes (d-none, no d-sm-flex)
-    assert_selector(".SubHeader-filterContainer.d-none")
-    assert_no_selector(".SubHeader-filterContainer.d-sm-flex")
-  end
-
-  def test_collapsed_search_trigger_visible_on_all_screen_sizes
-    render_inline(Primer::OpenProject::SubHeader.new) do |component|
-      component.with_filter_input(name: "filter", label: "Filter")
-    end
-
-    # Without collapsed_search, the trigger has d-md-none (hidden on desktop).
-    # With collapsed_search, it must not have d-md-none.
-    assert_no_selector("[data-action='click:sub-header#expandFilterInput'].d-md-none")
-  end
-
-  def test_expanded_search_trigger_hidden_on_desktop
-    render_inline(Primer::OpenProject::SubHeader.new(collapsed_search: false)) do |component|
-      component.with_filter_input(name: "filter", label: "Filter")
-    end
-
-    # Without collapsed_search the trigger is mobile-only (d-md-none)
+    # With no quick_filter or filter_button slot present, the search stays expanded on desktop
+    assert_selector(".SubHeader-filterContainer.d-md-flex")
+    # The trigger is only used to expand the search on mobile (d-md-none)
     assert_selector("[data-action='click:sub-header#expandFilterInput'].d-md-none")
   end
 
@@ -402,22 +382,37 @@ class PrimerOpenProjectSubHeaderTest < Minitest::Test
       component.with_quick_filter { "<span class='MyQuickFilter'>Status</span>".html_safe }
     end
 
-    # Filter container is hidden (collapsed_search auto-detected as true)
+    assert_collapsed_search_auto_enabled
+  end
+
+  def test_collapsed_search_auto_enabled_when_filter_button_present
+    render_inline(Primer::OpenProject::SubHeader.new) do |component|
+      component.with_filter_input(name: "filter", label: "Filter")
+      component.with_filter_button { "Filter" }
+    end
+
+    assert_collapsed_search_auto_enabled
+  end
+
+  def test_search_stays_expanded_when_filter_has_a_value_despite_quick_filter
+    render_inline(Primer::OpenProject::SubHeader.new) do |component|
+      component.with_filter_input(name: "filter", label: "Filter", value: "some search term")
+      component.with_quick_filter { "<span class='MyQuickFilter'>Status</span>".html_safe }
+    end
+
+    # Filter container is NOT hidden despite quick_filter being present, since the filter is already in use
+    assert_selector(".SubHeader-filterContainer.d-md-flex")
+    # Trigger is mobile-only (d-md-none) since the search stays expanded
+    assert_selector("[data-action='click:sub-header#expandFilterInput'].d-md-none")
+  end
+
+  private
+
+  def assert_collapsed_search_auto_enabled
+    # Filter container is hidden
     assert_selector(".SubHeader-filterContainer.d-none")
     assert_no_selector(".SubHeader-filterContainer.d-md-flex")
     # Trigger is visible on all screen sizes (no d-sm-none)
     assert_no_selector("[data-action='click:sub-header#expandFilterInput'].d-md-none")
-  end
-
-  def test_explicit_collapsed_search_false_overrides_auto_collapse
-    render_inline(Primer::OpenProject::SubHeader.new(collapsed_search: false)) do |component|
-      component.with_filter_input(name: "filter", label: "Filter")
-      component.with_quick_filter { "<span class='MyQuickFilter'>Status</span>".html_safe }
-    end
-
-    # Filter container is NOT hidden despite quick_filter being present
-    assert_selector(".SubHeader-filterContainer.d-md-flex")
-    # Trigger is mobile-only (d-sm-none) since collapsed_search is false
-    assert_selector("[data-action='click:sub-header#expandFilterInput'].d-md-none")
   end
 end
