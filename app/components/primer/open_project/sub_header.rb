@@ -254,7 +254,7 @@ module Primer
       end
 
       def setup_filter_input_collapse
-        collapsed_search = (filter_button.present? || quick_filters.present?) && @filter_input_value.blank?
+        collapsed_search = [filter_button, quick_filters, quick_sort, quick_group, @segmented_control_block].any?(&:present?) && @filter_input_value.blank?
 
         filter_container_display = collapsed_search ? :none : DESKTOP_ACTIONS_DISPLAY
         @filter_container = Primer::BaseComponent.new(tag: :div,

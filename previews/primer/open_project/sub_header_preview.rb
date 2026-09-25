@@ -91,22 +91,6 @@ module Primer
         end
       end
 
-      # @label With expanded search
-      # @snapshot
-      def expanded_search
-        render(Primer::OpenProject::SubHeader.new) do |component|
-          component.with_filter_input(name: "filter", label: "Filter", value: "Some search term")
-          component.with_filter_button(scheme: :default) do |button|
-            button.with_trailing_visual_counter(count: "15")
-            "Filter"
-          end
-
-          component.with_action_button(leading_icon: :plus, label: "Create", scheme: :primary) do
-            "Create"
-          end
-        end
-      end
-
       # @label With QuickFilters
       def quick_filters
         render_with_template(locals: {})
@@ -123,6 +107,22 @@ module Primer
           component.with_filter_input(name: "filter", label: "Filter")
 
           component.with_text { "Hello world!" }
+
+          component.with_action_button(leading_icon: :plus, label: "Create", scheme: :primary) do
+            "Create"
+          end
+        end
+      end
+
+      # @label With filter value (expanded)
+      # @snapshot
+      def expanded_search
+        render(Primer::OpenProject::SubHeader.new) do |component|
+          component.with_filter_input(name: "filter", label: "Filter", value: "Some search term")
+          component.with_filter_button(scheme: :default) do |button|
+            button.with_trailing_visual_counter(count: "15")
+            "Filter"
+          end
 
           component.with_action_button(leading_icon: :plus, label: "Create", scheme: :primary) do
             "Create"

@@ -22073,19 +22073,6 @@
         }
       },
       {
-        "preview_path": "primer/open_project/sub_header/expanded_search",
-        "name": "expanded_search",
-        "snapshot": "true",
-        "skip_rules": {
-          "wont_fix": [
-            "region"
-          ],
-          "will_fix": [
-            "color-contrast"
-          ]
-        }
-      },
-      {
         "preview_path": "primer/open_project/sub_header/quick_filters",
         "name": "quick_filters",
         "snapshot": "false",
@@ -22115,6 +22102,19 @@
         "preview_path": "primer/open_project/sub_header/text",
         "name": "text",
         "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/sub_header/expanded_search",
+        "name": "expanded_search",
+        "snapshot": "true",
         "skip_rules": {
           "wont_fix": [
             "region"
