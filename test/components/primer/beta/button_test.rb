@@ -102,4 +102,62 @@ class PrimerBetaButtonTest < Minitest::Test
       refute_selector("a.Button[href]")
     end
   end
+
+  def test_renders_with_trailing_visual_keybinding_hint
+    render_inline(Primer::Beta::Button.new) do |component|
+      component.with_trailing_visual_keybinding_hint(keys: "Mod+s")
+      "Save"
+    end
+
+    assert_selector(".Button .Button-trailingVisual keybinding-hint[data-keys='Mod+s'][data-size='medium'][data-scheme='default']")
+    assert_selector(".Button .Button-trailingVisual .KeybindingHint-chord[data-kbd-chord]", text: "Ctrl+S")
+  end
+
+  def test_small_button_infers_small_hint
+    render_inline(Primer::Beta::Button.new(size: :small)) do |component|
+      component.with_trailing_visual_keybinding_hint(keys: "Mod+s")
+      "Save"
+    end
+
+    assert_selector(".Button--small keybinding-hint[data-size='small']")
+  end
+
+  def test_large_and_medium_buttons_infer_medium_hint
+    render_inline(Primer::Beta::Button.new(size: :large)) do |component|
+      component.with_trailing_visual_keybinding_hint(keys: "Mod+s")
+      "Save"
+    end
+
+    assert_selector(".Button--large keybinding-hint[data-size='medium']")
+  end
+
+  def test_keybinding_hint_size_override_wins
+    render_inline(Primer::Beta::Button.new(size: :small)) do |component|
+      component.with_trailing_visual_keybinding_hint(keys: "Mod+s", size: :medium)
+      "Save"
+    end
+
+    assert_selector("keybinding-hint[data-size='medium']")
+  end
+
+  def test_primary_button_keeps_default_hint_scheme
+    render_inline(Primer::Beta::Button.new(scheme: :primary)) do |component|
+      component.with_trailing_visual_keybinding_hint(keys: "Mod+s")
+      "Save"
+    end
+
+    assert_selector(".Button--primary keybinding-hint[data-scheme='default']")
+  end
+
+  def test_invalid_size_falls_back_before_slot_inference
+    without_fetch_or_fallback_raises do
+      render_inline(Primer::Beta::Button.new(size: :bogus)) do |component|
+        component.with_trailing_visual_keybinding_hint(keys: "Mod+s")
+        "Save"
+      end
+    end
+
+    assert_selector(".Button keybinding-hint[data-size='medium']")
+    refute_selector(".Button--small")
+  end
 end

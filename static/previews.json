@@ -9717,6 +9717,19 @@
             "color-contrast"
           ]
         }
+      },
+      {
+        "preview_path": "primer/open_project/keybinding_hint/in_button",
+        "name": "in_button",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
       }
     ]
   },

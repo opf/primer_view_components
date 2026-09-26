@@ -14077,7 +14077,7 @@
       },
       {
         "name": "trailing_visual",
-        "description": "Trailing visuals appear to the right of the button text.\n\nUse:\n\n- `trailing_visual_counter` for a {{#link_to_component}}Primer::Beta::Counter{{/link_to_component}}.",
+        "description": "Trailing visuals appear to the right of the button text.\n\nUse:\n\n- `trailing_visual_counter` for a {{#link_to_component}}Primer::Beta::Counter{{/link_to_component}}.\n- `trailing_visual_keybinding_hint` for a {{#link_to_component}}Primer::OpenProject::KeybindingHint{{/link_to_component}}.\n  The hint follows the button's size unless `size:` is given.",
         "parameters": [
           {
             "name": "system_arguments",
@@ -14800,7 +14800,7 @@
       },
       {
         "name": "trailing_visual",
-        "description": "Trailing visuals appear to the right of the button text.\n\nUse:\n\n- `trailing_visual_counter` for a {{#link_to_component}}Primer::Beta::Counter{{/link_to_component}}.",
+        "description": "Trailing visuals appear to the right of the button text.\n\nUse:\n\n- `trailing_visual_counter` for a {{#link_to_component}}Primer::Beta::Counter{{/link_to_component}}.\n- `trailing_visual_keybinding_hint` for a {{#link_to_component}}Primer::OpenProject::KeybindingHint{{/link_to_component}}.\n  The hint follows the button's size unless `size:` is given.",
         "parameters": [
           {
             "name": "system_arguments",
@@ -21375,6 +21375,19 @@
         "preview_path": "primer/open_project/keybinding_hint/prose",
         "name": "prose",
         "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/keybinding_hint/in_button",
+        "name": "in_button",
+        "snapshot": "true",
         "skip_rules": {
           "wont_fix": [
             "region"

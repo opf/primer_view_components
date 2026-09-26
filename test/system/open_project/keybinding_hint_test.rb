@@ -7,6 +7,7 @@ require "system/test_case"
 class IntegrationOpenProjectKeybindingHintTest < System::TestCase
   VISIBLE = "keybinding-hint .KeybindingHint-chord [aria-hidden='true']"
   HIDDEN = "keybinding-hint .KeybindingHint-chord .sr-only"
+  PRIMARY_MEDIUM_HINT = ".Button--primary.Button--medium:not(:disabled):not(.Button--inactive) keybinding-hint"
 
   def test_upgrades_fallback_into_per_key_spans
     visit_preview(:default)
@@ -259,10 +260,66 @@ class IntegrationOpenProjectKeybindingHintTest < System::TestCase
     assert_nil page.evaluate_script("window.__pwned")
   end
 
+  def test_button_hint_takes_button_state_colours
+    visit_preview(:in_button)
+
+    rest = chord_background(".Button--primary:not(:disabled):not(.Button--inactive) [data-kbd-chord]")
+    disabled = chord_background(".Button--primary:disabled [data-kbd-chord]")
+    inactive = chord_background(".Button--primary.Button--inactive [data-kbd-chord]")
+
+    refute_equal rest, disabled, "disabled primary chord should differ from rest"
+    refute_equal rest, inactive, "inactive primary chord should differ from rest"
+  end
+
+  def test_button_with_hint_gets_extra_end_padding
+    visit_preview(:in_button)
+
+    with_hint = page.evaluate_script("getComputedStyle(document.querySelector('.Button--small:has([data-kbd-chord])')).paddingInlineEnd")
+    assert_equal "6px", with_hint
+    large = page.evaluate_script("getComputedStyle(document.querySelector('.Button--large:has([data-kbd-chord])')).paddingInlineEnd")
+    assert_equal "8px", large
+  end
+
+  def test_button_accessible_name_includes_each_key_once
+    visit_preview(:in_button)
+    assert_selector(".Button--primary.Button--medium [aria-hidden='true']", text: "S")
+
+    assert_includes accessible_names("button"), "primary medium control s"
+    assert_equal "control s", flat_hidden_text(PRIMARY_MEDIUM_HINT)
+
+    page.execute_script(<<~JS)
+      const button = [...document.querySelectorAll('.Button--primary.Button--medium')]
+        .find((node) => node.textContent.includes('primary medium'))
+      button.querySelector('keybinding-hint').setAttribute('data-keys', 'Mod+k')
+    JS
+    assert_selector(".Button--primary.Button--medium [aria-hidden='true']", text: "K")
+
+    names = accessible_names("button")
+    assert_includes names, "primary medium control k"
+    refute_includes names, "primary medium control s"
+    assert_equal "control k", flat_hidden_text(PRIMARY_MEDIUM_HINT)
+  end
+
+  def test_labelled_button_keeps_its_accessible_name
+    visit_preview(:in_button)
+    assert_selector("[aria-label='Save document'] [aria-hidden='true']", text: "S")
+
+    assert_includes accessible_names("button"), "Save document"
+  end
+
   private
 
-  # Accessible text of the hint as a screen reader would concatenate it:
-  # textContent with the aria-hidden glyphs removed and whitespace collapsed.
+  # Computed accessible names of all nodes with the given ARIA role, read
+  # from Chrome's accessibility tree over CDP (Cuprite exposes Ferrum).
+  def accessible_names(role)
+    tree = page.driver.browser.page.command("Accessibility.getFullAXTree")
+    tree["nodes"].select { |node| node.dig("role", "value") == role }.map { |node| node.dig("name", "value") }
+  end
+
+  # The hint's text with aria-hidden glyphs removed, flattened as inline
+  # text. Chrome's accname pads the blockified sr-only spans with spaces
+  # on its own, so accessible_names cannot tell whether the element emits
+  # the whitespace text nodes that other ATs rely on; this can.
   def flat_hidden_text(selector)
     page.evaluate_script(<<~JS)
       (() => {
@@ -271,5 +328,9 @@ class IntegrationOpenProjectKeybindingHintTest < System::TestCase
         return clone.textContent.replace(/\\s+/g, ' ').trim()
       })()
     JS
+  end
+
+  def chord_background(selector)
+    page.evaluate_script("getComputedStyle(document.querySelector(#{selector.to_json})).backgroundColor")
   end
 end
