@@ -307,6 +307,29 @@ class IntegrationOpenProjectKeybindingHintTest < System::TestCase
     assert_includes accessible_names("button"), "Save document"
   end
 
+  def test_action_list_item_accessible_name_includes_hint
+    visit_preview(:in_action_list)
+    assert_selector(".ActionListItem [aria-hidden='true']", text: "⏎")
+
+    names = accessible_names("button")
+    assert names.any?(/\ASave\s+control\s+enter\z/), "expected a Save item named with its hint, got #{names.inspect}"
+    assert_equal "control enter", flat_hidden_text(".ActionListItem:nth-child(2) keybinding-hint")
+  end
+
+  def test_action_list_danger_hover_resets_chord_background
+    visit_preview(:in_action_list)
+
+    selector = ".ActionListItem--danger [data-kbd-chord]"
+    before = chord_background(selector)
+    assert_match(/, 0\)\z/, before, "sanity: chord is transparent before hover")
+
+    find(".ActionListItem--danger").hover
+    after = chord_background(selector)
+
+    refute_equal before, after, "danger hover must change the chord background"
+    refute_match(/, 0\)\z/, after, "hovered chord must be opaque (--bgColor-default)")
+  end
+
   private
 
   # Computed accessible names of all nodes with the given ARIA role, read

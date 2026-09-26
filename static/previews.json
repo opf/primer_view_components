@@ -9730,6 +9730,19 @@
             "color-contrast"
           ]
         }
+      },
+      {
+        "preview_path": "primer/open_project/keybinding_hint/in_action_list",
+        "name": "in_action_list",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
       }
     ]
   },
