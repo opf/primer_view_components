@@ -1,0 +1,8 @@
+<%= render(Primer::Box.new(display: :flex, style: "gap: var(--base-size-16); align-items: center")) do %>
+  <% %w[apple windows other].each do |platform| %>
+    <%= render(Primer::Box.new(display: :flex, style: "gap: var(--base-size-8); align-items: center")) do %>
+      <%= render(Primer::Beta::Text.new(tag: :span, color: :muted)) { platform } %>
+      <%= render(Primer::OpenProject::KeybindingHint.new(keys: "Mod+Alt+Shift+ArrowUp", data: { platform: platform })) %>
+    <% end %>
+  <% end %>
+<% end %>

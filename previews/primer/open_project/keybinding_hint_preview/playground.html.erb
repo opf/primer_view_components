@@ -1,0 +1,2 @@
+<% platform_data = platform.to_s == "detect" ? {} : { platform: platform } %>
+<%= render(Primer::OpenProject::KeybindingHint.new(keys: keys, format: format, scheme: scheme, size: size, data: platform_data)) %>
