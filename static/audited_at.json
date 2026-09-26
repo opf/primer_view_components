@@ -162,6 +162,7 @@
   "Primer::OpenProject::Heading": "",
   "Primer::OpenProject::InlineMessage": "",
   "Primer::OpenProject::InputGroup": "",
+  "Primer::OpenProject::KeybindingHint": "",
   "Primer::OpenProject::PageHeader": "",
   "Primer::OpenProject::PageHeader::Dialog": "",
   "Primer::OpenProject::PageHeader::Menu": "",

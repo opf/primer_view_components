@@ -47,6 +47,7 @@ class PrimerComponentTest < Minitest::Test
       component.with_trailing_action_clipboard_copy_button(id: "button", value: "Copyable value", aria: { label: "Copy some text" })
     }],
     [Primer::OpenProject::InlineMessage, { scheme: :warning, size: :small }, proc { "Inline message" }],
+    [Primer::OpenProject::KeybindingHint, { keys: "Mod+s" }],
     [Primer::OpenProject::GridLayout, { css_class: "grid-layout", tag: :div }, proc { |component|
       component.with_area(:area) do
         "Foo"

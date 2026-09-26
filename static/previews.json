@@ -9609,6 +9609,118 @@
     ]
   },
   {
+    "name": "keybinding_hint",
+    "component": "OpenProject::KeybindingHint",
+    "status": "open_project",
+    "lookup_path": "primer/open_project/keybinding_hint",
+    "examples": [
+      {
+        "preview_path": "primer/open_project/keybinding_hint/default",
+        "name": "default",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/keybinding_hint/playground",
+        "name": "playground",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/keybinding_hint/full_format",
+        "name": "full_format",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/keybinding_hint/sequence",
+        "name": "sequence",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/keybinding_hint/sizes",
+        "name": "sizes",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/keybinding_hint/schemes",
+        "name": "schemes",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/keybinding_hint/platforms",
+        "name": "platforms",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/keybinding_hint/prose",
+        "name": "prose",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      }
+    ]
+  },
+  {
     "name": "page_header",
     "component": "OpenProject::PageHeader",
     "status": "open_project",

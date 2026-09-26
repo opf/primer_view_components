@@ -1,0 +1,4 @@
+<%= render(Primer::BaseComponent.new(**@system_arguments)) do %>
+  <%# Keep the <kbd> on one line: the only whitespace text node allowed is the single space between chord spans (visible separator and screen-reader word boundary). %>
+  <kbd class="KeybindingHint-kbd"><% fallback_chords.each_with_index do |chord, index| %><%= " " if index.positive? %><span class="<%= @chord_classes %>" data-kbd-chord><%= chord %></span><% end %></kbd>
+<% end %>
