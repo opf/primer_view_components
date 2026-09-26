@@ -53,6 +53,12 @@ module Primer
       def prose
         render_with_template
       end
+
+      # @label In Button
+      # @snapshot
+      def in_button
+        render_with_template
+      end
     end
   end
 end
