@@ -59,6 +59,12 @@ module Primer
       def in_button
         render_with_template
       end
+
+      # @label In ActionList
+      # @snapshot
+      def in_action_list
+        render_with_template
+      end
     end
   end
 end
