@@ -16,6 +16,18 @@ const componentNameToRubyClass = (componentName) =>
 // processed folders so we can emit a flat set in static/classnames.js.
 const allClassNames = new Set()
 
+const collectClassTokens = selectorList => {
+  selectorList.forEach(tokens => {
+    tokens.forEach(token => {
+      if (token.type === 'attribute' && token.name === 'class' && token.action === 'element') {
+        allClassNames.add(token.value)
+      } else if (token.type === 'pseudo' && Array.isArray(token.data)) {
+        collectClassTokens(token.data)
+      }
+    })
+  })
+}
+
 const exportSelectors = (folder, {classNameExcludedFiles = []} = {}) => {
   const folderGlob = `${folder}/**/*.css`
   const componentNameRegex = new RegExp(`${folder.replace('/','\\/')}\\/(.*).css`)
@@ -53,13 +65,7 @@ const exportSelectors = (folder, {classNameExcludedFiles = []} = {}) => {
             // Collect every class token from every compound of the selector
             // (not just the first) for the complete classnames.js set.
             if (collectClassNames) {
-              parsed.forEach(compound => {
-                compound.forEach(token => {
-                  if (token.type === 'attribute' && token.name === 'class' && token.action === 'element') {
-                    allClassNames.add(token.value)
-                  }
-                })
-              })
+              collectClassTokens(parsed)
             }
           })
         })
