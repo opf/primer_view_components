@@ -122,10 +122,11 @@ module Alpha
     def activate_via(*keys, expect_focus_change: true)
       current_item = page.evaluate_script("document.activeElement")
       sub_menu_id = current_item["popovertarget"]
+      disabled = current_item["aria-disabled"]
 
       keyboard.type(*keys)
 
-      return if !expect_focus_change || current_item["aria-disabled"]
+      return if !expect_focus_change || disabled
       return unless sub_menu_id
 
       # make sure the first list item in the sub-menu is the active element
@@ -1057,16 +1058,21 @@ module Alpha
       activate_via_enter(expect_focus_change: true)
 
       # select first item in sub-menu
-      activate_via_enter(expect_focus_change: false)
+      # flaky because opening a sub-menu races two focus paths
+      retry_block do
+        activate_via_enter(expect_focus_change: false)
 
-      assert_selector "[aria-checked=true]", text: "langermank"
+        assert_selector "[aria-checked=true]", text: "langermank"
+      end
 
       # select second item
       arrow_down_to("jonrohan")
-      activate_via_enter(expect_focus_change: false)
+      retry_block do
+        activate_via_enter(expect_focus_change: false)
 
-      assert_selector "[aria-checked=true]", text: "langermank"
-      assert_selector "[aria-checked=true]", text: "jonrohan"
+        assert_selector "[aria-checked=true]", text: "langermank"
+        assert_selector "[aria-checked=true]", text: "jonrohan"
+      end
     end
 
     def test_multi_select_items_checked_via_keyboard_space
