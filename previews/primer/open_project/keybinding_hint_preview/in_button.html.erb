@@ -1,0 +1,24 @@
+<%= render(Primer::Box.new(display: :flex, style: "flex-direction: column; gap: var(--base-size-16)")) do %>
+  <% %i[default primary danger invisible].each do |scheme| %>
+    <%= render(Primer::Box.new(display: :flex, style: "gap: var(--base-size-8); align-items: center; flex-wrap: wrap")) do %>
+      <% %i[small medium large].each do |size| %>
+        <%= render(Primer::Beta::Button.new(scheme: scheme, size: size)) do |button| %>
+          <% button.with_trailing_visual_keybinding_hint(keys: "Mod+s", data: { platform: "other" }) %>
+          <%= "#{scheme} #{size}" %>
+        <% end %>
+      <% end %>
+      <%= render(Primer::Beta::Button.new(scheme: scheme, disabled: true)) do |button| %>
+        <% button.with_trailing_visual_keybinding_hint(keys: "Mod+s", data: { platform: "other" }) %>
+        <%= "#{scheme} disabled" %>
+      <% end %>
+      <%= render(Primer::Beta::Button.new(scheme: scheme, inactive: true)) do |button| %>
+        <% button.with_trailing_visual_keybinding_hint(keys: "Mod+s", data: { platform: "other" }) %>
+        <%= "#{scheme} inactive" %>
+      <% end %>
+    <% end %>
+  <% end %>
+  <%= render(Primer::Beta::Button.new(aria: { label: "Save document" })) do |button| %>
+    <% button.with_trailing_visual_keybinding_hint(keys: "Mod+s", data: { platform: "other" }) %>
+    Save
+  <% end %>
+<% end %>

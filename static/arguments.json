@@ -6390,6 +6390,46 @@
     ]
   },
   {
+    "component": "OpenProject::KeybindingHint",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectKeybindingHint",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/keybinding_hint.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/keybinding_hint/default/",
+    "parameters": [
+      {
+        "name": "keys",
+        "type": "String",
+        "default": "N/A",
+        "description": "The keys of the shortcut, e.g. `\"Mod+Shift+p\"` or `\"g i\"`. See the class documentation for the syntax."
+      },
+      {
+        "name": "format",
+        "type": "Symbol",
+        "default": "`:condensed`",
+        "description": "One of `:condensed` or `:full`. `:condensed` shows symbols (⌘⇧P) and suits menus and buttons; `:full` spells keys out (Command + Shift + P) and suits prose."
+      },
+      {
+        "name": "scheme",
+        "type": "Symbol",
+        "default": "`:default`",
+        "description": "One of `:default` or `:emphasis`. Use `:emphasis` on emphasis-coloured backgrounds."
+      },
+      {
+        "name": "size",
+        "type": "Symbol",
+        "default": "`:medium`",
+        "description": "One of `:medium` or `:small`."
+      },
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "[System arguments](/system-arguments)"
+      }
+    ]
+  },
+  {
     "component": "OpenProject::PageHeader",
     "status": "open_project",
     "a11y_reviewed": false,

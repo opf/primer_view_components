@@ -958,7 +958,7 @@
           },
           {
             "name": "trailing_visual",
-            "description": "An icon, label, counter, or text to render to the right of the label.\n\nTo render an icon, call the `with_leading_visual_icon` method, which accepts the arguments accepted by {{#link_to_component}}Primer::Beta::Octicon{{/link_to_component}}.\n\nTo render a label, call the `with_leading_visual_label` method, which accepts the arguments accepted by {{#link_to_component}}Primer::Beta::Label{{/link_to_component}}.\n\nTo render a counter, call the `with_leading_visual_counter` method, which accepts the arguments accepted by {{#link_to_component}}Primer::Beta::Counter{{/link_to_component}}.\n\nTo render text, call the `with_leading_visual_text` method and pass a block that returns a string. Eg:\n```ruby\nwith_leading_visual_text { \"Text here\" }\n```",
+            "description": "An icon, label, counter, or text to render to the right of the label.\n\nTo render an icon, call the `with_leading_visual_icon` method, which accepts the arguments accepted by {{#link_to_component}}Primer::Beta::Octicon{{/link_to_component}}.\n\nTo render a label, call the `with_leading_visual_label` method, which accepts the arguments accepted by {{#link_to_component}}Primer::Beta::Label{{/link_to_component}}.\n\nTo render a counter, call the `with_leading_visual_counter` method, which accepts the arguments accepted by {{#link_to_component}}Primer::Beta::Counter{{/link_to_component}}.\n\nTo render text, call the `with_leading_visual_text` method and pass a block that returns a string. Eg:\n```ruby\nwith_leading_visual_text { \"Text here\" }\n```\n\nTo render a keyboard shortcut hint, call the `with_trailing_visual_keybinding_hint` method, e.g. `with_trailing_visual_keybinding_hint(keys: \"Mod+Enter\")`. It accepts the arguments accepted by {{#link_to_component}}Primer::OpenProject::KeybindingHint{{/link_to_component}}.",
             "parameters": []
           },
           {
@@ -2245,7 +2245,7 @@
           },
           {
             "name": "trailing_visual",
-            "description": "An icon, label, counter, or text to render to the right of the label.\n\nTo render an icon, call the `with_leading_visual_icon` method, which accepts the arguments accepted by {{#link_to_component}}Primer::Beta::Octicon{{/link_to_component}}.\n\nTo render a label, call the `with_leading_visual_label` method, which accepts the arguments accepted by {{#link_to_component}}Primer::Beta::Label{{/link_to_component}}.\n\nTo render a counter, call the `with_leading_visual_counter` method, which accepts the arguments accepted by {{#link_to_component}}Primer::Beta::Counter{{/link_to_component}}.\n\nTo render text, call the `with_leading_visual_text` method and pass a block that returns a string. Eg:\n```ruby\nwith_leading_visual_text { \"Text here\" }\n```",
+            "description": "An icon, label, counter, or text to render to the right of the label.\n\nTo render an icon, call the `with_leading_visual_icon` method, which accepts the arguments accepted by {{#link_to_component}}Primer::Beta::Octicon{{/link_to_component}}.\n\nTo render a label, call the `with_leading_visual_label` method, which accepts the arguments accepted by {{#link_to_component}}Primer::Beta::Label{{/link_to_component}}.\n\nTo render a counter, call the `with_leading_visual_counter` method, which accepts the arguments accepted by {{#link_to_component}}Primer::Beta::Counter{{/link_to_component}}.\n\nTo render text, call the `with_leading_visual_text` method and pass a block that returns a string. Eg:\n```ruby\nwith_leading_visual_text { \"Text here\" }\n```\n\nTo render a keyboard shortcut hint, call the `with_trailing_visual_keybinding_hint` method, e.g. `with_trailing_visual_keybinding_hint(keys: \"Mod+Enter\")`. It accepts the arguments accepted by {{#link_to_component}}Primer::OpenProject::KeybindingHint{{/link_to_component}}.",
             "parameters": []
           },
           {
@@ -6037,7 +6037,7 @@
           },
           {
             "name": "trailing_visual",
-            "description": "An icon, label, counter, or text to render to the right of the label.\n\nTo render an icon, call the `with_leading_visual_icon` method, which accepts the arguments accepted by {{#link_to_component}}Primer::Beta::Octicon{{/link_to_component}}.\n\nTo render a label, call the `with_leading_visual_label` method, which accepts the arguments accepted by {{#link_to_component}}Primer::Beta::Label{{/link_to_component}}.\n\nTo render a counter, call the `with_leading_visual_counter` method, which accepts the arguments accepted by {{#link_to_component}}Primer::Beta::Counter{{/link_to_component}}.\n\nTo render text, call the `with_leading_visual_text` method and pass a block that returns a string. Eg:\n```ruby\nwith_leading_visual_text { \"Text here\" }\n```",
+            "description": "An icon, label, counter, or text to render to the right of the label.\n\nTo render an icon, call the `with_leading_visual_icon` method, which accepts the arguments accepted by {{#link_to_component}}Primer::Beta::Octicon{{/link_to_component}}.\n\nTo render a label, call the `with_leading_visual_label` method, which accepts the arguments accepted by {{#link_to_component}}Primer::Beta::Label{{/link_to_component}}.\n\nTo render a counter, call the `with_leading_visual_counter` method, which accepts the arguments accepted by {{#link_to_component}}Primer::Beta::Counter{{/link_to_component}}.\n\nTo render text, call the `with_leading_visual_text` method and pass a block that returns a string. Eg:\n```ruby\nwith_leading_visual_text { \"Text here\" }\n```\n\nTo render a keyboard shortcut hint, call the `with_trailing_visual_keybinding_hint` method, e.g. `with_trailing_visual_keybinding_hint(keys: \"Mod+Enter\")`. It accepts the arguments accepted by {{#link_to_component}}Primer::OpenProject::KeybindingHint{{/link_to_component}}.",
             "parameters": []
           },
           {
@@ -14077,7 +14077,7 @@
       },
       {
         "name": "trailing_visual",
-        "description": "Trailing visuals appear to the right of the button text.\n\nUse:\n\n- `trailing_visual_counter` for a {{#link_to_component}}Primer::Beta::Counter{{/link_to_component}}.",
+        "description": "Trailing visuals appear to the right of the button text.\n\nUse:\n\n- `trailing_visual_counter` for a {{#link_to_component}}Primer::Beta::Counter{{/link_to_component}}.\n- `trailing_visual_keybinding_hint` for a {{#link_to_component}}Primer::OpenProject::KeybindingHint{{/link_to_component}}.\n  The hint follows the button's size unless `size:` is given.",
         "parameters": [
           {
             "name": "system_arguments",
@@ -14800,7 +14800,7 @@
       },
       {
         "name": "trailing_visual",
-        "description": "Trailing visuals appear to the right of the button text.\n\nUse:\n\n- `trailing_visual_counter` for a {{#link_to_component}}Primer::Beta::Counter{{/link_to_component}}.",
+        "description": "Trailing visuals appear to the right of the button text.\n\nUse:\n\n- `trailing_visual_counter` for a {{#link_to_component}}Primer::Beta::Counter{{/link_to_component}}.\n- `trailing_visual_keybinding_hint` for a {{#link_to_component}}Primer::OpenProject::KeybindingHint{{/link_to_component}}.\n  The hint follows the button's size unless `size:` is given.",
         "parameters": [
           {
             "name": "system_arguments",
@@ -16788,7 +16788,7 @@
           },
           {
             "name": "trailing_visual",
-            "description": "An icon, label, counter, or text to render to the right of the label.\n\nTo render an icon, call the `with_leading_visual_icon` method, which accepts the arguments accepted by {{#link_to_component}}Primer::Beta::Octicon{{/link_to_component}}.\n\nTo render a label, call the `with_leading_visual_label` method, which accepts the arguments accepted by {{#link_to_component}}Primer::Beta::Label{{/link_to_component}}.\n\nTo render a counter, call the `with_leading_visual_counter` method, which accepts the arguments accepted by {{#link_to_component}}Primer::Beta::Counter{{/link_to_component}}.\n\nTo render text, call the `with_leading_visual_text` method and pass a block that returns a string. Eg:\n```ruby\nwith_leading_visual_text { \"Text here\" }\n```",
+            "description": "An icon, label, counter, or text to render to the right of the label.\n\nTo render an icon, call the `with_leading_visual_icon` method, which accepts the arguments accepted by {{#link_to_component}}Primer::Beta::Octicon{{/link_to_component}}.\n\nTo render a label, call the `with_leading_visual_label` method, which accepts the arguments accepted by {{#link_to_component}}Primer::Beta::Label{{/link_to_component}}.\n\nTo render a counter, call the `with_leading_visual_counter` method, which accepts the arguments accepted by {{#link_to_component}}Primer::Beta::Counter{{/link_to_component}}.\n\nTo render text, call the `with_leading_visual_text` method and pass a block that returns a string. Eg:\n```ruby\nwith_leading_visual_text { \"Text here\" }\n```\n\nTo render a keyboard shortcut hint, call the `with_trailing_visual_keybinding_hint` method, e.g. `with_trailing_visual_keybinding_hint(keys: \"Mod+Enter\")`. It accepts the arguments accepted by {{#link_to_component}}Primer::OpenProject::KeybindingHint{{/link_to_component}}.",
             "parameters": []
           },
           {
@@ -21212,6 +21212,194 @@
       {
         "preview_path": "primer/open_project/input_group/with_error_message",
         "name": "with_error_message",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      }
+    ],
+    "subcomponents": []
+  },
+  {
+    "fully_qualified_name": "Primer::OpenProject::KeybindingHint",
+    "description": "Displays a keyboard shortcut as a visible, screen-reader-friendly hint.\nPort of Primer React's `KeybindingHint`.\n\nThe server renders a plain-text fallback inside the styled chord box.\nThe `<keybinding-hint>` custom element replaces it with platform-specific\nglyphs (for example ⌘ on Apple platforms, ⌃ elsewhere) and visually hidden\naccessible key names (\"command\", \"shift\", …). Accessible names are English\nonly in this iteration.\n\n## Key syntax\n\nUse the key names `KeyboardEvent.key` reports (\"Control\", \"Shift\",\n\"ArrowUp\", \"a\", …), matching the github/hotkey format:\n\n- Join keys with `+` to form a chord pressed together: `\"Mod+Shift+p\"`.\n- Join chords with a space to form a sequence pressed one after the\n  other: `\"g i\"` (g, then i).\n- Use `Plus` for the `+` key and `Space` for the space bar.\n- `Mod` means Command on Apple platforms and Control everywhere else.\n\nComma-separated alternatives (`\"s,/\"`) are not supported. The component only\ndisplays hints; it does not register the shortcut.\n\n## Terminology\n\nPrimer React's `variant` is `scheme:` here (`normal` → `:default`,\n`onEmphasis` → `:emphasis`) and its `size=\"normal\"` is `size: :medium`.",
+    "accessibility_docs": null,
+    "is_form_component": false,
+    "is_published": true,
+    "requires_js": false,
+    "component": "OpenProject::KeybindingHint",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectKeybindingHint",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/keybinding_hint.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/keybinding_hint/default/",
+    "parameters": [
+      {
+        "name": "keys",
+        "type": "String",
+        "default": "N/A",
+        "description": "The keys of the shortcut, e.g. `\"Mod+Shift+p\"` or `\"g i\"`. See the class documentation for the syntax."
+      },
+      {
+        "name": "format",
+        "type": "Symbol",
+        "default": "`:condensed`",
+        "description": "One of `:condensed` or `:full`. `:condensed` shows symbols (⌘⇧P) and suits menus and buttons; `:full` spells keys out (Command + Shift + P) and suits prose."
+      },
+      {
+        "name": "scheme",
+        "type": "Symbol",
+        "default": "`:default`",
+        "description": "One of `:default` or `:emphasis`. Use `:emphasis` on emphasis-coloured backgrounds."
+      },
+      {
+        "name": "size",
+        "type": "Symbol",
+        "default": "`:medium`",
+        "description": "One of `:medium` or `:small`."
+      },
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "{{link_to_system_arguments_docs}}"
+      }
+    ],
+    "slots": [],
+    "methods": [
+      {
+        "name": "fallback_chords",
+        "description": "Readable degraded output for no-JS and the pre-upgrade frame. Not a\nkey table: only `Mod` is translated; other keys keep their spelling\nwith the first letter upcased, so `ArrowUp` stays `ArrowUp` and `p`\nbecomes `P`.",
+        "parameters": [],
+        "return_types": []
+      }
+    ],
+    "previews": [
+      {
+        "preview_path": "primer/open_project/keybinding_hint/default",
+        "name": "default",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/keybinding_hint/playground",
+        "name": "playground",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/keybinding_hint/full_format",
+        "name": "full_format",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/keybinding_hint/sequence",
+        "name": "sequence",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/keybinding_hint/sizes",
+        "name": "sizes",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/keybinding_hint/schemes",
+        "name": "schemes",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/keybinding_hint/platforms",
+        "name": "platforms",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/keybinding_hint/prose",
+        "name": "prose",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/keybinding_hint/in_button",
+        "name": "in_button",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/keybinding_hint/in_action_list",
+        "name": "in_action_list",
         "snapshot": "true",
         "skip_rules": {
           "wont_fix": [

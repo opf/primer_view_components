@@ -1892,6 +1892,32 @@
       "xxlarge"
     ]
   },
+  "Primer::OpenProject::KeybindingHint": {
+    "DEFAULT_FORMAT": "condensed",
+    "DEFAULT_SCHEME": "default",
+    "DEFAULT_SIZE": "medium",
+    "FORMAT_OPTIONS": [
+      "condensed",
+      "full"
+    ],
+    "GeneratedSlotMethods": "Primer::OpenProject::KeybindingHint::GeneratedSlotMethods",
+    "SCHEME_MAPPINGS": {
+      "default": "",
+      "emphasis": "KeybindingHint-chord--emphasis"
+    },
+    "SCHEME_OPTIONS": [
+      "default",
+      "emphasis"
+    ],
+    "SIZE_MAPPINGS": {
+      "medium": "",
+      "small": "KeybindingHint-chord--small"
+    },
+    "SIZE_OPTIONS": [
+      "medium",
+      "small"
+    ]
+  },
   "Primer::OpenProject::PageHeader": {
     "BACK_BUTTON_ICON_OPTIONS": [
       "arrow-left",

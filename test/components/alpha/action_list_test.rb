@@ -279,6 +279,17 @@ module Primer
 
         assert_match(%r{lists/menus that act as form inputs must also allow item selection}, error.message)
       end
+
+      def test_item_with_trailing_visual_keybinding_hint
+        render_inline(Primer::Alpha::ActionList.new(aria: { label: "Actions" })) do |list|
+          list.with_item(label: "Save") do |item|
+            item.with_trailing_visual_keybinding_hint(keys: "Mod+s")
+          end
+        end
+
+        assert_selector(".ActionListItem-visual--trailing keybinding-hint[data-keys='Mod+s'][data-size='medium'][data-scheme='default']")
+        assert_selector(".ActionListItem-visual--trailing .KeybindingHint-chord[data-kbd-chord]", text: "Ctrl+S")
+      end
     end
   end
 end

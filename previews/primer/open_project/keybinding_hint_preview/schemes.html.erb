@@ -1,0 +1,6 @@
+<%= render(Primer::Box.new(display: :flex, style: "gap: var(--base-size-16); align-items: center")) do %>
+  <%= render(Primer::OpenProject::KeybindingHint.new(keys: "Mod+Shift+p", scheme: :default, data: { platform: "other" })) %>
+  <%= render(Primer::Box.new(p: 2, style: "background: var(--bgColor-emphasis); color: var(--fgColor-onEmphasis); border-radius: var(--borderRadius-medium)")) do %>
+    <%= render(Primer::OpenProject::KeybindingHint.new(keys: "Mod+Shift+p", scheme: :emphasis, data: { platform: "other" })) %>
+  <% end %>
+<% end %>
