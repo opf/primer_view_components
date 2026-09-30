@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 0.92.0
+
+### Minor Changes
+
+- [#530](https://github.com/opf/primer_view_components/pull/530) [`4e25d0e`](https://github.com/opf/primer_view_components/commit/4e25d0e688a4b4e0e23712f5681f75da50be6c39) Thanks [@lwassermann](https://github.com/lwassermann)! - Remove the `collapsed_search` argument from `Primer::OpenProject::SubHeader`.
+  The search bar now collapses automatically when empty and a `quick_filter` or
+  `filter_button` slot is used. Or in mobile views (md and below).
+
 ## 0.91.4
 
 ### Patch Changes
