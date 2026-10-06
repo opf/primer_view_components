@@ -93,7 +93,10 @@ module Primer
       # @!endgroup
 
       # @label In a form
-      def in_form; end
+      # @param value text
+      def in_form(value: "#1A67A3")
+        render_with_template(locals: { value: value })
+      end
 
       # @label Multiple fields
       def multiple; end
