@@ -24,7 +24,7 @@ module Primer
         placeholder: "#1A67A3",
         caption: nil,
         size: :medium,
-        input_width: :medium,
+        input_width: :small,
         full_width: true,
         visually_hide_label: false,
         required: false,
@@ -55,7 +55,7 @@ module Primer
       # @label Default
       # @snapshot
       def default
-        render(Primer::OpenProject::ColorField.new(name: "color", id: "color", label: "Primary color", value: "#1A67A3"))
+        render(Primer::OpenProject::ColorField.new(name: "color", id: "color", label: "Primary color", input_width: :small, value: "#1A67A3"))
       end
 
       # @!group States
@@ -63,31 +63,31 @@ module Primer
       # @label Blank with placeholder
       # @snapshot
       def blank_with_placeholder
-        render(Primer::OpenProject::ColorField.new(name: "color", id: "color", label: "Primary color", placeholder: "#1A67A3"))
+        render(Primer::OpenProject::ColorField.new(name: "color", id: "color", label: "Primary color", input_width: :small, placeholder: "#1A67A3"))
       end
 
       # @label Blank without placeholder
       # @snapshot
       def blank_without_placeholder
-        render(Primer::OpenProject::ColorField.new(name: "color", id: "color", label: "Primary color"))
+        render(Primer::OpenProject::ColorField.new(name: "color", id: "color", label: "Primary color", input_width: :small))
       end
 
       # @label Disabled
       # @snapshot
       def disabled
-        render(Primer::OpenProject::ColorField.new(name: "color", id: "color", label: "Primary color", value: "#1A67A3", disabled: true))
+        render(Primer::OpenProject::ColorField.new(name: "color", id: "color", label: "Primary color", input_width: :small, value: "#1A67A3", disabled: true))
       end
 
       # @label Read-only
       # @snapshot
       def readonly
-        render(Primer::OpenProject::ColorField.new(name: "color", id: "color", label: "Primary color", value: "#1A67A3", readonly: true))
+        render(Primer::OpenProject::ColorField.new(name: "color", id: "color", label: "Primary color", input_width: :small, value: "#1A67A3", readonly: true))
       end
 
       # @label Invalid
       # @snapshot
       def invalid
-        render(Primer::OpenProject::ColorField.new(name: "color", id: "color", label: "Primary color", value: "zzz", validation_message: "Hex code is invalid"))
+        render(Primer::OpenProject::ColorField.new(name: "color", id: "color", label: "Primary color", input_width: :small, value: "zzz", validation_message: "Hex code is invalid"))
       end
       #
       # @!endgroup

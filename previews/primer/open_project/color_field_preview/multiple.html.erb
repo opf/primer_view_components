@@ -1,4 +1,4 @@
 <%= render(Primer::Alpha::Stack.new) do %>
-  <%= render(Primer::OpenProject::ColorField.new(name: "primary", id: "primary", label: "Primary color", value: "#1A67A3")) %>
-  <%= render(Primer::OpenProject::ColorField.new(name: "accent", id: "accent", label: "Accent color", value: "#35C53F")) %>
+  <%= render(Primer::OpenProject::ColorField.new(name: "primary", id: "primary", label: "Primary color", value: "#1A67A3", input_width: :small)) %>
+  <%= render(Primer::OpenProject::ColorField.new(name: "accent", id: "accent", label: "Accent color", value: "#35C53F", input_width: :small)) %>
 <% end %>
