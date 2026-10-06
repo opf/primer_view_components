@@ -1,0 +1,62 @@
+.ColorField {
+  display: block;
+
+  & .ColorField-wrap .FormControl-input {
+    padding-inline-start: calc(var(--base-size-4) + var(--base-size-24) + var(--base-size-8));
+  }
+
+  & .ColorField-swatch {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: var(--base-size-4);
+    display: flex;
+    align-items: center;
+  }
+
+  & .ColorField-picker {
+    box-sizing: border-box;
+    width: var(--base-size-24);
+    height: var(--base-size-24);
+    padding: 0;
+    cursor: pointer;
+    background-color: var(--bgColor-muted);
+    border: var(--borderWidth-thin) solid var(--borderColor-default);
+    border-radius: var(--borderRadius-small);
+    appearance: none;
+    forced-color-adjust: none;
+
+    &:disabled {
+      cursor: default;
+    }
+
+    &::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    &::-webkit-color-swatch {
+      border: 0;
+      border-radius: var(--borderRadius-small);
+    }
+
+    &::-moz-color-swatch {
+      border: 0;
+      border-radius: var(--borderRadius-small);
+    }
+  }
+
+  &[data-blank] .ColorField-picker {
+    border-style: dashed;
+  }
+
+  &[data-empty] .ColorField-picker::-webkit-color-swatch {
+    opacity: 0;
+  }
+
+  &[data-empty] .ColorField-picker::-moz-color-swatch {
+    opacity: 0;
+  }
+
+  &:not(:defined) .ColorField-picker:disabled {
+    opacity: 1;
+  }
+}
