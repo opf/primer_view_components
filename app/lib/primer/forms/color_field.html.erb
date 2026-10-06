@@ -1,0 +1,10 @@
+<%= render(FormControl.new(input: @input)) do %>
+  <%= content_tag(:"primer-color-input", **@element_arguments) do %>
+    <%= content_tag(:div, **@field_wrap_arguments) do %>
+      <%= builder.text_field(@input.name, **@input.input_arguments) %>
+      <span class="ColorField-swatch">
+        <%= picker_tag %>
+      </span>
+    <% end %>
+  <% end %>
+<% end %>
