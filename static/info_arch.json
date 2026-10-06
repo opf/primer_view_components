@@ -19765,6 +19765,301 @@
     "subcomponents": []
   },
   {
+    "fully_qualified_name": "Primer::OpenProject::ColorField",
+    "description": "Color fields are single-line text inputs for hex color codes, paired with a native color\npicker that doubles as a swatch. They render an `<input type=\"text\">`, which is submitted,\nand an unnamed `<input type=\"color\">`, which is not. The field can therefore be left blank.\n\nTyped text is previewed in the swatch as soon as it is a valid three- or six-digit hex code\nand is rewritten to uppercase `#RRGGBB` when the field loses focus. Invalid text is left\nalone; validate it on the server.\n\nSpace color fields through their container, such as a form group or a stack. As with text\nfields, system arguments are applied to the text input itself, so a margin passed to the\nfield moves the input away from its swatch.",
+    "accessibility_docs": null,
+    "is_form_component": true,
+    "is_published": true,
+    "requires_js": true,
+    "component": "OpenProject::ColorField",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectColorField",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/color_field.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/color_field/default/",
+    "parameters": [
+      {
+        "name": "size",
+        "type": "Symbol",
+        "default": "N/A",
+        "description": "The size of the field. One of `:large`, `:medium`, or `:small`."
+      },
+      {
+        "name": "full_width",
+        "type": "Boolean",
+        "default": "N/A",
+        "description": "When set to `true`, the field will take up all the horizontal space allowed by its container. Defaults to `true`."
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "default": "N/A",
+        "description": "Value for the HTML name attribute."
+      },
+      {
+        "name": "id",
+        "type": "String",
+        "default": "N/A",
+        "description": "Value for the HTML id attribute."
+      },
+      {
+        "name": "class",
+        "type": "String",
+        "default": "N/A",
+        "description": "CSS classes to include in the input's HTML `class` attribute. Exists for compatibility with Rails form builders."
+      },
+      {
+        "name": "classes",
+        "type": "Array",
+        "default": "N/A",
+        "description": "CSS classes to include in the input's HTML `class` attribute. Combined with the `:class` argument. The list may contain strings, hashes, or `nil` values, and is automatically cleaned up by Primer's [`class_name` helper](https://github.com/primer/view_components/blob/c9cb95c98fee3e2e27f4a10683f555e22285e7f1/app/lib/primer/class_name_helper.rb) (`nils`, falsy entries, and blank strings are ignored)."
+      },
+      {
+        "name": "caption",
+        "type": "String",
+        "default": "N/A",
+        "description": "A string describing the field and what sorts of input it expects. Displayed below the input."
+      },
+      {
+        "name": "label",
+        "type": "String",
+        "default": "N/A",
+        "description": "Label text displayed above the input."
+      },
+      {
+        "name": "visually_hide_label",
+        "type": "Boolean",
+        "default": "N/A",
+        "description": "When set to `true`, hides the label. Although the label will be hidden visually, it will still be visible to screen readers."
+      },
+      {
+        "name": "disabled",
+        "type": "Boolean",
+        "default": "N/A",
+        "description": "When set to `true`, the input will not accept keyboard or mouse input."
+      },
+      {
+        "name": "hidden",
+        "type": "Boolean",
+        "default": "N/A",
+        "description": "When set to `true`, visually hides the field."
+      },
+      {
+        "name": "invalid",
+        "type": "Boolean",
+        "default": "N/A",
+        "description": "If set to `true`, the input will be rendered with a red border. Implied if `validation_message` is truthy. This option is set to `true` automatically if the model object associated with the form reports that the input is invalid via Rails validations. It is provided for cases where the form does not have an associated model. If the input is invalid as determined by Rails validations, setting `invalid` to `false` will have no effect."
+      },
+      {
+        "name": "validation_message",
+        "type": "String",
+        "default": "N/A",
+        "description": "A string displayed between the caption and the input indicating the input's contents are invalid. This option is, by default, set to the first Rails validation message for the input (assuming the form is associated with a model object). Use `validation_message` to override the default or to provide a validation message in case there is no associated model object."
+      },
+      {
+        "name": "label_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "Attributes that will be passed to Rails' `builder.label` method. These can be HTML attributes or any of the other label options Rails supports. They will appear as HTML attributes on the `<label>` tag."
+      },
+      {
+        "name": "scope_name_to_model",
+        "type": "Boolean",
+        "default": "N/A",
+        "description": "Default `true`. When set to `false`, prevents the model name from prefixing the field name. For example, if the field name is `my_field`, Rails will normally emit an HTML name attribute of `model[my_field]`. Setting `scope_name_to_model` to `false` will cause Rails to emit `my_field` instead."
+      },
+      {
+        "name": "scope_id_to_model",
+        "type": "Boolean",
+        "default": "N/A",
+        "description": "Default `true`. When set to `false`, prevents the model name from prefixing the field ID. For example, if the field name is `my_field`, Rails will normally emit an HTML ID attribute of `model_my_field`. Setting `scope_id_to_model` to `false` will cause Rails to emit `my_field` instead."
+      },
+      {
+        "name": "required",
+        "type": "Boolean",
+        "default": "N/A",
+        "description": "Default `false`. When set to `true`, causes an asterisk (*) to appear next to the field's label indicating it is a required field. Note that this option explicitly does _not_ add a `required` HTML attribute. Doing so would enable native browser validations, which are inaccessible and inconsistent with the Primer design system."
+      },
+      {
+        "name": "aria",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "Key/value pairs that represent Aria attributes and their values. Eg. `aria: { current: true }` becomes `aria-current=\"true\"`."
+      },
+      {
+        "name": "data",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "Key/value pairs that represent data attributes and their values. Eg. `data: { foo: \"bar\" }` becomes `data-foo=\"bar\"`."
+      },
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "A hash of attributes passed to the underlying Rails builder methods. These options may mean something special depending on the type of input, otherwise they are emitted as HTML attributes. See the [Rails documentation](https://guides.rubyonrails.org/form_helpers.html) for more information. In addition, the usual Primer utility arguments are accepted in system arguments. For example, passing `mt: 2` will add the `mt-2` class to the input. See the Primer system arguments docs for details."
+      },
+      {
+        "name": "input_width",
+        "type": "Symbol",
+        "default": "N/A",
+        "description": "The width of the field. One of `:auto`, `:large`, `:medium`, `:small`, `:xlarge`, `:xsmall`, or `:xxlarge`."
+      },
+      {
+        "name": "maxlength",
+        "type": "Integer",
+        "default": "N/A",
+        "description": "Maximum number of characters the text input accepts. Defaults to 7, the length of `#RRGGBB`."
+      },
+      {
+        "name": "placeholder",
+        "type": "String",
+        "default": "N/A",
+        "description": "Placeholder text. While the field is blank and the placeholder is a hex color, the swatch previews it."
+      },
+      {
+        "name": "picker_label",
+        "type": "String",
+        "default": "N/A",
+        "description": "Accessible name of the native color picker. Defaults to `I18n.t(\"color_field.picker_label\", label: label)`, or to `I18n.t(\"color_field.picker_label_generic\")` when there is no label."
+      }
+    ],
+    "slots": [],
+    "methods": [],
+    "previews": [
+      {
+        "preview_path": "primer/open_project/color_field/playground",
+        "name": "playground",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/color_field/default",
+        "name": "default",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/color_field/blank_with_placeholder",
+        "name": "blank_with_placeholder",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/color_field/blank_without_placeholder",
+        "name": "blank_without_placeholder",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/color_field/disabled",
+        "name": "disabled",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/color_field/readonly",
+        "name": "readonly",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/color_field/invalid",
+        "name": "invalid",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/color_field/in_form",
+        "name": "in_form",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/color_field/multiple",
+        "name": "multiple",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/color_field/in_multi",
+        "name": "in_multi",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      }
+    ],
+    "subcomponents": []
+  },
+  {
     "fully_qualified_name": "Primer::OpenProject::DangerDialog",
     "description": "A pre-configured dialog for destructive/\"potentially dangerous\" actions",
     "accessibility_docs": null,

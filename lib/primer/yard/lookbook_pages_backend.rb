@@ -17,7 +17,8 @@ module Primer
         Primer::Alpha::CheckBox => [:check_box_with_nested_form],
         Primer::Alpha::CheckBoxGroup => [:check_box_group_form],
         Primer::Alpha::SubmitButton => [:submit_button_form],
-        Primer::Alpha::FormButton => [:submit_button_form]
+        Primer::Alpha::FormButton => [:submit_button_form],
+        Primer::OpenProject::ColorField => []
       }.freeze
 
       attr_reader :component_ref, :backend, :docs
