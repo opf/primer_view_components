@@ -1,0 +1,4 @@
+- text: Primary color
+- textbox "Primary color": zzz
+- textbox "Pick color for Primary color": "#000000"
+- text: Hex code is invalid
