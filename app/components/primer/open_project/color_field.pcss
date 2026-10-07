@@ -14,19 +14,27 @@
   }
 
   & .ColorField-picker {
-    box-sizing: border-box;
     width: var(--base-size-24);
     height: var(--base-size-24);
     padding: 0;
     cursor: pointer;
     background-color: var(--bgColor-muted);
-    border: var(--borderWidth-thin) solid var(--borderColor-default);
+    border: 0;
     border-radius: var(--borderRadius-small);
+
+    /* An outline, not a border: it is painted over the native swatch, so
+       the color fills the whole box and the border sits on top of it. */
+    outline: var(--borderWidth-thin) solid var(--borderColor-translucent);
+    outline-offset: calc(var(--borderWidth-thin) * -1);
     appearance: none;
     forced-color-adjust: none;
 
     &:disabled {
       cursor: default;
+    }
+
+    &:focus-visible {
+      @mixin focusOutline;
     }
 
     &::-webkit-color-swatch-wrapper {
@@ -45,7 +53,7 @@
   }
 
   &[data-blank] .ColorField-picker {
-    border-style: dashed;
+    outline-style: dashed;
   }
 
   &[data-empty] .ColorField-picker::-webkit-color-swatch {
