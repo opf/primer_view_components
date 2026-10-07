@@ -18,7 +18,7 @@ class PrimerOpenProjectColorFieldTest < Minitest::Test
   def test_renders_blank_with_placeholder
     render_inline(Primer::OpenProject::ColorField.new(name: :hexcode, label: "Primary", placeholder: "#1A67A3"))
 
-    assert_selector("primer-color-input[data-blank]:not([data-empty])")
+    assert_selector("primer-color-input[data-blank][data-empty]")
     assert_selector("input[type=text][placeholder='#1A67A3']:not([value])")
   end
 end

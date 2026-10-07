@@ -75,7 +75,7 @@ export class PrimerColorInputElement extends HTMLElement {
   syncPicker(): void {
     const text = this.inputElement.value.trim()
     const blank = text === ''
-    const color = parseHex(blank ? this.inputElement.placeholder : text)
+    const color = blank ? null : parseHex(text)
 
     this.blank = blank
 

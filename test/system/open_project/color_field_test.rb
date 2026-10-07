@@ -233,9 +233,8 @@ class IntegrationOpenProjectColorFieldTest < System::TestCase
   def test_blank_with_placeholder_on_first_paint
     visit_color_field(:blank_with_placeholder)
 
-    assert_selector "primer-color-input[data-blank]:not([data-empty])"
+    assert_selector "primer-color-input[data-blank][data-empty]"
     assert_equal "", text_input.value
-    assert_equal "#1a67a3", picker_value
   end
 
   def test_blank_without_placeholder_on_first_paint

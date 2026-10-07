@@ -57,12 +57,13 @@ module Primer
           current_value.to_s.strip.empty?
         end
 
-        # The color the native picker starts with: the current value, or the
-        # placeholder while the field is blank. `nil` if neither is a hex color.
+        # The color the native picker starts with: the current value, or `nil`
+        # if the field is blank or its value is not a hex color. A placeholder
+        # is never previewed.
         def picker_value
           return @picker_value if defined?(@picker_value)
 
-          @picker_value = self.class.parse_hex(blank? ? input_arguments[:placeholder] : current_value)
+          @picker_value = blank? ? nil : self.class.parse_hex(current_value)
         end
 
         # Whether there is no color to show in the swatch at all.

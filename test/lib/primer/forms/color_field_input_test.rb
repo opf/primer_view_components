@@ -76,10 +76,10 @@ class Primer::Forms::ColorFieldInputTest < Minitest::Test
     assert_selector "input[type=color][value='#11AA66']"
   end
 
-  def test_picker_value_from_placeholder_when_blank
+  def test_picker_value_omitted_when_blank_with_placeholder
     render_color_field(placeholder: "#1a67a3")
 
-    assert_selector "input[type=color][value='#1A67A3']"
+    assert_selector "input[type=color]:not([value])"
   end
 
   def test_picker_value_omitted_without_any_color
@@ -97,7 +97,7 @@ class Primer::Forms::ColorFieldInputTest < Minitest::Test
   def test_state_blank_with_placeholder
     render_color_field(placeholder: "#1A67A3")
 
-    assert_selector "primer-color-input[data-blank]:not([data-empty])"
+    assert_selector "primer-color-input[data-blank][data-empty]"
   end
 
   def test_state_blank_without_placeholder

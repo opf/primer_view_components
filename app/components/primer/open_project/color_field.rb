@@ -33,7 +33,7 @@ module Primer
       # @macro form_input_width_arguments
       #
       # @param maxlength [Integer] Maximum number of characters the text input accepts. Defaults to 7, the length of `#RRGGBB`.
-      # @param placeholder [String] Placeholder text. While the field is blank and the placeholder is a hex color, the swatch previews it.
+      # @param placeholder [String] Placeholder text. It is not previewed in the swatch, which stays empty while the field is blank.
       # @param picker_label [String] Accessible name of the native color picker. Defaults to `I18n.t("color_field.picker_label", label: label)`, or to `I18n.t("color_field.picker_label_generic")` when there is no label.
     end
   end

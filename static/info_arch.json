@@ -19914,7 +19914,7 @@
         "name": "placeholder",
         "type": "String",
         "default": "N/A",
-        "description": "Placeholder text. While the field is blank and the placeholder is a hex color, the swatch previews it."
+        "description": "Placeholder text. It is not previewed in the swatch, which stays empty while the field is blank."
       },
       {
         "name": "picker_label",
