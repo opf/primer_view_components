@@ -43,22 +43,12 @@ export class PrimerColorInputElement extends HTMLElement {
 
     // The form is outside this element's subtree, so data-action cannot
     // reach it. Reset restores the text value after the event, hence the tick.
-    this.inputElement.form?.addEventListener('reset', event => setTimeout(() => this.resync(event)), {signal})
+    this.inputElement.form?.addEventListener('reset', () => setTimeout(() => this.sync()), {signal})
   }
 
   disconnectedCallback(): void {
     this.#abortController?.abort()
     this.#observer?.disconnect()
-  }
-
-  // Text → picker after a form reset, unless a later listener cancelled it.
-  // A reset also returns the picker to its initial color, so restored text
-  // that does not parse has no last color left to keep.
-  private resync(reset: Event): void {
-    if (reset.defaultPrevented) return
-
-    this.empty = true
-    this.sync()
   }
 
   // The picker is operable only while its value can reach the submitted text
@@ -71,21 +61,17 @@ export class PrimerColorInputElement extends HTMLElement {
     if (this.pickerElement.disabled !== disabled) this.pickerElement.disabled = disabled
   }
 
-  // Text → picker. Bound to `input` on the text input.
+  // Text → picker. Bound to `input` on the text input, so the swatch follows
+  // every keystroke: text that is not a whole color yet shows none. The
+  // picker itself has no empty value and keeps the last color to open on.
   syncPicker(): void {
     const text = this.inputElement.value.trim()
-    const blank = text === ''
-    const color = blank ? null : parseHex(text)
+    const color = parseHex(text)
 
-    this.blank = blank
+    this.blank = text === ''
+    this.empty = color === null
 
-    if (color) {
-      this.pickerElement.value = color.toLowerCase()
-      this.empty = false
-    } else if (blank) {
-      this.empty = true
-    }
-    // Text that does not parse keeps the last color, and the last `empty`.
+    if (color) this.pickerElement.value = color.toLowerCase()
   }
 
   // Bound to `change` on the text input.

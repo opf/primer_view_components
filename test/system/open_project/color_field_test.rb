@@ -187,7 +187,28 @@ class IntegrationOpenProjectColorFieldTest < System::TestCase
     assert_equal "#1a67a3", picker_value
   end
 
-  def test_invalid_text_keeps_last_color_and_is_left_alone
+  # The swatch follows the text on every keystroke, so text that is not a
+  # whole color yet shows none, where the last one would be stale.
+  def test_swatch_follows_the_text_on_every_keystroke
+    visit_color_field(:blank_without_placeholder)
+
+    text_input.click
+    text_input.send_keys("#1a")
+    assert_selector "primer-color-input[data-empty]:not([data-blank])"
+
+    text_input.send_keys("6")
+    assert_selector "primer-color-input:not([data-empty])"
+    assert_equal "#11aa66", picker_value
+
+    text_input.send_keys("7")
+    assert_selector "primer-color-input[data-empty]:not([data-blank])"
+
+    text_input.send_keys("a3")
+    assert_selector "primer-color-input:not([data-empty])"
+    assert_equal "#1a67a3", picker_value
+  end
+
+  def test_invalid_text_empties_the_swatch_and_is_left_alone
     visit_color_field(:blank_without_placeholder)
 
     text_input.click
@@ -197,8 +218,7 @@ class IntegrationOpenProjectColorFieldTest < System::TestCase
     # Typed for real, so that leaving the field fires a genuine change event.
     text_input.send_keys(:backspace, "z")
 
-    assert_equal "#00ff00", picker_value
-    assert_selector "primer-color-input:not([data-blank]):not([data-empty])"
+    assert_selector "primer-color-input[data-empty]:not([data-blank])"
 
     text_input.send_keys(:tab)
 
@@ -278,8 +298,6 @@ class IntegrationOpenProjectColorFieldTest < System::TestCase
     assert_equal "#1a67a3", picker_value
   end
 
-  # Invalid text keeps the last color, but a reset leaves no last color to
-  # keep: the swatch must go back to how the server rendered it.
   def test_form_reset_restores_neutral_swatch_for_invalid_initial_value
     visit_color_field(:in_form, value: "zzz")
     assert_selector "primer-color-input[data-empty]:not([data-blank])"
@@ -293,11 +311,10 @@ class IntegrationOpenProjectColorFieldTest < System::TestCase
     assert_selector "primer-color-input[data-empty]:not([data-blank])"
   end
 
-  def test_cancelled_form_reset_keeps_last_color
+  def test_cancelled_form_reset_changes_nothing
     visit_color_field(:in_form)
 
     replace_text("#00FF00")
-    replace_text("zzz")
     evaluate_multiline_script(<<~JS)
       const form = document.querySelector('primer-color-input input[type=text]').form
       form.addEventListener('reset', (event) => event.preventDefault())
@@ -307,7 +324,7 @@ class IntegrationOpenProjectColorFieldTest < System::TestCase
     # The controller reacts a tick after the event; let that tick pass.
     page.evaluate_async_script("setTimeout(arguments[0])")
 
-    assert_field "Primary color", with: "zzz"
+    assert_field "Primary color", with: "#00FF00"
     assert_selector "primer-color-input:not([data-empty])"
     assert_equal "#00ff00", picker_value
   end
