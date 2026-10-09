@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 0.93.0
+
+### Minor Changes
+
+- [#537](https://github.com/opf/primer_view_components/pull/537) [`ee8632f`](https://github.com/opf/primer_view_components/commit/ee8632f0ebb3621e7ee132d6cd68df8197f5a49e) Thanks [@myabc](https://github.com/myabc)! - Add `Primer::OpenProject::ColorField` and the `color_field` form input: a hex
+  text field paired with a native color picker that doubles as a swatch. Only the
+  text input is submitted, so the field can be left blank.
+
 ## 0.92.0
 
 ### Minor Changes
