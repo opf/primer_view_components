@@ -1,0 +1,8 @@
+<%= primer_form_with(url: "/foo", method: :get) do |f| %>
+  <%= render_inline_form(f) do |form|
+    form.multi(name: :color, label: "Brand color") do |multi|
+      multi.color_field(name: :hex, value: "#1A67A3", input_width: :small)
+      multi.text_field(name: :token, hidden: true)
+    end
+  end %>
+<% end %>

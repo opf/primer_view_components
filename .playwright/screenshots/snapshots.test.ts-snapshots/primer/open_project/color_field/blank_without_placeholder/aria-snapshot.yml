@@ -1,0 +1,3 @@
+- text: Primary color
+- textbox "Primary color"
+- textbox "Pick color for Primary color": "#000000"

@@ -9,6 +9,10 @@ en:
   button_filter: "Filter"
   button_save: "Save"
 
+  color_field:
+    picker_label: "Pick color for %{label}"
+    picker_label_generic: "Pick color"
+
   drag_handle:
     button_drag: "Drag to reorder"
 

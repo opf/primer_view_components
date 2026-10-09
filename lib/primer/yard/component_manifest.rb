@@ -96,7 +96,8 @@ module Primer
         Primer::Alpha::CheckBox => { form_component: true },
         Primer::Alpha::CheckBoxGroup => { form_component: true },
         Primer::Alpha::SubmitButton => { form_component: true },
-        Primer::Alpha::FormButton => { form_component: true }
+        Primer::Alpha::FormButton => { form_component: true },
+        Primer::OpenProject::ColorField => { form_component: true, js: true }
       }.freeze
 
       include Enumerable

@@ -86,6 +86,15 @@ module Primer
           add_input TextAreaInput.new(builder: builder, form: form, **options, &block)
         end
 
+        # Adds a color field to this form.
+        #
+        # @param options [Hash] The options accepted by the color field input (see forms docs).
+        # @param block [Proc] A block that will be yielded a reference to the input object so it can be customized.
+        def color_field(**options, &block)
+          options = decorate_options(**options)
+          add_input ColorFieldInput.new(builder: builder, form: form, **options, &block)
+        end
+
         # END text input methods
 
         # START select input methods

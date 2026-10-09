@@ -1,0 +1,6 @@
+<%= primer_form_with(url: "/foo", method: :get) do |f| %>
+  <%= render_inline_form(f) do |form|
+    form.color_field(name: :hexcode, label: "Primary color", value: value, input_width: :small)
+  end %>
+  <%= render(Primer::Beta::Button.new(type: :reset, mt: 2)) { "Reset" } %>
+<% end %>

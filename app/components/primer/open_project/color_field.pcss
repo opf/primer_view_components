@@ -1,0 +1,70 @@
+.ColorField {
+  display: block;
+
+  & .ColorField-wrap .FormControl-input {
+    padding-inline-start: calc(var(--base-size-4) + var(--base-size-24) + var(--base-size-8));
+  }
+
+  & .ColorField-swatch {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: var(--base-size-4);
+    display: flex;
+    align-items: center;
+  }
+
+  & .ColorField-picker {
+    width: var(--base-size-24);
+    height: var(--base-size-24);
+    padding: 0;
+    cursor: pointer;
+    background-color: var(--bgColor-muted);
+    border: 0;
+    border-radius: var(--borderRadius-small);
+
+    /* An outline, not a border: it is painted over the native swatch, so
+       the color fills the whole box and the border sits on top of it. */
+    outline: var(--borderWidth-thin) solid var(--borderColor-translucent);
+    outline-offset: calc(var(--borderWidth-thin) * -1);
+    appearance: none;
+    forced-color-adjust: none;
+
+    &:disabled {
+      cursor: default;
+    }
+
+    &:focus-visible {
+      @mixin focusOutline;
+    }
+
+    &::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    &::-webkit-color-swatch {
+      border: 0;
+      border-radius: var(--borderRadius-small);
+    }
+
+    &::-moz-color-swatch {
+      border: 0;
+      border-radius: var(--borderRadius-small);
+    }
+  }
+
+  &[data-blank] .ColorField-picker {
+    outline-style: dashed;
+  }
+
+  &[data-empty] .ColorField-picker::-webkit-color-swatch {
+    opacity: 0;
+  }
+
+  &[data-empty] .ColorField-picker::-moz-color-swatch {
+    opacity: 0;
+  }
+
+  &:not(:defined) .ColorField-picker:disabled {
+    opacity: 1;
+  }
+}

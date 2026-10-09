@@ -265,6 +265,9 @@
   "CollapsibleSection--triggerArea": [
     "Primer::OpenProject::CollapsibleSection"
   ],
+  "ColorField": [
+    "Primer::OpenProject::ColorField"
+  ],
   "Counter": [
     "Primer::Beta::Counter"
   ],

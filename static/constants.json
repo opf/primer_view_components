@@ -1759,6 +1759,9 @@
       "span"
     ]
   },
+  "Primer::OpenProject::ColorField": {
+    "GeneratedSlotMethods": "Primer::OpenProject::ColorField::GeneratedSlotMethods"
+  },
   "Primer::OpenProject::DangerDialog": {
     "ConfirmationCheckBox": "Primer::OpenProject::DangerDialog::ConfirmationCheckBox",
     "FormWrapper": "Primer::OpenProject::DangerDialog::FormWrapper",

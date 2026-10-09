@@ -17,6 +17,7 @@ class PrimerComponentTest < Minitest::Test
       component.with_title { "Hello world" }
     }],
     [Primer::OpenProject::Heading, { tag: :h2 }],
+    [Primer::OpenProject::ColorField, { name: :foo, label: "Foo" }],
     [Primer::OpenProject::DangerDialog, { title: "Danger action" }, proc { |component|
       component.with_confirmation_message do |confirmation|
         confirmation.with_heading(tag: :h2) { "Live dangerously?" }

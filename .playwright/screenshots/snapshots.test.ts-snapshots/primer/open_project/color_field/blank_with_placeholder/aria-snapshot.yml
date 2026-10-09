@@ -1,0 +1,4 @@
+- text: Primary color
+- textbox "Primary color":
+  - /placeholder: "#1A67A3"
+- textbox "Pick color for Primary color": "#000000"
