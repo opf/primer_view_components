@@ -19619,6 +19619,12 @@
         "description": "Whether the section is collapsed on initial render."
       },
       {
+        "name": "collapsible",
+        "type": "Boolean",
+        "default": "`true`",
+        "description": "Whether the section can be collapsed at all. When set to `false`, the section stays permanently open and the toggle is disabled."
+      },
+      {
         "name": "system_arguments",
         "type": "Hash",
         "default": "N/A",
@@ -19738,6 +19744,19 @@
       {
         "preview_path": "primer/open_project/collapsible_section/collapsed",
         "name": "collapsed",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/collapsible_section/non_collapsible",
+        "name": "non_collapsible",
         "snapshot": "true",
         "skip_rules": {
           "wont_fix": [

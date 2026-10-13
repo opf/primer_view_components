@@ -1,4 +1,4 @@
-<%= render(Primer::OpenProject::CollapsibleSection.new) do |section| %>
+<%= render(Primer::OpenProject::CollapsibleSection.new(collapsible: collapsible)) do |section| %>
   <% section.with_title { "Advanced settings" } %>
 
   <% if caption.present? %>

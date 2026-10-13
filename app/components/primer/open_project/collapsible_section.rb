@@ -49,12 +49,14 @@ module Primer
 
       # @param id [String] The unique ID of the collapsible section.
       # @param collapsed [Boolean] Whether the section is collapsed on initial render.
+      # @param collapsible [Boolean] Whether the section can be collapsed at all. When set to `false`, the section stays permanently open and the toggle is disabled.
       # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
-      def initialize(id: self.class.generate_id, collapsed: false, **system_arguments)
+      def initialize(id: self.class.generate_id, collapsed: false, collapsible: true, **system_arguments)
         @title_id = "#{id}-title"
         @content_id = "#{id}-content"
         @heading_id = "#{id}-heading"
-        @collapsed = collapsed
+        @collapsible = collapsible
+        @collapsed = collapsible && collapsed
 
         @system_arguments = deny_tag_argument(**system_arguments)
         @system_arguments[:tag] = "collapsible-section"

@@ -1,8 +1,15 @@
 <%= render(Primer::BaseComponent.new(**@system_arguments)) do %>
   <%= render(Primer::OpenProject::FlexLayout.new) do |flex| %>
-    <%= flex.with_row(classes: "CollapsibleSection--triggerArea",
-                      id: @title_id,
-                      data: { action: "click:collapsible-section#toggle" }) do %>
+    <% if @collapsible %>
+      <% trigger_arguments = {
+           classes: "CollapsibleSection--triggerArea",
+           id: @title_id,
+           data: { action: "click:collapsible-section#toggle" }
+         } %>
+    <% else %>
+      <% trigger_arguments = { id: @title_id } %>
+    <% end %>
+    <%= flex.with_row(**trigger_arguments) do %>
       <%= render(Primer::OpenProject::FlexLayout.new(display: :flex, align_items: :center)) do |header| %>
         <%= header.with_column(id: @heading_id) do %>
           <%= title %>
@@ -10,10 +17,12 @@
         <%= header.with_column do %>
           <%= caption %>
         <% end %>
-        <%= header.with_column do %>
-          <%= render(Primer::Beta::Button.new(**@toggle_button_arguments)) do %>
-            <%= render(Primer::Beta::Octicon.new(icon: "chevron-up", hidden: @collapsed, data: { target: "collapsible-section.arrowUp" })) %>
-            <%= render(Primer::Beta::Octicon.new(icon: "chevron-down", hidden: !@collapsed, data: { target: "collapsible-section.arrowDown" })) %>
+        <% if @collapsible %>
+          <%= header.with_column do %>
+            <%= render(Primer::Beta::Button.new(**@toggle_button_arguments)) do %>
+              <%= render(Primer::Beta::Octicon.new(icon: "chevron-up", hidden: @collapsed, data: { target: "collapsible-section.arrowUp" })) %>
+              <%= render(Primer::Beta::Octicon.new(icon: "chevron-down", hidden: !@collapsed, data: { target: "collapsible-section.arrowDown" })) %>
+            <% end %>
           <% end %>
         <% end %>
         <%= header.with_column(flex: 1, text_align: :right) do %>
