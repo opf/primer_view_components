@@ -762,6 +762,58 @@ module Alpha
       assert_selector "select-panel button[aria-controls]", exact_text: "Item: Item 2, Item 3"
     end
 
+    def test_counter_updates_on_selection
+      visit_preview(:with_counter, select_variant: :multiple)
+
+      click_on_invoker_button
+
+      assert_selector "select-panel .Counter[hidden]", visible: :all
+
+      click_on_second_item
+      click_on_third_item
+
+      assert_selector "select-panel .Counter", exact_text: "2"
+      assert_selector "select-panel .Counter[title='2']", visible: :all
+      refute_selector "select-panel .Counter[hidden]", visible: :all
+
+      click_on_second_item
+      click_on_third_item
+
+      assert_selector "select-panel .Counter[hidden]", visible: :all
+    end
+
+    def test_counter_reflects_items_selected_on_initial_render
+      visit_preview(:with_counter, select_variant: :multiple, preselected_items: "item2,item3")
+
+      assert_selector "select-panel .Counter", exact_text: "2", visible: :all
+      assert_selector "select-panel .Counter[title='2']", visible: :all
+      refute_selector "select-panel .Counter[hidden]", visible: :all
+    end
+
+    def test_counter_survives_remote_filtering
+      visit_preview(:with_counter, select_variant: :multiple, fetch_strategy: :remote, preselected_items: "phaser")
+
+      wait_for_items_to_load do
+        click_on_invoker_button
+      end
+
+      assert_selector "select-panel .Counter", exact_text: "1", visible: :all
+
+      click_on "Photon torpedo"
+
+      assert_selector "select-panel .Counter", exact_text: "2", visible: :all
+
+      wait_for_items_to_load do
+        filter_results(query: "tardis")
+      end
+
+      refute_selector "select-panel ul li", text: "Phaser"
+      refute_selector "select-panel ul li", text: "Photon torpedo"
+
+      assert_selector "select-panel .Counter", exact_text: "2", visible: :all
+      assert_selector "select-panel .Counter[title='2']", visible: :all
+    end
+
     def test_dynamic_label_and_aria_prefix_for_single_select_variant
       visit_preview(:with_dynamic_label_and_aria_prefix, select_variant: :single)
 
