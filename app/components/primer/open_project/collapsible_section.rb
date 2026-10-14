@@ -47,16 +47,19 @@ module Primer
         Primer::BaseComponent.new(tag: :div, **system_arguments)
       }
 
+      COLLAPSED_OPTIONS = [false, true, :locked].freeze
+
       # @param id [String] The unique ID of the collapsible section.
-      # @param collapsed [Boolean] Whether the section is collapsed on initial render.
-      # @param collapsible [Boolean] Whether the section can be collapsed at all. When set to `false`, the section stays permanently open and the toggle is disabled.
+      # @param collapsed [Boolean, Symbol] The initial state of the section. `false` renders it open and toggleable, `true` renders it collapsed and toggleable, and `:locked` keeps it permanently open with the toggle disabled.
       # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>
-      def initialize(id: self.class.generate_id, collapsed: false, collapsible: true, **system_arguments)
+      def initialize(id: self.class.generate_id, collapsed: false, **system_arguments)
+        collapsed = fetch_or_fallback(COLLAPSED_OPTIONS, collapsed, false)
+
         @title_id = "#{id}-title"
         @content_id = "#{id}-content"
         @heading_id = "#{id}-heading"
-        @collapsible = collapsible
-        @collapsed = collapsible && collapsed
+        @collapsible = collapsed != :locked
+        @collapsed = collapsed == true
 
         @system_arguments = deny_tag_argument(**system_arguments)
         @system_arguments[:tag] = "collapsible-section"

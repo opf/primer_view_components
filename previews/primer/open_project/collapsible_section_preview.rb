@@ -10,11 +10,12 @@ module Primer
       # @label Playground
       # @param caption [String] text
       # @param show_additional_information [Boolean] toggle
-      # @param collapsible [Boolean] toggle
-      def playground(caption: "(optional)", show_additional_information: false, collapsible: true)
+      # @param state [Symbol] select [open, collapsed, locked]
+      def playground(caption: "(optional)", show_additional_information: false, state: :open)
+        collapsed = { open: false, collapsed: true, locked: :locked }[state.to_sym]
         render_with_template(
           template: "primer/open_project/collapsible_section_preview/playground",
-          locals: { caption: caption, show_additional_information: show_additional_information, collapsible: collapsible }
+          locals: { caption: caption, show_additional_information: show_additional_information, collapsed: collapsed }
         )
       end
 
