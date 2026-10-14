@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.94.0
+
+### Minor Changes
+
+- [#539](https://github.com/opf/primer_view_components/pull/539) [`3ddf0b2`](https://github.com/opf/primer_view_components/commit/3ddf0b2a460603fafa413e0cba303c3c81c4348b) Thanks [@mrmir](https://github.com/mrmir)! - Add a `:locked` state to the `collapsed` argument of `Primer::OpenProject::CollapsibleSection` to lock the section permanently open and disable the toggle
+
 ## 0.93.0
 
 ### Minor Changes
