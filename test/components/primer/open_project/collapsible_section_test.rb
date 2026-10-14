@@ -66,4 +66,28 @@ class PrimerOpenProjectCollapsibleSectionTest < Minitest::Test
 
     assert_selector(".CollapsibleSection.CollapsibleSection--collapsed")
   end
+
+  def test_renders_locked_open
+    render_inline(Primer::OpenProject::CollapsibleSection.new(collapsed: :locked)) do |component|
+      component.with_title { "Hello world" }
+      component.with_collapsible_content { "SHOW ME" }
+    end
+
+    assert_selector(".CollapsibleSection")
+    assert_text("SHOW ME")
+
+    # No trigger area and no toggle button, so the section can't be collapsed
+    assert_no_selector(".CollapsibleSection--triggerArea")
+    assert_no_selector("[data-collapsible-toggle]")
+  end
+
+  def test_locked_open_is_never_collapsed
+    render_inline(Primer::OpenProject::CollapsibleSection.new(collapsed: :locked)) do |component|
+      component.with_title { "Hello world" }
+      component.with_collapsible_content { "SHOW ME" }
+    end
+
+    assert_no_selector(".CollapsibleSection--collapsed")
+    assert_text("SHOW ME")
+  end
 end

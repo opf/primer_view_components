@@ -1747,6 +1747,11 @@
     "GeneratedSlotMethods": "Primer::OpenProject::BorderGrid::Cell::GeneratedSlotMethods"
   },
   "Primer::OpenProject::CollapsibleSection": {
+    "COLLAPSED_OPTIONS": [
+      false,
+      true,
+      "locked"
+    ],
     "GeneratedSlotMethods": "Primer::OpenProject::CollapsibleSection::GeneratedSlotMethods",
     "TITLE_TAG_FALLBACK": "h2",
     "TITLE_TAG_OPTIONS": [

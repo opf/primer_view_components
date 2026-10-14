@@ -5961,9 +5961,9 @@
       },
       {
         "name": "collapsed",
-        "type": "Boolean",
+        "type": "Boolean, Symbol",
         "default": "`false`",
-        "description": "Whether the section is collapsed on initial render."
+        "description": "The initial state of the section. `false` renders it open and toggleable, `true` renders it collapsed and toggleable, and `:locked` keeps it permanently open with the toggle disabled."
       },
       {
         "name": "system_arguments",

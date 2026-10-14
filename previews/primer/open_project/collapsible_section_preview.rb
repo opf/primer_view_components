@@ -10,10 +10,12 @@ module Primer
       # @label Playground
       # @param caption [String] text
       # @param show_additional_information [Boolean] toggle
-      def playground(caption: "(optional)", show_additional_information: false)
+      # @param collapsed [String] select ["false", "true", "locked"]
+      def playground(caption: "(optional)", show_additional_information: false, collapsed: "false")
+        collapsed = { "false" => false, "true" => true, "locked" => :locked }.fetch(collapsed)
         render_with_template(
           template: "primer/open_project/collapsible_section_preview/playground",
-          locals: { caption: caption, show_additional_information: show_additional_information}
+          locals: { caption: caption, show_additional_information: show_additional_information, collapsed: collapsed }
         )
       end
 
@@ -49,6 +51,15 @@ module Primer
       def collapsed
         render_with_template(
           template: "primer/open_project/collapsible_section_preview/collapsed",
+          locals: { }
+        )
+      end
+
+      # @label Non-collapsible
+      # @snapshot
+      def non_collapsible
+        render_with_template(
+          template: "primer/open_project/collapsible_section_preview/non_collapsible",
           locals: { }
         )
       end
