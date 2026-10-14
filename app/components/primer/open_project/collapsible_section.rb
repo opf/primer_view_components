@@ -83,6 +83,16 @@ module Primer
 
       private
 
+      def trigger_arguments
+        return { id: @title_id } unless @collapsible
+
+        {
+          classes: "CollapsibleSection--triggerArea",
+          id: @title_id,
+          data: { action: "click:collapsible-section#toggle" }
+        }
+      end
+
       def render?
         raise ArgumentError, "Title must be present" unless title.present?
         raise ArgumentError, "Collapsible content must be present" unless collapsible_content.present?

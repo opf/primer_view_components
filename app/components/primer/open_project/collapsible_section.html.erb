@@ -1,14 +1,5 @@
 <%= render(Primer::BaseComponent.new(**@system_arguments)) do %>
   <%= render(Primer::OpenProject::FlexLayout.new) do |flex| %>
-    <% if @collapsible %>
-      <% trigger_arguments = {
-           classes: "CollapsibleSection--triggerArea",
-           id: @title_id,
-           data: { action: "click:collapsible-section#toggle" }
-         } %>
-    <% else %>
-      <% trigger_arguments = { id: @title_id } %>
-    <% end %>
     <%= flex.with_row(**trigger_arguments) do %>
       <%= render(Primer::OpenProject::FlexLayout.new(display: :flex, align_items: :center)) do |header| %>
         <%= header.with_column(id: @heading_id) do %>
