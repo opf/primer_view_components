@@ -1,0 +1,4 @@
+<%= render(Primer::Box.new(display: :flex, style: "gap: var(--base-size-16); align-items: center")) do %>
+  <%= render(Primer::OpenProject::KeybindingHint.new(keys: "Mod+Shift+p", size: :medium, data: { platform: "other" })) %>
+  <%= render(Primer::OpenProject::KeybindingHint.new(keys: "Mod+Shift+p", size: :small, data: { platform: "other" })) %>
+<% end %>

@@ -1,0 +1,65 @@
+/* KeybindingHint (port of Primer React KeybindingHint at 6794582843) */
+
+/* The host carries no semantics; let the <kbd> be the flex/grid item, as in React. */
+/* stylelint-disable-next-line selector-max-type */
+keybinding-hint {
+  display: contents;
+}
+
+/* Reset user-agent <kbd> styling; matches KeybindingHint.module.css */
+.KeybindingHint-kbd {
+  position: relative;
+  padding: 0;
+  overflow: visible;
+  font-family: inherit;
+  font-size: inherit;
+  /* stylelint-disable-next-line primer/typography */
+  line-height: unset;
+  color: inherit;
+  white-space: nowrap;
+  vertical-align: baseline;
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+
+/* One bordered box per chord; matches Chord.module.css */
+.KeybindingHint-chord {
+  display: inline-flex;
+  justify-content: center;
+  min-width: var(--base-size-20);
+  padding: var(--base-size-4);
+  overflow: hidden;
+  font-size: var(--text-body-size-small);
+  font-weight: var(--base-text-weight-normal);
+  /* stylelint-disable-next-line primer/typography */
+  line-height: 10px;
+  color: var(--fgColor-muted);
+  vertical-align: baseline;
+  background: var(--bgColor-transparent);
+  border: var(--borderWidth-thin) solid var(--borderColor-default);
+  border-radius: var(--borderRadius-medium);
+  box-shadow: none;
+  gap: 0.5ch;
+  transition: 80ms ease-in;
+  transition-property: color, background-color, border-color;
+}
+
+.KeybindingHint-chord--emphasis {
+  color: var(--fgColor-onEmphasis);
+  background: var(--counter-bgColor-emphasis);
+  border-color: transparent;
+  /* React applies the medium radius and the 20px floor only to the default scheme */
+  border-radius: var(--borderRadius-default);
+  min-width: auto;
+}
+
+.KeybindingHint-chord--small {
+  min-width: var(--base-size-16);
+  padding: var(--base-size-2);
+  /* stylelint-disable-next-line primer/typography */
+  font-size: 11px;
+  /* stylelint-disable-next-line primer/typography */
+  line-height: var(--base-size-8);
+  border-radius: var(--borderRadius-small);
+}

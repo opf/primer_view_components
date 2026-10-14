@@ -97,11 +97,15 @@ module Primer
         # ```ruby
         # with_leading_visual_text { "Text here" }
         # ```
+        #
+        # To render a keyboard shortcut hint, call the `with_trailing_visual_keybinding_hint` method, e.g. `with_trailing_visual_keybinding_hint(keys: "Mod+Enter")`. It accepts the arguments accepted by <%= link_to_component(Primer::OpenProject::KeybindingHint) %>.
         renders_one :trailing_visual, types: {
           icon: Primer::Beta::Octicon,
           label: Primer::Beta::Label,
           counter: Primer::Beta::Counter,
-          text: ->(text) { text }
+          text: ->(text) { text },
+          # NOTE: OpenProject addition, see DREAM-867
+          keybinding_hint: Primer::OpenProject::KeybindingHint
         }
 
         # Used internally.

@@ -1,0 +1,9 @@
+- list "Comment actions":
+  - listitem:
+    - button "Add comment"
+  - listitem:
+    - button "Save control enter"
+  - listitem:
+    - button "Preview control shift p"
+  - listitem:
+    - button "Delete control backspace"

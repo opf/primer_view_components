@@ -56,6 +56,11 @@
     box-shadow: none;
   }
 
+  /* NOTE: OpenProject addition, see DREAM-867 (Primer React ButtonBase [data-kbd-chord] rules) */
+  &:has([data-kbd-chord]):not(.Button--link) {
+    padding-inline-end: var(--base-size-6);
+  }
+
   &.Button--iconOnly {
     color: var(--fgColor-muted);
   }
@@ -158,6 +163,11 @@ summary.Button {
       margin-right: var(--control-large-gap);
     }
   }
+
+  /* NOTE: OpenProject addition, see DREAM-867 */
+  &:has([data-kbd-chord]):not(.Button--link) {
+    padding-inline-end: var(--base-size-8);
+  }
 }
 
 .Button--fullWidth {
@@ -248,11 +258,25 @@ summary.Button {
     fill: var(--button-primary-fgColor-disabled);
     background-color: var(--button-primary-bgColor-disabled);
     border-color: var(--button-primary-borderColor-disabled);
+
+    /* NOTE: OpenProject addition, see DREAM-867 */
+    & [data-kbd-chord] {
+      color: var(--buttonKeybindingHint-primary-fgColor-disabled);
+      background: var(--buttonKeybindingHint-primary-bgColor-disabled);
+      border-color: var(--buttonKeybindingHint-primary-borderColor-disabled);
+    }
   }
 
   & .Counter {
     color: inherit;
     background-color: var(--buttonCounter-primary-bgColor-rest);
+  }
+
+  /* NOTE: OpenProject addition, see DREAM-867 */
+  & [data-kbd-chord] {
+    color: var(--buttonKeybindingHint-primary-fgColor-rest);
+    background: var(--buttonKeybindingHint-primary-bgColor-rest);
+    border-color: var(--buttonKeybindingHint-primary-borderColor-rest);
   }
 }
 
@@ -285,6 +309,20 @@ summary.Button {
     fill: var(--control-fgColor-disabled);
     background-color: var(--button-default-bgColor-disabled);
     border-color: var(--button-default-borderColor-disabled);
+
+    /* NOTE: OpenProject addition, see DREAM-867 */
+    & [data-kbd-chord] {
+      color: var(--buttonKeybindingHint-default-fgColor-disabled);
+      background: var(--buttonKeybindingHint-default-bgColor-disabled);
+      border-color: var(--buttonKeybindingHint-default-borderColor-disabled);
+    }
+  }
+
+  /* NOTE: OpenProject addition, see DREAM-867 */
+  & [data-kbd-chord] {
+    color: var(--buttonKeybindingHint-default-fgColor-rest);
+    background: var(--buttonKeybindingHint-default-bgColor-rest);
+    border-color: var(--buttonKeybindingHint-default-borderColor-rest);
   }
 }
 
@@ -310,6 +348,13 @@ summary.Button {
     fill: var(--button-invisible-fgColor-disabled);
     background-color: var(--button-invisible-bgColor-disabled);
     border-color: var(--button-invisible-borderColor-disabled);
+
+    /* NOTE: OpenProject addition, see DREAM-867 */
+    & [data-kbd-chord] {
+      color: var(--buttonKeybindingHint-invisible-fgColor-disabled);
+      background: var(--buttonKeybindingHint-invisible-bgColor-disabled);
+      border-color: var(--buttonKeybindingHint-invisible-borderColor-disabled);
+    }
   }
 
   /* if button has no visuals, use link blue for text */
@@ -323,6 +368,23 @@ summary.Button {
     & .Counter {
       color: var(--fgColor-default);
     }
+  }
+
+  /* NOTE: OpenProject addition, see DREAM-867 */
+  & [data-kbd-chord] {
+    color: var(--buttonKeybindingHint-invisible-fgColor-rest);
+    background: var(--buttonKeybindingHint-invisible-bgColor-rest);
+    border-color: var(--buttonKeybindingHint-invisible-borderColor-rest);
+  }
+
+  &:hover:not(:disabled, [aria-disabled='true'], .Button--inactive) [data-kbd-chord] {
+    background: var(--buttonKeybindingHint-invisible-bgColor-hover);
+    transition: 80ms ease-out;
+  }
+
+  &:active:not(:disabled, [aria-disabled='true']) [data-kbd-chord] {
+    background: var(--buttonKeybindingHint-invisible-bgColor-active);
+    transition: 80ms ease-out;
   }
 }
 
@@ -403,11 +465,39 @@ summary.Button {
       color: var(--buttonCounter-danger-fgColor-disabled);
       background-color: var(--buttonCounter-danger-bgColor-disabled);
     }
+
+    /* NOTE: OpenProject addition, see DREAM-867 */
+    & [data-kbd-chord] {
+      color: var(--buttonKeybindingHint-danger-fgColor-disabled);
+      background: var(--buttonKeybindingHint-danger-bgColor-disabled);
+      border-color: var(--buttonKeybindingHint-danger-borderColor-disabled);
+    }
   }
 
   & .Counter {
     color: var(--buttonCounter-danger-fgColor-rest);
     background-color: var(--buttonCounter-danger-bgColor-rest);
+  }
+
+  /* NOTE: OpenProject addition, see DREAM-867 */
+  & [data-kbd-chord] {
+    color: var(--buttonKeybindingHint-danger-fgColor-rest);
+    background: var(--buttonKeybindingHint-danger-bgColor-rest);
+    border-color: var(--buttonKeybindingHint-danger-borderColor-rest);
+  }
+
+  &:hover:not(:disabled, [aria-disabled='true'], .Button--inactive) [data-kbd-chord] {
+    color: var(--buttonKeybindingHint-danger-fgColor-hover);
+    background: var(--buttonKeybindingHint-danger-bgColor-hover);
+    border-color: var(--buttonKeybindingHint-danger-borderColor-hover);
+    transition: 80ms ease-out;
+  }
+
+  &:active:not(:disabled, [aria-disabled='true']) [data-kbd-chord] {
+    color: var(--buttonKeybindingHint-danger-fgColor-active);
+    background: var(--buttonKeybindingHint-danger-bgColor-active);
+    border-color: var(--buttonKeybindingHint-danger-borderColor-active);
+    transition: 80ms ease-out;
   }
 }
 
@@ -432,4 +522,11 @@ summary.Button {
   cursor: default;
   background-color: var(--button-inactive-bgColor);
   border: 0;
+
+  /* NOTE: OpenProject addition, see DREAM-867 */
+  & [data-kbd-chord] {
+    color: var(--buttonKeybindingHint-inactive-fgColor);
+    background: var(--buttonKeybindingHint-inactive-bgColor);
+    border-color: var(--buttonKeybindingHint-inactive-borderColor);
+  }
 }

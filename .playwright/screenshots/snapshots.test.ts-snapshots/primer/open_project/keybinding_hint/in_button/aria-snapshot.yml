@@ -1,0 +1,21 @@
+- button "default small control s"
+- button "default medium control s"
+- button "default large control s"
+- button "default disabled control s" [disabled]
+- button "default inactive control s"
+- button "primary small control s"
+- button "primary medium control s"
+- button "primary large control s"
+- button "primary disabled control s" [disabled]
+- button "primary inactive control s"
+- button "danger small control s"
+- button "danger medium control s"
+- button "danger large control s"
+- button "danger disabled control s" [disabled]
+- button "danger inactive control s"
+- button "invisible small control s"
+- button "invisible medium control s"
+- button "invisible large control s"
+- button "invisible disabled control s" [disabled]
+- button "invisible inactive control s"
+- button "Save document": Save control s
