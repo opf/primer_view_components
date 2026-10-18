@@ -25,11 +25,16 @@ module Primer
         #
         # Catalyst boolean attributes are true when present, whatever their
         # value, so false must render no attribute at all (nil), not "false".
+        #
+        # FormControl renders the validation element after this one, out of
+        # reach of Catalyst targets, so the element looks it up by id. There
+        # is none without FormControl.
         @element_arguments = {
           class: "ColorField",
           data: {
             blank: (@input.blank? ? "" : nil),
-            empty: (@input.empty? ? "" : nil)
+            empty: (@input.empty? ? "" : nil),
+            validation_id: (@input.form_control? ? @input.validation_id : nil)
           }
         }
 
