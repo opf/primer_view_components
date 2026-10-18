@@ -41,6 +41,7 @@ module Alpha
       assert_selector ".FormControl-inlineValidation", text: "The name foobar is already taken."
       assert_selector ".FormControl-inlineValidation--visual .octicon-alert-fill"
       refute_selector ".FormControl-inlineValidation--visual .octicon-check-circle-fill"
+      assert_selector "input[type=text][invalid=true][aria-invalid=true]"
     end
 
     def test_auto_check_accepted
@@ -58,6 +59,24 @@ module Alpha
       end
       refute_selector ".FormControl-inlineValidation--visual .octicon-alert-fill"
       assert_selector ".FormControl-inlineValidation--visual .octicon-check-circle-fill"
+      assert_selector "input[type=text][invalid=false]"
+      refute_selector "input[type=text][aria-invalid]"
+    end
+
+    def test_auto_check_success_after_error_clears_invalid
+      visit_preview(:with_auto_check_error)
+
+      find("input[type=text]").fill_in(with: "foobar")
+      find("body").send_keys(:tab)
+      assert_selector "input[type=text][invalid=true]"
+
+      evaluate_script("document.querySelector('primer-text-field').setSuccess('Fine')")
+
+      assert_selector ".FormControl-inlineValidation.FormControl-inlineValidation--success", text: "Fine"
+      assert_selector "input[type=text][invalid=false]"
+      refute_selector "input[type=text][aria-invalid]"
+      assert_selector ".FormControl-inlineValidation--visual .octicon-check-circle-fill"
+      refute_selector ".FormControl-inlineValidation--visual .octicon-alert-fill"
     end
 
     def test_auto_check_ok
