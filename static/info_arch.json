@@ -20055,6 +20055,19 @@
             "color-contrast"
           ]
         }
+      },
+      {
+        "preview_path": "primer/open_project/color_field/client_validation",
+        "name": "client_validation",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
       }
     ],
     "subcomponents": []

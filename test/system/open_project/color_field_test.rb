@@ -506,6 +506,19 @@ class IntegrationOpenProjectColorFieldTest < System::TestCase
     refute_selector "input[type=text][aria-invalid]"
   end
 
+  def test_client_validation_preview_buttons
+    visit_color_field(:client_validation)
+
+    click_button "Set error"
+    assert_selector ".FormControl-inlineValidation", text: "Hex code is invalid"
+
+    click_button "Set success"
+    assert_selector ".FormControl-inlineValidation--success", text: "Contrast checked"
+
+    click_button "Clear"
+    assert_selector ".FormControl-inlineValidation", visible: :hidden, text: ""
+  end
+
   def call_color_input(js)
     page.evaluate_script("document.querySelector('primer-color-input').#{js}")
   end
