@@ -6128,6 +6128,34 @@
     ]
   },
   {
+    "component": "OpenProject::ColorSwatch",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectColorSwatch",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/color_swatch.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/color_swatch/default/",
+    "parameters": [
+      {
+        "name": "hexcode",
+        "type": "String",
+        "default": "N/A",
+        "description": "The hex color code to display, e.g. `#FF0000`."
+      },
+      {
+        "name": "show_value",
+        "type": "Boolean",
+        "default": "`false`",
+        "description": "Whether to display the hex value next to the swatch."
+      },
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "[System arguments](/system-arguments)"
+      }
+    ]
+  },
+  {
     "component": "OpenProject::DangerDialog",
     "status": "open_project",
     "a11y_reviewed": false,
@@ -6535,6 +6563,34 @@
     "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/input_group.rb",
     "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/input_group/default/",
     "parameters": [
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "[System arguments](/system-arguments)"
+      }
+    ]
+  },
+  {
+    "component": "OpenProject::InsetBox",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectInsetBox",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/inset_box.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/inset_box/default/",
+    "parameters": [
+      {
+        "name": "border",
+        "type": "Boolean",
+        "default": "`true`",
+        "description": "Whether to render a border around the box."
+      },
+      {
+        "name": "scheme",
+        "type": "Symbol",
+        "default": "`:default`",
+        "description": "One of `:danger`, `:default`, `:info`, `:success`, or `:warning`."
+      },
       {
         "name": "system_arguments",
         "type": "Hash",

@@ -391,6 +391,15 @@
   "InputGroup": [
     "Primer::OpenProject::InputGroup"
   ],
+  "InsetBox--body": [
+    "Primer::OpenProject::InsetBox"
+  ],
+  "InsetBox--body--clip_board_copy": [
+    "Primer::OpenProject::InsetBox"
+  ],
+  "InsetBox--title-container": [
+    "Primer::OpenProject::InsetBox"
+  ],
   "Label": [
     "Primer::Beta::Label"
   ],
@@ -519,7 +528,6 @@
     "Primer::Alpha::Dialog"
   ],
   "Page": [
-    "Primer::Alpha::Pagination",
     "Primer::OpenProject::Pagination"
   ],
   "PageHeader": [
@@ -565,7 +573,6 @@
     "Primer::OpenProject::PageHeader"
   ],
   "PaginationContainer": [
-    "Primer::Alpha::Pagination",
     "Primer::OpenProject::Pagination"
   ],
   "Popover": [

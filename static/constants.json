@@ -1767,6 +1767,9 @@
   "Primer::OpenProject::ColorField": {
     "GeneratedSlotMethods": "Primer::OpenProject::ColorField::GeneratedSlotMethods"
   },
+  "Primer::OpenProject::ColorSwatch": {
+    "GeneratedSlotMethods": "Primer::OpenProject::ColorSwatch::GeneratedSlotMethods"
+  },
   "Primer::OpenProject::DangerDialog": {
     "ConfirmationCheckBox": "Primer::OpenProject::DangerDialog::ConfirmationCheckBox",
     "FormWrapper": "Primer::OpenProject::DangerDialog::FormWrapper",
@@ -1899,6 +1902,31 @@
       "xlarge",
       "xxlarge"
     ]
+  },
+  "Primer::OpenProject::InsetBox": {
+    "DEFAULT_SCHEME": "default",
+    "GeneratedSlotMethods": "Primer::OpenProject::InsetBox::GeneratedSlotMethods",
+    "SCHEME_MAPPINGS": {
+      "default": {
+        "bg": "inset"
+      },
+      "info": {
+        "bg": "accent",
+        "border_color": "accent"
+      },
+      "warning": {
+        "bg": "attention",
+        "border_color": "attention"
+      },
+      "danger": {
+        "bg": "danger",
+        "border_color": "danger"
+      },
+      "success": {
+        "bg": "success",
+        "border_color": "success"
+      }
+    }
   },
   "Primer::OpenProject::PageHeader": {
     "BACK_BUTTON_ICON_OPTIONS": [

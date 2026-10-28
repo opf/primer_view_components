@@ -20073,6 +20073,91 @@
     "subcomponents": []
   },
   {
+    "fully_qualified_name": "Primer::OpenProject::ColorSwatch",
+    "description": "Displays a small colored indicator for a given hex color code, optionally\nshowing the hex value next to it.",
+    "accessibility_docs": null,
+    "is_form_component": false,
+    "is_published": true,
+    "requires_js": false,
+    "component": "OpenProject::ColorSwatch",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectColorSwatch",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/color_swatch.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/color_swatch/default/",
+    "parameters": [
+      {
+        "name": "hexcode",
+        "type": "String",
+        "default": "N/A",
+        "description": "The hex color code to display, e.g. `#FF0000`."
+      },
+      {
+        "name": "show_value",
+        "type": "Boolean",
+        "default": "`false`",
+        "description": "Whether to display the hex value next to the swatch."
+      },
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "{{link_to_system_arguments_docs}}"
+      }
+    ],
+    "slots": [],
+    "methods": [
+      {
+        "name": "hexcode",
+        "description": "Returns the value of attribute hexcode.",
+        "parameters": [],
+        "return_types": []
+      }
+    ],
+    "previews": [
+      {
+        "preview_path": "primer/open_project/color_swatch/playground",
+        "name": "playground",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/color_swatch/default",
+        "name": "default",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/color_swatch/with_value",
+        "name": "with_value",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      }
+    ],
+    "subcomponents": []
+  },
+  {
     "fully_qualified_name": "Primer::OpenProject::DangerDialog",
     "description": "A pre-configured dialog for destructive/\"potentially dangerous\" actions",
     "accessibility_docs": null,
@@ -21520,6 +21605,210 @@
       {
         "preview_path": "primer/open_project/input_group/with_error_message",
         "name": "with_error_message",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      }
+    ],
+    "subcomponents": []
+  },
+  {
+    "fully_qualified_name": "Primer::OpenProject::InsetBox",
+    "description": "A box with an inset background, used to call out a piece of content such\nas a tip, a warning, or a code snippet, optionally with a title, icon and actions.",
+    "accessibility_docs": null,
+    "is_form_component": false,
+    "is_published": true,
+    "requires_js": false,
+    "component": "OpenProject::InsetBox",
+    "status": "open_project",
+    "a11y_reviewed": false,
+    "short_name": "OpenProjectInsetBox",
+    "source": "https://github.com/primer/view_components/tree/main/app/components/primer/open_project/inset_box.rb",
+    "lookbook": "https://primer.style/view-components/lookbook/inspect/primer/open_project/inset_box/default/",
+    "parameters": [
+      {
+        "name": "border",
+        "type": "Boolean",
+        "default": "`true`",
+        "description": "Whether to render a border around the box."
+      },
+      {
+        "name": "scheme",
+        "type": "Symbol",
+        "default": "`:default`",
+        "description": "One of `:danger`, `:default`, `:info`, `:success`, or `:warning`."
+      },
+      {
+        "name": "system_arguments",
+        "type": "Hash",
+        "default": "N/A",
+        "description": "{{link_to_system_arguments_docs}}"
+      }
+    ],
+    "slots": [
+      {
+        "name": "title_icon",
+        "description": null,
+        "parameters": [
+          {
+            "name": "system_arguments",
+            "type": "Hash",
+            "default": "N/A",
+            "description": "{{link_to_system_arguments_docs}}"
+          }
+        ]
+      },
+      {
+        "name": "title",
+        "description": null,
+        "parameters": [
+          {
+            "name": "tag",
+            "type": "Symbol",
+            "default": "N/A",
+            "description": "One of `:h1`, `:h2`, `:h3`, `:h4`, `:h5`, or `:h6`."
+          },
+          {
+            "name": "system_arguments",
+            "type": "Hash",
+            "default": "N/A",
+            "description": "{{link_to_system_arguments_docs}}"
+          }
+        ]
+      },
+      {
+        "name": "actions",
+        "description": null,
+        "parameters": [
+          {
+            "name": "system_arguments",
+            "type": "Hash",
+            "default": "N/A",
+            "description": "{{link_to_system_arguments_docs}}"
+          }
+        ]
+      },
+      {
+        "name": "clipboard_copy_button",
+        "description": null,
+        "parameters": [
+          {
+            "name": "system_arguments",
+            "type": "Hash",
+            "default": "N/A",
+            "description": "{{link_to_system_arguments_docs}}"
+          }
+        ]
+      }
+    ],
+    "methods": [
+      {
+        "name": "border",
+        "description": "Returns the value of attribute border.",
+        "parameters": [],
+        "return_types": []
+      },
+      {
+        "name": "scheme_arguments",
+        "description": "Returns the value of attribute scheme_arguments.",
+        "parameters": [],
+        "return_types": []
+      },
+      {
+        "name": "system_arguments",
+        "description": "Returns the value of attribute system_arguments.",
+        "parameters": [],
+        "return_types": []
+      }
+    ],
+    "previews": [
+      {
+        "preview_path": "primer/open_project/inset_box/playground",
+        "name": "playground",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/inset_box/default",
+        "name": "default",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/inset_box/with_scheme",
+        "name": "with_scheme",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/inset_box/with_icon",
+        "name": "with_icon",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/inset_box/with_clipboard_copy_button",
+        "name": "with_clipboard_copy_button",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/inset_box/with_actions",
+        "name": "with_actions",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/inset_box/without_border",
+        "name": "without_border",
         "snapshot": "true",
         "skip_rules": {
           "wont_fix": [
