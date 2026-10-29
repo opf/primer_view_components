@@ -13,7 +13,9 @@ class IntegrationOpenProjectInsetBoxTest < System::TestCase
   def test_renders_with_actions
     visit_preview(:with_actions)
 
-    assert_selector(".InsetBox--body--actions button", text: "Action")
+    assert_selector(".InsetBox--body--actions .InsetBox--actions button", count: 2)
+    assert_text("Edit")
+    assert_text("Delete")
   end
 
   def test_renders_with_clipboard_copy_button

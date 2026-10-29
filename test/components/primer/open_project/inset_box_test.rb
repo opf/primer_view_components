@@ -52,6 +52,16 @@ class PrimerOpenProjectInsetBoxTest < Minitest::Test
     assert_selector(".InsetBox--body--actions button", text: "Action")
   end
 
+  def test_renders_actions_with_spacing
+    render_inline(Primer::OpenProject::InsetBox.new) do |component|
+      component.with_action_button { "Edit" }
+      component.with_action_button { "Delete" }
+      "Content"
+    end
+
+    assert_selector(".InsetBox--body--actions .InsetBox--actions button", count: 2)
+  end
+
   def test_renders_with_action_menu
     render_inline(Primer::OpenProject::InsetBox.new) do |component|
       component.with_action_menu do |menu|

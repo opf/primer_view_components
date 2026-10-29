@@ -66,7 +66,8 @@ module Primer
       def with_actions
         render(Primer::OpenProject::InsetBox.new) do |component|
           component.with_title { "Title" }
-          component.with_action_button { "Action" }
+          component.with_action_button(scheme: :default) { "Edit" }
+          component.with_action_button(scheme: :danger) { "Delete" }
           "This is the content of the inset box."
         end
       end
