@@ -1,0 +1,24 @@
+/* CSS for InsetBox  */
+
+.InsetBox--title-container {
+  display: flex;
+  align-items: center;
+  gap: var(--base-size-8);
+  margin-bottom: var(--base-size-8);
+}
+
+.InsetBox--body {
+  display: grid;
+  grid-template-areas: "content clip_board_copy" "actions actions";
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto auto;
+  align-items: center;
+}
+
+.InsetBox--body--clip_board_copy {
+  align-self: flex-start;
+}
+
+.InsetBox--actions {
+  gap: var(--base-size-8);
+}

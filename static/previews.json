@@ -8991,6 +8991,53 @@
     ]
   },
   {
+    "name": "color_swatch",
+    "component": "OpenProject::ColorSwatch",
+    "status": "open_project",
+    "lookup_path": "primer/open_project/color_swatch",
+    "examples": [
+      {
+        "preview_path": "primer/open_project/color_swatch/playground",
+        "name": "playground",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/color_swatch/default",
+        "name": "default",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/color_swatch/with_value",
+        "name": "with_value",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      }
+    ]
+  },
+  {
     "name": "danger_dialog",
     "component": "OpenProject::DangerDialog",
     "status": "open_project",
@@ -9747,6 +9794,105 @@
       {
         "preview_path": "primer/open_project/input_group/with_error_message",
         "name": "with_error_message",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "inset_box",
+    "component": "OpenProject::InsetBox",
+    "status": "open_project",
+    "lookup_path": "primer/open_project/inset_box",
+    "examples": [
+      {
+        "preview_path": "primer/open_project/inset_box/playground",
+        "name": "playground",
+        "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/inset_box/default",
+        "name": "default",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/inset_box/with_scheme",
+        "name": "with_scheme",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/inset_box/with_icon",
+        "name": "with_icon",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/inset_box/with_clipboard_copy_button",
+        "name": "with_clipboard_copy_button",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/inset_box/with_actions",
+        "name": "with_actions",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/open_project/inset_box/without_border",
+        "name": "without_border",
         "snapshot": "true",
         "skip_rules": {
           "wont_fix": [

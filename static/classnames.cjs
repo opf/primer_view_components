@@ -126,6 +126,7 @@ module.exports = new Set([
   'ColorField-picker',
   'ColorField-swatch',
   'ColorField-wrap',
+  'ColorSwatch--indicator',
   'Counter',
   'Counter--primary',
   'Counter--secondary',

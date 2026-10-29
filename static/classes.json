@@ -268,6 +268,9 @@
   "ColorField": [
     "Primer::OpenProject::ColorField"
   ],
+  "ColorSwatch--indicator": [
+    "Primer::OpenProject::ColorSwatch"
+  ],
   "Counter": [
     "Primer::Beta::Counter"
   ],
@@ -387,6 +390,18 @@
   ],
   "InputGroup": [
     "Primer::OpenProject::InputGroup"
+  ],
+  "InsetBox--actions": [
+    "Primer::OpenProject::InsetBox"
+  ],
+  "InsetBox--body": [
+    "Primer::OpenProject::InsetBox"
+  ],
+  "InsetBox--body--clip_board_copy": [
+    "Primer::OpenProject::InsetBox"
+  ],
+  "InsetBox--title-container": [
+    "Primer::OpenProject::InsetBox"
   ],
   "Label": [
     "Primer::Beta::Label"
