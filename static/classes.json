@@ -391,6 +391,9 @@
   "InputGroup": [
     "Primer::OpenProject::InputGroup"
   ],
+  "InsetBox--actions": [
+    "Primer::OpenProject::InsetBox"
+  ],
   "InsetBox--body": [
     "Primer::OpenProject::InsetBox"
   ],
