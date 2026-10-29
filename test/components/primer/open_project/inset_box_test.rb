@@ -52,6 +52,18 @@ class PrimerOpenProjectInsetBoxTest < Minitest::Test
     assert_selector(".InsetBox--body--actions button", text: "Action")
   end
 
+  def test_renders_with_action_menu
+    render_inline(Primer::OpenProject::InsetBox.new) do |component|
+      component.with_action_menu do |menu|
+        menu.with_show_button { "Menu" }
+        menu.with_item(label: "Item")
+      end
+      "Content"
+    end
+
+    assert_selector(".InsetBox--body--actions action-menu")
+  end
+
   def test_renders_without_border
     render_inline(Primer::OpenProject::InsetBox.new(border: false)) { "Content" }
 
