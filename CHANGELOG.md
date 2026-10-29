@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 0.95.0
+
+### Minor Changes
+
+- [#542](https://github.com/opf/primer_view_components/pull/542) [`cb70199`](https://github.com/opf/primer_view_components/commit/cb701994a291f7b152e794f1d6752a10ae298403) Thanks [@HDinger](https://github.com/HDinger)! - Add InsetBox component
+
+- [#542](https://github.com/opf/primer_view_components/pull/542) [`35f4fae`](https://github.com/opf/primer_view_components/commit/35f4fae174420eaa5c08ab54155acfeb84a32cd8) Thanks [@HDinger](https://github.com/HDinger)! - Add ColorSwatch component
+
 ## 0.94.0
 
 ### Minor Changes
