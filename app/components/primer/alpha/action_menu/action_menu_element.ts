@@ -26,6 +26,20 @@ export class ActionMenuElement extends HTMLElement {
   #intersectionObserver: IntersectionObserver
   #focusZoneStack: ActionMenuFocusZoneStack
 
+  // Deferred primary content, refreshed when `src` changes. #deferred is set
+  // once, at first connect, when the primary overlay body holds a fragment.
+  #deferred = false
+  // Configuration: an unloaded copy of the fragment new loads are cloned from.
+  // Only fragments inserted by other code replace it.
+  #template: IncludeFragmentElement | null = null
+  // The current request; `failed` comes from the fragment's `error` event.
+  #request: {fragment: IncludeFragmentElement; src: string; failed: boolean} | null = null
+  // Listener lifetime for the current fragment.
+  #fragmentAbortController: AbortController | null = null
+  #fragmentObserver: MutationObserver | null = null
+
+  static observedAttributes = ['src']
+
   static validItemRoles = ['menuitem', 'menuitemcheckbox', 'menuitemradio']
   static validSelectors = ActionMenuElement.validItemRoles.map(role => `[role="${role}"]`)
   static menuItemSelectors = ActionMenuElement.validSelectors.map(selector => `:not([hidden]) > ${selector}`)
@@ -114,7 +128,16 @@ export class ActionMenuElement extends HTMLElement {
     this.#updateInput()
     this.#softDisableItems()
 
-    if (this.includeFragment) {
+    // Reconnecting a deferred menu is reconciled separately
+    const primaryFragment = this.#deferred ? null : this.#primaryFragment()
+
+    if (primaryFragment) {
+      this.#deferred = true
+      this.#template = this.#templateFrom(primaryFragment)
+      this.#track(primaryFragment)
+      this.#observeFragments()
+    } else if (!this.#deferred && this.includeFragment) {
+      // deferred sub-menu
       this.includeFragment.addEventListener('include-fragment-replaced', this, {
         signal,
       })
@@ -177,6 +200,131 @@ export class ActionMenuElement extends HTMLElement {
   disconnectedCallback() {
     this.#abortController.abort()
     this.#focusZoneStack.clear()
+    this.#fragmentAbortController?.abort()
+    this.#fragmentObserver?.disconnect()
+  }
+
+  attributeChangedCallback(name: string, _oldValue: string | null, newValue: string | null) {
+    if (name !== 'src' || !this.#deferred || !this.#template || !newValue?.trim()) return
+    // An unchanged src only retries a failed request
+    if (newValue === this.#request?.src && !this.#request.failed) return
+    if (!this.isConnected) return
+
+    this.#refresh(newValue)
+  }
+
+  // The current primary overlay's body. Looked up on every call, since other
+  // code may replace the body or the overlay.
+  #primaryBody(): HTMLElement | null {
+    const overlay = this.overlay
+    if (!overlay) return null
+
+    for (const body of overlay.querySelectorAll<HTMLElement>('.Overlay-body')) {
+      if (body.closest('anchored-position') === overlay) return body
+    }
+
+    return null
+  }
+
+  #primaryFragment(): IncludeFragmentElement | null {
+    const body = this.#primaryBody()
+    if (!body) return null
+
+    for (const child of body.children) {
+      if (child.localName === 'include-fragment') return child as IncludeFragmentElement
+    }
+
+    return null
+  }
+
+  #templateFrom(fragment: IncludeFragmentElement): IncludeFragmentElement {
+    const template = fragment.cloneNode(true) as IncludeFragmentElement
+    template.classList.remove('is-error')
+    return template
+  }
+
+  // Binds completion and failure listeners to the fragment, dropping any
+  // bound to a previous one. Superseded fragments still dispatch events.
+  #bind(fragment: IncludeFragmentElement) {
+    this.#fragmentAbortController?.abort()
+    const {signal} = (this.#fragmentAbortController = new AbortController())
+
+    fragment.addEventListener('include-fragment-replaced', this, {signal})
+    fragment.addEventListener(
+      'error',
+      () => {
+        if (this.#request?.fragment === fragment) this.#request.failed = true
+      },
+      {signal},
+    )
+  }
+
+  #track(fragment: IncludeFragmentElement) {
+    this.#request = {fragment, src: fragment.getAttribute('src') || '', failed: false}
+    this.#bind(fragment)
+    this.removeAttribute('data-ready')
+  }
+
+  // Makes a fragment inserted by other code current and reflects its src.
+  #adopt(fragment: IncludeFragmentElement) {
+    if (this.#request?.fragment === fragment) return
+
+    this.#template = this.#templateFrom(fragment)
+    this.#track(fragment)
+
+    // #request.src already matches, so attributeChangedCallback does nothing
+    const src = fragment.getAttribute('src')
+    if (src) this.setAttribute('src', src)
+  }
+
+  #observeFragments() {
+    this.#fragmentObserver?.disconnect()
+    this.#fragmentObserver = new MutationObserver(records => this.#adoptAddedFragments(records))
+    this.#fragmentObserver.observe(this, {childList: true, subtree: true})
+  }
+
+  #adoptAddedFragments(records: MutationRecord[]) {
+    const candidates = new Set<IncludeFragmentElement>()
+
+    for (const record of records) {
+      for (const node of record.addedNodes) {
+        if (!(node instanceof Element)) continue
+        if (node.localName === 'include-fragment') candidates.add(node as IncludeFragmentElement)
+
+        for (const fragment of node.querySelectorAll<IncludeFragmentElement>('include-fragment')) {
+          candidates.add(fragment)
+        }
+      }
+    }
+
+    if (candidates.size === 0) return
+
+    // Records can describe nodes a later mutation already removed
+    const body = this.#primaryBody()
+
+    for (const fragment of candidates) {
+      if (body && fragment.isConnected && fragment.parentElement === body) {
+        this.#adopt(fragment)
+      }
+    }
+  }
+
+  // Replaces the primary body's children with a new loader for src.
+  #refresh(src: string) {
+    const body = this.#primaryBody()
+    if (!this.#template || !body) return
+
+    const clone = this.#template.cloneNode(true) as IncludeFragmentElement
+    clone.setAttribute('src', src)
+
+    body.prepend(clone)
+    this.#track(clone)
+
+    for (const child of Array.from(body.childNodes)) {
+      if (child !== clone) child.remove()
+    }
+
+    this.#inputName = ''
   }
 
   #softDisableItems() {

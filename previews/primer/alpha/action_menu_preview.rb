@@ -310,6 +310,13 @@ module Primer
         render_with_template(locals: { nest_in_sub_menu: nest_in_sub_menu })
       end
 
+      # @label Deferred refresh
+      #
+      # @param preload toggle
+      def deferred_refresh(preload: false)
+        render_with_template(locals: { preload: preload.to_s == "true" })
+      end
+
       # @label With deferred content near the bottom of the viewport
       #
       # @hidden

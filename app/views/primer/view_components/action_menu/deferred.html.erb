@@ -1,5 +1,8 @@
 <%= render(Primer::Alpha::ActionMenu::List.new(menu_id: "deferred")) do |list| %>
-  <% list.with_item(label: "Copy link", value: "", autofocus: true) %>
+  <% if @label.present? %>
+    <% list.with_item(label: @label, value: "", autofocus: true) %>
+  <% end %>
+  <% list.with_item(label: "Copy link", value: "", autofocus: @label.blank?) %>
   <% list.with_item(label: "Quote reply", value: "") %>
   <% list.with_item(label: "Reference in new issue", value: "") %>
   <% list.with_item(
@@ -10,4 +13,7 @@
     value: "",
     scheme: :danger
   ) %>
+  <% if @deferred_sub %>
+    <% list.with_item(component_klass: Primer::Alpha::ActionMenu::SubMenuItem, label: "Deferred more", src: primer_view_components.action_menu_deferred_path) %>
+  <% end %>
 <% end %>
