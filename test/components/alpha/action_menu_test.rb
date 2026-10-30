@@ -116,6 +116,20 @@ module Primer
         end
       end
 
+      def test_renders_src_on_action_menu_when_deferred
+        render_inline(Primer::Alpha::ActionMenu.new(menu_id: "m", src: "/items?x=1")) { |m| m.with_show_button { "Open" } }
+        assert_selector "action-menu[src='/items?x=1']"
+        assert_selector "action-menu include-fragment[src='/items?x=1']", visible: false
+      end
+
+      def test_omits_src_on_action_menu_when_not_deferred
+        render_inline(Primer::Alpha::ActionMenu.new(menu_id: "m")) do |m|
+          m.with_show_button { "Open" }
+          m.with_item(label: "One")
+        end
+        assert_no_selector "action-menu[src]"
+      end
+
       def test_renders_include_fragment_with_preload
         render_inline Primer::Alpha::ActionMenu.new(
           menu_id: "deferred-menu",
