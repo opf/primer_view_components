@@ -1,0 +1,10 @@
+<%= fields do |f| %>
+  <%= render(Primer::Alpha::ActionMenu::List.new(menu_id: "deferred-form", select_variant: :multiple, form_arguments: { builder: f, name: @name })) do |list| %>
+    <% list.with_group do |group| %>
+      <% group.with_heading(title: "Strategy") %>
+      <% [["Fast forward", "fast_forward"], ["Recursive", "recursive"], ["Ours", "ours"]].each do |name, value| %>
+        <% group.with_item(label: [name, @label].compact.join(" "), content_arguments: { data: { value: value } }, active: @checked.include?(value)) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

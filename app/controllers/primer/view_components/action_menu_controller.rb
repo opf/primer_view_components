@@ -27,6 +27,16 @@ module Primer
         render "primer/view_components/action_menu/deferred_preload"
       end
 
+      def deferred_form
+        status = request_gate_status
+        return head(status) unless status == 200
+
+        @label = params[:label].presence
+        @name = params[:name].presence || "foo"
+        @checked = params.key?(:checked) ? params[:checked].to_s.split(",") : ["ours"]
+        render "primer/view_components/action_menu/deferred_form"
+      end
+
       def form_action
         respond_to do |format|
           format.html do

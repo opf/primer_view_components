@@ -299,6 +299,8 @@ export class ActionMenuElement extends HTMLElement {
   // disconnects: upstream never replays `error` for a cached rejection.
   #track(fragment: IncludeFragmentElement) {
     this.#request = {fragment, src: fragment.getAttribute('src') || '', failed: false}
+    // The response decides the form field name
+    this.#inputName = ''
 
     this.#requestAbortController?.abort()
     const {signal} = (this.#requestAbortController = new AbortController())
@@ -384,8 +386,6 @@ export class ActionMenuElement extends HTMLElement {
     for (const child of Array.from(body.childNodes)) {
       if (child !== clone) child.remove()
     }
-
-    this.#inputName = ''
   }
 
   // Keeps the open menu open while fragment loads into its body. Open
@@ -716,6 +716,8 @@ export class ActionMenuElement extends HTMLElement {
 
       this.overlay?.update()
     }
+    this.#setDynamicLabel()
+    this.#updateInput()
     this.#softDisableItems()
 
     // async items have loaded, so component is ready

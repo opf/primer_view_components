@@ -1,0 +1,9 @@
+<%= form_with(url: primer_view_components.action_menu_form_action_path(format: route_format)) do |f| %>
+  <%= render(Primer::Alpha::ActionMenu.new(select_variant: :multiple, dynamic_label: true, dynamic_label_prefix: "Strategy", menu_id: "deferred-form", src: primer_view_components.action_menu_deferred_form_path, form_arguments: { builder: f, name: "foo" })) do |menu| %>
+    <% menu.with_show_button { "Strategy" } %>
+  <% end %>
+  <hr>
+  <div>
+    <%= f.submit(class: "Button--secondary Button--medium Button") %>
+  </div>
+<% end %>
