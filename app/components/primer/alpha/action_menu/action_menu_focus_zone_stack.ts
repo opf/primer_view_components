@@ -47,6 +47,17 @@ export class ActionMenuFocusZoneStack {
     }
   }
 
+  // Drops and aborts every entry whose element is no longer live, for example
+  // an overlay that other code removed while it was open. Its toggle event
+  // never reaches the menu, so nothing else pops it.
+  prune(isLive: (element: AnchoredPositionElement) => boolean) {
+    this.#stack = this.#stack.filter(entry => {
+      if (isLive(entry.element)) return true
+      entry.abortController?.abort()
+      return false
+    })
+  }
+
   clear() {
     while (this.#stack.length > 0) {
       const entry = this.#stack.pop()

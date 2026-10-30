@@ -321,6 +321,12 @@ export class ActionMenuElement extends HTMLElement {
     this.#template = this.#templateFrom(fragment)
     this.#track(fragment)
 
+    if (this.#isOpen()) {
+      this.#keepOpenWhileLoading(fragment)
+    } else {
+      this.#pruneFocusZones()
+    }
+
     // #request.src already matches, so attributeChangedCallback does nothing
     const src = fragment.getAttribute('src')
     if (src) this.setAttribute('src', src)
@@ -358,22 +364,49 @@ export class ActionMenuElement extends HTMLElement {
     }
   }
 
-  // Replaces the primary body's children with a new loader for src.
+  // Replaces the primary body's children with a new loader for src. An open
+  // menu stays open: its loader is eager (this clone only, not #template)
+  // and it takes over before the old items are removed.
   #refresh(src: string) {
     const body = this.#primaryBody()
     if (!this.#template || !body) return
 
+    const open = this.#isOpen()
     const clone = this.#template.cloneNode(true) as IncludeFragmentElement
     clone.setAttribute('src', src)
+    if (open) clone.setAttribute('loading', 'eager')
 
     body.prepend(clone)
     this.#track(clone)
+
+    if (open) this.#keepOpenWhileLoading(clone)
 
     for (const child of Array.from(body.childNodes)) {
       if (child !== clone) child.remove()
     }
 
     this.#inputName = ''
+  }
+
+  // Keeps the open menu open while fragment loads into its body. Open
+  // sub-menus are torn down first, since their toggle events arrive after
+  // the nodes are gone, and focus moves to the fragment's spinner before the
+  // focusout frame runs, so it never drops to <body> and closes the menu.
+  #keepOpenWhileLoading(fragment: IncludeFragmentElement) {
+    this.#pruneFocusZones()
+    this.#focusZoneStack.popAbove(this.overlay)
+
+    for (const child of this.childPopoverElements) {
+      if (child.matches(':popover-open')) child.hidePopover()
+    }
+
+    fragment.querySelector<HTMLElement>('[role=menuitem]')?.focus()
+  }
+
+  // Drops focus zones of overlays other code removed, such as a replaced
+  // primary overlay and its sub-menus.
+  #pruneFocusZones() {
+    this.#focusZoneStack.prune(element => element.isConnected && this.contains(element))
   }
 
   #softDisableItems() {
@@ -670,7 +703,17 @@ export class ActionMenuElement extends HTMLElement {
   #handleIncludeFragmentReplaced() {
     // Content can finish loading while the menu is detached
     if (this.isConnected) {
-      this.#firstItem?.focus()
+      const firstItem = this.#firstItem
+
+      if (firstItem) {
+        firstItem.focus()
+      } else if (this.overlay?.matches(':popover-open')) {
+        // Nothing to focus in an empty response: close and return to the
+        // button. invokerElement and popoverElement need the removed list.
+        this.overlay.hidePopover()
+        this.#itemForSubMenu(this.overlay)?.focus()
+      }
+
       this.overlay?.update()
     }
     this.#softDisableItems()

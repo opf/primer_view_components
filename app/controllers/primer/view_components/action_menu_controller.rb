@@ -13,6 +13,7 @@ module Primer
         sleep params[:delay].to_f if params[:delay].present?
         status = request_gate_status
         return head(status) unless status == 200
+        return render(html: "") if params[:empty].present?
 
         assign_deferred_params
         render "primer/view_components/action_menu/deferred"
@@ -52,6 +53,7 @@ module Primer
       def assign_deferred_params
         @label = params[:label].presence
         @deferred_sub = params[:deferred_sub].present?
+        @with_sub_menu = params[:with_sub_menu].present?
       end
 
       def form_action_selected_value

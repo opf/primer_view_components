@@ -13,6 +13,12 @@
     value: "",
     scheme: :danger
   ) %>
+  <% if @with_sub_menu %>
+    <% list.with_item(component_klass: Primer::Alpha::ActionMenu::SubMenuItem, label: "More") do |sub_menu| %>
+      <% sub_menu.with_item(label: "Sub one") %>
+      <% sub_menu.with_item(label: "Sub two") %>
+    <% end %>
+  <% end %>
   <% if @deferred_sub %>
     <% list.with_item(component_klass: Primer::Alpha::ActionMenu::SubMenuItem, label: "Deferred more", src: primer_view_components.action_menu_deferred_path) %>
   <% end %>
