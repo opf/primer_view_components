@@ -176,6 +176,7 @@ export class ActionMenuElement extends HTMLElement {
 
   disconnectedCallback() {
     this.#abortController.abort()
+    this.#focusZoneStack.clear()
   }
 
   #softDisableItems() {

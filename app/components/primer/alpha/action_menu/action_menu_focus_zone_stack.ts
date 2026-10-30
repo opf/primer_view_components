@@ -25,6 +25,8 @@ export class ActionMenuFocusZoneStack {
 
   pop(target?: AnchoredPositionElement) {
     if (target) {
+      if (!this.#stack.some(entry => entry.element === target)) return
+
       while (this.#stack.length > 0 && this.current?.element !== target) {
         const entry = this.#stack.pop()
         entry?.abortController?.abort()
@@ -35,7 +37,24 @@ export class ActionMenuFocusZoneStack {
     entry?.abortController?.abort()
   }
 
-  #setupFocusZone(containerEl: AnchoredPositionElement, trapFocus: boolean): AbortController | undefined {
+  // Pops and aborts every entry above (not including) the given element.
+  popAbove(element: AnchoredPositionElement) {
+    if (!this.#stack.some(entry => entry.element === element)) return
+
+    while (this.#stack.length > 0 && this.current?.element !== element) {
+      const entry = this.#stack.pop()
+      entry?.abortController?.abort()
+    }
+  }
+
+  clear() {
+    while (this.#stack.length > 0) {
+      const entry = this.#stack.pop()
+      entry?.abortController?.abort()
+    }
+  }
+
+  #setupFocusZone(containerEl: AnchoredPositionElement, trapFocus: boolean): AbortController {
     const focusZoneAbortController = focusZone(containerEl, {
       bindKeys: FocusKeys.ArrowVertical | FocusKeys.ArrowHorizontal | FocusKeys.HomeAndEnd | FocusKeys.Backspace,
       focusOutBehavior: 'wrap',
@@ -46,11 +65,11 @@ export class ActionMenuFocusZoneStack {
     })
 
     if (trapFocus) {
-      const {signal: focusZoneSignal} = focusZoneAbortController
-      return focusTrap(containerEl, undefined, focusZoneSignal)
-    } else {
-      return focusZoneAbortController
+      // focusTrap returns undefined when given a signal, so keep the zone's controller
+      focusTrap(containerEl, undefined, focusZoneAbortController.signal)
     }
+
+    return focusZoneAbortController
   }
 
   elementIsMenuItem(element: HTMLElement): boolean {

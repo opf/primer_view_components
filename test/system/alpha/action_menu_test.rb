@@ -1201,6 +1201,46 @@ module Alpha
       assert_selector("[role=menuitem]", text: "Current clipboard")
     end
 
+    def test_sub_menu_focus_trap_released_on_close
+      visit_preview(:sub_menus)
+
+      open_menu_via_keyboard
+      arrow_down_to("Paste special")
+      keyboard.type(:right)
+      assert_selector("[role=menuitem]", text: "Paste plain text")
+
+      keyboard.type(:left)
+      refute_selector("[role=menuitem]", text: "Paste plain text")
+
+      keyboard.type(:escape)
+      refute_selector("[role=menuitem]", text: "Paste special")
+
+      assert_no_selector "[data-focus-trap=active]", visible: :all
+
+      # focus returns to the invoker, then Tab must leave the menu
+      assert_selector "action-menu button:focus"
+      keyboard.type(:tab)
+      assert page.evaluate_script("!document.activeElement.closest('action-menu')")
+    end
+
+    def test_detach_with_open_sub_menu_releases_trap
+      visit_preview(:sub_menus)
+
+      open_menu_via_keyboard
+      arrow_down_to("Paste special")
+      keyboard.type(:right)
+      assert_selector("[role=menuitem]", text: "Paste plain text")
+
+      page.execute_script("window.__detachedMenu = document.querySelector('action-menu'); window.__detachedMenu.remove()")
+      page.execute_script("const b = document.createElement('button'); b.id = 'outside-target'; document.body.append(b)")
+
+      assert_equal 0, page.evaluate_script("document.querySelectorAll('[data-focus-trap=active]').length")
+      assert_equal 0, page.evaluate_script("window.__detachedMenu.querySelectorAll('[data-focus-trap=active]').length")
+
+      keyboard.type(:tab)
+      assert_equal "outside-target", page.evaluate_script("document.activeElement.id")
+    end
+
     def test_sub_menu_opens_on_right_arrow
       visit_preview(:sub_menus)
 
