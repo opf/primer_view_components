@@ -190,6 +190,49 @@ module Alpha
       JS
     end
 
+    # Removes the menu from the document, keeping it in window.__m.
+    def detach_menu
+      page.execute_script(<<~JS)
+        const m = document.querySelector('action-menu')
+        window.__p = m.parentNode
+        m.remove()
+        window.__m = m
+      JS
+    end
+
+    def reattach_menu
+      page.execute_script("window.__p.append(window.__m)")
+    end
+
+    # Starts held request "e", detaches the menu and fails the request while
+    # the menu is detached, leaving it detached.
+    def fail_request_while_detached
+      set_menu_src(gate: "e")
+      Primer::RequestGate.wait_until_started("e")
+      watch_current_fragment("e1")
+      detach_menu
+
+      Primer::RequestGate.release("e", status: 500)
+      wait_for_fragment_done("e1")
+      wait_until do
+        page.evaluate_script(
+          "!!window.__m.querySelector('anchored-position .Overlay-body > include-fragment.is-error')"
+        )
+      end
+    end
+
+    def detached_menu_includes?(text)
+      page.evaluate_script("window.__m.textContent.includes(#{text.to_json})")
+    end
+
+    def collect_js_errors
+      page.execute_script(<<~JS)
+        window.__errors = []
+        window.addEventListener('error', (event) => window.__errors.push(String(event.message)))
+        window.addEventListener('unhandledrejection', (event) => window.__errors.push(String(event.reason)))
+      JS
+    end
+
     def assert_no_alert(message = nil, &block)
       accept_alert(&block)
       assert false, message || "Unexpected alert dialog"
@@ -1328,6 +1371,156 @@ module Alpha
       set_menu_src(label: "Z", gate: "z")
       Primer::RequestGate.wait_until_started("z")
       refute_selector "anchored-position:popover-open"
+    end
+
+    def test_reattach_before_pending_request_completes
+      # Starting state: loaded, closed (preload)
+      visit_preview(:deferred_refresh, preload: true)
+      load_and_close_menu
+
+      set_menu_src(label: "B", gate: "b")
+      Primer::RequestGate.wait_until_started("b")
+      detach_menu
+      reattach_menu
+
+      Primer::RequestGate.release("b")
+      assert_selector "action-menu[data-ready=true]", visible: :all
+
+      click_on_invoker_button
+      assert_item "B"
+    end
+
+    def test_completion_while_detached
+      # Starting state: loaded, closed (preload)
+      visit_preview(:deferred_refresh, preload: true)
+      load_and_close_menu
+
+      set_menu_src(label: "B", gate: "b")
+      Primer::RequestGate.wait_until_started("b")
+      detach_menu
+
+      Primer::RequestGate.release("b")
+      wait_until { detached_menu_includes?("B") }
+      reattach_menu
+      assert_selector "action-menu[data-ready=true]", visible: :all
+
+      click_on_invoker_button
+      assert_item "B"
+      close_menu
+
+      set_menu_src(label: "C")
+      click_on_invoker_button
+      assert_item "C"
+    end
+
+    def test_failure_while_detached_then_same_src_retries
+      # Starting state: loaded, closed (preload)
+      visit_preview(:deferred_refresh, preload: true)
+      load_and_close_menu
+
+      fail_request_while_detached
+      reattach_menu
+
+      set_menu_src(gate: "e")
+      Primer::RequestGate.wait_until_started("e", attempt: 2)
+      Primer::RequestGate.release("e", attempt: 2)
+      assert_selector "action-menu[data-ready=true]", visible: :all
+
+      click_on_invoker_button
+      assert_item "Copy link"
+    end
+
+    def test_same_src_assigned_while_detached_after_failure_retries
+      # Starting state: loaded, closed (preload)
+      visit_preview(:deferred_refresh, preload: true)
+      load_and_close_menu
+
+      fail_request_while_detached
+
+      page.execute_script("window.__m.setAttribute('src', window.__m.getAttribute('src'))")
+      reattach_menu
+
+      Primer::RequestGate.wait_until_started("e", attempt: 2)
+      Primer::RequestGate.release("e", attempt: 2)
+      assert_selector "action-menu[data-ready=true]", visible: :all
+
+      click_on_invoker_button
+      assert_item "Copy link"
+    end
+
+    def test_failure_while_detached_not_retried_on_reconnect
+      # Starting state: loaded, closed (preload)
+      visit_preview(:deferred_refresh, preload: true)
+      load_and_close_menu
+
+      fail_request_while_detached
+      reattach_menu
+
+      click_on_invoker_button
+      assert_selector "action-menu include-fragment.is-error"
+      assert_selector "action-menu:not([data-ready])", visible: :all
+      close_menu
+      click_on_invoker_button
+      assert_selector "action-menu include-fragment.is-error"
+      assert_equal 1, Primer::RequestGate.count("e")
+    end
+
+    def test_src_changed_while_detached
+      # Starting state: loaded, closed
+      visit_preview(:deferred_refresh)
+      load_and_close_menu
+
+      detach_menu
+      page.execute_script(<<~JS)
+        const base = window.__m.getAttribute('src').split('?')[0]
+        window.__m.setAttribute('src', `${base}?label=D`)
+      JS
+      reattach_menu
+
+      click_on_invoker_button
+      assert_item "D"
+    end
+
+    def test_cancelled_replace_then_changed_src
+      # Starting state: loaded, closed
+      visit_preview(:deferred_refresh)
+      load_and_close_menu
+
+      page.execute_script(<<~JS)
+        const menu = document.querySelector('action-menu')
+        menu.addEventListener('include-fragment-replace', (event) => {
+          event.preventDefault()
+          window.__cancelled = true
+        }, {capture: true, once: true})
+      JS
+
+      set_menu_src(label: "B")
+      click_on_invoker_button
+      wait_until { page.evaluate_script("window.__cancelled === true") }
+      assert_spinner_visible
+      refute_selector "action-menu .ActionListItem-label", exact_text: "B"
+      assert_selector "action-menu:not([data-ready])", visible: :all
+      close_menu
+
+      set_menu_src(label: "C")
+      click_on_invoker_button
+      assert_item "C"
+      assert_selector "action-menu[data-ready=true]", visible: :all
+    end
+
+    def test_detached_forever_no_errors
+      # Starting state: loaded, closed (preload)
+      visit_preview(:deferred_refresh, preload: true)
+      collect_js_errors
+      load_and_close_menu
+
+      set_menu_src(label: "B", gate: "b")
+      Primer::RequestGate.wait_until_started("b")
+      detach_menu
+
+      Primer::RequestGate.release("b")
+      wait_until { detached_menu_includes?("B") }
+      assert_empty page.evaluate_script("window.__errors")
     end
 
     def test_opening_second_menu_closes_first_menu

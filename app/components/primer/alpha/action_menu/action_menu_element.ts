@@ -34,8 +34,14 @@ export class ActionMenuElement extends HTMLElement {
   #template: IncludeFragmentElement | null = null
   // The current request; `failed` comes from the fragment's `error` event.
   #request: {fragment: IncludeFragmentElement; src: string; failed: boolean} | null = null
-  // Listener lifetime for the current fragment.
+  // UI listener lifetime for the current fragment; aborted on disconnect.
   #fragmentAbortController: AbortController | null = null
+  // Failure listener lifetime for the current request; aborted only when a
+  // new request supersedes it, so failures while detached are recorded.
+  #requestAbortController: AbortController | null = null
+  // A src assigned while detached that would otherwise have refreshed (for
+  // example the same src after a failure); applied on reconnect.
+  #pendingSrc: string | null = null
   #fragmentObserver: MutationObserver | null = null
 
   static observedAttributes = ['src']
@@ -128,15 +134,17 @@ export class ActionMenuElement extends HTMLElement {
     this.#updateInput()
     this.#softDisableItems()
 
-    // Reconnecting a deferred menu is reconciled separately
     const primaryFragment = this.#deferred ? null : this.#primaryFragment()
 
-    if (primaryFragment) {
+    if (this.#deferred) {
+      // re-attached
+      this.#reconcile()
+    } else if (primaryFragment) {
       this.#deferred = true
       this.#template = this.#templateFrom(primaryFragment)
       this.#track(primaryFragment)
       this.#observeFragments()
-    } else if (!this.#deferred && this.includeFragment) {
+    } else if (this.includeFragment) {
       // deferred sub-menu
       this.includeFragment.addEventListener('include-fragment-replaced', this, {
         signal,
@@ -208,9 +216,44 @@ export class ActionMenuElement extends HTMLElement {
     if (name !== 'src' || !this.#deferred || !this.#template || !newValue?.trim()) return
     // An unchanged src only retries a failed request
     if (newValue === this.#request?.src && !this.#request.failed) return
-    if (!this.isConnected) return
+    if (!this.isConnected) {
+      this.#pendingSrc = newValue
+      return
+    }
 
     this.#refresh(newValue)
+  }
+
+  // Catches up with whatever happened to the deferred content while the menu
+  // was detached: a src change or requested retry, a still-pending request
+  // (whose completion listener was aborted), an inserted fragment, or a
+  // completed load.
+  #reconcile() {
+    this.#observeFragments()
+
+    const src = this.getAttribute('src')
+    const pendingSrc = this.#pendingSrc
+    this.#pendingSrc = null
+    if (src?.trim() && (src !== this.#request?.src || src === pendingSrc)) {
+      this.#refresh(src)
+      return
+    }
+
+    const body = this.#primaryBody()
+    const current = this.#request?.fragment
+
+    if (current && body && current.parentElement === body) {
+      this.#bind(current)
+      return
+    }
+
+    const fragment = this.#primaryFragment()
+
+    if (fragment) {
+      this.#adopt(fragment)
+    } else if (!this.hasAttribute('data-ready')) {
+      this.#handleIncludeFragmentReplaced()
+    }
   }
 
   // The current primary overlay's body. Looked up on every call, since other
@@ -243,13 +286,22 @@ export class ActionMenuElement extends HTMLElement {
     return template
   }
 
-  // Binds completion and failure listeners to the fragment, dropping any
-  // bound to a previous one. Superseded fragments still dispatch events.
+  // Binds the completion listener to the fragment, dropping any bound to a
+  // previous one. Superseded fragments still dispatch events.
   #bind(fragment: IncludeFragmentElement) {
     this.#fragmentAbortController?.abort()
     const {signal} = (this.#fragmentAbortController = new AbortController())
 
     fragment.addEventListener('include-fragment-replaced', this, {signal})
+  }
+
+  // Makes the fragment the current request. Its failure listener outlives
+  // disconnects: upstream never replays `error` for a cached rejection.
+  #track(fragment: IncludeFragmentElement) {
+    this.#request = {fragment, src: fragment.getAttribute('src') || '', failed: false}
+
+    this.#requestAbortController?.abort()
+    const {signal} = (this.#requestAbortController = new AbortController())
     fragment.addEventListener(
       'error',
       () => {
@@ -257,10 +309,7 @@ export class ActionMenuElement extends HTMLElement {
       },
       {signal},
     )
-  }
 
-  #track(fragment: IncludeFragmentElement) {
-    this.#request = {fragment, src: fragment.getAttribute('src') || '', failed: false}
     this.#bind(fragment)
     this.removeAttribute('data-ready')
   }
@@ -619,9 +668,12 @@ export class ActionMenuElement extends HTMLElement {
   }
 
   #handleIncludeFragmentReplaced() {
-    this.#firstItem?.focus()
+    // Content can finish loading while the menu is detached
+    if (this.isConnected) {
+      this.#firstItem?.focus()
+      this.overlay?.update()
+    }
     this.#softDisableItems()
-    this.overlay?.update()
 
     // async items have loaded, so component is ready
     this.setAttribute('data-ready', 'true')
