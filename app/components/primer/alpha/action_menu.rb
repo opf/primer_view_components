@@ -212,6 +212,7 @@ module Primer
 
         @system_arguments[:tag] = :"action-menu"
         @system_arguments[:preload] = true if @primary_menu.preload?
+        @system_arguments[:src] = @primary_menu.src if @primary_menu.src.present?
 
         @system_arguments[:data] = merge_data(
           @system_arguments, {
