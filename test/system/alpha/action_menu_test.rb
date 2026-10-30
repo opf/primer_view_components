@@ -104,6 +104,164 @@ module Alpha
       JS
     end
 
+    def wait_until(timeout: Capybara.default_max_wait_time, message: "Timed out waiting for condition")
+      deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + timeout
+
+      until yield
+        raise Minitest::Assertion, message if Process.clock_gettime(Process::CLOCK_MONOTONIC) > deadline
+
+        sleep 0.05
+      end
+    end
+
+    def set_menu_src(**params)
+      page.execute_script(<<~JS, params.to_json)
+        const menu = document.querySelector('action-menu')
+        const base = menu.getAttribute('src').split('?')[0]
+        const q = new URLSearchParams(JSON.parse(arguments[0])).toString()
+        menu.setAttribute('src', q ? `${base}?${q}` : base)
+      JS
+    end
+
+    # Marks the current primary fragment so a test can wait for its completion
+    # in the browser even after it has been superseded and detached.
+    def watch_current_fragment(name)
+      page.execute_script(<<~JS, name)
+        const name = arguments[0]
+        const f = document.querySelector('action-menu anchored-position .Overlay-body > include-fragment')
+        window.__done ||= {}
+        for (const t of ['include-fragment-replaced', 'error']) f.addEventListener(t, () => { window.__done[name] = true })
+      JS
+    end
+
+    def wait_for_fragment_done(name)
+      wait_until { page.evaluate_script("!!(window.__done || {})[#{name.to_json}]") }
+    end
+
+    def menu_src
+      page.evaluate_script("document.querySelector('action-menu').getAttribute('src')")
+    end
+
+    def primary_fragment_js
+      "document.querySelector('action-menu anchored-position .Overlay-body > include-fragment')"
+    end
+
+    # Keeps the loading spinner markup so tests can build their own fragments.
+    def stash_spinner_markup
+      page.execute_script("window.__spinner = #{primary_fragment_js}.innerHTML")
+    end
+
+    def close_menu
+      page.execute_script("document.querySelector('action-menu').overlay.hidePopover()")
+      refute_selector "anchored-position:popover-open"
+    end
+
+    # Opens the menu, waits for its deferred items and closes it again.
+    def load_and_close_menu
+      click_on_invoker_button
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      assert_selector "action-menu .ActionListItem-label", exact_text: "Copy link"
+      close_menu
+    end
+
+    # Opens the menu and waits for its deferred items, leaving it open.
+    def load_and_open_menu
+      click_on_invoker_button
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      assert_selector "action-menu .ActionListItem-label", exact_text: "Copy link"
+    end
+
+    # Lets the menu's focusout handler, which runs in an animation frame, settle.
+    def wait_for_frames
+      page.evaluate_async_script("const done = arguments[0]; requestAnimationFrame(() => requestAnimationFrame(done))")
+    end
+
+    def spinner_focused?
+      page.evaluate_script("!!document.activeElement?.closest('action-menu include-fragment')")
+    end
+
+    # Starting from a loaded, open menu: holds request A, then supersedes it
+    # with held request B, watching A's fragment for its completion.
+    def start_out_of_order_requests
+      load_and_open_menu
+
+      set_menu_src(label: "A", gate: "a")
+      Primer::RequestGate.wait_until_started("a")
+      watch_current_fragment("A")
+
+      set_menu_src(label: "B", gate: "b")
+      Primer::RequestGate.wait_until_started("b")
+    end
+
+    def assert_item(label)
+      assert_selector "action-menu .ActionListItem-label", exact_text: label
+    end
+
+    def assert_spinner_visible
+      assert_selector "action-menu anchored-position .Overlay-body > include-fragment [role=menuitem]"
+    end
+
+    def active_element_text
+      page.evaluate_script("document.activeElement?.textContent?.trim()")
+    end
+
+    # Replaces the primary body's children with an eager fragment for `query`.
+    def insert_external_fragment(query)
+      page.execute_script(<<~JS, query)
+        const menu = document.querySelector('action-menu')
+        const body = menu.overlay.querySelector('.Overlay-body')
+        const fragment = document.createElement('include-fragment')
+        fragment.setAttribute('src', `${menu.getAttribute('src').split('?')[0]}?${arguments[0]}`)
+        fragment.setAttribute('loading', 'eager')
+        fragment.innerHTML = window.__spinner
+        body.replaceChildren(fragment)
+        window.__externalSrc = fragment.getAttribute('src')
+      JS
+    end
+
+    # Removes the menu from the document, keeping it in window.__m.
+    def detach_menu
+      page.execute_script(<<~JS)
+        const m = document.querySelector('action-menu')
+        window.__p = m.parentNode
+        m.remove()
+        window.__m = m
+      JS
+    end
+
+    def reattach_menu
+      page.execute_script("window.__p.append(window.__m)")
+    end
+
+    # Starts held request "e", detaches the menu and fails the request while
+    # the menu is detached, leaving it detached.
+    def fail_request_while_detached
+      set_menu_src(gate: "e")
+      Primer::RequestGate.wait_until_started("e")
+      watch_current_fragment("e1")
+      detach_menu
+
+      Primer::RequestGate.release("e", status: 500)
+      wait_for_fragment_done("e1")
+      wait_until do
+        page.evaluate_script(
+          "!!window.__m.querySelector('anchored-position .Overlay-body > include-fragment.is-error')"
+        )
+      end
+    end
+
+    def detached_menu_includes?(text)
+      page.evaluate_script("window.__m.textContent.includes(#{text.to_json})")
+    end
+
+    def collect_js_errors
+      page.execute_script(<<~JS)
+        window.__errors = []
+        window.addEventListener('error', (event) => window.__errors.push(String(event.message)))
+        window.addEventListener('unhandledrejection', (event) => window.__errors.push(String(event.reason)))
+      JS
+    end
+
     def assert_no_alert(message = nil, &block)
       accept_alert(&block)
       assert false, message || "Unexpected alert dialog"
@@ -916,6 +1074,788 @@ module Alpha
       refute_selector "action-menu ul li"
     end
 
+    def test_deferred_form_first_load_syncs_label
+      visit_preview(:deferred_refresh_form)
+
+      click_on_invoker_button
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      close_menu
+
+      assert_selector "action-menu button[aria-controls]", text: "Ours"
+    end
+
+    def test_refresh_form_backed_menu_repeatedly
+      visit_preview(:deferred_refresh_form)
+      click_on_invoker_button
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      close_menu
+
+      (1..3).each do |n|
+        page.execute_script("document.querySelector('action-menu').removeAttribute('data-ready')")
+        set_menu_src(label: n)
+        click_on_invoker_button
+        assert_selector "action-menu[data-ready=true]", visible: :all
+        assert_selector "action-menu .ActionListItem-label", exact_text: "Ours #{n}"
+        close_menu
+      end
+
+      assert_selector "action-menu .Overlay-body > action-list", count: 1, visible: :all
+      assert_selector "action-menu [data-list-inputs]", count: 1, visible: :all
+      assert_selector "action-menu .ActionList-sectionDivider, action-menu h3", text: "Strategy", count: 1, visible: :all
+      assert_selector "action-menu button[aria-controls]", text: "Ours 3"
+
+      click_on_invoker_button
+      find("action-menu .ActionListItem-label", exact_text: "Recursive 3").click
+      close_menu
+
+      find("input[type=submit]").click
+      response = JSON.parse(find("pre").text)
+      assert_equal %w[ours recursive], response["value"].sort
+    end
+
+    def test_refresh_form_backed_menu_empty_selection
+      visit_preview(:deferred_refresh_form)
+      click_on_invoker_button
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      close_menu
+
+      page.execute_script("document.querySelector('action-menu').removeAttribute('data-ready')")
+      set_menu_src(checked: "")
+      click_on_invoker_button
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      close_menu
+
+      label = find("action-menu button[aria-controls]").text
+      ["Ours", "Recursive", "Fast forward"].each { |name| refute_includes label, name }
+
+      find("input[type=submit]").click
+      response = JSON.parse(find("pre").text)
+      assert_nil response["value"]
+    end
+
+    def test_adopted_form_response_uses_new_field_name
+      visit_preview(:deferred_refresh_form)
+      stash_spinner_markup
+      click_on_invoker_button
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      close_menu
+
+      insert_external_fragment("name=bar")
+      wait_until { menu_src == page.evaluate_script("window.__externalSrc") }
+      assert_selector "action-menu[data-ready=true]", visible: :all
+
+      find("input[type=submit]").click
+      response = JSON.parse(find("pre").text)
+      assert_nil response["value"]
+      assert_equal ["ours"], response["other_params"]["bar"]
+    end
+
+    def test_refresh_closed_lazy
+      # Starting state: loaded, closed
+      visit_preview(:deferred_refresh)
+      load_and_close_menu
+
+      set_menu_src(label: "B", gate: "b")
+
+      assert_equal "lazy", page.evaluate_script("#{primary_fragment_js}.loading")
+      assert_selector "action-menu:not([data-ready])", visible: :all
+      assert_equal 0, Primer::RequestGate.count("b")
+
+      click_on_invoker_button
+      Primer::RequestGate.wait_until_started("b")
+      assert_spinner_visible
+
+      Primer::RequestGate.release("b")
+      assert_item "B"
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      assert_selector "action-menu action-list", count: 1
+    end
+
+    def test_refresh_closed_preload
+      # Starting state: loaded, closed (preload)
+      visit_preview(:deferred_refresh, preload: true)
+      load_and_close_menu
+
+      set_menu_src(label: "B", gate: "b")
+      Primer::RequestGate.wait_until_started("b")
+      refute_selector "anchored-position:popover-open"
+
+      Primer::RequestGate.release("b")
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      refute_selector "anchored-position:popover-open"
+
+      click_on_invoker_button
+      assert_item "B"
+      refute_selector "action-menu include-fragment", visible: :all
+    end
+
+    def test_refresh_before_first_load
+      # Starting state: unloaded, closed
+      visit_preview(:deferred_refresh)
+
+      set_menu_src(label: "B")
+
+      click_on_invoker_button
+      assert_item "B"
+      assert_equal "B", page.evaluate_script("document.querySelector('action-menu .ActionListItem-label').textContent.trim()")
+      assert_selector "action-menu action-list", count: 1
+    end
+
+    def test_refresh_same_src_is_noop_and_retries_after_error
+      # Starting state: loaded, closed
+      visit_preview(:deferred_refresh)
+      load_and_close_menu
+
+      set_menu_src(label: "B", gate: "b")
+      click_on_invoker_button
+      Primer::RequestGate.release("b")
+      assert_item "B"
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      close_menu
+
+      set_menu_src(label: "B", gate: "b")
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      click_on_invoker_button
+      assert_item "B"
+      refute_selector "action-menu include-fragment", visible: :all
+      assert_equal 1, Primer::RequestGate.count("b")
+      close_menu
+
+      set_menu_src(gate: "e")
+      click_on_invoker_button
+      Primer::RequestGate.wait_until_started("e")
+      watch_current_fragment("e1")
+      Primer::RequestGate.release("e", status: 500)
+      wait_for_fragment_done("e1")
+      assert_selector "action-menu include-fragment.is-error"
+      close_menu
+
+      set_menu_src(gate: "e")
+      click_on_invoker_button
+      Primer::RequestGate.wait_until_started("e", attempt: 2)
+      Primer::RequestGate.release("e", attempt: 2)
+      assert_item "Copy link"
+      assert_equal 2, Primer::RequestGate.count("e")
+    end
+
+    def test_failed_loader_morph_then_same_src_retries
+      # Starting state: loaded, closed
+      visit_preview(:deferred_refresh)
+      load_and_close_menu
+
+      set_menu_src(gate: "e")
+      click_on_invoker_button
+      Primer::RequestGate.wait_until_started("e")
+      watch_current_fragment("e1")
+      Primer::RequestGate.release("e", status: 500)
+      wait_for_fragment_done("e1")
+      assert_selector "action-menu include-fragment.is-error"
+      close_menu
+
+      # simulates a morph that keeps the failed loader but strips its class
+      page.execute_script("#{primary_fragment_js}.classList.remove('is-error')")
+      set_menu_src(gate: "e")
+      click_on_invoker_button
+      Primer::RequestGate.wait_until_started("e", attempt: 2)
+      Primer::RequestGate.release("e", attempt: 2)
+      assert_item "Copy link"
+    end
+
+    def test_refresh_ignores_blank_src
+      # Starting state: loaded, closed
+      visit_preview(:deferred_refresh)
+      load_and_close_menu
+
+      page.execute_script("document.querySelector('action-menu').removeAttribute('src')")
+      page.execute_script("document.querySelector('action-menu').setAttribute('src', '')")
+
+      click_on_invoker_button
+      assert_item "Copy link"
+      refute_selector "action-menu include-fragment", visible: :all
+    end
+
+    def test_external_fragment_adopted
+      # Starting state: loaded, closed
+      visit_preview(:deferred_refresh)
+      stash_spinner_markup
+      load_and_close_menu
+
+      insert_external_fragment("label=X")
+      wait_until { menu_src == page.evaluate_script("window.__externalSrc") }
+      assert_selector "action-menu[data-ready=true]", visible: :all
+
+      click_on_invoker_button
+      assert_item "X"
+      close_menu
+
+      set_menu_src(label: "Y")
+      click_on_invoker_button
+      assert_item "Y"
+    end
+
+    def test_body_replaced_is_adopted
+      # Starting state: loaded, closed
+      visit_preview(:deferred_refresh)
+      stash_spinner_markup
+      load_and_close_menu
+
+      page.execute_script(<<~JS)
+        const menu = document.querySelector('action-menu')
+        const oldBody = menu.overlay.querySelector('.Overlay-body')
+        const newBody = oldBody.cloneNode(false)
+        const fragment = document.createElement('include-fragment')
+        fragment.setAttribute('src', `${menu.getAttribute('src').split('?')[0]}?label=X`)
+        fragment.setAttribute('loading', 'eager')
+        fragment.innerHTML = window.__spinner
+        newBody.append(fragment)
+        oldBody.replaceWith(newBody)
+      JS
+      wait_until { menu_src.end_with?("?label=X") }
+      assert_selector "action-menu[data-ready=true]", visible: :all
+
+      click_on_invoker_button
+      assert_item "X"
+      close_menu
+
+      set_menu_src(label: "Y")
+      click_on_invoker_button
+      assert_selector "action-menu anchored-position:popover-open .Overlay-body .ActionListItem-label", exact_text: "Y"
+
+      body_count = page.evaluate_script(<<~JS)
+        (() => {
+          const overlay = document.querySelector('action-menu').overlay
+          return Array.from(overlay.querySelectorAll('.Overlay-body')).filter(b => b.closest('anchored-position') === overlay).length
+        })()
+      JS
+      assert_equal 1, body_count
+    end
+
+    def test_refresh_response_with_deferred_sub_menu_not_adopted
+      # Starting state: loaded, closed
+      visit_preview(:deferred_refresh)
+      load_and_close_menu
+
+      set_menu_src(deferred_sub: "1")
+      expected_src = menu_src
+
+      click_on_invoker_button
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      assert_item "Copy link"
+      assert_item "Deferred more"
+
+      # The sub-menu is not opened: loading a nested deferred sub-menu has a
+      # known, pre-existing focus race that can close the whole menu.
+      assert_equal expected_src, menu_src
+    end
+
+    def test_refresh_ignored_when_only_sub_menu_is_deferred
+      # Starting state: unloaded sub-menu, closed
+      visit_preview(:with_deferred_content, nest_in_sub_menu: true)
+
+      page.execute_script(<<~JS)
+        const src = document.querySelector('action-menu include-fragment').getAttribute('src')
+        document.querySelector('action-menu').setAttribute('src', `${src}?label=Z`)
+      JS
+
+      click_on_invoker_button
+      find("action-menu .ActionListItem-label", exact_text: "Sub-menu").click
+      assert_item "Copy link"
+      refute_selector "action-menu .ActionListItem-label", exact_text: "Z"
+    end
+
+    def test_refresh_ignored_for_non_deferred_menu
+      # Starting state: static items, closed
+      visit_preview(:default)
+
+      page.execute_script("document.querySelector('action-menu').setAttribute('src', '/foo?label=Z')")
+
+      click_on_invoker_button
+      assert_item "Copy link"
+      assert_item "Delete"
+      refute_selector "action-menu include-fragment", visible: :all
+    end
+
+    def test_refresh_then_open_via_keyboard
+      # Starting state: loaded, closed
+      visit_preview(:deferred_refresh)
+      load_and_close_menu
+
+      set_menu_src(label: "B", gate: "b")
+      open_menu_via_keyboard
+      Primer::RequestGate.wait_until_started("b")
+      wait_until { page.evaluate_script("!!document.activeElement?.closest('include-fragment')") }
+
+      Primer::RequestGate.release("b")
+      wait_until { active_element_text == "B" }
+    end
+
+    def test_src_set_in_beforetoggle_loads_on_open
+      # Starting state: loaded, closed
+      visit_preview(:deferred_refresh)
+      load_and_close_menu
+
+      page.execute_script(<<~JS)
+        document.addEventListener('beforetoggle', (event) => {
+          const menu = document.querySelector('action-menu')
+          if (event.newState !== 'open' || event.target !== menu.overlay) return
+          const base = menu.getAttribute('src').split('?')[0]
+          menu.setAttribute('src', `${base}?label=T&gate=t`)
+        }, {capture: true})
+      JS
+
+      click_on_invoker_button
+      Primer::RequestGate.wait_until_started("t")
+      assert_equal 1, Primer::RequestGate.count("t")
+
+      Primer::RequestGate.release("t")
+      assert_item "T"
+      assert_equal 1, Primer::RequestGate.count("t")
+      wait_until { active_element_text == "T" }
+    end
+
+    def test_refresh_twice_same_task
+      # Starting state: loaded, closed
+      visit_preview(:deferred_refresh)
+      load_and_close_menu
+
+      page.execute_script(<<~JS)
+        const menu = document.querySelector('action-menu')
+        const base = menu.getAttribute('src').split('?')[0]
+        menu.setAttribute('src', `${base}?label=P`)
+        menu.setAttribute('src', `${base}?label=Q`)
+      JS
+
+      click_on_invoker_button
+      assert_item "Q"
+      refute_selector "action-menu .ActionListItem-label", exact_text: "P"
+      assert_selector "action-menu action-list", count: 1
+    end
+
+    def test_relative_then_absolute_src_reloads_once
+      # Starting state: loaded, closed
+      visit_preview(:deferred_refresh)
+      load_and_close_menu
+
+      set_menu_src(label: "R", gate: "r")
+      click_on_invoker_button
+      Primer::RequestGate.release("r")
+      assert_item "R"
+      close_menu
+
+      set_absolute_src = <<~JS
+        const menu = document.querySelector('action-menu')
+        menu.setAttribute('src', new URL(menu.getAttribute('src'), window.location.href).href)
+      JS
+
+      page.execute_script(set_absolute_src)
+      click_on_invoker_button
+      Primer::RequestGate.wait_until_started("r", attempt: 2)
+      Primer::RequestGate.release("r", attempt: 2)
+      assert_item "R"
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      assert_equal 2, Primer::RequestGate.count("r")
+      close_menu
+
+      page.execute_script(set_absolute_src)
+      click_on_invoker_button
+      assert_item "R"
+      refute_selector "action-menu include-fragment", visible: :all
+      assert_equal 2, Primer::RequestGate.count("r")
+    end
+
+    def test_external_fragment_updates_template
+      # Starting state: loaded, closed
+      visit_preview(:deferred_refresh)
+      stash_spinner_markup
+      load_and_close_menu
+
+      insert_external_fragment("label=X")
+      wait_until { menu_src == page.evaluate_script("window.__externalSrc") }
+      assert_selector "action-menu[data-ready=true]", visible: :all
+
+      set_menu_src(label: "Z", gate: "z")
+      Primer::RequestGate.wait_until_started("z")
+      refute_selector "anchored-position:popover-open"
+    end
+
+    def test_reattach_before_pending_request_completes
+      # Starting state: loaded, closed (preload)
+      visit_preview(:deferred_refresh, preload: true)
+      load_and_close_menu
+
+      set_menu_src(label: "B", gate: "b")
+      Primer::RequestGate.wait_until_started("b")
+      detach_menu
+      reattach_menu
+
+      Primer::RequestGate.release("b")
+      assert_selector "action-menu[data-ready=true]", visible: :all
+
+      click_on_invoker_button
+      assert_item "B"
+    end
+
+    def test_completion_while_detached
+      # Starting state: loaded, closed (preload)
+      visit_preview(:deferred_refresh, preload: true)
+      load_and_close_menu
+
+      set_menu_src(label: "B", gate: "b")
+      Primer::RequestGate.wait_until_started("b")
+      detach_menu
+
+      Primer::RequestGate.release("b")
+      wait_until { detached_menu_includes?("B") }
+      reattach_menu
+      assert_selector "action-menu[data-ready=true]", visible: :all
+
+      click_on_invoker_button
+      assert_item "B"
+      close_menu
+
+      set_menu_src(label: "C")
+      click_on_invoker_button
+      assert_item "C"
+    end
+
+    def test_failure_while_detached_then_same_src_retries
+      # Starting state: loaded, closed (preload)
+      visit_preview(:deferred_refresh, preload: true)
+      load_and_close_menu
+
+      fail_request_while_detached
+      reattach_menu
+
+      set_menu_src(gate: "e")
+      Primer::RequestGate.wait_until_started("e", attempt: 2)
+      Primer::RequestGate.release("e", attempt: 2)
+      assert_selector "action-menu[data-ready=true]", visible: :all
+
+      click_on_invoker_button
+      assert_item "Copy link"
+    end
+
+    def test_same_src_assigned_while_detached_after_failure_retries
+      # Starting state: loaded, closed (preload)
+      visit_preview(:deferred_refresh, preload: true)
+      load_and_close_menu
+
+      fail_request_while_detached
+
+      page.execute_script("window.__m.setAttribute('src', window.__m.getAttribute('src'))")
+      reattach_menu
+
+      Primer::RequestGate.wait_until_started("e", attempt: 2)
+      Primer::RequestGate.release("e", attempt: 2)
+      assert_selector "action-menu[data-ready=true]", visible: :all
+
+      click_on_invoker_button
+      assert_item "Copy link"
+    end
+
+    def test_failure_while_detached_not_retried_on_reconnect
+      # Starting state: loaded, closed (preload)
+      visit_preview(:deferred_refresh, preload: true)
+      load_and_close_menu
+
+      fail_request_while_detached
+      reattach_menu
+
+      click_on_invoker_button
+      assert_selector "action-menu include-fragment.is-error"
+      assert_selector "action-menu:not([data-ready])", visible: :all
+      close_menu
+      click_on_invoker_button
+      assert_selector "action-menu include-fragment.is-error"
+      assert_equal 1, Primer::RequestGate.count("e")
+    end
+
+    def test_src_changed_while_detached
+      # Starting state: loaded, closed
+      visit_preview(:deferred_refresh)
+      load_and_close_menu
+
+      detach_menu
+      page.execute_script(<<~JS)
+        const base = window.__m.getAttribute('src').split('?')[0]
+        window.__m.setAttribute('src', `${base}?label=D`)
+      JS
+      reattach_menu
+
+      click_on_invoker_button
+      assert_item "D"
+    end
+
+    def test_cancelled_replace_then_changed_src
+      # Starting state: loaded, closed
+      visit_preview(:deferred_refresh)
+      load_and_close_menu
+
+      page.execute_script(<<~JS)
+        const menu = document.querySelector('action-menu')
+        menu.addEventListener('include-fragment-replace', (event) => {
+          event.preventDefault()
+          window.__cancelled = true
+        }, {capture: true, once: true})
+      JS
+
+      set_menu_src(label: "B")
+      click_on_invoker_button
+      wait_until { page.evaluate_script("window.__cancelled === true") }
+      assert_spinner_visible
+      refute_selector "action-menu .ActionListItem-label", exact_text: "B"
+      assert_selector "action-menu:not([data-ready])", visible: :all
+      close_menu
+
+      set_menu_src(label: "C")
+      click_on_invoker_button
+      assert_item "C"
+      assert_selector "action-menu[data-ready=true]", visible: :all
+    end
+
+    def test_detached_forever_no_errors
+      # Starting state: loaded, closed (preload)
+      visit_preview(:deferred_refresh, preload: true)
+      collect_js_errors
+      load_and_close_menu
+
+      set_menu_src(label: "B", gate: "b")
+      Primer::RequestGate.wait_until_started("b")
+      detach_menu
+
+      Primer::RequestGate.release("b")
+      wait_until { detached_menu_includes?("B") }
+      assert_empty page.evaluate_script("window.__errors")
+    end
+
+    def test_refresh_open_menu_in_place
+      # Starting state: loaded, open
+      visit_preview(:deferred_refresh)
+      load_and_open_menu
+
+      set_menu_src(label: "B", gate: "b")
+      Primer::RequestGate.wait_until_started("b")
+      assert_selector "anchored-position:popover-open"
+      wait_until { spinner_focused? }
+
+      Primer::RequestGate.release("b")
+      wait_until { active_element_text == "B" }
+      assert_selector "anchored-position:popover-open"
+      assert_selector "action-menu action-list", count: 1
+    end
+
+    def test_open_refresh_keeps_closed_policy_lazy
+      # Starting state: loaded, open
+      visit_preview(:deferred_refresh)
+      load_and_open_menu
+
+      set_menu_src(label: "B")
+      wait_until { active_element_text == "B" }
+      close_menu
+
+      set_menu_src(label: "C", gate: "c")
+      assert_equal "lazy", page.evaluate_script("#{primary_fragment_js}.loading")
+      assert_equal 0, Primer::RequestGate.count("c")
+
+      click_on_invoker_button
+      Primer::RequestGate.wait_until_started("c")
+      Primer::RequestGate.release("c")
+      assert_item "C"
+    end
+
+    def test_out_of_order_stale_first
+      # Starting state: loaded, open
+      visit_preview(:deferred_refresh)
+      start_out_of_order_requests
+
+      Primer::RequestGate.release("a")
+      wait_for_fragment_done("A")
+      refute_selector "action-menu .ActionListItem-label", exact_text: "A"
+      assert_selector "action-menu:not([data-ready])", visible: :all
+
+      Primer::RequestGate.release("b")
+      assert_item "B"
+      assert_selector "action-menu[data-ready=true]", visible: :all
+    end
+
+    def test_out_of_order_stale_last
+      # Starting state: loaded, open
+      visit_preview(:deferred_refresh)
+      start_out_of_order_requests
+
+      Primer::RequestGate.release("b")
+      assert_item "B"
+      assert_selector "action-menu[data-ready=true]", visible: :all
+
+      Primer::RequestGate.release("a")
+      wait_for_fragment_done("A")
+      refute_selector "action-menu .ActionListItem-label", exact_text: "A"
+      assert_item "B"
+      assert_selector "action-menu action-list", count: 1
+      wait_until { active_element_text == "B" }
+    end
+
+    def test_refresh_with_open_sub_menu
+      # Starting state: loaded (with a static sub-menu), open, sub-menu open
+      visit_preview(:deferred_refresh)
+      set_menu_src(with_sub_menu: "1")
+      open_menu_via_keyboard
+      assert_selector "action-menu[data-ready=true]", visible: :all
+
+      arrow_down_to("More")
+      keyboard.type(:right)
+      wait_until { active_element_text == "Sub one" }
+
+      set_menu_src(with_sub_menu: "1", label: "B")
+      wait_until { active_element_text == "B" }
+      assert page.evaluate_script(<<~JS)
+        (() => {
+          const open = Array.from(document.querySelectorAll(':popover-open'))
+          return open.length === 1 && open[0] === document.querySelector('action-menu').overlay
+        })()
+      JS
+
+      keyboard.type(:down)
+      wait_until { active_element_text == "Copy link" }
+
+      arrow_down_to("More")
+      keyboard.type(:right)
+      wait_until { active_element_text == "Sub one" }
+      keyboard.type(:down)
+      wait_until { active_element_text == "Sub two" }
+      keyboard.type(:tab)
+      assert page.evaluate_script(<<~JS)
+        (() => {
+          const overlay = document.activeElement?.closest('anchored-position')
+          return !!overlay && overlay !== document.querySelector('action-menu').overlay
+        })()
+      JS
+
+      keyboard.type(:left)
+      refute_selector "[role=menuitem]", text: "Sub one"
+      keyboard.type(:escape)
+      refute_selector "anchored-position:popover-open"
+      assert_no_selector "[data-focus-trap=active]", visible: :all
+    end
+
+    def test_refresh_while_item_dialog_open
+      # Starting state: loaded, open
+      visit_preview(:deferred_refresh)
+      load_and_open_menu
+
+      find("action-menu [role=menuitem]", text: "Show dialog").click
+      assert_selector "dialog[open]"
+
+      set_menu_src(label: "B")
+      close_dialog
+      refute_selector "dialog[open]"
+
+      click_on_invoker_button
+      assert_item "B"
+    end
+
+    def test_open_refresh_empty_response_closes_and_refocuses_invoker
+      # Starting state: loaded, open
+      visit_preview(:deferred_refresh)
+      load_and_open_menu
+
+      set_menu_src(empty: "1")
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      refute_selector "anchored-position:popover-open"
+      wait_until { page.evaluate_script("document.activeElement === document.querySelector('action-menu button[aria-controls]')") }
+
+      set_menu_src(label: "B")
+      click_on_invoker_button
+      assert_item "B"
+    end
+
+    def test_external_fragment_adopted_while_open_stays_open
+      # Starting state: loaded, open
+      visit_preview(:deferred_refresh)
+      stash_spinner_markup
+      load_and_open_menu
+
+      insert_external_fragment("label=X&gate=x")
+      Primer::RequestGate.wait_until_started("x")
+      wait_until { spinner_focused? }
+      wait_for_frames
+      assert_selector "anchored-position:popover-open"
+      assert spinner_focused?
+
+      Primer::RequestGate.release("x")
+      wait_until { active_element_text == "X" }
+      assert_selector "anchored-position:popover-open"
+      assert_equal page.evaluate_script("window.__externalSrc"), menu_src
+    end
+
+    def test_adoption_supersedes_pending_open_refresh
+      # Starting state: loaded, open
+      visit_preview(:deferred_refresh)
+      stash_spinner_markup
+      load_and_open_menu
+
+      set_menu_src(label: "B", gate: "b")
+      Primer::RequestGate.wait_until_started("b")
+      wait_until { spinner_focused? }
+      watch_current_fragment("B")
+
+      insert_external_fragment("label=C&gate=c")
+      Primer::RequestGate.wait_until_started("c")
+      wait_until { spinner_focused? }
+      wait_for_frames
+      assert_selector "anchored-position:popover-open"
+      assert spinner_focused?
+
+      Primer::RequestGate.release("b")
+      wait_for_fragment_done("B")
+      refute_selector "action-menu .ActionListItem-label", exact_text: "B"
+      assert_selector "action-menu:not([data-ready])", visible: :all
+      assert_selector "anchored-position:popover-open"
+
+      Primer::RequestGate.release("c")
+      wait_until { active_element_text == "C" }
+      assert_selector "anchored-position:popover-open"
+      assert_selector "action-menu action-list", count: 1
+    end
+
+    def test_replaced_overlay_releases_old_sub_menu_trap
+      # Starting state: loaded (with a static sub-menu), open, sub-menu open
+      visit_preview(:deferred_refresh)
+      stash_spinner_markup
+      set_menu_src(with_sub_menu: "1")
+      open_menu_via_keyboard
+      assert_selector "action-menu[data-ready=true]", visible: :all
+
+      arrow_down_to("More")
+      keyboard.type(:right)
+      wait_until { active_element_text == "Sub one" }
+      assert_selector "[data-focus-trap=active]", visible: :all
+
+      # replaces the whole primary overlay, open sub-menu included
+      page.execute_script(<<~JS)
+        const menu = document.querySelector('action-menu')
+        const old = menu.overlay
+        const replacement = old.cloneNode(true)
+        const body = Array.from(replacement.querySelectorAll('.Overlay-body')).find(b => b.closest('anchored-position') === replacement)
+        const fragment = document.createElement('include-fragment')
+        fragment.setAttribute('src', `${menu.getAttribute('src').split('?')[0]}?label=N`)
+        fragment.setAttribute('loading', 'eager')
+        fragment.innerHTML = window.__spinner
+        body.replaceChildren(fragment)
+        window.__oldOverlay = old
+        old.replaceWith(replacement)
+      JS
+      wait_until { menu_src.end_with?("?label=N") }
+      assert_selector "action-menu[data-ready=true]", visible: :all
+
+      click_on_invoker_button
+      assert_item "N"
+      close_menu
+
+      assert_no_selector "[data-focus-trap=active]", visible: :all
+      assert_equal 0, page.evaluate_script("window.__oldOverlay.querySelectorAll('[data-focus-trap=active]').length")
+    end
+
     def test_opening_second_menu_closes_first_menu
       visit_preview(:two_menus)
 
@@ -1199,6 +2139,46 @@ module Alpha
       refute_selector("[role=menuitem]", text: "Current clipboard")
       click_on_fourth_item(level: 2)
       assert_selector("[role=menuitem]", text: "Current clipboard")
+    end
+
+    def test_sub_menu_focus_trap_released_on_close
+      visit_preview(:sub_menus)
+
+      open_menu_via_keyboard
+      arrow_down_to("Paste special")
+      keyboard.type(:right)
+      assert_selector("[role=menuitem]", text: "Paste plain text")
+
+      keyboard.type(:left)
+      refute_selector("[role=menuitem]", text: "Paste plain text")
+
+      keyboard.type(:escape)
+      refute_selector("[role=menuitem]", text: "Paste special")
+
+      assert_no_selector "[data-focus-trap=active]", visible: :all
+
+      # focus returns to the invoker, then Tab must leave the menu
+      assert_selector "action-menu button:focus"
+      keyboard.type(:tab)
+      assert page.evaluate_script("!document.activeElement.closest('action-menu')")
+    end
+
+    def test_detach_with_open_sub_menu_releases_trap
+      visit_preview(:sub_menus)
+
+      open_menu_via_keyboard
+      arrow_down_to("Paste special")
+      keyboard.type(:right)
+      assert_selector("[role=menuitem]", text: "Paste plain text")
+
+      page.execute_script("window.__detachedMenu = document.querySelector('action-menu'); window.__detachedMenu.remove()")
+      page.execute_script("const b = document.createElement('button'); b.id = 'outside-target'; document.body.append(b)")
+
+      assert_equal 0, page.evaluate_script("document.querySelectorAll('[data-focus-trap=active]').length")
+      assert_equal 0, page.evaluate_script("window.__detachedMenu.querySelectorAll('[data-focus-trap=active]').length")
+
+      keyboard.type(:tab)
+      assert_equal "outside-target", page.evaluate_script("document.activeElement.id")
     end
 
     def test_sub_menu_opens_on_right_arrow

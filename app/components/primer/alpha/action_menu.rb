@@ -168,6 +168,30 @@ module Primer
     #   event.detail.checked  // boolean: whether or not the result of the activation checked the item
     # })
     # ```
+    #
+    # #### Refreshing deferred content
+    #
+    # Menus rendered with `src:` load their items from the server. Setting the `src` attribute on the `<action-menu>` element reloads
+    # those items, eg:
+    #
+    # ```typescript
+    # document.querySelector("action-menu").setAttribute("src", "/items?filter=open")
+    # ```
+    #
+    # A closed menu fetches according to `preload:` (lazy by default). An open menu reloads its items in place. If the response
+    # contains no menu items, an open menu closes and focus returns to its button. To keep the menu open, render a disabled
+    # item such as "No actions available".
+    #
+    # Setting `src` to the identical string does nothing, so it can be set on every open. The exception is after a failed load, when
+    # setting the same `src` retries the request. To force a reload, change the URL. A blank `src` is ignored.
+    #
+    # An `<include-fragment>` inserted directly into the menu body (for example by a Turbo morph) is picked up, and its `src` is copied
+    # to the `<action-menu>` element. A menu that is open when the fragment is inserted stays open while it loads.
+    #
+    # The server response replaces any client-side selection.
+    #
+    # Only menus rendered with `src:` can refresh. Deferred sub-menus are not refreshed. To restore a menu from a Turbo snapshot, the
+    # consumer needs to put a lazy fragment back before the page is cached.
     class ActionMenu < Primer::Component
       status :alpha
 
@@ -212,6 +236,7 @@ module Primer
 
         @system_arguments[:tag] = :"action-menu"
         @system_arguments[:preload] = true if @primary_menu.preload?
+        @system_arguments[:src] = @primary_menu.src if @primary_menu.src.present?
 
         @system_arguments[:data] = merge_data(
           @system_arguments, {

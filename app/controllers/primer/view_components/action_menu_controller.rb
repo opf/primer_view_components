@@ -11,11 +11,30 @@ module Primer
 
       def deferred
         sleep params[:delay].to_f if params[:delay].present?
+        status = request_gate_status
+        return head(status) unless status == 200
+        return render(html: "") if params[:empty].present?
+
+        assign_deferred_params
         render "primer/view_components/action_menu/deferred"
       end
 
       def deferred_preload
+        status = request_gate_status
+        return head(status) unless status == 200
+
+        assign_deferred_params
         render "primer/view_components/action_menu/deferred_preload"
+      end
+
+      def deferred_form
+        status = request_gate_status
+        return head(status) unless status == 200
+
+        @label = params[:label].presence
+        @name = params[:name].presence || "foo"
+        @checked = params.key?(:checked) ? params[:checked].to_s.split(",") : ["ours"]
+        render "primer/view_components/action_menu/deferred_form"
       end
 
       def form_action
@@ -32,6 +51,20 @@ module Primer
       end
 
       private
+
+      # Test-only: holds the request until the test releases it and returns
+      # the status it was released with (see test/test_helpers/request_gate.rb).
+      def request_gate_status
+        return 200 unless params[:gate].present? && defined?(Primer::RequestGate)
+
+        Primer::RequestGate.pass(params[:gate])
+      end
+
+      def assign_deferred_params
+        @label = params[:label].presence
+        @deferred_sub = params[:deferred_sub].present?
+        @with_sub_menu = params[:with_sub_menu].present?
+      end
 
       def form_action_selected_value
         params.permit(:foo)[:foo] || params.permit(foo: [])[:foo]

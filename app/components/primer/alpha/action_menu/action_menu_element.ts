@@ -26,6 +26,26 @@ export class ActionMenuElement extends HTMLElement {
   #intersectionObserver: IntersectionObserver
   #focusZoneStack: ActionMenuFocusZoneStack
 
+  // Deferred primary content, refreshed when `src` changes. #deferred is set
+  // once, at first connect, when the primary overlay body holds a fragment.
+  #deferred = false
+  // Configuration: an unloaded copy of the fragment new loads are cloned from.
+  // Only fragments inserted by other code replace it.
+  #template: IncludeFragmentElement | null = null
+  // The current request; `failed` comes from the fragment's `error` event.
+  #request: {fragment: IncludeFragmentElement; src: string; failed: boolean} | null = null
+  // UI listener lifetime for the current fragment; aborted on disconnect.
+  #fragmentAbortController: AbortController | null = null
+  // Failure listener lifetime for the current request; aborted only when a
+  // new request supersedes it, so failures while detached are recorded.
+  #requestAbortController: AbortController | null = null
+  // A src assigned while detached that would otherwise have refreshed (for
+  // example the same src after a failure); applied on reconnect.
+  #pendingSrc: string | null = null
+  #fragmentObserver: MutationObserver | null = null
+
+  static observedAttributes = ['src']
+
   static validItemRoles = ['menuitem', 'menuitemcheckbox', 'menuitemradio']
   static validSelectors = ActionMenuElement.validItemRoles.map(role => `[role="${role}"]`)
   static menuItemSelectors = ActionMenuElement.validSelectors.map(selector => `:not([hidden]) > ${selector}`)
@@ -114,7 +134,18 @@ export class ActionMenuElement extends HTMLElement {
     this.#updateInput()
     this.#softDisableItems()
 
-    if (this.includeFragment) {
+    const primaryFragment = this.#deferred ? null : this.#primaryFragment()
+
+    if (this.#deferred) {
+      // re-attached
+      this.#reconcile()
+    } else if (primaryFragment) {
+      this.#deferred = true
+      this.#template = this.#templateFrom(primaryFragment)
+      this.#track(primaryFragment)
+      this.#observeFragments()
+    } else if (this.includeFragment) {
+      // deferred sub-menu
       this.includeFragment.addEventListener('include-fragment-replaced', this, {
         signal,
       })
@@ -176,6 +207,206 @@ export class ActionMenuElement extends HTMLElement {
 
   disconnectedCallback() {
     this.#abortController.abort()
+    this.#focusZoneStack.clear()
+    this.#fragmentAbortController?.abort()
+    this.#fragmentObserver?.disconnect()
+  }
+
+  attributeChangedCallback(name: string, _oldValue: string | null, newValue: string | null) {
+    if (name !== 'src' || !this.#deferred || !this.#template || !newValue?.trim()) return
+    // An unchanged src only retries a failed request
+    if (newValue === this.#request?.src && !this.#request.failed) return
+    if (!this.isConnected) {
+      this.#pendingSrc = newValue
+      return
+    }
+
+    this.#refresh(newValue)
+  }
+
+  // Catches up with whatever happened to the deferred content while the menu
+  // was detached: a src change or requested retry, a still-pending request
+  // (whose completion listener was aborted), an inserted fragment, or a
+  // completed load.
+  #reconcile() {
+    this.#observeFragments()
+
+    const src = this.getAttribute('src')
+    const pendingSrc = this.#pendingSrc
+    this.#pendingSrc = null
+    if (src?.trim() && (src !== this.#request?.src || src === pendingSrc)) {
+      this.#refresh(src)
+      return
+    }
+
+    const body = this.#primaryBody()
+    const current = this.#request?.fragment
+
+    if (current && body && current.parentElement === body) {
+      this.#bind(current)
+      return
+    }
+
+    const fragment = this.#primaryFragment()
+
+    if (fragment) {
+      this.#adopt(fragment)
+    } else if (!this.hasAttribute('data-ready')) {
+      this.#handleIncludeFragmentReplaced()
+    }
+  }
+
+  // The current primary overlay's body. Looked up on every call, since other
+  // code may replace the body or the overlay.
+  #primaryBody(): HTMLElement | null {
+    const overlay = this.overlay
+    if (!overlay) return null
+
+    for (const body of overlay.querySelectorAll<HTMLElement>('.Overlay-body')) {
+      if (body.closest('anchored-position') === overlay) return body
+    }
+
+    return null
+  }
+
+  #primaryFragment(): IncludeFragmentElement | null {
+    const body = this.#primaryBody()
+    if (!body) return null
+
+    for (const child of body.children) {
+      if (child.localName === 'include-fragment') return child as IncludeFragmentElement
+    }
+
+    return null
+  }
+
+  #templateFrom(fragment: IncludeFragmentElement): IncludeFragmentElement {
+    const template = fragment.cloneNode(true) as IncludeFragmentElement
+    template.classList.remove('is-error')
+    return template
+  }
+
+  // Binds the completion listener to the fragment, dropping any bound to a
+  // previous one. Superseded fragments still dispatch events.
+  #bind(fragment: IncludeFragmentElement) {
+    this.#fragmentAbortController?.abort()
+    const {signal} = (this.#fragmentAbortController = new AbortController())
+
+    fragment.addEventListener('include-fragment-replaced', this, {signal})
+  }
+
+  // Makes the fragment the current request. Its failure listener outlives
+  // disconnects: upstream never replays `error` for a cached rejection.
+  #track(fragment: IncludeFragmentElement) {
+    this.#request = {fragment, src: fragment.getAttribute('src') || '', failed: false}
+    // The response decides the form field name
+    this.#inputName = ''
+
+    this.#requestAbortController?.abort()
+    const {signal} = (this.#requestAbortController = new AbortController())
+    fragment.addEventListener(
+      'error',
+      () => {
+        if (this.#request?.fragment === fragment) this.#request.failed = true
+      },
+      {signal},
+    )
+
+    this.#bind(fragment)
+    this.removeAttribute('data-ready')
+  }
+
+  // Makes a fragment inserted by other code current and reflects its src.
+  #adopt(fragment: IncludeFragmentElement) {
+    if (this.#request?.fragment === fragment) return
+
+    this.#template = this.#templateFrom(fragment)
+    this.#track(fragment)
+
+    if (this.#isOpen()) {
+      this.#keepOpenWhileLoading(fragment)
+    } else {
+      this.#pruneFocusZones()
+    }
+
+    // #request.src already matches, so attributeChangedCallback does nothing
+    const src = fragment.getAttribute('src')
+    if (src) this.setAttribute('src', src)
+  }
+
+  #observeFragments() {
+    this.#fragmentObserver?.disconnect()
+    this.#fragmentObserver = new MutationObserver(records => this.#adoptAddedFragments(records))
+    this.#fragmentObserver.observe(this, {childList: true, subtree: true})
+  }
+
+  #adoptAddedFragments(records: MutationRecord[]) {
+    const candidates = new Set<IncludeFragmentElement>()
+
+    for (const record of records) {
+      for (const node of record.addedNodes) {
+        if (!(node instanceof Element)) continue
+        if (node.localName === 'include-fragment') candidates.add(node as IncludeFragmentElement)
+
+        for (const fragment of node.querySelectorAll<IncludeFragmentElement>('include-fragment')) {
+          candidates.add(fragment)
+        }
+      }
+    }
+
+    if (candidates.size === 0) return
+
+    // Records can describe nodes a later mutation already removed
+    const body = this.#primaryBody()
+
+    for (const fragment of candidates) {
+      if (body && fragment.isConnected && fragment.parentElement === body) {
+        this.#adopt(fragment)
+      }
+    }
+  }
+
+  // Replaces the primary body's children with a new loader for src. An open
+  // menu stays open: its loader is eager (this clone only, not #template)
+  // and it takes over before the old items are removed.
+  #refresh(src: string) {
+    const body = this.#primaryBody()
+    if (!this.#template || !body) return
+
+    const open = this.#isOpen()
+    const clone = this.#template.cloneNode(true) as IncludeFragmentElement
+    clone.setAttribute('src', src)
+    if (open) clone.setAttribute('loading', 'eager')
+
+    body.prepend(clone)
+    this.#track(clone)
+
+    if (open) this.#keepOpenWhileLoading(clone)
+
+    for (const child of Array.from(body.childNodes)) {
+      if (child !== clone) child.remove()
+    }
+  }
+
+  // Keeps the open menu open while fragment loads into its body. Open
+  // sub-menus are torn down first, since their toggle events arrive after
+  // the nodes are gone, and focus moves to the fragment's spinner before the
+  // focusout frame runs, so it never drops to <body> and closes the menu.
+  #keepOpenWhileLoading(fragment: IncludeFragmentElement) {
+    this.#pruneFocusZones()
+    this.#focusZoneStack.popAbove(this.overlay)
+
+    for (const child of this.childPopoverElements) {
+      if (child.matches(':popover-open')) child.hidePopover()
+    }
+
+    fragment.querySelector<HTMLElement>('[role=menuitem]')?.focus()
+  }
+
+  // Drops focus zones of overlays other code removed, such as a replaced
+  // primary overlay and its sub-menus.
+  #pruneFocusZones() {
+    this.#focusZoneStack.prune(element => element.isConnected && this.contains(element))
   }
 
   #softDisableItems() {
@@ -470,9 +701,24 @@ export class ActionMenuElement extends HTMLElement {
   }
 
   #handleIncludeFragmentReplaced() {
-    this.#firstItem?.focus()
+    // Content can finish loading while the menu is detached
+    if (this.isConnected) {
+      const firstItem = this.#firstItem
+
+      if (firstItem) {
+        firstItem.focus()
+      } else if (this.overlay?.matches(':popover-open')) {
+        // Nothing to focus in an empty response: close and return to the
+        // button. invokerElement and popoverElement need the removed list.
+        this.overlay.hidePopover()
+        this.#itemForSubMenu(this.overlay)?.focus()
+      }
+
+      this.overlay?.update()
+    }
+    this.#setDynamicLabel()
+    this.#updateInput()
     this.#softDisableItems()
-    this.overlay?.update()
 
     // async items have loaded, so component is ready
     this.setAttribute('data-ready', 'true')
