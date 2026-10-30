@@ -2,6 +2,13 @@ import '@github/auto-check-element'
 import type {AutoCheckErrorEvent, AutoCheckSuccessEvent} from '@github/auto-check-element'
 import {controller, target} from '@github/catalyst'
 import {CharacterCounter} from './character_counter'
+import {
+  clearValidation,
+  renderValidationMessage,
+  showValidation,
+  styleValidation,
+  type InlineValidationParts,
+} from './inline_validation'
 
 declare global {
   interface HTMLElementEventMap {
@@ -74,40 +81,33 @@ export class PrimerTextFieldElement extends HTMLElement {
   }
 
   clearError(): void {
-    this.inputElement.removeAttribute('invalid')
-    this.validationElement.hidden = true
-    this.validationMessageElement.replaceChildren()
+    clearValidation(this.#validationParts)
   }
 
   setValidationMessage(message: string): void {
-    const template = document.createElement('template')
-    // eslint-disable-next-line github/no-inner-html
-    template.innerHTML = message
-    const fragment = document.importNode(template.content, true)
-    this.validationMessageElement.replaceChildren(fragment)
+    renderValidationMessage(this.validationMessageElement, message)
   }
 
   toggleValidationStyling(isError: boolean): void {
-    if (isError) {
-      this.validationElement.classList.remove('FormControl-inlineValidation--success')
-    } else {
-      this.validationElement.classList.add('FormControl-inlineValidation--success')
-    }
-    this.validationSuccessIcon.hidden = isError
-    this.validationErrorIcon.hidden = !isError
-    this.inputElement.setAttribute('invalid', isError ? 'true' : 'false')
+    styleValidation(this.#validationParts, isError ? 'error' : 'success')
   }
 
   setSuccess(message: string): void {
-    this.toggleValidationStyling(false)
-    this.setValidationMessage(message)
-    this.validationElement.hidden = false
+    showValidation(this.#validationParts, message, 'success')
   }
 
   setError(message: string): void {
-    this.toggleValidationStyling(true)
-    this.setValidationMessage(message)
-    this.validationElement.hidden = false
+    showValidation(this.#validationParts, message, 'error')
+  }
+
+  get #validationParts(): InlineValidationParts {
+    return {
+      input: this.inputElement,
+      validation: this.validationElement,
+      message: this.validationMessageElement,
+      successIcon: this.validationSuccessIcon,
+      errorIcon: this.validationErrorIcon,
+    }
   }
 
   showLeadingSpinner(): void {
