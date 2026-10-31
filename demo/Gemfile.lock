@@ -263,6 +263,7 @@ GEM
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
     openproject-octicons (19.36.0)
+    openssl (4.0.2)
     os (1.1.4)
     ostruct (0.6.1)
     pp (0.6.3)
@@ -410,6 +411,7 @@ DEPENDENCIES
   listen
   lookbook (~> 2.3.14)
   openproject-primer_view_components!
+  openssl (>= 3.4)
   pry-byebug
   puma (~> 8.0.2)
   rack-cors
