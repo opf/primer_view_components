@@ -7,9 +7,18 @@ module Primer
     #
     # The server renders a plain-text fallback inside the styled chord box.
     # The `<keybinding-hint>` custom element replaces it with platform-specific
-    # glyphs (for example ⌘ on Apple platforms, ⌃ elsewhere) and visually hidden
-    # accessible key names ("command", "shift", …). Accessible names are English
-    # only in this iteration.
+    # names (for example ⌘ on Apple platforms, Ctrl elsewhere) and visually
+    # hidden accessible key names ("command", "shift", …).
+    #
+    # ## Translation
+    #
+    # Key names follow the current locale: visible condensed and full names,
+    # accessible names and the "then" spoken between chords of a sequence.
+    # The component looks them up in the `keybinding_hint` locale scope
+    # (English defaults in PVC's `config/locales/en.yml`) and passes the names
+    # for its keys to the element as JSON in `data-names`. Each name is looked
+    # up for the exact platform, then `other`, then Primer React's English
+    # tables. Glyphs such as ↑, ⇧ and ⏎ are not translated.
     #
     # ## Key syntax
     #
