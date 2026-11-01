@@ -63,6 +63,32 @@ class PrimerOpenProjectKeybindingHintNamesTest < Minitest::Test
     end
   end
 
+  KEY_NAMES_TS = File.expand_path("../../../../app/components/primer/open_project/keybinding_hint/key_names.ts", __dir__)
+
+  # Glyphs, and tokens that never reach a lookup (`mod` is resolved to
+  # control/meta first; `+` and ` ` are chord/sequence separators).
+  UNTRANSLATED = {
+    "condensed" => %w[shift arrowup arrowdown arrowleft arrowright plus backspace space tab enter mod],
+    "full" => %w[mod +],
+    "accessible" => ["mod", "+", " "]
+  }.freeze
+
+  def test_upstream_table_keys_are_translated_or_excepted
+    tables = upstream_table_keys
+    assert_operator tables["accessible"].size, :>, 40, "sanity: parsed the upstream accessible table"
+
+    english = I18n.t(:keybinding_hint, locale: :en).deep_stringify_keys["keys"]
+    covered = english.each_with_object(Hash.new { |h, k| h[k] = [] }) do |(name, entry), formats|
+      %w[condensed full accessible].each { |format| formats[format] << entry.fetch("key", name) if entry.key?(format) }
+    end
+
+    missing = tables.flat_map do |format, keys|
+      (keys - covered[format] - UNTRANSLATED[format]).map { |key| "#{format}: #{key.inspect}" }
+    end
+
+    assert_empty missing, "Upstream key names neither translated in config/locales/en.yml nor listed in UNTRANSLATED"
+  end
+
   def test_malformed_locale_entries_are_ignored
     I18n.backend.store_translations(
       :de,
@@ -119,5 +145,26 @@ class PrimerOpenProjectKeybindingHintNamesTest < Minitest::Test
 
   def test_then_defaults_to_english
     assert_equal "then", Names.for("g i")["then"]
+  end
+
+  private
+
+  # Keys of the three tables in the verbatim primer-react mirror.
+  def upstream_table_keys
+    source = File.read(KEY_NAMES_TS)
+    {
+      "condensed" => "condensedKeyName",
+      "full" => "fullKeyName",
+      "accessible" => "accessibleKeyName"
+    }.transform_values do |function|
+      table = source[/export const #{function} =.*?\}\)\[key\]/m]
+      table.scan(/^\s+('(?:\\.|[^'])*'|"[^"]*"|[\w$]+):/).flatten.map { |key| unquote(key) }
+    end
+  end
+
+  def unquote(key)
+    return key unless key.start_with?("'", '"')
+
+    key[1..-2].gsub(/\\(.)/, '\\1')
   end
 end

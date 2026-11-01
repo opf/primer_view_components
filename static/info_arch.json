@@ -21871,7 +21871,7 @@
     "methods": [
       {
         "name": "fallback_chords",
-        "description": "Readable degraded output for no-JS and the pre-upgrade frame. Not a\nkey table: only `Mod` is translated; other keys keep their spelling\nwith the first letter upcased, so `ArrowUp` stays `ArrowUp` and `p`\nbecomes `P`.",
+        "description": "Readable degraded output for no-JS and the pre-upgrade frame. Uses the\ntranslated condensed name for non-Apple platforms where one exists\n(`Mod` as Control); other keys keep their spelling with the first\nletter upcased, so `ArrowUp` stays `ArrowUp` and `p` becomes `P`.",
         "parameters": [],
         "return_types": []
       }

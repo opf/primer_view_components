@@ -77,15 +77,16 @@ module Primer
 
       # Translations depend on the locale at render time, not at construction.
       def before_render
-        @system_arguments[:data][:names] = Names.for(@keys).to_json
+        @names = Names.for(@keys)
+        @system_arguments[:data][:names] = @names.to_json
       end
 
       private
 
-      # Readable degraded output for no-JS and the pre-upgrade frame. Not a
-      # key table: only `Mod` is translated; other keys keep their spelling
-      # with the first letter upcased, so `ArrowUp` stays `ArrowUp` and `p`
-      # becomes `P`.
+      # Readable degraded output for no-JS and the pre-upgrade frame. Uses the
+      # translated condensed name for non-Apple platforms where one exists
+      # (`Mod` as Control); other keys keep their spelling with the first
+      # letter upcased, so `ArrowUp` stays `ArrowUp` and `p` becomes `P`.
       def fallback_chords
         @keys.split(/\s+/).compact_blank.map do |chord|
           chord.split("+").compact_blank.map { |key| fallback_key_name(key) }.join("+")
@@ -93,7 +94,9 @@ module Primer
       end
 
       def fallback_key_name(key)
-        key.casecmp?("mod") ? "Ctrl" : key.upcase_first
+        token = key.downcase
+        token = "control" if token == "mod"
+        @names.dig("keys", token, "condensed", "other") || key.upcase_first
       end
     end
   end

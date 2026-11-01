@@ -44,6 +44,25 @@ class PrimerOpenProjectKeybindingHintTest < Minitest::Test
     assert_selector(".KeybindingHint-chord", exact_text: "ArrowUp")
   end
 
+  def test_fallback_uses_condensed_key_names
+    render_inline(Primer::OpenProject::KeybindingHint.new(keys: "Mod+Delete"))
+
+    assert_selector(".KeybindingHint-chord", exact_text: "Ctrl+Del")
+  end
+
+  def test_fallback_uses_translated_condensed_names
+    available_locales = I18n.available_locales
+    I18n.available_locales = available_locales | [:de]
+    I18n.backend.store_translations(:de, keybinding_hint: { keys: { control: { condensed: { other: "Strg" } } } })
+
+    I18n.with_locale(:de) { render_inline(Primer::OpenProject::KeybindingHint.new(keys: "Mod+s")) }
+
+    assert_selector(".KeybindingHint-chord", exact_text: "Strg+S")
+  ensure
+    I18n.available_locales = available_locales
+    I18n.reload!
+  end
+
   def test_scheme_and_size_render_modifier_classes_and_data
     render_inline(Primer::OpenProject::KeybindingHint.new(keys: "Mod+s", scheme: :emphasis, size: :small))
 
