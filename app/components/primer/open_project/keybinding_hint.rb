@@ -75,6 +75,11 @@ module Primer
         @keys.present?
       end
 
+      # Translations depend on the locale at render time, not at construction.
+      def before_render
+        @system_arguments[:data][:names] = Names.for(@keys).to_json
+      end
+
       private
 
       # Readable degraded output for no-JS and the pre-upgrade frame. Not a

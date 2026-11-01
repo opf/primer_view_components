@@ -85,6 +85,28 @@ class PrimerOpenProjectKeybindingHintTest < Minitest::Test
     assert_selector(".KeybindingHint-chord", text: "<script>alert(1)</script>")
   end
 
+  def test_renders_names_data_attribute
+    render_inline(Primer::OpenProject::KeybindingHint.new(keys: "Control+s"))
+
+    names = JSON.parse(page.find("keybinding-hint")["data-names"])
+
+    assert_equal Primer::OpenProject::KeybindingHint::Names.for("Control+s"), names
+  end
+
+  def test_names_attribute_escapes_markup
+    available_locales = I18n.available_locales
+    I18n.available_locales = available_locales | [:de]
+    I18n.backend.store_translations(:de, keybinding_hint: { keys: { control: { condensed: { other: %(<b>"x"</b>) } } } })
+
+    I18n.with_locale(:de) { render_inline(Primer::OpenProject::KeybindingHint.new(keys: "Control+s")) }
+
+    refute_selector("b")
+    assert_equal %(<b>"x"</b>), JSON.parse(page.find("keybinding-hint")["data-names"])["keys"]["control"]["condensed"]["other"]
+  ensure
+    I18n.available_locales = available_locales
+    I18n.reload!
+  end
+
   def test_passes_system_arguments
     render_inline(Primer::OpenProject::KeybindingHint.new(keys: "Mod+s", classes: "custom", data: { foo: "bar" }, id: "hint"))
 

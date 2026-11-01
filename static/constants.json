@@ -1937,6 +1937,7 @@
       "full"
     ],
     "GeneratedSlotMethods": "Primer::OpenProject::KeybindingHint::GeneratedSlotMethods",
+    "Names": "Primer::OpenProject::KeybindingHint::Names",
     "SCHEME_MAPPINGS": {
       "default": "",
       "emphasis": "KeybindingHint-chord--emphasis"

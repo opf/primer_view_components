@@ -264,6 +264,7 @@ class PrimerComponentTest < Minitest::Test
       "Primer::OpenProject::SidePanel::Section",
       "Primer::OpenProject::DangerDialog::FormWrapper",
       "Primer::OpenProject::FilterableTreeView::SubTree",
+      "Primer::OpenProject::KeybindingHint::Names",
     ]
 
     primer_component_files = Dir.chdir("app/components") { Dir["**/*.rb"] }.reject { |p| p.include?("/experimental/") }

@@ -46,3 +46,182 @@ en:
 
   tree_view:
     label_empty_sub_tree: "No items"
+
+  keybinding_hint:
+    then: "then"
+    keys:
+      alt:
+        condensed: { apple: "⌥", other: "Alt" }
+        full: { apple: "Option", other: "Alt" }
+        accessible: { apple: "option", other: "alt" }
+      arrowdown:
+        full: { other: "Down Arrow" }
+        accessible: { other: "down arrow" }
+      arrowleft:
+        full: { other: "Left Arrow" }
+        accessible: { other: "left arrow" }
+      arrowright:
+        full: { other: "Right Arrow" }
+        accessible: { other: "right arrow" }
+      arrowup:
+        full: { other: "Up Arrow" }
+        accessible: { other: "up arrow" }
+      backspace:
+        full: { other: "Backspace" }
+        accessible: { other: "backspace" }
+      capslock:
+        condensed: { other: "CapsLock" }
+        full: { other: "Caps Lock" }
+        accessible: { other: "caps lock" }
+      control:
+        condensed: { apple: "⌃", other: "Ctrl" }
+        full: { other: "Control" }
+        accessible: { other: "control" }
+      delete:
+        condensed: { other: "Del" }
+        full: { other: "Delete" }
+        accessible: { other: "delete" }
+      end:
+        condensed: { other: "End" }
+        full: { other: "End" }
+        accessible: { other: "end" }
+      enter:
+        full: { other: "Enter" }
+        accessible: { other: "enter" }
+      escape:
+        condensed: { other: "Esc" }
+        full: { other: "Escape" }
+        accessible: { other: "escape" }
+      function:
+        condensed: { other: "Fn" }
+        full: { other: "Function" }
+        accessible: { other: "function" }
+      home:
+        condensed: { other: "Home" }
+        full: { other: "Home" }
+        accessible: { other: "home" }
+      insert:
+        condensed: { other: "Ins" }
+        full: { other: "Insert" }
+        accessible: { other: "insert" }
+      meta:
+        condensed: { apple: "⌘", windows: "Win", other: "Meta" }
+        full: { apple: "Command", windows: "Windows", other: "Meta" }
+        accessible: { apple: "command", windows: "Windows", other: "meta" }
+      pagedown:
+        condensed: { other: "PgDn" }
+        full: { other: "Page Down" }
+        accessible: { other: "page down" }
+      pageup:
+        condensed: { other: "PgUp" }
+        full: { other: "Page Up" }
+        accessible: { other: "page up" }
+      plus:
+        full: { other: "Plus" }
+        accessible: { other: "plus" }
+      printscreen:
+        condensed: { other: "PrtScn" }
+        full: { other: "Print Screen" }
+        accessible: { other: "print screen" }
+      shift:
+        full: { other: "Shift" }
+        accessible: { other: "shift" }
+      space:
+        full: { other: "Space" }
+        accessible: { other: "space" }
+      tab:
+        full: { other: "Tab" }
+        accessible: { other: "tab" }
+      ampersand:
+        key: "&"
+        accessible: { other: "ampersand" }
+      asterisk:
+        key: "*"
+        accessible: { other: "asterisk" }
+      at:
+        key: "@"
+        accessible: { other: "at" }
+      backslash:
+        key: "\\"
+        accessible: { other: "backslash" }
+      backtick:
+        key: "`"
+        accessible: { other: "backtick" }
+      caret:
+        key: "^"
+        accessible: { other: "caret" }
+      colon:
+        key: ":"
+        accessible: { other: "colon" }
+      comma:
+        key: ","
+        accessible: { other: "comma" }
+      dash:
+        key: "-"
+        accessible: { other: "dash" }
+      dollar_sign:
+        key: "$"
+        accessible: { other: "dollar sign" }
+      double_quote:
+        key: "\""
+        accessible: { other: "double quote" }
+      equals:
+        key: "="
+        accessible: { other: "equals" }
+      exclamation_point:
+        key: "!"
+        accessible: { other: "exclamation point" }
+      forward_slash:
+        key: "/"
+        accessible: { other: "forward slash" }
+      hash:
+        key: "#"
+        accessible: { other: "hash" }
+      left_angle_bracket:
+        key: "<"
+        accessible: { other: "left angle bracket" }
+      left_bracket:
+        key: "["
+        accessible: { other: "left bracket" }
+      left_curly_brace:
+        key: "{"
+        accessible: { other: "left curly brace" }
+      left_parenthesis:
+        key: "("
+        accessible: { other: "left parenthesis" }
+      percent:
+        key: "%"
+        accessible: { other: "percent" }
+      period:
+        key: "."
+        accessible: { other: "period" }
+      pipe:
+        key: "|"
+        accessible: { other: "pipe" }
+      question_mark:
+        key: "?"
+        accessible: { other: "question mark" }
+      right_angle_bracket:
+        key: ">"
+        accessible: { other: "right angle bracket" }
+      right_bracket:
+        key: "]"
+        accessible: { other: "right bracket" }
+      right_curly_brace:
+        key: "}"
+        accessible: { other: "right curly brace" }
+      right_parenthesis:
+        key: ")"
+        accessible: { other: "right parenthesis" }
+      semicolon:
+        key: ";"
+        accessible: { other: "semicolon" }
+      single_quote:
+        key: "'"
+        accessible: { other: "single quote" }
+      tilde:
+        key: "~"
+        accessible: { other: "tilde" }
+      underscore:
+        key: "_"
+        accessible: { other: "underscore" }
