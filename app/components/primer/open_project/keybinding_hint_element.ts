@@ -4,7 +4,8 @@ import type {TemplateResult} from 'lit-html'
 import {detectPlatform} from './keybinding_hint/platform'
 import {isPlatform} from './keybinding_hint/platform_override'
 import type {Platform} from './keybinding_hint/platform'
-import {accessibleKeyName, condensedKeyName, fullKeyName, splitSequence} from './keybinding_hint/key_names'
+import {accessibleKeyName, condensedKeyName, fullKeyName} from './keybinding_hint/key_names'
+import {splitSequence} from './keybinding_hint/chords'
 
 type Format = 'condensed' | 'full'
 

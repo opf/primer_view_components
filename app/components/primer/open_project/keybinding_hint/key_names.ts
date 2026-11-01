@@ -1,18 +1,22 @@
 import type {Platform} from './platform'
 
-/** Converts the first character to upper case and the rest to lower case. */
+/** Converts the first character of the string to upper case and the remaining to lower case. */
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 const capitalize = ([first, ...rest]: string) => (first?.toUpperCase() ?? '') + rest.join('').toLowerCase()
 
-// The tables below cover keys realistically used in shortcuts, not every key.
+// In the below records, we don't intend to cover every single possible key - only those that
+// would be realistically used in shortcuts. For example, the Pause/Break key is not necessary
+// because it is not found on many keyboards.
 
-/** Short iconic key names matching keyboard legends. */
+/**
+ * Short-form iconic versions of keys. These should be intuitive (not archaic) and match icons on keyboards.
+ */
 export const condensedKeyName = (key: string, platform: Platform) =>
   ({
-    alt: platform === 'apple' ? '⌥' : 'Alt',
+    alt: platform === 'apple' ? '⌥' : 'Alt', // the alt key _is_ the option key on MacOS - in the browser there is no "option" key
     control: '⌃',
     shift: '⇧',
     meta: platform === 'apple' ? '⌘' : platform === 'windows' ? 'Win' : 'Meta',
-    // Unreachable: splitChord resolves `mod` to meta/control first; kept for primer-react parity.
     mod: platform === 'apple' ? '⌘' : '⌃',
     pageup: 'PgUp',
     pagedown: 'PgDn',
@@ -20,10 +24,10 @@ export const condensedKeyName = (key: string, platform: Platform) =>
     arrowdown: '↓',
     arrowleft: '←',
     arrowright: '→',
-    plus: '+',
+    plus: '+', // needed to allow +-separated chords
     backspace: '⌫',
     delete: 'Del',
-    space: '␣',
+    space: '␣', // needed to allow space-separated sequences
     tab: '⇥',
     enter: '⏎',
     escape: 'Esc',
@@ -33,12 +37,14 @@ export const condensedKeyName = (key: string, platform: Platform) =>
     printscreen: 'PrtScn',
   })[key] ?? capitalize(key)
 
-/** Spelled-out key names for the `full` format. */
+/**
+ * Specific key displays for 'full' format. We still do show some icons (ie punctuation)
+ * because that's more intuitive, but for the rest of keys we show the standard key name.
+ */
 export const fullKeyName = (key: string, platform: Platform) =>
   ({
     alt: platform === 'apple' ? 'Option' : 'Alt',
     meta: platform === 'apple' ? 'Command' : platform === 'windows' ? 'Windows' : 'Meta',
-    // Unreachable: splitChord resolves `mod` to meta/control first; kept for primer-react parity.
     mod: platform === 'apple' ? 'Command' : 'Control',
     '+': 'Plus',
     pageup: 'Page Up',
@@ -51,13 +57,17 @@ export const fullKeyName = (key: string, platform: Platform) =>
     printscreen: 'Print Screen',
   })[key] ?? capitalize(key)
 
-/** Key names for screen readers; avoids punctuation being read as pauses. English only. */
+/**
+ * Accessible key names intended to be read by a screen reader. This prevents screen
+ * readers from expressing punctuation in speech, ie, reading a long pause instead of the
+ * word "period".
+ */
 export const accessibleKeyName = (key: string, platform: Platform) =>
   ({
     alt: platform === 'apple' ? 'option' : 'alt',
     meta: platform === 'apple' ? 'command' : platform === 'windows' ? 'Windows' : 'meta',
-    // Unreachable: splitChord resolves `mod` to meta/control first; kept for primer-react parity.
     mod: platform === 'apple' ? 'command' : 'control',
+    // Screen readers may not be able to pronounce concatenated words - this provides a better experience
     pageup: 'page up',
     pagedown: 'page down',
     arrowup: 'up arrow',
@@ -66,6 +76,10 @@ export const accessibleKeyName = (key: string, platform: Platform) =>
     arrowright: 'right arrow',
     capslock: 'caps lock',
     printscreen: 'print screen',
+    // We don't need to represent _every_ symbol - only those found on standard keyboards.
+    // Other symbols should be avoided as keyboard shortcuts anyway.
+    // These should match the colloquial names of the keys, not the names of the symbols. Ie,
+    // "Equals" not "Equal Sign", "Dash" not "Minus", "Period" not "Dot", etc.
     '`': 'backtick',
     '~': 'tilde',
     '!': 'exclamation point',
@@ -100,40 +114,3 @@ export const accessibleKeyName = (key: string, platform: Platform) =>
     '?': 'question mark',
     ' ': 'space',
   })[key] ?? key.toLowerCase()
-
-/** Modifier order. Non-modifiers sort last; there is at most one per chord. */
-const keySortPriorities: Partial<Record<string, number>> = {
-  control: 1,
-  meta: 2,
-  alt: 3,
-  option: 4,
-  shift: 5,
-  function: 6,
-}
-
-const keySortPriority = (key: string) => keySortPriorities[key] ?? Infinity
-
-/**
- * Deviation from primer-react: `mod` is resolved to the platform's modifier
- * before sorting so it takes that modifier's slot. Upstream leaves `mod`
- * unprioritised, which renders "Mod+Shift+p" as ⇧⌘P.
- */
-const resolveMod = (key: string, platform: Platform) =>
-  key === 'mod' ? (platform === 'apple' ? 'meta' : 'control') : key
-
-/** Split a chord into lowercase, sorted key names. Empty tokens are dropped. */
-export const splitChord = (chord: string, platform: Platform): string[] =>
-  chord
-    .split('+')
-    .filter(key => key !== '')
-    .map(key => resolveMod(key.toLowerCase(), platform))
-    .sort((a, b) => keySortPriority(a) - keySortPriority(b))
-
-/** Split a sequence into chords. Repeated whitespace and empty chords are dropped. */
-export const splitSequence = (sequence: string, platform: Platform): string[][] =>
-  sequence
-    .trim()
-    .split(/\s+/)
-    .filter(chord => chord !== '')
-    .map(chord => splitChord(chord, platform))
-    .filter(keys => keys.length > 0)
