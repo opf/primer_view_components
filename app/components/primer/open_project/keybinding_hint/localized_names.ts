@@ -17,8 +17,9 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 const own = (record: Record<string, unknown>, key: string): unknown =>
   Object.hasOwn(record, key) ? record[key] : undefined
 
-const nonBlank = (value: unknown): string | undefined =>
-  typeof value === 'string' && value.trim() !== '' ? value : undefined
+/** Same notion of blank as Ruby's `String#blank?` (`[[:space:]]`, i.e. Unicode White_Space). */
+export const nonBlank = (value: unknown): string | undefined =>
+  typeof value === 'string' && !/^\p{White_Space}*$/u.test(value) ? value : undefined
 
 /** Parses the `data-names` attribute; anything malformed yields no names. */
 export function parseKeyNames(json: string): KeyNames {

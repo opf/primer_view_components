@@ -6,6 +6,7 @@ import {isPlatform} from './keybinding_hint/platform_override'
 import type {Platform} from './keybinding_hint/platform'
 import {keyName, parseKeyNames} from './keybinding_hint/localized_names'
 import type {KeyNames} from './keybinding_hint/localized_names'
+import {buildKeyNames} from './keybinding_hint/names_from_scope'
 import {splitSequence} from './keybinding_hint/chords'
 
 type Format = 'condensed' | 'full'
@@ -23,6 +24,9 @@ type Format = 'condensed' | 'full'
  */
 @controller('keybinding-hint')
 export class KeybindingHintElement extends HTMLElement {
+  /** Builds `data-names` from i18n-js scopes, for hosts that render hints client-side. */
+  static buildNames = buildKeyNames
+
   @attr keys = ''
   @attr format = 'condensed'
   @attr scheme = 'default'

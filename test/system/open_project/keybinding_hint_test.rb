@@ -404,6 +404,15 @@ class IntegrationOpenProjectKeybindingHintTest < System::TestCase
     assert_includes flat_hidden_text("keybinding-hint"), "then"
   end
 
+  def test_unicode_whitespace_names_fall_back_to_english
+    visit_preview(:playground, keys: "Control+s", platform: "other")
+
+    set_names("keys" => { "control" => { "condensed" => { "other" => "\u0085" }, "accessible" => { "other" => "\u3000" } } })
+
+    assert_selector(VISIBLE, text: "⌃")
+    assert_includes flat_hidden_text("keybinding-hint"), "control"
+  end
+
   def test_markup_in_names_renders_as_text
     visit_preview(:playground, keys: "Control+s", platform: "other")
 
@@ -418,6 +427,42 @@ class IntegrationOpenProjectKeybindingHintTest < System::TestCase
 
     assert_selector(VISIBLE, text: "Constructor")
     assert_equal "constructor", flat_hidden_text("keybinding-hint")
+  end
+
+  PARITY_KEYS = ["Mod+s", "Control+Shift+p", "SHIFT+DELETE", "Mod+.", "Mod+Plus Space", "g i", "Alt+Meta+Escape", "Mod++p  g", "PageUp+/", "__proto__+constructor"].freeze
+
+  def test_js_names_builder_matches_ruby
+    visit_preview(:default)
+    I18n.backend.store_translations(
+      :de,
+      keybinding_hint: {
+        keys: {
+          alt: { condensed: { apple: "Wahl" } },
+          escape: "Esc",
+          delete: { key: "x", condensed: { other: "Entf" }, full: { other: "" } },
+          pageup: { condensed: { other: "Bild↑", bogus: "x" } },
+          control: { condensed: { other: "\u0085" } },
+          shift: { full: { other: "\uFEFF" }, accessible: { other: "\u3000" } }
+        },
+        then: "\u0085"
+      }
+    )
+    I18n.backend.store_translations(:en, keybinding_hint: { keys: { __proto__: { full: { other: "Proto" } } } })
+
+    %i[en de].each do |locale|
+      english = I18n.t(:keybinding_hint, locale: :en)
+      scope = I18n.t(:keybinding_hint, locale: locale)
+      PARITY_KEYS.each do |keys|
+        ruby = I18n.with_locale(locale) { Primer::OpenProject::KeybindingHint::Names.for(keys) }
+        js = page.evaluate_script(
+          "JSON.parse(JSON.stringify(KeybindingHintElement.buildNames(#{keys.to_json}, JSON.parse(#{scope.to_json.to_json}), JSON.parse(#{english.to_json.to_json}))))"
+        )
+
+        assert_equal ruby, js, "#{locale}: #{keys}"
+      end
+    end
+  ensure
+    I18n.reload!
   end
 
   private
