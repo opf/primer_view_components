@@ -4,7 +4,8 @@ import type {TemplateResult} from 'lit-html'
 import {detectPlatform} from './keybinding_hint/platform'
 import {isPlatform} from './keybinding_hint/platform_override'
 import type {Platform} from './keybinding_hint/platform'
-import {accessibleKeyName, condensedKeyName, fullKeyName} from './keybinding_hint/key_names'
+import {keyName, parseKeyNames} from './keybinding_hint/localized_names'
+import type {KeyNames} from './keybinding_hint/localized_names'
 import {splitSequence} from './keybinding_hint/chords'
 
 type Format = 'condensed' | 'full'
@@ -17,7 +18,8 @@ type Format = 'condensed' | 'full'
  *
  * Attributes (Catalyst `@attr`, so `data-*`): keys, format, scheme, size,
  * platform ('' = detect; 'apple' | 'windows' | 'other' overrides, used by
- * previews and tests).
+ * previews and tests), names (JSON of translated key names; see
+ * localized_names.ts).
  */
 @controller('keybinding-hint')
 export class KeybindingHintElement extends HTMLElement {
@@ -26,6 +28,7 @@ export class KeybindingHintElement extends HTMLElement {
   @attr scheme = 'default'
   @attr size = 'medium'
   @attr platform = ''
+  @attr names = ''
 
   #mount: HTMLElement | null = null
   #signature = ''
@@ -63,7 +66,7 @@ export class KeybindingHintElement extends HTMLElement {
 
     const platform = this.#resolvedPlatform()
     const chords = splitSequence(this.keys, platform)
-    const signature = [this.keys, this.format, this.scheme, this.size, platform].join('\u0000')
+    const signature = [this.keys, this.format, this.scheme, this.size, platform, this.names].join('\u0000')
     // Catches an external mutation made in the same task as an attribute
     // change, before the observer callback has run.
     if (this.#observer.takeRecords().length > 0) this.#owned = false
@@ -91,7 +94,7 @@ export class KeybindingHintElement extends HTMLElement {
     }
 
     const target = this.#mount as HTMLElement
-    render(this.#template(chords, platform), target)
+    render(this.#template(chords, platform, parseKeyNames(this.names)), target)
     // Drop the records of our own render so they cannot re-enter #update.
     this.#observer.takeRecords()
     this.#owned = true
@@ -113,7 +116,7 @@ export class KeybindingHintElement extends HTMLElement {
     return classes.join(' ')
   }
 
-  #template(chords: string[][], platform: Platform): TemplateResult[] {
+  #template(chords: string[][], platform: Platform, names: KeyNames): TemplateResult[] {
     const format = this.#resolvedFormat()
     const chordClass = this.#chordClass()
     // Whitespace text nodes are deliberate: they give screen readers word
@@ -122,18 +125,18 @@ export class KeybindingHintElement extends HTMLElement {
     // visible separator (as in React).
     return chords.map(
       (keys, chordIndex) =>
-        html`${chordIndex > 0 ? html` <span class="sr-only">then</span> ` : nothing}<span
+        html`${chordIndex > 0 ? html` <span class="sr-only">${names.separator ?? 'then'}</span> ` : nothing}<span
             class="${chordClass}"
             data-kbd-chord
-            >${keys.map((key, keyIndex) => this.#keyTemplate(key, keyIndex, format, platform))}</span
+            >${keys.map((key, keyIndex) => this.#keyTemplate(key, keyIndex, format, platform, names))}</span
           >`,
     )
   }
 
-  #keyTemplate(key: string, index: number, format: Format, platform: Platform): TemplateResult {
-    const visible = format === 'condensed' ? condensedKeyName(key, platform) : fullKeyName(key, platform)
+  #keyTemplate(key: string, index: number, format: Format, platform: Platform, names: KeyNames): TemplateResult {
+    const visible = keyName(names, key, format, platform)
     const separator = index === 0 ? nothing : format === 'full' ? html` <span aria-hidden="true"> + </span> ` : ' '
-    return html`${separator}<span class="sr-only">${accessibleKeyName(key, platform)}</span
+    return html`${separator}<span class="sr-only">${keyName(names, key, 'accessible', platform)}</span
       ><span aria-hidden="true">${visible}</span>`
   }
 }

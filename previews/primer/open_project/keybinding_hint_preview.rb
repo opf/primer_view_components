@@ -19,8 +19,9 @@ module Primer
       # @param scheme [Symbol] select [default, emphasis]
       # @param size [Symbol] select [medium, small]
       # @param platform [Symbol] select [detect, apple, windows, other]
-      def playground(keys: "Mod+Shift+p", format: :condensed, scheme: :default, size: :medium, platform: :detect)
-        render_with_template(locals: { keys: keys, format: format.to_sym, scheme: scheme.to_sym, size: size.to_sym, platform: platform.to_sym })
+      # @param locale [Symbol] select [en, de]
+      def playground(keys: "Mod+Shift+p", format: :condensed, scheme: :default, size: :medium, platform: :detect, locale: :en)
+        render_with_template(locals: { keys: keys, format: format.to_sym, scheme: scheme.to_sym, size: size.to_sym, platform: platform.to_sym, locale: locale.to_sym })
       end
 
       # @label Full format

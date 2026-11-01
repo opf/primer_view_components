@@ -13,7 +13,7 @@ class IntegrationOpenProjectKeybindingHintTest < System::TestCase
     visit_preview(:default)
 
     assert_selector("keybinding-hint kbd.KeybindingHint-kbd", count: 1)
-    assert_selector(VISIBLE, text: "⌃")
+    assert_selector(VISIBLE, text: "Ctrl")
     assert_selector(VISIBLE, text: "⇧")
     assert_selector(VISIBLE, text: "P")
     assert_no_text("Ctrl+Shift+P")
@@ -30,11 +30,11 @@ class IntegrationOpenProjectKeybindingHintTest < System::TestCase
 
   def test_windows_and_other_platforms_use_control_for_mod
     visit_preview(:playground, keys: "Mod+p", platform: "windows")
-    assert_selector(VISIBLE, text: "⌃")
+    assert_selector(VISIBLE, text: "Ctrl")
     assert_selector(HIDDEN, text: "control", visible: :all)
 
     visit_preview(:playground, keys: "Mod+p", platform: "other")
-    assert_selector(VISIBLE, text: "⌃")
+    assert_selector(VISIBLE, text: "Ctrl")
   end
 
   def test_meta_differs_from_mod_on_windows_and_other
@@ -56,7 +56,7 @@ class IntegrationOpenProjectKeybindingHintTest < System::TestCase
     # React sorts `mod` last (no priority). We resolve it first: control(1) < shift(5) on non-apple.
     visit_preview(:playground, keys: "Shift+Mod+p", platform: "other")
 
-    assert_equal ["⌃", "⇧", "P"], all(VISIBLE).map(&:text)
+    assert_equal ["Ctrl", "⇧", "P"], all(VISIBLE).map(&:text)
   end
 
   def test_full_format_spells_keys_and_shows_plus
@@ -139,7 +139,7 @@ class IntegrationOpenProjectKeybindingHintTest < System::TestCase
     refute_selector(VISIBLE, text: "S")
 
     page.execute_script("document.querySelector('keybinding-hint').setAttribute('data-platform', 'other')")
-    assert_selector(VISIBLE, text: "⌃")
+    assert_selector(VISIBLE, text: "Ctrl")
     refute_selector(VISIBLE, text: "⌘")
   end
 
@@ -162,8 +162,8 @@ class IntegrationOpenProjectKeybindingHintTest < System::TestCase
     JS
 
     assert_selector("keybinding-hint .KeybindingHint-chord:not(.KeybindingHint-chord--emphasis):not(.KeybindingHint-chord--small)")
-    # data-platform="bogus" means "detect": ⌘ on a macOS dev machine, ⌃ on Linux CI.
-    assert(all(VISIBLE).map(&:text).intersect?(["⌘", "⌃"]), "mod resolved for the detected platform")
+    # data-platform="bogus" means "detect": ⌘ on a macOS dev machine, Ctrl on Linux CI.
+    assert(all(VISIBLE).map(&:text).intersect?(["⌘", "Ctrl"]), "mod resolved for the detected platform")
     assert_equal "bogus", find("keybinding-hint")["data-scheme"], "element must not write normalized values back"
   end
 
@@ -348,7 +348,83 @@ class IntegrationOpenProjectKeybindingHintTest < System::TestCase
     refute_match(/, 0\)\z/, after, "pressed chord must be opaque (--bgColor-default)")
   end
 
+  def test_german_condensed_off_apple
+    visit_preview(:playground, keys: "Mod+s", platform: "other", locale: "de")
+
+    assert_selector(VISIBLE, text: "Strg")
+    assert_includes flat_hidden_text("keybinding-hint"), "Steuerung"
+  end
+
+  def test_german_full_and_spoken_on_apple
+    visit_preview(:playground, keys: "Control+s", format: "full", platform: "apple", locale: "de")
+
+    assert_selector(VISIBLE, text: "Steuerung")
+    assert_includes flat_hidden_text("keybinding-hint"), "Steuerung"
+  end
+
+  def test_german_then_in_sequence
+    visit_preview(:playground, keys: "g i", platform: "other", locale: "de")
+
+    assert_includes flat_hidden_text("keybinding-hint"), "dann"
+  end
+
+  def test_german_punctuation_spoken
+    visit_preview(:playground, keys: "Mod+.", platform: "other", locale: "de")
+
+    assert_selector(VISIBLE, text: ".")
+    assert_includes flat_hidden_text("keybinding-hint"), "Punkt"
+  end
+
+  def test_names_only_change_rerenders
+    visit_preview(:playground, keys: "Control+s", platform: "other")
+    assert_selector(VISIBLE, text: "Ctrl")
+
+    set_names("then" => "dann", "keys" => { "control" => { "condensed" => { "other" => "Strg" }, "accessible" => { "other" => "Steuerung" } } })
+
+    assert_selector(VISIBLE, text: "Strg")
+    assert_includes flat_hidden_text("keybinding-hint"), "Steuerung"
+  end
+
+  def test_malformed_names_fall_back_to_english
+    visit_preview(:playground, keys: "Control+s", platform: "other")
+
+    page.execute_script(%(document.querySelector("keybinding-hint").setAttribute("data-names", "{not json")))
+
+    assert_selector(VISIBLE, text: "⌃")
+    assert_includes flat_hidden_text("keybinding-hint"), "control"
+  end
+
+  def test_blank_names_fall_back_to_english
+    visit_preview(:playground, keys: "Control+s g", platform: "other")
+
+    set_names("then" => "", "keys" => { "control" => { "condensed" => { "other" => "" }, "accessible" => { "other" => "" } } })
+
+    assert_selector(VISIBLE, text: "⌃")
+    assert_includes flat_hidden_text("keybinding-hint"), "control"
+    assert_includes flat_hidden_text("keybinding-hint"), "then"
+  end
+
+  def test_markup_in_names_renders_as_text
+    visit_preview(:playground, keys: "Control+s", platform: "other")
+
+    set_names("keys" => { "control" => { "condensed" => { "other" => "<b>x</b>" } } })
+
+    assert_selector(VISIBLE, text: "<b>x</b>")
+    refute_selector("keybinding-hint b")
+  end
+
+  def test_inherited_property_key
+    visit_preview(:playground, keys: "constructor", platform: "other")
+
+    assert_selector(VISIBLE, text: "Constructor")
+    assert_equal "constructor", flat_hidden_text("keybinding-hint")
+  end
+
   private
+
+  def set_names(names)
+    page.execute_script(%(document.querySelector("keybinding-hint").setAttribute("data-names", #{names.to_json.to_json})))
+  end
 
   # Computed accessible names of all nodes with the given ARIA role, read
   # from Chrome's accessibility tree over CDP (Cuprite exposes Ferrum).
