@@ -63,6 +63,8 @@ module Primer
       # Use:
       #
       # - `trailing_visual_counter` for a <%= link_to_component(Primer::Beta::Counter) %>.
+      # - `trailing_visual_keybinding_hint` for a <%= link_to_component(Primer::OpenProject::KeybindingHint) %>.
+      #   The hint follows the button's size unless `size:` is given.
       #
       # @param system_arguments [Hash] Same arguments as <%= link_to_component(Primer::Beta::Counter) %>.
       renders_one :trailing_visual, types: {
@@ -71,6 +73,13 @@ module Primer
         counter: lambda { |**system_arguments|
           @trailing_visual_counter = true
           Primer::Beta::Counter.new(**system_arguments)
+        },
+        # NOTE: OpenProject addition, see DREAM-867
+        keybinding_hint: lambda { |**system_arguments|
+          Primer::OpenProject::KeybindingHint.new(
+            size: @size == :small ? :small : :medium,
+            **system_arguments
+          )
         }
       }
 
@@ -123,7 +132,10 @@ module Primer
         **system_arguments
       )
         @base_button_class = base_button_class
-        @scheme = scheme
+        # NOTE: OpenProject addition, see DREAM-867. Upstream stores the raw
+        # scheme and drops size after class mapping; slots need both validated.
+        @scheme = fetch_or_fallback(SCHEME_OPTIONS, scheme, DEFAULT_SCHEME)
+        @size = fetch_or_fallback(SIZE_OPTIONS, size, DEFAULT_SIZE)
         @block = block
         @label_wrap = label_wrap
 
@@ -142,8 +154,8 @@ module Primer
 
         @system_arguments[:classes] = class_names(
           system_arguments[:classes],
-          SCHEME_MAPPINGS[fetch_or_fallback(SCHEME_OPTIONS, scheme, DEFAULT_SCHEME)],
-          SIZE_MAPPINGS[fetch_or_fallback(SIZE_OPTIONS, size, DEFAULT_SIZE)],
+          SCHEME_MAPPINGS[@scheme],
+          SIZE_MAPPINGS[@size],
           "Button",
           "Button--fullWidth" => @block,
           "Button--labelWrap" => @label_wrap

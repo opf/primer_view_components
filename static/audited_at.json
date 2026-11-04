@@ -165,6 +165,7 @@
   "Primer::OpenProject::InlineMessage": "",
   "Primer::OpenProject::InputGroup": "",
   "Primer::OpenProject::InsetBox": "",
+  "Primer::OpenProject::KeybindingHint": "",
   "Primer::OpenProject::PageHeader": "",
   "Primer::OpenProject::PageHeader::Dialog": "",
   "Primer::OpenProject::PageHeader::Menu": "",

@@ -1,0 +1,15 @@
+# German fixture for the KeybindingHint previews and system tests.
+de:
+  keybinding_hint:
+    then: "dann"
+    keys:
+      control:
+        condensed: { apple: "⌃", other: "Strg" }
+        full: { other: "Steuerung" }
+        accessible: { other: "Steuerung" }
+      shift:
+        full: { other: "Umschalt" }
+        accessible: { other: "Umschalt" }
+      period:
+        key: "."
+        accessible: { other: "Punkt" }

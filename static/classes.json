@@ -403,6 +403,18 @@
   "InsetBox--title-container": [
     "Primer::OpenProject::InsetBox"
   ],
+  "KeybindingHint-chord": [
+    "Primer::OpenProject::KeybindingHint"
+  ],
+  "KeybindingHint-chord--emphasis": [
+    "Primer::OpenProject::KeybindingHint"
+  ],
+  "KeybindingHint-chord--small": [
+    "Primer::OpenProject::KeybindingHint"
+  ],
+  "KeybindingHint-kbd": [
+    "Primer::OpenProject::KeybindingHint"
+  ],
   "Label": [
     "Primer::Beta::Label"
   ],
