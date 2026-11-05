@@ -1827,6 +1827,211 @@ module Alpha
       assert_equal 1, Primer::RequestGate.count("b")
     end
 
+    def test_emptied_body_reloads_on_open
+      # Starting state: loaded from gate "w", closed (lazy)
+      visit_preview(:deferred_refresh)
+      set_menu_src(gate: "w")
+      click_on_invoker_button
+      Primer::RequestGate.wait_until_started("w")
+      Primer::RequestGate.release("w")
+      assert_item "Copy link"
+      close_menu
+      src = menu_src
+
+      # Other code (eg. a morph of the empty server body) removes the items
+      empty_primary_body
+      refute_selector "action-menu anchored-position .Overlay-body > *", visible: :all
+      assert_equal 1, Primer::RequestGate.count("w")
+
+      click_on_invoker_button
+      Primer::RequestGate.wait_until_started("w", attempt: 2)
+      Primer::RequestGate.release("w", attempt: 2)
+      assert_item "Copy link"
+      assert_equal 2, Primer::RequestGate.count("w")
+      assert_equal src, menu_src
+    end
+
+    def test_emptied_body_of_preloaded_menu_reloads_at_once
+      # Starting state: loaded from gate "w", closed (preload)
+      visit_preview(:deferred_refresh, preload: true)
+      set_menu_src(gate: "w")
+      Primer::RequestGate.wait_until_started("w")
+      Primer::RequestGate.release("w")
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      assert_selector "action-menu .ActionListItem-label", exact_text: "Copy link", visible: :all
+
+      empty_primary_body
+      Primer::RequestGate.wait_until_started("w", attempt: 2)
+      refute_selector "anchored-position:popover-open"
+      Primer::RequestGate.release("w", attempt: 2)
+      assert_selector "action-menu[data-ready=true]", visible: :all
+
+      click_on_invoker_button
+      assert_item "Copy link"
+      assert_equal 2, Primer::RequestGate.count("w")
+    end
+
+    def test_emptied_body_drops_pending_response
+      # Starting state: loaded, closed with request A held
+      visit_preview(:deferred_refresh)
+      load_and_close_menu
+      set_menu_src(label: "A", gate: "a")
+      click_on_invoker_button
+      Primer::RequestGate.wait_until_started("a")
+      # A cancelled replacement fires no include-fragment-replaced, so wait
+      # for loadend, which upstream dispatches a task after the replacement
+      page.execute_script("#{primary_fragment_js}.addEventListener('loadend', () => { window.__aDone = true })")
+      close_menu
+
+      empty_primary_body
+      Primer::RequestGate.release("a")
+      wait_until { page.evaluate_script("!!window.__aDone") }
+      assert_no_selector "action-menu .ActionListItem-label", visible: :all
+      # The wiped loader is abandoned, so no load is pending
+      assert_selector "action-menu[data-ready=true]", visible: :all
+
+      click_on_invoker_button
+      Primer::RequestGate.wait_until_started("a", attempt: 2)
+      Primer::RequestGate.release("a", attempt: 2)
+      assert_item "A"
+      assert_equal 2, Primer::RequestGate.count("a")
+    end
+
+    def test_empty_response_on_preloaded_menu_reloads_only_on_open
+      # Starting state: loaded, closed (preload)
+      visit_preview(:deferred_refresh, preload: true)
+      assert_selector "action-menu[data-ready=true]", visible: :all
+
+      set_menu_src(empty: "1", gate: "g")
+      Primer::RequestGate.wait_until_started("g")
+      Primer::RequestGate.release("g")
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      # A reload would insert its loader synchronously
+      wait_for_frames
+      refute_selector "action-menu anchored-position .Overlay-body > *", visible: :all
+      assert_equal 1, Primer::RequestGate.count("g")
+
+      click_on_invoker_button
+      Primer::RequestGate.wait_until_started("g", attempt: 2)
+      Primer::RequestGate.release("g", attempt: 2)
+      refute_selector "anchored-position:popover-open"
+      assert_equal 2, Primer::RequestGate.count("g")
+    end
+
+    def test_emptied_body_of_open_menu_with_pending_load_reloads_and_stays_open
+      # Starting state: loaded, open with request A held
+      visit_preview(:deferred_refresh)
+      load_and_open_menu
+      set_menu_src(label: "A", gate: "a")
+      Primer::RequestGate.wait_until_started("a")
+
+      empty_primary_body
+      assert_spinner_visible
+      # The browser holds a second request for the same URL until the first
+      # one completes, so release the abandoned one first
+      Primer::RequestGate.release("a")
+      Primer::RequestGate.wait_until_started("a", attempt: 2)
+      wait_for_frames
+      assert_selector "action-menu > anchored-position:popover-open"
+
+      Primer::RequestGate.release("a", attempt: 2)
+      assert_item "A"
+      assert_equal 2, Primer::RequestGate.count("a")
+    end
+
+    def test_emptied_body_of_preloaded_menu_with_pending_load_reloads_at_once
+      # Starting state: closed (preload), request P held
+      visit_preview(:deferred_refresh, preload: true)
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      set_menu_src(label: "P", gate: "p")
+      Primer::RequestGate.wait_until_started("p")
+
+      empty_primary_body
+      Primer::RequestGate.release("p")
+      Primer::RequestGate.wait_until_started("p", attempt: 2)
+      Primer::RequestGate.release("p", attempt: 2)
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      assert_selector "action-menu .ActionListItem-label", exact_text: "P", visible: :all
+      assert_equal 2, Primer::RequestGate.count("p")
+    end
+
+    def test_empty_response_ignores_unrelated_mutations
+      # Starting state: closed (preload), empty response loaded
+      visit_preview(:deferred_refresh, preload: true)
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      set_menu_src(empty: "1", gate: "g")
+      Primer::RequestGate.wait_until_started("g")
+      Primer::RequestGate.release("g")
+      assert_selector "action-menu[data-ready=true]", visible: :all
+
+      # Other code changes the invoker, outside the body
+      page.execute_script("document.querySelector('action-menu button[aria-controls]').append(document.createElement('span'))")
+      # A reload would insert its loader synchronously
+      wait_for_frames
+      refute_selector "action-menu anchored-position .Overlay-body > *", visible: :all
+      assert_equal 1, Primer::RequestGate.count("g")
+    end
+
+    def test_replaced_empty_body_of_preloaded_menu_reloads_at_once
+      # Starting state: loaded from gate "w", closed (preload)
+      visit_preview(:deferred_refresh, preload: true)
+      set_menu_src(gate: "w")
+      Primer::RequestGate.wait_until_started("w")
+      Primer::RequestGate.release("w")
+      assert_selector "action-menu .ActionListItem-label", exact_text: "Copy link", visible: :all
+
+      # Other code replaces the body with the server's empty one (eg. a Turbo
+      # stream), so the mutation targets the overlay, not the body
+      page.execute_script(<<~JS)
+        const body = document.querySelector('action-menu').overlayBody
+        body.replaceWith(body.cloneNode(false))
+      JS
+      Primer::RequestGate.wait_until_started("w", attempt: 2)
+      Primer::RequestGate.release("w", attempt: 2)
+      assert_selector "action-menu .ActionListItem-label", exact_text: "Copy link", visible: :all
+      assert_equal 2, Primer::RequestGate.count("w")
+    end
+
+    def test_replaced_body_after_empty_response_reloads_preloaded_menu
+      # Starting state: closed (preload), empty response loaded
+      visit_preview(:deferred_refresh, preload: true)
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      set_menu_src(empty: "1", gate: "g")
+      Primer::RequestGate.wait_until_started("g")
+      Primer::RequestGate.release("g")
+      assert_selector "action-menu[data-ready=true]", visible: :all
+
+      # Other code replaces the body with the server's empty one
+      page.execute_script(<<~JS)
+        const body = document.querySelector('action-menu').overlayBody
+        body.replaceWith(body.cloneNode(false))
+      JS
+      Primer::RequestGate.wait_until_started("g", attempt: 2)
+      Primer::RequestGate.release("g", attempt: 2)
+      assert_equal 2, Primer::RequestGate.count("g")
+    end
+
+    def test_response_without_items_is_cleared_and_fetched_again_on_open
+      # Starting state: loaded, closed
+      visit_preview(:deferred_refresh)
+      load_and_close_menu
+
+      set_menu_src(empty_list: "1", gate: "e")
+      click_on_invoker_button
+      Primer::RequestGate.wait_until_started("e")
+      Primer::RequestGate.release("e")
+      refute_selector "anchored-position:popover-open"
+      assert_selector "action-menu button[aria-controls]", focused: true
+      # The server rendered an empty list; nothing of it is kept
+      refute_selector "action-menu anchored-position .Overlay-body > *", visible: :all
+      assert_selector "action-menu[data-ready=true]", visible: :all
+
+      click_on_invoker_button(expect_to_open: false)
+      Primer::RequestGate.wait_until_started("e", attempt: 2)
+      Primer::RequestGate.release("e", attempt: 2)
+      assert_equal 2, Primer::RequestGate.count("e")
+    end
+
     def test_completion_does_not_mark_a_newer_request_ready
       # Starting state: loaded, open with request A held
       visit_preview(:deferred_refresh)
@@ -1929,6 +2134,29 @@ module Alpha
       Primer::RequestGate.release("e", attempt: 2)
       assert_item "Copy link"
       assert_equal 2, Primer::RequestGate.count("e")
+    end
+
+    def test_rewritten_failed_loader_response_is_rejected_and_host_src_reloads
+      # Starting state: failed, closed; a morph then rewrites the failed
+      # loader's src while the host keeps its own, which upstream fetches
+      visit_preview(:deferred_refresh)
+      fail_request_while_open
+      close_menu
+      page.execute_script(<<~JS)
+        const loader = #{primary_fragment_js}
+        loader.addEventListener('loadend', () => { window.__xDone = true })
+        loader.setAttribute('src', loader.getAttribute('src').replace('gate=e', 'label=X&gate=x'))
+      JS
+      Primer::RequestGate.wait_until_started("x")
+      Primer::RequestGate.release("x")
+      wait_until { page.evaluate_script("!!window.__xDone") }
+      assert_no_selector "action-menu .ActionListItem-label", exact_text: "X", visible: :all
+
+      click_on_invoker_button
+      Primer::RequestGate.wait_until_started("e", attempt: 2)
+      Primer::RequestGate.release("e", attempt: 2)
+      assert_item "Copy link"
+      refute_selector "action-menu .ActionListItem-label", exact_text: "X"
     end
 
     def test_appended_external_loader_supersedes_pending_loader
@@ -3138,6 +3366,29 @@ module Alpha
       JS
 
       assert_equal "Does something else", second_item_label
+    end
+
+    def test_empty_response_then_click_opens_and_focus_out_closes
+      # Starting state: loaded, closed
+      visit_preview(:deferred_refresh)
+      load_and_close_menu
+
+      set_menu_src(empty: "1", gate: "g")
+      click_on_invoker_button(expect_to_open: false)
+      Primer::RequestGate.wait_until_started("g")
+      Primer::RequestGate.release("g")
+      refute_selector "anchored-position:popover-open" # empty response closed it
+
+      # The empty body is fetched again on open; hold it so the popover is
+      # observed open before the (empty) response could close it
+      click_on_invoker_button
+      Primer::RequestGate.wait_until_started("g", attempt: 2)
+      assert_selector "anchored-position:popover-open"
+      page.execute_script("document.body.setAttribute('tabindex', '-1'); document.body.focus()")
+      refute_selector "anchored-position:popover-open"
+      Primer::RequestGate.release("g", attempt: 2)
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      assert_equal 2, Primer::RequestGate.count("g")
     end
   end
 end

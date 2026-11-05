@@ -39,6 +39,10 @@ export class ActionMenuElement extends HTMLElement {
   // Every primary loader this element created or adopted, so completions of
   // superseded ones can be told apart from sub-menu fragments.
   #ownedLoaders = new WeakSet<IncludeFragmentElement>()
+  // Loaders whose response had no menu items, with the body they left
+  // empty. That body staying empty is not a reason to load again before the
+  // next open; a body other code puts in its place is.
+  #emptyLoaders = new WeakMap<IncludeFragmentElement, HTMLElement>()
 
   #scrollUpdater = () => {
     if (this.#isOpen()) {
@@ -242,10 +246,11 @@ export class ActionMenuElement extends HTMLElement {
     return this.overlayBody ?? null
   }
 
-  // The one rule: a load starts when there is no current request or when
-  // the host src differs from the current request's; the current loader
-  // still in the body is retried. A closed lazy menu waits for the open
-  // moment (`opening`) instead.
+  // The one rule: a load starts when there is no current request, when the
+  // host src differs from the current request's, or when the body holds no
+  // element (other code emptied it, or the last response was empty); the
+  // current loader still in the body is retried. A closed lazy menu waits
+  // for the open moment (`opening`) instead.
   #sync(opening = false) {
     const src = (this.getAttribute('src') ?? '').trim()
     if (!this.#deferred || !src) return
@@ -260,7 +265,7 @@ export class ActionMenuElement extends HTMLElement {
     }
 
     const loader = this.#request?.loader
-    if (!this.#request || src !== this.#request.src) {
+    if (!this.#request || src !== this.#request.src || !this.#body?.firstElementChild) {
       this.#load(src, opening)
     } else if (loader?.isConnected) {
       // A retry fetches the loader's own src, which a morph may have rewritten
@@ -330,6 +335,7 @@ export class ActionMenuElement extends HTMLElement {
 
   // Loaders are never reused, so the listeners need no lifetime of their own
   #listen(fragment: IncludeFragmentElement) {
+    fragment.addEventListener('include-fragment-replace', this)
     fragment.addEventListener('include-fragment-replaced', this)
   }
 
@@ -352,7 +358,9 @@ export class ActionMenuElement extends HTMLElement {
   }
 
   // Picks up loaders other code inserts into the body (the last one wins, so
-  // a loader appended next to a pending one supersedes it).
+  // a loader appended next to a pending one supersedes it), and loads again
+  // when other code empties the body, such as a morph of the server markup,
+  // which renders the body empty.
   #onBodyMutation(records: MutationRecord[]) {
     // A replaced overlay may have taken open sub-menus with it
     this.#pruneFocusZones()
@@ -369,6 +377,12 @@ export class ActionMenuElement extends HTMLElement {
       const fragment = fragments.at(-1)
       if (fragment) this.#adopt(fragment)
     }
+
+    // An empty body was emptied or replaced by other code, unless it is the
+    // one the current loader left empty; loading again there would loop on a
+    // preloaded menu, so that one waits for the next open
+    const loader = this.#request?.loader
+    if (!body.firstElementChild && !(loader && this.#emptyLoaders.get(loader) === body)) this.#sync()
 
     this.#updateReady()
   }
@@ -575,6 +589,31 @@ export class ActionMenuElement extends HTMLElement {
 
       this.#handleItemActivated(item)
 
+      return
+    }
+
+    if (event.type === 'include-fragment-replace') {
+      const loader = event.target as IncludeFragmentElement
+      if (loader !== this.#request?.loader) return
+
+      // Other code removed the current loader before it completed, eg. by
+      // emptying the body, or rewrote its src, eg. by a morph: its response is
+      // not the one requested and must not render or mark the menu ready
+      const body = this.#body
+      if (!body || loader.parentElement !== body || (loader.getAttribute('src') ?? '').trim() !== this.#request.src) {
+        event.preventDefault()
+        return
+      }
+
+      // A response without menu items is discarded, so the body stays empty
+      // and the menu loads again when it next opens
+      const fragment: unknown = event instanceof CustomEvent ? event.detail?.fragment : null
+      if (!(fragment instanceof DocumentFragment)) return
+
+      if (!fragment.querySelector(ActionMenuElement.menuItemSelectors.join(','))) {
+        fragment.replaceChildren()
+        this.#emptyLoaders.set(loader, body)
+      }
       return
     }
 

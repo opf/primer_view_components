@@ -65,6 +65,7 @@ module Primer
         @label = params[:label].presence
         @deferred_sub = params[:deferred_sub].present?
         @with_sub_menu = params[:with_sub_menu].present?
+        @empty_list = params[:empty_list].present?
       end
 
       def form_action_selected_value
