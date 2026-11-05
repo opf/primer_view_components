@@ -64,6 +64,7 @@ module Primer
         # @param form_arguments [Hash] Allows an `ActionMenu` to act as a select list in multi- and single-select modes. Pass the `builder:` and `name:` options to this hash. `builder:` should be an instance of `ActionView::Helpers::FormBuilder`, which are created by the standard Rails `#form_with` and `#form_for` helpers. The `name:` option is the desired name of the field that will be included in the params sent to the server on form submission.
         # @param overlay_arguments [Hash] Arguments to pass to the underlying <%= link_to_component(Primer::Alpha::Overlay) %>
         # @param list_arguments [Hash] Arguments to pass to the underlying <%= link_to_component(Primer::Alpha::ActionMenu::List) %>
+        # @param body_arguments [Hash] Arguments to pass to the underlying overlay's `body` slot.
         # @param system_arguments [Hash] <%= link_to_system_arguments_docs %>.
         def initialize(
           anchor_align:,
@@ -77,9 +78,11 @@ module Primer
           form_arguments: {},
           overlay_arguments: {},
           list_arguments: {},
+          body_arguments: {},
           **system_arguments
         )
           @menu_id = menu_id
+          @body_arguments = body_arguments
           @src = src
           @preload = fetch_or_fallback_boolean(preload, DEFAULT_PRELOAD)
           @anchor_side = anchor_side

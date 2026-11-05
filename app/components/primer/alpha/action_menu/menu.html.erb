@@ -1,5 +1,5 @@
 <%= render(@overlay) do |overlay| %>
-  <% overlay.with_body(padding: :none) do %>
+  <% overlay.with_body(padding: :none, **@body_arguments) do %>
     <% if @src.present? %>
       <%= render(Primer::Alpha::IncludeFragment.new(src: @src, loading: preload? ? :eager : :lazy, "data-target": "action-menu.includeFragment")) do %>
         <%= render(Primer::Alpha::ActionMenu::List.new(id: "#{@menu_id}-list", menu_id: @menu_id)) do |list| %>

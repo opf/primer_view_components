@@ -316,6 +316,27 @@ module Primer
 
         assert_selector("button[aria-haspopup='true'] .Button-label", text: "Menu")
       end
+
+      def test_primary_overlay_body_is_marked_when_deferred
+        render_inline(Primer::Alpha::ActionMenu.new(menu_id: "m", src: "/items")) { |m| m.with_show_button { "Open" } }
+        assert_selector "action-menu anchored-position .Overlay-body[data-target='action-menu.overlayBody']", visible: false
+      end
+
+      def test_overlay_body_is_not_marked_when_not_deferred
+        render_inline(Primer::Alpha::ActionMenu.new(menu_id: "m")) do |m|
+          m.with_show_button { "Open" }
+          m.with_item(label: "One")
+        end
+        assert_no_selector "[data-target='action-menu.overlayBody']", visible: false
+      end
+
+      def test_deferred_sub_menu_body_is_not_marked
+        render_inline(Primer::Alpha::ActionMenu.new(menu_id: "m")) do |m|
+          m.with_show_button { "Open" }
+          m.with_sub_menu_item(label: "More", src: "/sub")
+        end
+        assert_no_selector "[data-target='action-menu.overlayBody']", visible: false
+      end
     end
   end
 end

@@ -68,6 +68,15 @@ module Primer
             { data: { target: "action-menu.list" } }
           )
 
+          if system_arguments[:src].present?
+            system_arguments[:body_arguments] ||= {}
+
+            system_arguments[:body_arguments][:data] = merge_data(
+              system_arguments[:body_arguments],
+              { data: { target: "action-menu.overlayBody" } }
+            )
+          end
+
           super(
             anchor_align: anchor_align,
             anchor_side: anchor_side,
