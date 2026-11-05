@@ -109,6 +109,7 @@ export class ActionMenuElement extends HTMLElement {
     this.addEventListener('mouseover', this, {signal})
     this.addEventListener('focusout', this, {signal})
     this.addEventListener('mousedown', this, {signal})
+    this.addEventListener('beforetoggle', this, {signal, capture: true})
     this.addEventListener('toggle', this, {signal, capture: true})
     this.#setDynamicLabel()
     this.#updateInput()
@@ -241,6 +242,11 @@ export class ActionMenuElement extends HTMLElement {
     const targetIsInvoker = this.invokerElement?.contains(event.target as HTMLElement)
     const eventIsActivation = this.#isActivation(event)
 
+    if (event.type === 'beforetoggle' && event instanceof ToggleEvent) {
+      this.#handleBeforeToggleEvent(event)
+      return
+    }
+
     if (event.type === 'toggle' && event instanceof ToggleEvent) {
       this.#handleToggleEvent(event)
       return
@@ -333,21 +339,40 @@ export class ActionMenuElement extends HTMLElement {
         break
       }
 
-      case 'ArrowLeft':
-        if (item.closest('role[menu]') !== this.list) {
-          const overlay = item.closest('anchored-position') as AnchoredPositionElement | null
-          overlay?.hidePopover()
+      case 'ArrowLeft': {
+        const overlay = item.closest('anchored-position') as AnchoredPositionElement | null
+        if (overlay && overlay !== this.overlay) {
+          overlay.hidePopover()
         }
 
         break
+      }
     }
   }
 
-  #handleToggleEvent(event: ToggleEvent) {
-    const subMenu = event.target as AnchoredPositionElement
+  #handleBeforeToggleEvent(event: ToggleEvent) {
+    if (event.newState !== 'closed') return
+    if (!(event.target instanceof AnchoredPositionElement)) return
 
+    const subMenu = event.target
+    this.#focusZoneStack.pop(subMenu)
+
+    // A nested popover does not hand focus back when it closes, so a sub-menu closed
+    // with ArrowLeft or Escape would leave focus on the body and the focusout handler
+    // would then close the whole menu. Move focus to the sub-menu's item before the
+    // sub-menu hides, while focus is still inside it. Doing this synchronously, rather
+    // than in the async toggle event, keeps focus from ever reaching the body.
+    if (subMenu === this.overlay) return
+    if (!subMenu.contains(document.activeElement)) return
+
+    this.#itemForSubMenu(subMenu)?.focus()
+  }
+
+  #handleToggleEvent(event: ToggleEvent) {
     // Ignore toggle events from non-anchored-position elements (e.g. tooltips inside the menu)
     if (!(event.target instanceof AnchoredPositionElement)) return
+
+    const subMenu = event.target
 
     if (event.newState === 'open') {
       // allow tabbing away from primary menu, but trap focus in sub-menus
@@ -358,15 +383,6 @@ export class ActionMenuElement extends HTMLElement {
         const firstItem = subMenu.querySelector(ActionMenuElement.menuItemSelectors.join(',')) as HTMLElement | null
         firstItem?.focus()
       })
-    } else {
-      // Note that this will also cause focus to return to the invoker button, which is
-      // desirable
-      this.#focusZoneStack.pop(subMenu)
-      const item = this.#itemForSubMenu(subMenu)
-      const openPopover = document.querySelector(':popover-open')
-      if (item && !openPopover) {
-        item.focus()
-      }
     }
   }
 
