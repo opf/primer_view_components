@@ -134,6 +134,10 @@ module Primer
 
         private
 
+        def primary?
+          false
+        end
+
         def before_render
           raise ArgumentError, "`items` cannot be set when `src` is specified" if src.present? && items.any?
         end

@@ -93,6 +93,12 @@ module Primer
             evaluate_block(button, &block)
           end
         end
+
+        private
+
+        def primary?
+          true
+        end
       end
     end
   end

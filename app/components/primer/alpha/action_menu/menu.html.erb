@@ -1,24 +1,32 @@
+<% if @src.present? %>
+  <% loader = capture do %>
+    <%= render(Primer::Alpha::ActionMenu::List.new(id: "#{@menu_id}-list", menu_id: @menu_id)) do |list| %>
+      <% list.with_item(
+        aria: { disabled: true },
+        content_arguments: {
+          display: :flex,
+          align_items: :center,
+          justify_content: :center,
+          text_align: :center,
+          autofocus: true
+        }
+      ) do %>
+        <%= render Primer::Beta::Spinner.new(aria: { label: I18n.t(:label_loading) }, size: :small) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
 <%= render(@overlay) do |overlay| %>
   <% overlay.with_body(padding: :none, **@body_arguments) do %>
-    <% if @src.present? %>
-      <%= render(Primer::Alpha::IncludeFragment.new(src: @src, loading: preload? ? :eager : :lazy, "data-target": "action-menu.includeFragment")) do %>
-        <%= render(Primer::Alpha::ActionMenu::List.new(id: "#{@menu_id}-list", menu_id: @menu_id)) do |list| %>
-          <% list.with_item(
-            aria: { disabled: true },
-            content_arguments: {
-              display: :flex,
-              align_items: :center,
-              justify_content: :center,
-              text_align: :center,
-              autofocus: true
-            }
-          ) do %>
-            <%= render Primer::Beta::Spinner.new(aria: { label: I18n.t(:label_loading) }, size: :small) %>
-          <% end %>
-        <% end %>
-      <% end %>
-    <% else %>
+    <% if @src.present? && !primary? %>
+      <%= render(Primer::Alpha::IncludeFragment.new(src: @src, loading: preload? ? :eager : :lazy, "data-target": "action-menu.includeFragment")) { loader } %>
+    <% elsif @src.blank? %>
       <%= render(@list) %>
     <% end %>
   <% end %>
+<% end %>
+<% if @src.present? && primary? %>
+  <template data-target="action-menu.loaderTemplate">
+    <%= render(Primer::Alpha::IncludeFragment.new(src: @src, loading: preload? ? :eager : :lazy)) { loader } %>
+  </template>
 <% end %>
