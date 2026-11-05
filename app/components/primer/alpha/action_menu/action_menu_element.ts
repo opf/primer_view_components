@@ -36,7 +36,7 @@ export class ActionMenuElement extends HTMLElement {
   // morph may rewrite while the request is in flight; the record is what was
   // requested, so a rewritten loader cannot pass an old response off as new.
   #request: LoaderRequest | null = null
-  // Every primary loader this element created, so completions of
+  // Every primary loader this element created or adopted, so completions of
   // superseded ones can be told apart from sub-menu fragments.
   #ownedLoaders = new WeakSet<IncludeFragmentElement>()
 
@@ -52,7 +52,10 @@ export class ActionMenuElement extends HTMLElement {
     // Never disconnected: it observes the element's own subtree, so it keeps
     // working while the element is detached. A local, not a field: the
     // registration keeps it alive as long as the element is.
-    const observer = new MutationObserver(() => this.#updateLevels())
+    const observer = new MutationObserver(records => {
+      this.#onBodyMutation(records)
+      this.#updateLevels()
+    })
     observer.observe(this, {childList: true, subtree: true})
 
     this.#focusZoneStack = new ActionMenuFocusZoneStack()
@@ -345,6 +348,68 @@ export class ActionMenuElement extends HTMLElement {
       this.setAttribute('data-ready', 'true')
     } else {
       this.removeAttribute('data-ready')
+    }
+  }
+
+  // Picks up loaders other code inserts into the body (the last one wins, so
+  // a loader appended next to a pending one supersedes it).
+  #onBodyMutation(records: MutationRecord[]) {
+    // A replaced overlay may have taken open sub-menus with it
+    this.#pruneFocusZones()
+
+    if (!this.#deferred) return
+
+    const body = this.#body
+    if (!body) return
+
+    if (records.some(record => record.addedNodes.length > 0)) {
+      const fragments = Array.from(body.querySelectorAll<IncludeFragmentElement>(':scope > include-fragment')).filter(
+        fragment => !this.#ownedLoaders.has(fragment),
+      )
+      const fragment = fragments.at(-1)
+      if (fragment) this.#adopt(fragment)
+    }
+
+    this.#updateReady()
+  }
+
+  // Makes an inserted loader the current request. Its src is reflected onto
+  // the host, so the rule sees the request as current: an open or preloaded
+  // menu loads it at once (upstream's busy guard drops the duplicate for an
+  // eager loader), a closed lazy one when it opens, unless the loader is eager
+  // and has already started itself. Idiomorph inserts a loader
+  // before setting its attributes, but sets them synchronously, so the loader
+  // arrives here with its src; one that gets its src only in a later task is
+  // replaced with a load at the host src. The template is not touched.
+  #adopt(fragment: IncludeFragmentElement) {
+    const body = this.#body
+    if (!body) return
+
+    const src = (fragment.getAttribute('src') ?? '').trim()
+
+    this.#request = {loader: fragment, src}
+    this.#ownedLoaders.add(fragment)
+    this.#listen(fragment)
+    // The response decides the form field name
+    this.#inputName = ''
+    this.#keepInputs(body)
+
+    if (this.#isOpen()) {
+      this.#keepOpenWhileLoading(fragment)
+      // A focus handler may have started a newer load meanwhile
+      if (this.#request?.loader !== fragment) return
+    }
+
+    for (const child of Array.from(body.childNodes)) {
+      if (child !== fragment) child.remove()
+    }
+
+    if (src && src !== this.getAttribute('src')) {
+      this.setAttribute('src', src)
+    } else if (this.#isOpen() || this.#preload) {
+      // An unchanged src does not run the rule, and a lazy loader inserted
+      // before its attributes never starts on its own
+      this.#sync()
     }
   }
 
