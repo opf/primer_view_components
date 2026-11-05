@@ -4,7 +4,7 @@ import {ActionMenuElement} from './action_menu_element'
 
 type StackEntry = {
   element: AnchoredPositionElement
-  abortController?: AbortController
+  abortController: AbortController
 }
 
 export class ActionMenuFocusZoneStack {
@@ -27,15 +27,15 @@ export class ActionMenuFocusZoneStack {
     if (target) {
       while (this.#stack.length > 0 && this.current?.element !== target) {
         const entry = this.#stack.pop()
-        entry?.abortController?.abort()
+        entry?.abortController.abort()
       }
     }
 
     const entry = this.#stack.pop()
-    entry?.abortController?.abort()
+    entry?.abortController.abort()
   }
 
-  #setupFocusZone(containerEl: AnchoredPositionElement, trapFocus: boolean): AbortController | undefined {
+  #setupFocusZone(containerEl: AnchoredPositionElement, trapFocus: boolean): AbortController {
     const focusZoneAbortController = focusZone(containerEl, {
       bindKeys: FocusKeys.ArrowVertical | FocusKeys.ArrowHorizontal | FocusKeys.HomeAndEnd | FocusKeys.Backspace,
       focusOutBehavior: 'wrap',
@@ -45,12 +45,13 @@ export class ActionMenuFocusZoneStack {
       },
     })
 
+    // focusTrap() returns nothing when given a signal, so hand back the focus zone's
+    // controller in both cases. Aborting it tears down the focus trap as well.
     if (trapFocus) {
-      const {signal: focusZoneSignal} = focusZoneAbortController
-      return focusTrap(containerEl, undefined, focusZoneSignal)
-    } else {
-      return focusZoneAbortController
+      focusTrap(containerEl, undefined, focusZoneAbortController.signal)
     }
+
+    return focusZoneAbortController
   }
 
   elementIsMenuItem(element: HTMLElement): boolean {
