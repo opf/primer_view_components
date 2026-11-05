@@ -94,6 +94,35 @@ module Alpha
       end
     end
 
+    def sub_menu_item
+      find("action-menu [role=menuitem][popovertarget]", visible: :all)
+    end
+
+    def sub_menu_id
+      sub_menu_item["popovertarget"]
+    end
+
+    def wait_for_animation_frames(count = 2)
+      page.evaluate_async_script(<<~JS, count)
+        const [remaining, done] = arguments
+        const step = (n) => n === 0 ? done() : requestAnimationFrame(() => step(n - 1))
+        step(remaining)
+      JS
+    end
+
+    def assert_sub_menu_closed_and_parent_open
+      assert_no_selector("##{sub_menu_id}:popover-open", visible: :all)
+      assert_selector("action-menu [role=menuitem][popovertarget]", focused: true)
+      assert_primary_menu_stays_open
+    end
+
+    def assert_primary_menu_stays_open
+      # The focusout handler closes the menu one frame late, so make sure the primary
+      # menu is still open after it has had the chance to run.
+      wait_for_animation_frames
+      assert_selector("action-menu > anchored-position:popover-open")
+    end
+
     def close_dialog
       find("[data-close-dialog-id][aria-label=Close]").click
     end
@@ -220,6 +249,78 @@ module Alpha
         # "click" on first item
         activate_via_enter(expect_focus_change: false)
       end
+    end
+
+    def test_sub_menu_arrow_left_closes_only_the_sub_menu
+      visit_preview(:with_actions, nest_in_sub_menu: true)
+
+      open_menu_via_keyboard
+      activate_via_enter # expand sub-menu
+      assert_selector("##{sub_menu_id}:popover-open")
+
+      keyboard.type(:left)
+
+      assert_sub_menu_closed_and_parent_open
+    end
+
+    def test_sub_menu_escape_closes_only_the_sub_menu
+      visit_preview(:with_actions, nest_in_sub_menu: true)
+
+      open_menu_via_keyboard
+      activate_via_enter # expand sub-menu
+      assert_selector("##{sub_menu_id}:popover-open")
+
+      keyboard.type(:escape)
+
+      assert_sub_menu_closed_and_parent_open
+    end
+
+    def test_arrow_left_on_top_level_item_keeps_the_menu_open
+      visit_preview(:with_actions)
+
+      open_menu_via_keyboard
+
+      keyboard.type(:left)
+
+      assert_primary_menu_stays_open
+    end
+
+    def test_arrow_left_on_top_level_deferred_item_keeps_the_menu_open
+      visit_preview(:with_deferred_content)
+
+      open_menu_via_keyboard
+      assert_selector "action-menu ul li", text: "Copy link"
+
+      keyboard.type(:left)
+
+      assert_primary_menu_stays_open
+    end
+
+    def test_escape_on_primary_menu_returns_focus_to_invoker
+      visit_preview(:with_actions)
+
+      open_menu_via_keyboard
+
+      keyboard.type(:escape)
+
+      assert_no_selector "action-menu > anchored-position:popover-open"
+      assert_selector "action-menu button[aria-controls]", focused: true
+    end
+
+    def test_escape_from_sub_menu_then_primary_menu_returns_focus_to_invoker
+      visit_preview(:with_actions, nest_in_sub_menu: true)
+
+      open_menu_via_keyboard
+      activate_via_enter # expand sub-menu
+      assert_selector("##{sub_menu_id}:popover-open")
+
+      keyboard.type(:escape)
+      assert_sub_menu_closed_and_parent_open
+
+      keyboard.type(:escape)
+
+      assert_no_selector "anchored-position:popover-open", visible: :all
+      assert_selector "action-menu button[aria-controls]", focused: true
     end
 
     def test_sub_menu_action_js_keydown
