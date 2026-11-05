@@ -61,7 +61,7 @@ jobs:
           lib/**/*.rb
           demo/**/*.rb
           test/**/*.rb
-    - uses: ruby/setup-ruby@6aaa311d81eba98ae12eaffbcb63296ace0efcde # v1
+    - uses: ruby/setup-ruby@6aaa311d81eba98ae12eaffbcb63296ace0efcde # v1.307.0
       with:
         ruby-version: '3.4'
         bundler-cache: true
@@ -83,7 +83,7 @@ jobs:
       with:
         files: |
           app/components/**/*.erb
-    - uses: ruby/setup-ruby@6aaa311d81eba98ae12eaffbcb63296ace0efcde # v1
+    - uses: ruby/setup-ruby@6aaa311d81eba98ae12eaffbcb63296ace0efcde # v1.307.0
       with:
         ruby-version: '3.4'
         bundler-cache: true
@@ -116,6 +116,24 @@ jobs:
         npx eslint --quiet ${STEPS_CHANGED_FILES_OUTPUTS_ALL_CHANGED_FILES}
       env:
         STEPS_CHANGED_FILES_OUTPUTS_ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+
+  unit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      with:
+        persist-credentials: false
+    - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+      with:
+        node-version: 24
+        cache: 'npm'
+    - name: Run JS unit tests
+      run: |
+        npm ci
+        npm run test:unit
 
   stylelint:
     runs-on: ubuntu-latest
