@@ -1,5 +1,5 @@
 - text: Favorite place to visit
-- combobox "Favorite place to visit":
+- combobox "Favorite place to visit" [invalid]:
   - option "Lopez Island" [selected]
   - option "Shaw Island"
   - option "Orcas Island"
