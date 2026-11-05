@@ -1,2 +1,2 @@
 - text: My text field
-- textbox "My text field"
+- textbox "My text field" [invalid]
