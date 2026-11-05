@@ -296,6 +296,33 @@ module Alpha
       assert_primary_menu_stays_open
     end
 
+    def test_escape_on_primary_menu_returns_focus_to_invoker
+      visit_preview(:with_actions)
+
+      open_menu_via_keyboard
+
+      keyboard.type(:escape)
+
+      assert_no_selector "action-menu > anchored-position:popover-open"
+      assert_selector "action-menu button[aria-controls]", focused: true
+    end
+
+    def test_escape_from_sub_menu_then_primary_menu_returns_focus_to_invoker
+      visit_preview(:with_actions, nest_in_sub_menu: true)
+
+      open_menu_via_keyboard
+      activate_via_enter # expand sub-menu
+      assert_selector("##{sub_menu_id}:popover-open")
+
+      keyboard.type(:escape)
+      assert_sub_menu_closed_and_parent_open
+
+      keyboard.type(:escape)
+
+      assert_no_selector "anchored-position:popover-open", visible: :all
+      assert_selector "action-menu button[aria-controls]", focused: true
+    end
+
     def test_sub_menu_action_js_keydown
       visit_preview(:with_actions, nest_in_sub_menu: true)
 
