@@ -317,6 +317,13 @@ module Primer
         render_with_template(locals: { preload: preload.to_s == "true" })
       end
 
+      # @label Deferred refresh with form
+      #
+      # @hidden
+      def deferred_refresh_form(route_format: :json, select_variant: :multiple)
+        render_with_template(locals: { route_format: route_format, select_variant: select_variant.to_sym })
+      end
+
       # @label With deferred content near the bottom of the viewport
       #
       # @hidden

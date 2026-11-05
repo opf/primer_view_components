@@ -293,6 +293,9 @@ export class ActionMenuElement extends HTMLElement {
     this.#request = {loader, src}
     this.#ownedLoaders.add(loader)
     this.#listen(loader)
+    // The response decides the form field name
+    this.#inputName = ''
+    this.#keepInputs(body)
 
     body.prepend(loader)
     if (opening || this.#isOpen()) {
@@ -306,6 +309,20 @@ export class ActionMenuElement extends HTMLElement {
     }
 
     this.#updateReady()
+  }
+
+  // Keeps the current form inputs submitting while a load replaces the body,
+  // also when it fails: they move to the host until a response brings its own
+  #keepInputs(body: HTMLElement) {
+    const inputs = body.querySelector('[data-list-inputs]')
+    if (!inputs) return
+
+    this.#dropKeptInputs()
+    this.append(inputs)
+  }
+
+  #dropKeptInputs() {
+    for (const inputs of this.querySelectorAll(':scope > [data-list-inputs]')) inputs.remove()
   }
 
   // Loaders are never reused, so the listeners need no lifetime of their own
@@ -700,6 +717,9 @@ export class ActionMenuElement extends HTMLElement {
 
       this.overlay?.update()
     }
+    if (this.#deferred) this.#dropKeptInputs()
+    this.#setDynamicLabel()
+    this.#updateInput()
     this.#softDisableItems()
 
     // Ready unless the focus moves above started another load
@@ -735,7 +755,12 @@ export class ActionMenuElement extends HTMLElement {
     if (!this.dynamicLabel) return
     const invokerLabel = this.invokerLabel
     if (!invokerLabel) return
-    this.#originalLabel ||= invokerLabel.textContent || ''
+    // Kept on the host, since the button of a cloned or restored menu
+    // already shows a selection
+    if (!this.#originalLabel) {
+      this.#originalLabel = this.getAttribute('data-original-label') ?? (invokerLabel.textContent || '')
+      this.setAttribute('data-original-label', this.#originalLabel)
+    }
     let itemLabel: string | undefined
     if (this.selectVariant === 'single') {
       itemLabel = this.querySelector('[aria-checked=true] .ActionListItem-label')?.textContent?.trim()
@@ -781,6 +806,10 @@ export class ActionMenuElement extends HTMLElement {
       if (inputs.length > 0) {
         this.#inputName ||= (inputs[0] as HTMLInputElement).name
       }
+      // Kept on the container too, so a cloned or restored menu with nothing
+      // selected still names the inputs it creates
+      this.#inputName ||= inputList.getAttribute('data-input-name') ?? ''
+      if (this.#inputName) inputList.setAttribute('data-input-name', this.#inputName)
 
       for (const selectedItem of this.selectedItems) {
         const newInput = document.createElement('input')

@@ -1219,6 +1219,188 @@ module Alpha
       refute_selector "action-menu ul li"
     end
 
+    def test_deferred_form_first_load_syncs_label
+      visit_preview(:deferred_refresh_form)
+
+      click_on_invoker_button
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      close_menu
+
+      assert_selector "action-menu button[aria-controls]", text: "Ours"
+    end
+
+    def test_refresh_form_backed_menu_repeatedly
+      visit_preview(:deferred_refresh_form)
+      click_on_invoker_button
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      close_menu
+
+      (1..3).each do |n|
+        page.execute_script("document.querySelector('action-menu').removeAttribute('data-ready')")
+        set_menu_src(label: n)
+        click_on_invoker_button
+        assert_selector "action-menu[data-ready=true]", visible: :all
+        assert_selector "action-menu .ActionListItem-label", exact_text: "Ours #{n}"
+        close_menu
+      end
+
+      assert_selector "action-menu .Overlay-body > action-list", count: 1, visible: :all
+      assert_selector "action-menu [data-list-inputs]", count: 1, visible: :all
+      assert_selector "action-menu .ActionList-sectionDivider, action-menu h3", text: "Strategy", count: 1, visible: :all
+      assert_selector "action-menu button[aria-controls]", text: "Ours 3"
+
+      click_on_invoker_button
+      find("action-menu .ActionListItem-label", exact_text: "Recursive 3").click
+      close_menu
+
+      find("input[type=submit]").click
+      response = JSON.parse(find("pre").text)
+      assert_equal %w[ours recursive], response["value"].sort
+    end
+
+    def test_refresh_form_backed_menu_empty_selection
+      visit_preview(:deferred_refresh_form)
+      click_on_invoker_button
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      close_menu
+
+      page.execute_script("document.querySelector('action-menu').removeAttribute('data-ready')")
+      set_menu_src(checked: "")
+      click_on_invoker_button
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      close_menu
+
+      label = find("action-menu button[aria-controls]").text
+      ["Ours", "Recursive", "Fast forward"].each { |name| refute_includes label, name }
+
+      find("input[type=submit]").click
+      response = JSON.parse(find("pre").text)
+      assert_nil response["value"]
+    end
+
+    def test_form_submits_previous_selection_while_reload_is_pending
+      # Starting state: loaded with "Ours" checked, closed, reload A held
+      visit_preview(:deferred_refresh_form)
+      click_on_invoker_button
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      set_menu_src(gate: "a")
+      Primer::RequestGate.wait_until_started("a")
+      close_menu
+
+      find("input[type=submit]").click
+      response = JSON.parse(find("pre").text)
+      assert_equal ["ours"], response["value"]
+    end
+
+    def test_form_submits_previous_selection_after_failed_reload
+      # Starting state: loaded with "Ours" checked, closed, reload failed
+      visit_preview(:deferred_refresh_form)
+      click_on_invoker_button
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      set_menu_src(gate: "e")
+      Primer::RequestGate.wait_until_started("e")
+      Primer::RequestGate.release("e", status: 500)
+      wait_until { page.evaluate_script("!!document.querySelector('action-menu include-fragment.is-error')") }
+      close_menu
+
+      find("input[type=submit]").click
+      response = JSON.parse(find("pre").text)
+      assert_equal ["ours"], response["value"]
+    end
+
+    def test_form_submits_new_selection_after_reload
+      # Starting state: loaded with "Ours" checked, closed
+      visit_preview(:deferred_refresh_form)
+      click_on_invoker_button
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      close_menu
+
+      set_menu_src(checked: "recursive")
+      click_on_invoker_button
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      close_menu
+      assert_equal 1, page.evaluate_script("document.querySelectorAll('action-menu [data-list-inputs]').length")
+
+      find("input[type=submit]").click
+      response = JSON.parse(find("pre").text)
+      assert_equal ["recursive"], response["value"]
+    end
+
+    def test_cloned_menu_without_selection_keeps_field_name
+      # Starting state: loaded with nothing checked, closed, then cloned
+      visit_preview(:deferred_refresh_form)
+      set_menu_src(checked: "")
+      click_on_invoker_button
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      close_menu
+      page.execute_script(<<~JS)
+        const menu = document.querySelector('action-menu')
+        menu.replaceWith(menu.cloneNode(true))
+      JS
+
+      page.execute_script("const m = document.querySelector('action-menu'); m.checkItem(m.items[0].parentElement)")
+      find("input[type=submit]").click
+      response = JSON.parse(find("pre").text)
+      assert_equal ["fast_forward"], response["value"]
+    end
+
+    def test_cloned_menu_keeps_original_label
+      # Starting state: loaded with "Ours" selected, closed
+      visit_preview(:deferred_refresh_form)
+      click_on_invoker_button
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      close_menu
+      assert_includes find("action-menu button[aria-controls]").text, "Ours"
+
+      # A clone (eg. a Turbo snapshot restore) starts from the updated button
+      page.execute_script(<<~JS)
+        const menu = document.querySelector('action-menu')
+        menu.replaceWith(menu.cloneNode(true))
+      JS
+      set_menu_src(checked: "")
+      click_on_invoker_button
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      close_menu
+
+      label = find("action-menu button[aria-controls]").text
+      refute_includes label, "Ours"
+    end
+
+    def test_form_keeps_previous_selection_until_closed_src_change_is_applied
+      # Starting state: loaded, closed (form-backed, server checked "ours")
+      visit_preview(:deferred_refresh_form)
+      click_on_invoker_button
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      assert_item "Ours"
+      close_menu
+
+      set_menu_src(checked: "recursive", gate: "f")
+      assert_selector "action-menu input[data-list-input][value='ours']", visible: :all
+      assert_selector "action-menu button .Button-label", text: /ours/i
+      assert_equal 0, Primer::RequestGate.count("f")
+
+      click_on_invoker_button
+      Primer::RequestGate.wait_until_started("f")
+      Primer::RequestGate.release("f")
+      assert_selector "action-menu input[data-list-input][value='recursive']", visible: :all
+      assert_no_selector "action-menu input[data-list-input][value='ours']", visible: :all
+    end
+
+    def test_single_select_deferred_form_with_no_checked_item_submits_no_value
+      # Starting state: unloaded single-select form, closed
+      visit_preview(:deferred_refresh_form, select_variant: :single)
+
+      set_menu_src(variant: "single", checked: "")
+      click_on_invoker_button
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      assert_selector "action-menu [role=menuitemradio]"
+      close_menu
+
+      find("input[type=submit]").click
+      response = JSON.parse(find("pre").text)
+      assert_nil response["value"]
+    end
+
     def test_first_open_inserts_loader_from_template
       # Starting state: unloaded, closed
       visit_preview(:deferred_refresh)
