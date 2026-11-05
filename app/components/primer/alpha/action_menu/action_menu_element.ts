@@ -352,38 +352,45 @@ export class ActionMenuElement extends HTMLElement {
 
   #handleBeforeToggleEvent(event: ToggleEvent) {
     if (event.newState !== 'closed') return
-    if (!(event.target instanceof AnchoredPositionElement)) return
 
-    const subMenu = event.target
-    this.#focusZoneStack.pop(subMenu)
+    const menu = this.#toggledMenu(event)
+    if (!menu) return
+
+    this.#focusZoneStack.pop(menu)
+
+    // The primary menu's popover hands focus back to the invoker itself
+    if (menu === this.overlay) return
 
     // A nested popover does not hand focus back when it closes, so a sub-menu closed
     // with ArrowLeft or Escape would leave focus on the body and the focusout handler
     // would then close the whole menu. Move focus to the sub-menu's item before the
     // sub-menu hides, while focus is still inside it. Doing this synchronously, rather
     // than in the async toggle event, keeps focus from ever reaching the body.
-    if (subMenu === this.overlay) return
-    if (!subMenu.contains(document.activeElement)) return
+    if (!menu.contains(document.activeElement)) return
 
-    this.#itemForSubMenu(subMenu)?.focus()
+    this.#itemForSubMenu(menu)?.focus()
   }
 
   #handleToggleEvent(event: ToggleEvent) {
-    // Ignore toggle events from non-anchored-position elements (e.g. tooltips inside the menu)
-    if (!(event.target instanceof AnchoredPositionElement)) return
-
-    const subMenu = event.target
+    const menu = this.#toggledMenu(event)
+    if (!menu) return
 
     if (event.newState === 'open') {
       // allow tabbing away from primary menu, but trap focus in sub-menus
-      const isPrimaryMenu = subMenu === this.overlay
-      this.#focusZoneStack.push(subMenu, {trapFocus: !isPrimaryMenu})
+      const isPrimaryMenu = menu === this.overlay
+      this.#focusZoneStack.push(menu, {trapFocus: !isPrimaryMenu})
 
       window.requestAnimationFrame(() => {
-        const firstItem = subMenu.querySelector(ActionMenuElement.menuItemSelectors.join(',')) as HTMLElement | null
+        const firstItem = menu.querySelector(ActionMenuElement.menuItemSelectors.join(',')) as HTMLElement | null
         firstItem?.focus()
       })
     }
+  }
+
+  // The primary menu or a sub-menu, or null for popovers that are not menus
+  // (e.g. tooltips inside the menu)
+  #toggledMenu(event: ToggleEvent): AnchoredPositionElement | null {
+    return event.target instanceof AnchoredPositionElement ? event.target : null
   }
 
   #handleInvokerActivated(event: Event) {
