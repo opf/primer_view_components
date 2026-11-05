@@ -25,6 +25,8 @@ export class ActionMenuFocusZoneStack {
 
   pop(target?: AnchoredPositionElement) {
     if (target) {
+      if (!this.#stack.some(entry => entry.element === target)) return
+
       while (this.#stack.length > 0 && this.current?.element !== target) {
         const entry = this.#stack.pop()
         entry?.abortController.abort()
@@ -33,6 +35,34 @@ export class ActionMenuFocusZoneStack {
 
     const entry = this.#stack.pop()
     entry?.abortController.abort()
+  }
+
+  // Pops and aborts every entry above (not including) the given element.
+  popAbove(element: AnchoredPositionElement) {
+    if (!this.#stack.some(entry => entry.element === element)) return
+
+    while (this.#stack.length > 0 && this.current?.element !== element) {
+      const entry = this.#stack.pop()
+      entry?.abortController.abort()
+    }
+  }
+
+  // Drops and aborts every entry whose element is no longer live, for example
+  // an overlay that other code removed while it was open. Its toggle event
+  // never reaches the menu, so nothing else pops it.
+  prune(isLive: (element: AnchoredPositionElement) => boolean) {
+    this.#stack = this.#stack.filter(entry => {
+      if (isLive(entry.element)) return true
+      entry.abortController.abort()
+      return false
+    })
+  }
+
+  clear() {
+    while (this.#stack.length > 0) {
+      const entry = this.#stack.pop()
+      entry?.abortController.abort()
+    }
   }
 
   #setupFocusZone(containerEl: AnchoredPositionElement, trapFocus: boolean): AbortController {

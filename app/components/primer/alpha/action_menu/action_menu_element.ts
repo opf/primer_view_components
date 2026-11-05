@@ -171,6 +171,7 @@ export class ActionMenuElement extends HTMLElement {
 
   disconnectedCallback() {
     this.#abortController.abort()
+    this.#focusZoneStack.clear()
     this.#intersectionObserver.disconnect()
     window.removeEventListener('scroll', this.#scrollUpdater, {capture: true})
   }
@@ -257,14 +258,14 @@ export class ActionMenuElement extends HTMLElement {
 
     const loader = this.#request?.loader
     if (!this.#request || src !== this.#request.src) {
-      this.#load(src)
+      this.#load(src, opening)
     } else if (loader?.isConnected) {
       // A retry fetches the loader's own src, which a morph may have rewritten
       if ((loader.getAttribute('src') ?? '').trim() === this.#request.src) {
         loader.classList.remove('is-error')
         loader.refetch()
       } else {
-        this.#load(src)
+        this.#load(src, opening)
       }
     }
   }
@@ -279,7 +280,7 @@ export class ActionMenuElement extends HTMLElement {
 
   // Starts a request for src with a fresh loader from the template, which
   // replaces whatever the body holds.
-  #load(src: string) {
+  #load(src: string, opening = false) {
     const body = this.#body
     const template = this.loaderTemplate?.content.firstElementChild
     if (!body || !template) return
@@ -294,6 +295,11 @@ export class ActionMenuElement extends HTMLElement {
     this.#listen(loader)
 
     body.prepend(loader)
+    if (opening || this.#isOpen()) {
+      this.#keepOpenWhileLoading(loader)
+      // A focus handler may have started a newer load meanwhile
+      if (this.#request?.loader !== loader) return
+    }
 
     for (const child of Array.from(body.childNodes)) {
       if (child !== loader) child.remove()
@@ -323,6 +329,29 @@ export class ActionMenuElement extends HTMLElement {
     } else {
       this.removeAttribute('data-ready')
     }
+  }
+
+  // Keeps the open (or opening) menu open while fragment loads into its
+  // body. Open sub-menus are torn down first, since their toggle events
+  // arrive after the nodes are gone, and focus moves to the fragment's
+  // spinner before the focusout frame runs, so it never drops to <body> and
+  // closes the menu. Called from beforetoggle, before the popover shows, the
+  // focus() is a no-op; the toggle frame then focuses the spinner.
+  #keepOpenWhileLoading(fragment: IncludeFragmentElement) {
+    this.#pruneFocusZones()
+    this.#focusZoneStack.popAbove(this.overlay)
+
+    for (const child of this.childPopoverElements) {
+      if (child.matches(':popover-open')) child.hidePopover()
+    }
+
+    fragment.querySelector<HTMLElement>('[role=menuitem]')?.focus()
+  }
+
+  // Drops focus zones of overlays other code removed, such as a replaced
+  // primary overlay and its sub-menus.
+  #pruneFocusZones() {
+    this.#focusZoneStack.prune(element => element.isConnected && this.contains(element))
   }
 
   #softDisableItems() {
@@ -658,7 +687,17 @@ export class ActionMenuElement extends HTMLElement {
   #handleIncludeFragmentReplaced() {
     // Content can finish loading while the menu is detached
     if (this.isConnected) {
-      this.#firstItem?.focus()
+      const firstItem = this.#firstItem
+
+      if (firstItem) {
+        firstItem.focus()
+      } else if (this.#isOpen()) {
+        // Nothing to focus in an empty response: close and return to the
+        // button.
+        this.overlay.hidePopover()
+        this.invokerElement?.focus()
+      }
+
       this.overlay?.update()
     }
     this.#softDisableItems()
@@ -688,8 +727,8 @@ export class ActionMenuElement extends HTMLElement {
     }
   }
 
-  #isOpen() {
-    return this.popoverElement?.matches(':popover-open')
+  #isOpen(): boolean {
+    return this.overlay?.matches(':popover-open') ?? false
   }
 
   #setDynamicLabel() {
