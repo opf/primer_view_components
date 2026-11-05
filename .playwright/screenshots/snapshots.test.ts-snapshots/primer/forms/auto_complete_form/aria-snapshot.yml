@@ -1,4 +1,4 @@
 - text: Fruit
-- combobox "Fruit"
+- combobox "Fruit" [invalid]
 - text: Something went wrong Please enter your favorite fruit
 - button "Submit"

@@ -1,4 +1,4 @@
-- 'radiogroup "Question: what kind of bear is best?"':
+- 'radiogroup "Question: what kind of bear is best?" [invalid]':
   - text: "Question: what kind of bear is best?"
   - radio "Bears"
   - text: Bears

@@ -1,0 +1,12 @@
+<%= render(Primer::Alpha::ActionList.new(aria: { label: "Comment actions" })) do |list| %>
+  <% list.with_item(label: "Add comment") %>
+  <% list.with_item(label: "Save") do |item| %>
+    <% item.with_trailing_visual_keybinding_hint(keys: "Mod+Enter", data: { platform: "other" }) %>
+  <% end %>
+  <% list.with_item(label: "Preview") do |item| %>
+    <% item.with_trailing_visual_keybinding_hint(keys: "Mod+Shift+p", data: { platform: "other" }) %>
+  <% end %>
+  <% list.with_item(label: "Delete", scheme: :danger) do |item| %>
+    <% item.with_trailing_visual_keybinding_hint(keys: "Mod+Backspace", data: { platform: "other" }) %>
+  <% end %>
+<% end %>

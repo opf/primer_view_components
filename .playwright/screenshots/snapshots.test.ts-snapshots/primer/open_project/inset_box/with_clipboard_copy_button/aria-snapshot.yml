@@ -1,0 +1,3 @@
+- heading "Title" [level=3]
+- button "Copy value"
+- text: This is the content of the inset box.
