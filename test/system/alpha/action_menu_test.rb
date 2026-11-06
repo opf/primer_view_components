@@ -1318,6 +1318,79 @@ module Alpha
       assert_equal ["recursive"], response["value"]
     end
 
+    def test_form_submits_previous_selection_after_reconnect_while_reload_is_pending
+      # Starting state: loaded with "Ours" checked, closed, reload A held,
+      # then the menu is moved
+      visit_preview(:deferred_refresh_form)
+      click_on_invoker_button
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      set_menu_src(gate: "a")
+      Primer::RequestGate.wait_until_started("a")
+      close_menu
+      detach_menu
+      reattach_menu
+
+      find("input[type=submit]").click
+      response = JSON.parse(find("pre").text)
+      assert_equal ["ours"], response["value"]
+    end
+
+    def test_single_select_form_submits_previous_selection_after_reconnect_and_failed_reload
+      # Starting state: loaded with "Ours" checked, reload failed, then the
+      # menu is moved
+      visit_preview(:deferred_refresh_form, select_variant: :single)
+      click_on_invoker_button
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      set_menu_src(variant: "single", gate: "e")
+      Primer::RequestGate.wait_until_started("e")
+      Primer::RequestGate.release("e", status: 500)
+      assert_selector "action-menu include-fragment.is-error", visible: :all
+      close_menu
+      detach_menu
+      reattach_menu
+
+      find("input[type=submit]").click
+      response = JSON.parse(find("pre").text)
+      assert_equal "ours", response["value"]
+    end
+
+    def test_form_selection_stays_in_sync_when_focus_starts_a_new_load
+      # Starting state: loaded single-select form, closed
+      visit_preview(:deferred_refresh_form, select_variant: :single)
+      click_on_invoker_button
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      close_menu
+
+      set_menu_src(variant: "single", label: "A", checked: "recursive", gate: "a")
+      click_on_invoker_button
+      Primer::RequestGate.wait_until_started("a")
+      page.execute_script(<<~JS)
+        const menu = document.querySelector('action-menu')
+        menu.addEventListener('focusin', function onFocusIn(event) {
+          if (!event.target.matches('[role="menuitemradio"]')) return
+          menu.removeEventListener('focusin', onFocusIn)
+          menu.setAttribute('src', `${menu.getAttribute('src').split('?')[0]}?variant=single&label=B&checked=fast_forward&gate=b`)
+        })
+      JS
+
+      Primer::RequestGate.release("a")
+      Primer::RequestGate.wait_until_started("b")
+      assert_selector "action-menu button[aria-controls]", text: "Strategy: Recursive A"
+      assert_selector "action-menu input[name='foo'][value='recursive']", visible: :all
+      assert_no_selector "action-menu input[name='foo'][value='fast_forward']", visible: :all
+
+      Primer::RequestGate.release("b")
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      assert_selector "action-menu button[aria-controls]", text: "Strategy: Fast forward B"
+      assert_selector "action-menu input[name='foo'][value='fast_forward']", visible: :all
+      assert_no_selector "action-menu input[name='foo'][value='recursive']", visible: :all
+      close_menu
+
+      find("input[type=submit]").click
+      response = JSON.parse(find("pre").text)
+      assert_equal "fast_forward", response["value"]
+    end
+
     def test_cloned_menu_without_selection_keeps_field_name
       # Starting state: loaded with nothing checked, closed, then cloned
       visit_preview(:deferred_refresh_form)
@@ -2287,6 +2360,65 @@ module Alpha
           assert_equal 1, Primer::RequestGate.count(gate)
         end
       end
+    end
+
+    def test_loaded_primary_menu_keeps_tab_stop
+      # Starting state: unloaded, request held, open with its spinner focused
+      visit_preview(:deferred_refresh)
+      set_menu_src(gate: "p")
+      click_on_invoker_button
+      Primer::RequestGate.wait_until_started("p")
+      assert_spinner_focused
+
+      Primer::RequestGate.release("p")
+      assert_item "Copy link"
+      wait_for_frames
+      assert_focused_text "Copy link"
+      assert_selector ":focus[tabindex='0']"
+    end
+
+    # Holds the first load until its spinner has focus, then lets a consumer
+    # listener on the loader's completion focus `target_js` before releasing.
+    def complete_load_with_consumer_focus(target_js)
+      visit_preview(:deferred_refresh)
+      set_menu_src(gate: "p")
+      click_on_invoker_button
+      Primer::RequestGate.wait_until_started("p")
+      assert_spinner_focused
+      page.execute_script(<<~JS)
+        #{primary_fragment_js}.addEventListener('include-fragment-replaced', () => (#{target_js}).focus())
+      JS
+      Primer::RequestGate.release("p")
+      # Focus moved outside closes the menu, so the items may be hidden
+      assert_selector "action-menu .ActionListItem-label", exact_text: "Copy link", visible: :all
+      wait_for_frames
+    end
+
+    def menu_item_js(label)
+      "[...document.querySelectorAll('action-menu [role=menuitem]')].find(i => i.textContent.trim() === #{label.to_json})"
+    end
+
+    def test_consumer_focus_outside_menu_during_completion_is_kept
+      # Starting state: unloaded, request held, open with its spinner focused
+      complete_load_with_consumer_focus("document.getElementById('deferred-refresh-button')")
+
+      assert_focused_text "Refresh"
+    end
+
+    def test_consumer_focus_on_an_item_during_completion_is_kept
+      # Starting state: unloaded, request held, open with its spinner focused
+      complete_load_with_consumer_focus(menu_item_js("Quote reply"))
+
+      assert_focused_text "Quote reply"
+      assert_selector ":focus[tabindex='0']"
+    end
+
+    def test_consumer_focus_on_first_item_during_completion_keeps_tab_stop
+      # Starting state: unloaded, request held, open with its spinner focused
+      complete_load_with_consumer_focus(menu_item_js("Copy link"))
+
+      assert_focused_text "Copy link"
+      assert_selector ":focus[tabindex='0']"
     end
 
     def test_refresh_open_menu_in_place

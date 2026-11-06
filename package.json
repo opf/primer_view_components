@@ -60,7 +60,8 @@
     "changeset:version": "changeset version && script/version",
     "build": "script/build-assets",
     "build:js": "script/build-assets js",
-    "build:css": "script/build-assets css"
+    "build:css": "script/build-assets css",
+    "test:unit": "vitest run"
   },
   "dependencies": {
     "@github/auto-check-element": "^6.0.0",
@@ -100,6 +101,7 @@
     "eslint": "^10.8.0",
     "eslint-plugin-github": "^6.1.2",
     "glob": "^11.0.2",
+    "happy-dom": "21.0.4",
     "markdownlint-cli2": "^0.23.0",
     "mocha": "^11.0.1",
     "playwright": "^1.64.1",
@@ -115,7 +117,8 @@
     "tslib": "^2.4.0",
     "typescript": "^6.0.3",
     "vite": "^8.0.9",
-    "vite-plugin-ruby": "^5.2.1"
+    "vite-plugin-ruby": "^5.2.1",
+    "vitest": "5.0.5"
   },
   "prettier": "@github/prettier-config",
   "browserslist": "extends @github/browserslist-config"
