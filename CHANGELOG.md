@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## 0.96.0
+
+### Minor Changes
+
+- [#544](https://github.com/opf/primer_view_components/pull/544) [`f460952`](https://github.com/opf/primer_view_components/commit/f4609525248a9ef6f880d7410b2e5fe8d768f03e) Thanks [@myabc](https://github.com/myabc)! - Reload deferred `Primer::Alpha::ActionMenu` items when `src` changes on `<action-menu>` or `refresh()` is called. A primary menu rendered with `src:` now renders its loader in a `<template>` with an empty overlay body, and a lazy menu carries `data-ready` before it first opens. See "Refreshing deferred content" in the `Primer::Alpha::ActionMenu` docs for details.
+
+- [#534](https://github.com/opf/primer_view_components/pull/534) [`d7d76e8`](https://github.com/opf/primer_view_components/commit/d7d76e8f2d42c6fe18ea353e8e1cb87d6af32ded) Thanks [@myabc](https://github.com/myabc)! - Add `Primer::OpenProject::KeybindingHint`, a port of Primer React's `KeybindingHint`, and a `keybinding_hint` trailing visual slot type on `Primer::Beta::Button` and `Primer::Alpha::ActionList::Item`. Adds `lit-html` as a runtime dependency. Raises the `@primer/primitives` peer dependency to `^11.5.1`, which introduces the `--buttonKeybindingHint-*` tokens. Key names follow the current locale through the new `keybinding_hint` locale scope.
+
+### Patch Changes
+
+- [#547](https://github.com/opf/primer_view_components/pull/547) [`a159662`](https://github.com/opf/primer_view_components/commit/a159662428e0ee495adf9ac1fe79f22c8db104af) Thanks [@myabc](https://github.com/myabc)! - Remove an ActionMenu sub-menu's focus zone and focus trap when the sub-menu closes
+
+- [#547](https://github.com/opf/primer_view_components/pull/547) [`ee02bff`](https://github.com/opf/primer_view_components/commit/ee02bffb35954517a7c14e8b14e1feeb526ee5d9) Thanks [@myabc](https://github.com/myabc)! - Keep the ActionMenu open when a sub-menu closes with ArrowLeft or Escape, returning focus to the sub-menu's item. ArrowLeft on a top-level item no longer closes the whole menu.
+
+- [#4194](https://github.com/primer/view_components/pull/4194) [`64fe352`](https://github.com/opf/primer_view_components/commit/64fe35263e087f5903612245b4a495dd99fc565d) Thanks [@francinelucca](https://github.com/francinelucca)! - Update Lookbook to 2.3.15.
+
+- [#4172](https://github.com/primer/view_components/pull/4172) [`672410d`](https://github.com/opf/primer_view_components/commit/672410d69efd71c911254d9f94c59d0b001db095) Thanks [@joelhawksley](https://github.com/joelhawksley)! - Fix ReusedInstanceError in Dropdown::Menu::Item divider rendering
+
 ## 0.95.0
 
 ### Minor Changes
