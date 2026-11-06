@@ -1,5 +1,10 @@
 <%= render(Primer::Alpha::ActionMenu::List.new(menu_id: "deferred")) do |list| %>
   <% unless @empty_list %>
+    <% if @hidden_first_group %>
+      <% list.with_group(hidden: true) do |group| %>
+        <% group.with_item(label: "Hidden choice", value: "") %>
+      <% end %>
+    <% end %>
     <% if @label.present? %>
       <% list.with_item(label: @label, value: "", autofocus: true) %>
     <% end %>
@@ -20,8 +25,15 @@
         <% sub_menu.with_item(label: "Sub two") %>
       <% end %>
     <% end %>
-    <% if @deferred_sub %>
-      <% list.with_item(component_klass: Primer::Alpha::ActionMenu::SubMenuItem, label: "Deferred more", src: primer_view_components.action_menu_deferred_path) %>
+    <% if @deferred_sub.positive? %>
+      <%
+        # The innermost deferred sub-menu gets the empty and gate params; outer
+        # levels pass them on.
+        sub_params = { empty: (1 if @sub_empty), empty_once: (1 if @sub_empty_once), gate: @sub_gate, hidden_first_group: (1 if @sub_hidden_first_group) }.compact
+        sub_params = { deferred_sub: @deferred_sub - 1, sub_empty: (1 if @sub_empty), sub_empty_once: (1 if @sub_empty_once), sub_preload: (1 if @sub_preload), sub_gate: @sub_gate, sub_hidden_first_group: (1 if @sub_hidden_first_group) }.compact if @deferred_sub > 1
+        sub_label = @deferred_sub == 1 ? "Deferred more" : "Deferred more (#{@deferred_sub})"
+      %>
+      <% list.with_item(component_klass: Primer::Alpha::ActionMenu::SubMenuItem, label: sub_label, preload: @sub_preload && @deferred_sub == 1, src: primer_view_components.action_menu_deferred_path(sub_params)) %>
     <% end %>
   <% end %>
 <% end %>
