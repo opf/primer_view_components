@@ -32,6 +32,13 @@ export class ActionMenuElement extends HTMLElement {
   // Loads a deferred primary menu's items; see MenuLoader
   #loader: MenuLoader
 
+  // A deferred sub-menu's loader removes itself when it loads, so a copy is
+  // kept to fetch again, as it opens, a sub-menu whose response had no items
+  // or whose load failed
+  #subMenuLoaders = new WeakMap<Element, {body: Element; loader: Element}>()
+  #retrySubMenus = new WeakSet<Element>()
+  #failedLoaders = new WeakSet<Element>()
+
   #scrollUpdater = () => {
     if (this.#isOpen()) {
       this.overlay?.update()
@@ -178,8 +185,8 @@ export class ActionMenuElement extends HTMLElement {
 
     if (this.#loader.deferred) {
       this.#loader.updateReady()
-    } else if (!this.includeFragment?.isConnected) {
-      this.setAttribute('data-ready', 'true')
+    } else {
+      this.#updateStaticReady()
     }
 
     this.#updateLevels()
@@ -211,6 +218,11 @@ export class ActionMenuElement extends HTMLElement {
     this.addEventListener('mousedown', this, {signal})
     this.addEventListener('beforetoggle', this, {signal, capture: true})
     this.addEventListener('toggle', this, {signal, capture: true})
+    // Upstream fires it without bubbling, so only the capture phase reaches
+    // the host. It fires before the swap, while the fragment is connected.
+    this.addEventListener('include-fragment-replace', this, {signal, capture: true})
+    this.addEventListener('loadstart', event => this.#keepSubMenuLoader(event.target), {signal, capture: true})
+    this.addEventListener('error', event => this.#handleSubMenuError(event.target), {signal, capture: true})
   }
 
   // A static primary menu with a deferred sub-menu
@@ -332,6 +344,11 @@ export class ActionMenuElement extends HTMLElement {
       return
     }
 
+    if (event.type === 'include-fragment-replace') {
+      if (event.target instanceof Element) this.#watchSubMenuFragment(event.target)
+      return
+    }
+
     if (targetIsInvoker && event.type === 'mousedown') {
       this.#invokerBeingClicked = true
       return
@@ -435,6 +452,7 @@ export class ActionMenuElement extends HTMLElement {
     if (event.newState === 'open') {
       // A closed lazy menu catches up, and a failed load retries, as it opens
       if (event.target === this.overlay) this.#loader.sync(true)
+      else if (event.target instanceof Element) this.#retrySubMenu(event.target)
       return
     }
 
@@ -622,7 +640,7 @@ export class ActionMenuElement extends HTMLElement {
       return
     }
 
-    const firstItem = this.#firstItem
+    const firstItem = this.overlay ? this.#firstFocusableItem(this.overlay) : null
 
     if (firstItem) {
       firstItem.focus()
@@ -645,6 +663,68 @@ export class ActionMenuElement extends HTMLElement {
     ) {
       element.setAttribute('tabindex', '0')
     }
+  }
+
+  // A deferred sub-menu at any depth, in a static or deferred menu: the
+  // loader the sub-menu renders, not other fragments in its items or a
+  // nested menu's. Primary loaders belong to the MenuLoader. The completion
+  // event fires after the swap, when the fragment is detached and no longer
+  // reaches the host, so it is bound on the fragment itself.
+  #watchSubMenuFragment(fragment: Element) {
+    const subMenu = this.#subMenuFor(fragment)
+    if (!subMenu) return
+
+    fragment.addEventListener('include-fragment-replaced', () => this.#handleSubMenuLoaded(subMenu), {
+      once: true,
+      signal: this.#abortController.signal,
+    })
+  }
+
+  // Runs right after the swap removed the focused spinner. Focus moves in a
+  // microtask: after the sub-menu's focus zone has processed the new items
+  // (its observer would otherwise drop the focused item's tab stop), and
+  // before the focusout frame would close the menu.
+  #handleSubMenuLoaded(subMenu: AnchoredPositionElement) {
+    if (!this.#firstFocusableItem(subMenu)) this.#retrySubMenus.add(subMenu)
+    this.#keepSingleSelection(subMenu)
+
+    // Kept inputs stand for the selection while a primary load is pending
+    if (!this.#loader.keepingInputs) {
+      this.#setDynamicLabel()
+      this.#updateInput()
+    }
+    this.#softDisableItems()
+
+    if (!this.#loader.deferred) this.#updateStaticReady()
+
+    queueMicrotask(() => this.#focusLoadedSubMenu(subMenu))
+  }
+
+  #focusLoadedSubMenu(subMenu: AnchoredPositionElement) {
+    // A closed sub-menu, or one a primary reload took with it, takes no focus
+    if (!this.isConnected || !subMenu.isConnected || !subMenu.matches(':popover-open')) return
+
+    // A consumer's completion listener, which may run before or after ours,
+    // put focus on a loaded item or outside the menu: keep it there
+    const active = document.activeElement
+    const onLoadedItem = active && subMenu.contains(active) && !active.closest('include-fragment')
+    const outside = active && active !== document.body && !this.contains(active)
+    if (onLoadedItem || outside) {
+      this.#restoreTabStop(active)
+      return
+    }
+
+    const firstItem = this.#firstFocusableItem(subMenu)
+
+    if (firstItem) {
+      firstItem.focus()
+    } else {
+      // Nothing to focus in an empty response: close and return to its item
+      subMenu.hidePopover()
+      this.#itemForSubMenu(subMenu)?.focus()
+    }
+
+    subMenu.update()
   }
 
   // Close when focus leaves menu
@@ -745,8 +825,90 @@ export class ActionMenuElement extends HTMLElement {
     }
   }
 
-  get #firstItem(): HTMLElement | null {
-    return this.querySelector(ActionMenuElement.menuItemSelectors.join(','))
+  // A sub-menu whose response had no items loads again as it opens, like
+  // the primary menu; its spinner takes focus as usual
+  #retrySubMenu(subMenu: Element) {
+    if (!this.#retrySubMenus.delete(subMenu)) return
+
+    const kept = this.#subMenuLoaders.get(subMenu)
+    if (!kept || !subMenu.contains(kept.body)) return
+
+    const loader = kept.loader.cloneNode(true) as Element
+    loader.setAttribute('loading', 'eager')
+    kept.body.replaceChildren(loader)
+    if (!this.#loader.deferred) this.#updateStaticReady()
+  }
+
+  // Taken as the load starts, before a response replaces the loader
+  #keepSubMenuLoader(loader: EventTarget | null) {
+    const subMenu = this.#subMenuFor(loader)
+    if (!subMenu || !(loader instanceof Element) || !loader.parentElement) return
+
+    this.#subMenuLoaders.set(subMenu, {body: loader.parentElement, loader: loader.cloneNode(true) as Element})
+  }
+
+  // A failed loader stays in the body; the sub-menu fetches again as it
+  // next opens, and a static menu no longer waits for it
+  #handleSubMenuError(loader: EventTarget | null) {
+    const subMenu = this.#subMenuFor(loader)
+    if (!subMenu || !(loader instanceof Element)) return
+
+    this.#failedLoaders.add(loader)
+    this.#retrySubMenus.add(subMenu)
+    if (!this.#loader.deferred) this.#updateStaticReady()
+  }
+
+  // The sub-menu whose loader `target` is
+  #subMenuFor(loader: EventTarget | null): AnchoredPositionElement | null {
+    if (!(loader instanceof Element) || !this.#isSubMenuLoader(loader)) return null
+
+    const subMenu = loader.closest<AnchoredPositionElement>('anchored-position')
+    return subMenu && subMenu !== this.overlay ? subMenu : null
+  }
+
+  // A single-select menu keeps the item already chosen outside a sub-menu
+  // that loads later; the sub-menu's own choice applies only when there is
+  // none
+  #keepSingleSelection(subMenu: AnchoredPositionElement) {
+    if (this.selectVariant !== 'single') return
+
+    const checked = Array.from(this.querySelectorAll('[aria-checked=true]'))
+    if (!checked.some(item => !subMenu.contains(item))) return
+
+    for (const item of checked) {
+      if (subMenu.contains(item)) item.setAttribute('aria-checked', 'false')
+    }
+  }
+
+  // A static menu is ready once none of its deferred sub-menus is loading
+  #updateStaticReady() {
+    const pending = Array.from(this.querySelectorAll('include-fragment')).some(
+      fragment => this.#isSubMenuLoader(fragment) && !this.#failedLoaders.has(fragment),
+    )
+    if (pending) this.removeAttribute('data-ready')
+    else this.setAttribute('data-ready', 'true')
+  }
+
+  // The loader a sub-menu of this menu renders, not other fragments in its
+  // items or a nested menu's
+  #isSubMenuLoader(fragment: Element): boolean {
+    const targets = (fragment.getAttribute('data-target') ?? '').split(/\s+/)
+    return targets.includes('action-menu.includeFragment') && fragment.closest('action-menu') === this
+  }
+
+  // The overlay's own first item that can take focus: not in a hidden
+  // group or other hidden ancestor, nor in a sub-menu nested in it
+  #firstFocusableItem(overlay: AnchoredPositionElement): HTMLElement | null {
+    for (const item of overlay.querySelectorAll<HTMLElement>(ActionMenuElement.validSelectors.join(','))) {
+      if (item.closest('anchored-position') !== overlay) continue
+
+      const hidden = item.closest('[hidden]')
+      if (hidden && overlay.contains(hidden)) continue
+
+      return item
+    }
+
+    return null
   }
 
   get items(): HTMLElement[] {
