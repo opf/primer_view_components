@@ -178,7 +178,6 @@ export class ActionMenuElement extends HTMLElement {
       this.#updateInput()
     }
     this.#softDisableItems()
-    this.#setupSubMenuLoading()
     this.#loader.sync()
     this.#observeInvokerPosition()
 
@@ -222,15 +221,6 @@ export class ActionMenuElement extends HTMLElement {
     this.addEventListener('include-fragment-replace', this, {signal, capture: true})
     this.addEventListener('loadstart', event => this.#keepSubMenuLoader(event.target), {signal, capture: true})
     this.addEventListener('error', event => this.#handleSubMenuError(event.target), {signal, capture: true})
-  }
-
-  // A static primary menu with a deferred sub-menu
-  #setupSubMenuLoading() {
-    if (this.#loader.deferred || !this.includeFragment) return
-
-    this.includeFragment.addEventListener('include-fragment-replaced', this, {
-      signal: this.#abortController.signal,
-    })
   }
 
   #observeInvokerPosition() {
@@ -414,12 +404,6 @@ export class ActionMenuElement extends HTMLElement {
 
       this.#handleItemActivated(item)
 
-      return
-    }
-
-    if (event.type === 'include-fragment-replaced') {
-      // A static menu's deferred sub-menu
-      this.#handleIncludeFragmentReplaced()
       return
     }
 
@@ -622,9 +606,6 @@ export class ActionMenuElement extends HTMLElement {
     // tab stop), and before the focusout frame would close the menu
     const activeOnLoad = document.activeElement
     queueMicrotask(() => this.#focusLoadedMenu(activeOnLoad))
-
-    // A deferred menu's loader decides readiness
-    if (!this.#loader.deferred) this.setAttribute('data-ready', 'true')
   }
 
   #focusLoadedMenu(activeOnLoad: Element | null) {

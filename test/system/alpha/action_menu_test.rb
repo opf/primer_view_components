@@ -3060,6 +3060,39 @@ module Alpha
       assert_focus_in_sub_menu "Deferred more"
     end
 
+    def test_static_menu_deferred_sub_menu_focuses_its_first_item
+      # Starting state: static primary with a deferred sub-menu, open
+      visit_preview(:with_deferred_content, nest_in_sub_menu: true)
+      click_on_invoker_button
+
+      open_sub_menu "Sub-menu"
+      assert_item "Copy link"
+      assert_focus_in_sub_menu "Sub-menu"
+      wait_for_frames
+      assert sub_menu_open?("Sub-menu")
+    end
+
+    def test_static_menu_is_not_ready_while_an_empty_sub_menu_retries
+      # Starting state: static menu whose deferred sub-menu came back empty once, closed again, open
+      visit_preview(:with_deferred_content, nest_in_sub_menu: true)
+      page.execute_script(<<~JS)
+        const fragment = document.querySelector('action-menu include-fragment');
+        fragment.setAttribute('src', `${fragment.getAttribute('src').split('?')[0]}?gate=r&empty_once=1`)
+      JS
+      click_on_invoker_button
+      open_held_sub_menu "Sub-menu", "r"
+      assert_sub_menu_closed_on_its_item "Sub-menu"
+      assert menu_ready?
+
+      open_sub_menu "Sub-menu"
+      Primer::RequestGate.wait_until_started("r", attempt: 2)
+      refute menu_ready?
+
+      Primer::RequestGate.release("r", attempt: 2)
+      assert_focus_in_sub_menu "Sub-menu"
+      assert menu_ready?
+    end
+
     def test_nested_deferred_sub_menu_keeps_focus
       # Starting state: primary loaded with a deferred sub-menu, open
       visit_preview(:deferred_refresh)
