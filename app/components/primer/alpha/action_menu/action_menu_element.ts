@@ -473,11 +473,18 @@ export class ActionMenuElement extends HTMLElement {
         const firstItem = menu.querySelector(ActionMenuElement.menuItemSelectors.join(',')) as HTMLElement | null
         firstItem?.focus()
       })
-    } else if (menu === this.overlay && !document.querySelector(':popover-open')) {
+    } else if (menu === this.overlay && !document.querySelector(':popover-open') && this.#focusLostTo(menu)) {
       // A light-dismissed menu (e.g. a click outside it) leaves focus on the body;
       // hand it back to the invoker so the menu stays reachable from the keyboard.
       this.invokerElement?.focus()
     }
+  }
+
+  // Focus left on the body, or still in the closed menu. Focus that other code
+  // moved elsewhere, eg. a consumer's completion listener, stays there.
+  #focusLostTo(menu: HTMLElement): boolean {
+    const active = document.activeElement
+    return !active || active === document.body || menu.contains(active)
   }
 
   // The primary menu or a sub-menu, or null for popovers that are not menus
