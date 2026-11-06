@@ -5,7 +5,7 @@
   <% list.with_item(label: "Copy link", value: "", autofocus: @label.blank?) %>
   <% list.with_item(label: "Quote reply", value: "") %>
   <% list.with_item(label: "Reference in new issue", value: "") %>
-  <% if @deferred_sub %>
+  <% if @deferred_sub.positive? %>
     <% list.with_item(component_klass: Primer::Alpha::ActionMenu::SubMenuItem, label: "Deferred more", src: primer_view_components.action_menu_deferred_path) %>
   <% end %>
 <% end %>

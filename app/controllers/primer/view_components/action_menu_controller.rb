@@ -13,7 +13,7 @@ module Primer
         sleep params[:delay].to_f if params[:delay].present?
         status = request_gate_status
         return head(status) unless status == 200
-        return render(html: "") if params[:empty].present?
+        return render(html: "") if params[:empty].present? || empty_once?
 
         assign_deferred_params
         render "primer/view_components/action_menu/deferred"
@@ -35,6 +35,9 @@ module Primer
         @name = params[:name].presence || "foo"
         @variant = params[:variant].presence || "multiple"
         @checked = params.key?(:checked) ? params[:checked].to_s.split(",") : ["ours"]
+        @deferred_sub = params[:deferred_sub].present?
+        @sub_gate = params[:sub_gate].presence
+        @sub_child = params[:sub_child].present?
         render "primer/view_components/action_menu/deferred_form"
       end
 
@@ -61,9 +64,21 @@ module Primer
         Primer::RequestGate.pass(params[:gate])
       end
 
+      # Test-only: an empty response to the gate's first request only
+      def empty_once?
+        params[:empty_once].present? && params[:gate].present? && defined?(Primer::RequestGate) &&
+          Primer::RequestGate.count(params[:gate]) <= 1
+      end
+
       def assign_deferred_params
         @label = params[:label].presence
-        @deferred_sub = params[:deferred_sub].present?
+        @deferred_sub = params[:deferred_sub].to_i
+        @sub_empty = params[:sub_empty].present?
+        @sub_gate = params[:sub_gate].presence
+        @hidden_first_group = params[:hidden_first_group].present?
+        @sub_hidden_first_group = params[:sub_hidden_first_group].present?
+        @sub_empty_once = params[:sub_empty_once].present?
+        @sub_preload = params[:sub_preload].present?
         @with_sub_menu = params[:with_sub_menu].present?
         @empty_list = params[:empty_list].present?
       end

@@ -1,9 +1,19 @@
-<%= fields do |f| %>
-  <%= render(Primer::Alpha::ActionMenu::List.new(menu_id: "deferred-form", select_variant: @variant.to_sym, form_arguments: { builder: f, name: @name })) do |list| %>
-    <% list.with_group do |group| %>
-      <% group.with_heading(title: "Strategy") %>
-      <% [["Fast forward", "fast_forward"], ["Recursive", "recursive"], ["Ours", "ours"]].each do |name, value| %>
-        <% group.with_item(label: [name, @label].compact.join(" "), content_arguments: { data: { value: value } }, active: @checked.include?(value)) %>
+<% if @sub_child %>
+  <%# A deferred sub-menu's response: its item claims the selection, and it has no inputs of its own %>
+  <%= render(Primer::Alpha::ActionMenu::List.new(menu_id: "deferred-form-child", select_variant: @variant.to_sym)) do |list| %>
+    <% list.with_item(label: "Old child", data: { value: "old_child" }, active: true) %>
+  <% end %>
+<% else %>
+  <%= fields do |f| %>
+    <%= render(Primer::Alpha::ActionMenu::List.new(menu_id: "deferred-form", select_variant: @variant.to_sym, form_arguments: { builder: f, name: @name })) do |list| %>
+      <% if @deferred_sub %>
+        <% list.with_item(component_klass: Primer::Alpha::ActionMenu::SubMenuItem, label: "More strategies", preload: true, src: primer_view_components.action_menu_deferred_form_path({ sub_child: 1, variant: @variant, gate: @sub_gate }.compact)) %>
+      <% end %>
+      <% list.with_group do |group| %>
+        <% group.with_heading(title: "Strategy") %>
+        <% [["Fast forward", "fast_forward"], ["Recursive", "recursive"], ["Ours", "ours"]].each do |name, value| %>
+          <% group.with_item(label: [name, @label].compact.join(" "), content_arguments: { data: { value: value } }, active: @checked.include?(value)) %>
+        <% end %>
       <% end %>
     <% end %>
   <% end %>
