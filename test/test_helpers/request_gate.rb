@@ -12,8 +12,9 @@ module Primer
     PASS_TIMEOUT = 10
     WAIT_TIMEOUT = 5
 
-    Record = Struct.new(:mutex, :condition, :attempts)
-    Attempt = Struct.new(:started, :released, :status)
+    Record = Data.define(:mutex, :condition, :attempts)
+    # `released` carries the status the test released the attempt with
+    Attempt = Data.define(:started, :released)
 
     @registry = Concurrent::Map.new
     @draining = Concurrent::AtomicBoolean.new(false)
@@ -24,7 +25,7 @@ module Primer
     def pass(token)
       return 200 if @draining.true?
 
-      attempt = Attempt.new(Concurrent::Event.new, Concurrent::Event.new, 200)
+      attempt = Attempt.new(started: Concurrent::Event.new, released: Concurrent::IVar.new)
       record = record_for(token)
       registered = record.mutex.synchronize do
         # release_all! may have started draining since the check above; it
@@ -39,9 +40,10 @@ module Primer
 
       attempt.started.set
 
-      raise "RequestGate: #{token} attempt was not released within #{PASS_TIMEOUT}s" unless attempt.released.wait(PASS_TIMEOUT)
+      status = attempt.released.value(PASS_TIMEOUT)
+      raise "RequestGate: #{token} attempt was not released within #{PASS_TIMEOUT}s" unless attempt.released.complete?
 
-      attempt.status
+      status
     end
 
     def wait_until_started(token, attempt: 1, timeout: WAIT_TIMEOUT)
@@ -51,8 +53,7 @@ module Primer
 
     def release(token, attempt: 1, status: 200)
       found = attempt_for(token, attempt, WAIT_TIMEOUT)
-      found.status = status
-      found.released.set
+      found.released.try_set(status)
     end
 
     def count(token)
@@ -65,7 +66,7 @@ module Primer
     def release_all!
       @draining.make_true
       @registry.each_value do |record|
-        record.mutex.synchronize { record.attempts.each { |a| a.released.set } }
+        record.mutex.synchronize { record.attempts.each { |a| a.released.try_set(200) } }
       end
     end
 
@@ -75,7 +76,7 @@ module Primer
     end
 
     def record_for(token)
-      @registry.compute_if_absent(token.to_s) { Record.new(Mutex.new, ConditionVariable.new, []) }
+      @registry.compute_if_absent(token.to_s) { Record.new(mutex: Mutex.new, condition: ConditionVariable.new, attempts: []) }
     end
 
     def attempt_for(token, attempt, timeout)
