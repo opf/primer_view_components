@@ -236,6 +236,54 @@ module Alpha
       assert_selector ":focus", exact_text: text
     end
 
+    def open_sub_menu(label)
+      find("action-menu .ActionListItem-label", exact_text: label).click
+    end
+
+    # Opens a sub-menu whose request is held by `gate` and releases it once
+    # the sub-menu's spinner has focus, the order a slow response arrives in.
+    def open_held_sub_menu(label, gate, attempt: 1)
+      open_sub_menu label
+      Primer::RequestGate.wait_until_started(gate, attempt: attempt)
+      assert_spinner_focused
+      Primer::RequestGate.release(gate, attempt: attempt)
+    end
+
+    # The sub-menu opened by the item labelled `label`
+    def sub_menu_js(label)
+      <<~JS.squish
+        (() => {
+          const label = [...document.querySelectorAll('action-menu .ActionListItem-label')].find(l => l.textContent.trim() === #{label.to_json});
+          const id = label?.closest('[popovertarget]')?.getAttribute('popovertarget');
+          return id ? document.getElementById(id) : null
+        })()
+      JS
+    end
+
+    # Focus is on the sub-menu's own loaded item `item`, not on its spinner
+    # or an item of a sub-menu nested in it
+    def assert_focus_in_sub_menu(label, item: "Copy link")
+      wait_until(message: "Focus not on #{item.inspect} in sub-menu #{label.inspect}") do
+        page.evaluate_script(<<~JS.squish)
+          (() => {
+            const subMenu = #{sub_menu_js(label)};
+            const active = document.activeElement;
+            return !!subMenu && active.closest('anchored-position') === subMenu &&
+              !!active.closest('[role^=menuitem]') && !active.closest('include-fragment') &&
+              active.textContent.trim() === #{item.to_json}
+          })()
+        JS
+      end
+    end
+
+    def sub_menu_open?(label)
+      page.evaluate_script("!!#{sub_menu_js(label)}?.matches(':popover-open')")
+    end
+
+    def primary_menu_open?
+      page.evaluate_script("document.querySelector('action-menu').overlay.matches(':popover-open')")
+    end
+
     # Puts a fragment for `query` into the primary body, replacing its
     # children unless `append` or `prepend` is given. A nil `query` keeps the
     # host's current src unchanged.
@@ -2198,7 +2246,7 @@ module Alpha
       visit_preview(:deferred_refresh)
       load_and_close_menu
 
-      set_menu_src(deferred_sub: "1")
+      set_menu_src(deferred_sub: "1", sub_gate: "s")
       expected_src = menu_src
 
       click_on_invoker_button
@@ -2206,8 +2254,8 @@ module Alpha
       assert_item "Copy link"
       assert_item "Deferred more"
 
-      # The sub-menu is not opened: loading a nested deferred sub-menu has a
-      # known, pre-existing focus race that can close the whole menu.
+      open_held_sub_menu "Deferred more", "s"
+      assert_focus_in_sub_menu "Deferred more"
       assert_equal expected_src, menu_src
     end
 
@@ -2748,6 +2796,418 @@ module Alpha
 
       keyboard.type(:tab)
       assert_selector "#outside-target:focus"
+    end
+
+    def test_default_preload_response_has_no_deferred_sub_menu
+      # Starting state: preloaded, closed
+      visit_preview(:with_deferred_preloaded_content)
+      assert_selector "action-menu[data-ready=true]", visible: :all
+
+      click_on_invoker_button
+      assert_item "Copy link"
+      refute_selector "action-menu .ActionListItem-label", exact_text: "Deferred more", visible: :all
+    end
+
+    # Puts an eager fragment for the deferred response, held by `gate`, at
+    # the end of `container_js`
+    def insert_foreign_fragment(container_js, gate, empty: false)
+      page.execute_script(<<~JS)
+        const base = document.querySelector('action-menu').getAttribute('src').split('?')[0]
+        const fragment = document.createElement('include-fragment')
+        fragment.setAttribute('src', `${base}?gate=#{gate}#{'&empty=1' if empty}`)
+        ;(#{container_js}).append(fragment)
+      JS
+      Primer::RequestGate.wait_until_started(gate)
+    end
+
+    def test_fragment_in_a_sub_menu_item_does_not_move_focus
+      # Starting state: primary and deferred sub-menu loaded, second sub-menu item focused
+      visit_preview(:deferred_refresh)
+      set_menu_src(deferred_sub: "1", sub_gate: "s")
+      load_and_open_menu
+      open_held_sub_menu "Deferred more", "s"
+      assert_focus_in_sub_menu "Deferred more"
+      page.execute_script("[...#{sub_menu_js('Deferred more')}.querySelectorAll('[role=menuitem]')].find(i => i.textContent.trim() === 'Quote reply').focus()")
+
+      insert_foreign_fragment("#{sub_menu_js('Deferred more')}.querySelector('.ActionListItem-label')", "x")
+      Primer::RequestGate.release("x")
+      wait_until(message: "Foreign fragment did not complete") { page.evaluate_script("!#{sub_menu_js('Deferred more')}.querySelector('include-fragment')") }
+      wait_for_frames
+
+      assert_focused_text "Quote reply"
+    end
+
+    def test_consumer_overlay_in_a_sub_menu_is_not_treated_as_a_sub_menu
+      # Starting state: primary and deferred sub-menu loaded, consumer overlay open inside it
+      visit_preview(:deferred_refresh)
+      set_menu_src(deferred_sub: "1", sub_gate: "s")
+      load_and_open_menu
+      open_held_sub_menu "Deferred more", "s"
+      assert_focus_in_sub_menu "Deferred more"
+      page.execute_script(<<~JS)
+        const overlay = document.createElement('anchored-position')
+        overlay.id = 'consumer-overlay'
+        overlay.setAttribute('popover', 'manual');
+        #{sub_menu_js('Deferred more')}.querySelector('ul').append(overlay);
+        overlay.showPopover()
+      JS
+
+      insert_foreign_fragment("document.getElementById('consumer-overlay')", "y", empty: true)
+      Primer::RequestGate.release("y")
+      wait_until(message: "Foreign fragment did not complete") { page.evaluate_script("!document.querySelector('#consumer-overlay include-fragment')") }
+      wait_for_frames
+
+      assert page.evaluate_script("document.getElementById('consumer-overlay').matches(':popover-open')")
+    end
+
+    def test_loaded_sub_menu_focuses_first_visible_item
+      # Starting state: primary loaded with a deferred sub-menu whose first group is hidden, open
+      visit_preview(:deferred_refresh)
+      set_menu_src(deferred_sub: "1", sub_gate: "s", sub_hidden_first_group: "1")
+      load_and_open_menu
+
+      open_held_sub_menu "Deferred more", "s"
+      assert_focus_in_sub_menu "Deferred more"
+      wait_for_frames
+      assert_focused_text "Copy link"
+      assert sub_menu_open?("Deferred more")
+    end
+
+    def test_loaded_primary_menu_focuses_first_visible_item
+      # Starting state: unloaded, first group hidden, request held, open with its spinner focused
+      visit_preview(:deferred_refresh)
+      set_menu_src(hidden_first_group: "1", gate: "p")
+      click_on_invoker_button
+      Primer::RequestGate.wait_until_started("p")
+      assert_spinner_focused
+
+      Primer::RequestGate.release("p")
+      assert_item "Copy link"
+      wait_for_frames
+      assert_focused_text "Copy link"
+      assert primary_menu_open?
+    end
+
+    # A static menu with two eager deferred sub-menus, "Sub-menu" and
+    # "Sub-menu 2", whose requests are held by gates "g1" and "g2"
+    def visit_static_menu_with_two_held_sub_menus
+      visit_preview(:with_deferred_content, nest_in_sub_menu: true)
+      page.execute_script(<<~'JS')
+        const menu = document.querySelector('action-menu')
+        const parent = menu.parentNode
+        menu.remove()
+        // The sub-menu's item and its overlay, with the ids renamed
+        for (const element of [menu.querySelector('#deferred-button').closest('li'), menu.querySelector('#deferred-overlay')]) {
+          element.insertAdjacentHTML('afterend', element.outerHTML.replaceAll('deferred-', 'deferred2-').replace('>Sub-menu<', '>Sub-menu 2<'))
+        }
+        const base = menu.querySelector('include-fragment').getAttribute('src').split('?')[0]
+        menu.querySelectorAll('include-fragment').forEach((fragment, index) => {
+          fragment.setAttribute('src', `${base}?gate=g${index + 1}`)
+          fragment.setAttribute('loading', 'eager')
+        })
+        menu.removeAttribute('data-ready')
+        parent.append(menu)
+      JS
+      Primer::RequestGate.wait_until_started("g1")
+      Primer::RequestGate.wait_until_started("g2")
+    end
+
+    def menu_ready?
+      page.evaluate_script("document.querySelector('action-menu').getAttribute('data-ready') === 'true'")
+    end
+
+    def test_static_menu_is_ready_only_when_every_deferred_sub_menu_loaded
+      # Starting state: static menu, two eager deferred sub-menus held, closed
+      visit_static_menu_with_two_held_sub_menus
+      refute menu_ready?
+
+      Primer::RequestGate.release("g2")
+      wait_until(message: "Second sub-menu did not load") { page.evaluate_script("document.querySelectorAll('action-menu include-fragment').length === 1") }
+      refute menu_ready?
+
+      Primer::RequestGate.release("g1")
+      wait_until(message: "Menu not ready") { menu_ready? }
+    end
+
+    # Single-select form whose response checks nothing and has an eager
+    # deferred sub-menu, held by gate "c", whose item claims the selection
+    def load_single_select_form_with_held_sub_menu
+      visit_preview(:deferred_refresh_form, select_variant: :single)
+      set_menu_src(variant: "single", checked: "", deferred_sub: "1", sub_gate: "c")
+      click_on_invoker_button
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      Primer::RequestGate.wait_until_started("c")
+    end
+
+    def release_child_sub_menu
+      Primer::RequestGate.release("c")
+      assert_selector "action-menu .ActionListItem-label", exact_text: "Old child", visible: :all
+      wait_for_frames
+    end
+
+    def submitted_value
+      find("input[type=submit]").click
+      JSON.parse(find("pre").text)["value"]
+    end
+
+    def test_late_sub_menu_does_not_override_the_users_choice
+      # Starting state: single-select form loaded, nothing checked, sub-menu request held, open
+      load_single_select_form_with_held_sub_menu
+
+      find("action-menu .ActionListItem-label", exact_text: "Recursive").click
+      refute_selector "anchored-position:popover-open"
+      release_child_sub_menu
+
+      assert_selector "action-menu button[aria-controls] .Button-label", text: "Strategy: Recursive"
+      assert_equal "recursive", submitted_value
+    end
+
+    def test_late_sub_menu_selection_applies_without_a_users_choice
+      # Starting state: single-select form loaded, nothing checked, sub-menu request held, open
+      load_single_select_form_with_held_sub_menu
+      close_menu
+      release_child_sub_menu
+
+      assert_selector "action-menu button[aria-controls] .Button-label", text: "Strategy: Old child"
+      assert_equal "old_child", submitted_value
+    end
+
+    def assert_sub_menu_closed_on_its_item(label)
+      wait_until(message: "Sub-menu did not close") { !sub_menu_open?(label) }
+      wait_for_frames
+      assert_focused_text label
+      assert primary_menu_open?
+    end
+
+    def test_empty_sub_menu_fetches_again_on_reopen
+      # Starting state: primary loaded, deferred sub-menu came back empty and closed, open
+      visit_preview(:deferred_refresh)
+      set_menu_src(deferred_sub: "1", sub_empty: "1", sub_gate: "s")
+      load_and_open_menu
+      open_held_sub_menu "Deferred more", "s"
+      assert_sub_menu_closed_on_its_item "Deferred more"
+
+      open_held_sub_menu "Deferred more", "s", attempt: 2
+      assert_sub_menu_closed_on_its_item "Deferred more"
+      assert_equal 2, Primer::RequestGate.count("s")
+    end
+
+    def test_reopened_empty_sub_menu_focuses_its_loaded_items
+      # Starting state: primary loaded, deferred sub-menu came back empty once and closed, open
+      visit_preview(:deferred_refresh)
+      set_menu_src(deferred_sub: "1", sub_empty_once: "1", sub_gate: "s")
+      load_and_open_menu
+      open_held_sub_menu "Deferred more", "s"
+      assert_sub_menu_closed_on_its_item "Deferred more"
+
+      open_held_sub_menu "Deferred more", "s", attempt: 2
+      assert_focus_in_sub_menu "Deferred more"
+      wait_for_frames
+      assert sub_menu_open?("Deferred more")
+    end
+
+    def test_preloaded_empty_sub_menu_fetches_again_when_opened
+      # Starting state: primary loaded, preloaded deferred sub-menu came back empty while closed, open
+      visit_preview(:deferred_refresh)
+      set_menu_src(deferred_sub: "1", sub_empty: "1", sub_gate: "s", sub_preload: "1")
+      load_and_open_menu
+      Primer::RequestGate.wait_until_started("s")
+      Primer::RequestGate.release("s")
+      wait_until(message: "Preload did not complete") { page.evaluate_script("!#{sub_menu_js('Deferred more')}.querySelector('include-fragment')") }
+
+      open_held_sub_menu "Deferred more", "s", attempt: 2
+      assert_sub_menu_closed_on_its_item "Deferred more"
+    end
+
+    def test_consumer_focus_in_sub_menu_during_completion_is_kept
+      # Starting state: primary loaded, sub-menu request held with its spinner focused
+      visit_preview(:deferred_refresh)
+      set_menu_src(deferred_sub: "1", sub_gate: "s")
+      load_and_open_menu
+      open_sub_menu "Deferred more"
+      Primer::RequestGate.wait_until_started("s")
+      assert_spinner_focused
+      page.execute_script(<<~JS)
+        const subMenu = #{sub_menu_js('Deferred more')};
+        subMenu.querySelector('include-fragment').addEventListener('include-fragment-replaced', () => {
+          [...subMenu.querySelectorAll('[role=menuitem]')].find(i => i.textContent.trim() === 'Quote reply').focus()
+        })
+      JS
+
+      Primer::RequestGate.release("s")
+      assert_focused_text "Quote reply"
+      wait_for_frames
+      assert_focused_text "Quote reply"
+      assert_selector ":focus[tabindex='0']"
+    end
+
+    def test_failed_retry_of_empty_sub_menu_retries_again
+      # Starting state: primary loaded, deferred sub-menu came back empty once and closed, open
+      visit_preview(:deferred_refresh)
+      set_menu_src(deferred_sub: "1", sub_empty_once: "1", sub_gate: "s")
+      load_and_open_menu
+      open_held_sub_menu "Deferred more", "s"
+      assert_sub_menu_closed_on_its_item "Deferred more"
+
+      open_sub_menu "Deferred more"
+      Primer::RequestGate.wait_until_started("s", attempt: 2)
+      Primer::RequestGate.release("s", attempt: 2, status: 500)
+      wait_until(message: "Retry did not fail") { page.evaluate_script("!!#{sub_menu_js('Deferred more')}.querySelector('include-fragment.is-error')") }
+      page.execute_script("#{sub_menu_js('Deferred more')}.hidePopover()")
+      wait_until(message: "Sub-menu did not close") { !sub_menu_open?("Deferred more") }
+
+      open_held_sub_menu "Deferred more", "s", attempt: 3
+      assert_focus_in_sub_menu "Deferred more"
+    end
+
+    def test_static_menu_deferred_sub_menu_focuses_its_first_item
+      # Starting state: static primary with a deferred sub-menu, open
+      visit_preview(:with_deferred_content, nest_in_sub_menu: true)
+      click_on_invoker_button
+
+      open_sub_menu "Sub-menu"
+      assert_item "Copy link"
+      assert_focus_in_sub_menu "Sub-menu"
+      wait_for_frames
+      assert sub_menu_open?("Sub-menu")
+    end
+
+    def test_static_menu_is_not_ready_while_an_empty_sub_menu_retries
+      # Starting state: static menu whose deferred sub-menu came back empty once, closed again, open
+      visit_preview(:with_deferred_content, nest_in_sub_menu: true)
+      page.execute_script(<<~JS)
+        const fragment = document.querySelector('action-menu include-fragment');
+        fragment.setAttribute('src', `${fragment.getAttribute('src').split('?')[0]}?gate=r&empty_once=1`)
+      JS
+      click_on_invoker_button
+      open_held_sub_menu "Sub-menu", "r"
+      assert_sub_menu_closed_on_its_item "Sub-menu"
+      assert menu_ready?
+
+      open_sub_menu "Sub-menu"
+      Primer::RequestGate.wait_until_started("r", attempt: 2)
+      refute menu_ready?
+
+      Primer::RequestGate.release("r", attempt: 2)
+      assert_focus_in_sub_menu "Sub-menu"
+      assert menu_ready?
+    end
+
+    def test_nested_deferred_sub_menu_keeps_focus
+      # Starting state: primary loaded with a deferred sub-menu, open
+      visit_preview(:deferred_refresh)
+      set_menu_src(deferred_sub: "1", sub_gate: "s")
+      load_and_open_menu
+
+      open_held_sub_menu "Deferred more", "s"
+      assert_focus_in_sub_menu "Deferred more"
+      wait_for_frames
+      assert sub_menu_open?("Deferred more")
+      assert primary_menu_open?
+    end
+
+    def test_loaded_deferred_sub_menu_keeps_tab_stop
+      # Starting state: primary loaded with a deferred sub-menu, open
+      visit_preview(:deferred_refresh)
+      set_menu_src(deferred_sub: "1", sub_gate: "s")
+      load_and_open_menu
+
+      open_held_sub_menu "Deferred more", "s"
+      assert_focus_in_sub_menu "Deferred more"
+      wait_for_frames
+      assert_selector ":focus[tabindex='0']"
+
+      # The sub-menu traps Tab, which wraps back to its item, not to a
+      # focus trap sentinel
+      keyboard.type(:tab)
+      wait_for_frames
+      assert_focus_in_sub_menu "Deferred more"
+    end
+
+    def test_doubly_nested_deferred_sub_menu_keeps_focus
+      # Starting state: primary loaded with two levels of deferred sub-menus, open
+      visit_preview(:deferred_refresh)
+      set_menu_src(deferred_sub: "2", sub_gate: "s")
+      load_and_open_menu
+
+      open_sub_menu "Deferred more (2)"
+      assert_focus_in_sub_menu "Deferred more (2)"
+
+      open_held_sub_menu "Deferred more", "s"
+      assert_focus_in_sub_menu "Deferred more"
+      wait_for_frames
+      assert sub_menu_open?("Deferred more (2)")
+      assert sub_menu_open?("Deferred more")
+      assert primary_menu_open?
+    end
+
+    def test_nested_deferred_sub_menu_keeps_focus_after_reattach
+      # Starting state: primary loaded with a deferred sub-menu, moved, closed
+      visit_preview(:deferred_refresh)
+      set_menu_src(deferred_sub: "1", sub_gate: "s")
+      load_and_close_menu
+      detach_menu
+      reattach_menu
+
+      click_on_invoker_button
+      open_held_sub_menu "Deferred more", "s"
+      assert_focus_in_sub_menu "Deferred more"
+      wait_for_frames
+      assert sub_menu_open?("Deferred more")
+    end
+
+    def test_empty_nested_deferred_sub_menu_closes_and_refocuses_item
+      # Starting state: primary loaded with a deferred sub-menu that responds empty, open
+      visit_preview(:deferred_refresh)
+      set_menu_src(deferred_sub: "1", sub_empty: "1", sub_gate: "s")
+      load_and_open_menu
+
+      open_held_sub_menu "Deferred more", "s"
+      wait_until(message: "Sub-menu did not close") { !sub_menu_open?("Deferred more") }
+      wait_for_frames
+      assert_focused_text "Deferred more"
+      assert primary_menu_open?
+    end
+
+    def test_closed_sub_menu_load_does_not_take_focus
+      # Starting state: primary loaded, sub-menu request held, open
+      visit_preview(:deferred_refresh)
+      set_menu_src(deferred_sub: "1", sub_gate: "s")
+      load_and_open_menu
+      open_sub_menu "Deferred more"
+      Primer::RequestGate.wait_until_started("s")
+
+      close_menu
+      Primer::RequestGate.release("s")
+      wait_until(message: "Sub-menu did not load") do
+        page.evaluate_script("!!#{sub_menu_js('Deferred more')}?.querySelector('[role=menuitem]:not(include-fragment [role=menuitem])')")
+      end
+      wait_for_frames
+
+      refute_selector "anchored-position:popover-open"
+      refute page.evaluate_script("!!document.activeElement?.closest('action-menu anchored-position')")
+    end
+
+    def test_sub_menu_load_after_primary_reload_is_ignored
+      # Starting state: primary loaded, sub-menu request held, open
+      visit_preview(:deferred_refresh)
+      set_menu_src(deferred_sub: "1", sub_gate: "s")
+      load_and_open_menu
+      open_sub_menu "Deferred more"
+      Primer::RequestGate.wait_until_started("s")
+      page.execute_script(<<~JS)
+        #{sub_menu_js('Deferred more')}.querySelector('include-fragment').addEventListener('loadend', () => { window.__oldSubMenuDone = true })
+      JS
+
+      page.execute_script("document.querySelector('action-menu').refresh()")
+      assert_selector "action-menu[data-ready=true]", visible: :all
+      assert_item "Copy link"
+      Primer::RequestGate.release("s")
+      wait_until(message: "Old sub-menu load did not finish") { page.evaluate_script("!!window.__oldSubMenuDone") }
+      wait_for_frames
+
+      assert primary_menu_open?
+      assert page.evaluate_script("document.querySelector('action-menu').overlay.contains(document.activeElement)")
     end
 
     def test_opening_second_menu_closes_first_menu
