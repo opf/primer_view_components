@@ -130,9 +130,8 @@ export class ActionMenuElement extends HTMLElement {
   get invokerElement(): HTMLButtonElement | null {
     const id = this.querySelector('[role=menu]')?.id
     if (id) {
-      for (const el of this.querySelectorAll('[aria-controls]')) {
-        if (el.getAttribute('aria-controls') === id) return el as HTMLButtonElement
-      }
+      const el = this.querySelector<HTMLButtonElement>(`[aria-controls="${CSS.escape(id)}"]`)
+      if (el) return el
     }
     const overlayId = this.overlay?.id
     return overlayId ? this.querySelector<HTMLButtonElement>(`[popovertarget="${CSS.escape(overlayId)}"]`) : null
