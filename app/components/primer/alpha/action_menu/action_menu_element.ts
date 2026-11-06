@@ -384,6 +384,10 @@ export class ActionMenuElement extends HTMLElement {
         const firstItem = menu.querySelector(ActionMenuElement.menuItemSelectors.join(',')) as HTMLElement | null
         firstItem?.focus()
       })
+    } else if (menu === this.overlay && !document.querySelector(':popover-open')) {
+      // A light-dismissed menu (e.g. a click outside it) leaves focus on the body;
+      // hand it back to the invoker so the menu stays reachable from the keyboard.
+      this.invokerElement?.focus()
     }
   }
 
