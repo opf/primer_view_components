@@ -23,28 +23,21 @@ export class ActionMenuFocusZoneStack {
     this.#stack.push({element: next, abortController: this.#setupFocusZone(next, trapFocus)})
   }
 
+  // Pops and aborts the top entry, or the given element and every entry above it.
   pop(target?: AnchoredPositionElement) {
     if (target) {
-      if (!this.#stack.some(entry => entry.element === target)) return
-
-      while (this.#stack.length > 0 && this.current?.element !== target) {
-        const entry = this.#stack.pop()
-        entry?.abortController.abort()
-      }
+      if (!this.#includes(target)) return
+      this.popAbove(target)
     }
 
-    const entry = this.#stack.pop()
-    entry?.abortController.abort()
+    this.#popTop()
   }
 
   // Pops and aborts every entry above (not including) the given element.
   popAbove(element: AnchoredPositionElement) {
-    if (!this.#stack.some(entry => entry.element === element)) return
+    if (!this.#includes(element)) return
 
-    while (this.#stack.length > 0 && this.current?.element !== element) {
-      const entry = this.#stack.pop()
-      entry?.abortController.abort()
-    }
+    while (this.current && this.current.element !== element) this.#popTop()
   }
 
   // Drops and aborts every entry whose element is no longer live, for example
@@ -59,10 +52,15 @@ export class ActionMenuFocusZoneStack {
   }
 
   clear() {
-    while (this.#stack.length > 0) {
-      const entry = this.#stack.pop()
-      entry?.abortController.abort()
-    }
+    while (this.current) this.#popTop()
+  }
+
+  #popTop() {
+    this.#stack.pop()?.abortController.abort()
+  }
+
+  #includes(element: AnchoredPositionElement): boolean {
+    return this.#stack.some(entry => entry.element === element)
   }
 
   #setupFocusZone(containerEl: AnchoredPositionElement, trapFocus: boolean): AbortController {

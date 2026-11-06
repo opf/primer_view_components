@@ -222,11 +222,8 @@ export class ActionMenuElement extends HTMLElement {
   }
 
   #updateLevels() {
-    let idx = 1
-
-    for (const menu of this.querySelectorAll('[role=menu]')) {
-      menu.setAttribute('data-level', idx.toString())
-      idx++
+    for (const [index, menu] of this.querySelectorAll('[role=menu]').entries()) {
+      menu.setAttribute('data-level', String(index + 1))
     }
   }
 
