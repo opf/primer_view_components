@@ -3,12 +3,23 @@
 require "system/test_helper"
 require "capybara/rails"
 require "capybara/minitest"
+require "test_helpers/request_gate"
 
 Primer::DriverTestHelpers.setup_driver
 
 module System
   class TestCase < ActionDispatch::SystemTestCase
     driven_by Primer::DriverTestHelpers.driver_name, screen_size: [1400, 1400], options: { process_timeout: 240, timeout: 240 }
+
+    # Releases gated fixture requests before Capybara.reset_sessions! (run in
+    # after_teardown, before teardown callbacks) waits for pending requests.
+    def before_teardown
+      Primer::RequestGate.release_all!
+    ensure
+      super
+    end
+
+    teardown { Primer::RequestGate.reset! }
 
     def visit_preview(scenario_name, module_prefix: nil, **params)
       component_name = self.class.name.gsub("Test", "").gsub("Integration", "")

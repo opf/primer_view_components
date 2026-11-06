@@ -28,6 +28,7 @@ Primer::ViewComponents::Engine.routes.draw do
   post "/action_menu/form_action", to: "action_menu#form_action", as: :action_menu_form_action
   get "/action_menu/deferred", to: "action_menu#deferred", as: :action_menu_deferred
   get "/action_menu/deferred_preload", to: "action_menu#deferred_preload", as: :action_menu_deferred_preload
+  get "/action_menu/deferred_form", to: "action_menu#deferred_form", as: :action_menu_deferred_form
 
   get "/include_fragment/deferred", to: "include_fragment#deferred", as: :include_fragment_deferred
 end

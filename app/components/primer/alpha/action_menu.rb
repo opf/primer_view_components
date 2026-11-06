@@ -168,6 +168,60 @@ module Primer
     #   event.detail.checked  // boolean: whether or not the result of the activation checked the item
     # })
     # ```
+    #
+    # #### Refreshing deferred content
+    #
+    # A primary menu rendered with `src:` renders its loader as a `<template>` and leaves the menu body empty. The first load starts
+    # when the menu first opens, or immediately when rendered with `preload: true`. Deferred sub-menus render their loader in place
+    # and are not refreshed.
+    #
+    # The `src` attribute on the `<action-menu>` element is the state: setting it to a different URL reloads the items, eg:
+    #
+    # ```typescript
+    # document.querySelector("action-menu").setAttribute("src", "/items?filter=open")
+    # ```
+    #
+    # An open menu reloads its items in place. A closed lazy menu applies the change when it next opens and keeps its previous
+    # items, dynamic label and form inputs until then; a preloaded menu reloads at once. Setting `src` to the URL already loaded
+    # does nothing unless the last load failed or returned no menu items, in which case an open or preloaded menu loads again, so
+    # `src` can be set on every open. A blank `src` is ignored.
+    #
+    # If the response contains no menu items, it is discarded and the menu body stays empty: an open menu closes and focus returns
+    # to its button, and the menu is fetched again on its next open. Any other markup in such a response is not shown. To keep the
+    # menu open, render a disabled item such as "No actions available".
+    #
+    # A failed load retries the next time the menu opens. To reload at the current `src`, call `refresh()`:
+    #
+    # ```typescript
+    # document.querySelector("action-menu").refresh()
+    # ```
+    #
+    # An open or preloaded menu reloads at once; a closed lazy one reloads when it next opens. The server response replaces any
+    # client-side selection. While a load is pending, and after it fails, the menu keeps submitting its previous form inputs until a
+    # response replaces them.
+    #
+    # An `<include-fragment>` that other code places directly into the menu body (for example a Turbo morph) is picked up and its
+    # `src` is copied to the `<action-menu>` element. An open or preloaded menu fetches it at once; in a closed lazy menu a lazy
+    # fragment loads when the menu opens, and an eager one as soon as it is inserted; a fragment that had no `src` yet when it was
+    # inserted is replaced with a load at the host `src`. If several are inserted together, the last one in the body wins. A menu
+    # that is open when the fragment is inserted stays open while it loads, provided the fragment contains a focusable menu item, as
+    # the rendered loader does. When a consumer sets a different `src` and other code inserts a fragment in the same synchronous
+    # block (before the menu's mutation observer runs), the fragment wins on a closed lazy menu; on an open or preloaded menu the
+    # later of the two wins. A response must not itself start with an `<include-fragment>`, which would be picked up the same way.
+    #
+    # The `data-ready` attribute means no load is pending, not that the current `src` has been applied: a closed lazy menu keeps it
+    # when `src` changes, and drops it only when the new load starts.
+    #
+    # A loader whose `include-fragment-replace` event a consumer cancelled stays in the body and is fetched again on every open.
+    #
+    # A cloned `<action-menu>` that connects to the document loads like any other: a clone of a preloaded menu fetches at once, a
+    # lazy one when it opens. Consumers that clone a menu for display only (eg. a drag preview) should remove its `src` and any
+    # `<include-fragment>` inside it before connecting it, since a loader that was pending when the menu was cloned fetches on its
+    # own.
+    #
+    # Only menus rendered with `src:` can refresh. A menu restored from a Turbo snapshot loads its items again when it next opens
+    # (at once when preloaded). A menu whose body other code emptied or replaced, for example a Turbo morph that re-rendered the
+    # server's empty body, loads again at once when open or preloaded, otherwise when it next opens.
     class ActionMenu < Primer::Component
       status :alpha
 
@@ -212,6 +266,7 @@ module Primer
 
         @system_arguments[:tag] = :"action-menu"
         @system_arguments[:preload] = true if @primary_menu.preload?
+        @system_arguments[:src] = @primary_menu.src if @primary_menu.src.present?
 
         @system_arguments[:data] = merge_data(
           @system_arguments, {

@@ -110,10 +110,43 @@ module Primer
 
         assert_selector("action-menu") do |menu|
           menu.assert_selector("button[id='deferred-menu-button'][aria-haspopup='true']", text: "Trigger")
-          menu.assert_selector("include-fragment[src='/'][data-target='action-menu.includeFragment']", visible: false) do |fragment|
-            fragment.assert_selector(".ActionListItem[aria-disabled='true']", visible: false)
-          end
         end
+        assert_match %r{<template data-target="action-menu.loaderTemplate">\s*<include-fragment[^>]*src="/"[^>]*>.*?<li[^>]*aria-disabled="true"}m, rendered_content
+        refute_match %r{data-target="action-menu.includeFragment"}, rendered_content
+      end
+
+      def test_renders_src_on_action_menu_when_deferred
+        render_inline(Primer::Alpha::ActionMenu.new(menu_id: "m", src: "/items?x=1")) { |m| m.with_show_button { "Open" } }
+        assert_selector "action-menu[src='/items?x=1']"
+      end
+
+      def test_renders_loader_template_when_deferred
+        render_inline(Primer::Alpha::ActionMenu.new(menu_id: "m", src: "/items?x=1")) { |m| m.with_show_button { "Open" } }
+        assert_selector "action-menu[src='/items?x=1']"
+        assert_match %r{<template data-target="action-menu.loaderTemplate">\s*<include-fragment[^>]*loading="lazy"[^>]*src="/items\?x=1"}, rendered_content
+        assert_no_selector "action-menu anchored-position .Overlay-body > include-fragment", visible: false
+      end
+
+      def test_loader_template_is_eager_when_preloaded
+        render_inline(Primer::Alpha::ActionMenu.new(menu_id: "m", src: "/items", preload: true)) { |m| m.with_show_button { "Open" } }
+        assert_match %r{<template data-target="action-menu.loaderTemplate">\s*<include-fragment[^>]*loading="eager"}, rendered_content
+      end
+
+      def test_deferred_sub_menu_keeps_its_fragment_in_the_body
+        render_inline(Primer::Alpha::ActionMenu.new(menu_id: "m")) do |m|
+          m.with_show_button { "Open" }
+          m.with_sub_menu_item(label: "More", src: "/sub")
+        end
+        assert_selector "action-menu anchored-position anchored-position include-fragment[src='/sub']", visible: false
+        assert_no_selector "template[data-target='action-menu.loaderTemplate']", visible: false
+      end
+
+      def test_omits_src_on_action_menu_when_not_deferred
+        render_inline(Primer::Alpha::ActionMenu.new(menu_id: "m")) do |m|
+          m.with_show_button { "Open" }
+          m.with_item(label: "One")
+        end
+        assert_no_selector "action-menu[src]"
       end
 
       def test_renders_include_fragment_with_preload
@@ -127,10 +160,8 @@ module Primer
 
         assert_selector("action-menu[preload='true']") do |menu|
           menu.assert_selector("button[id='deferred-menu-button'][aria-haspopup='true']", text: "Trigger")
-          menu.assert_selector("include-fragment[src='/'][data-target='action-menu.includeFragment']", visible: false) do |fragment|
-            fragment.assert_selector(".ActionListItem[aria-disabled='true']", visible: false)
-          end
         end
+        assert_match %r{<template data-target="action-menu.loaderTemplate">\s*<include-fragment[^>]*loading="eager"[^>]*src="/"}, rendered_content
       end
 
       def test_disabled
@@ -301,6 +332,27 @@ module Primer
         render_preview(:single_select_with_internal_label)
 
         assert_selector("button[aria-haspopup='true'] .Button-label", text: "Menu")
+      end
+
+      def test_primary_overlay_body_is_marked_when_deferred
+        render_inline(Primer::Alpha::ActionMenu.new(menu_id: "m", src: "/items")) { |m| m.with_show_button { "Open" } }
+        assert_selector "action-menu anchored-position .Overlay-body[data-target='action-menu.overlayBody']", visible: false
+      end
+
+      def test_overlay_body_is_not_marked_when_not_deferred
+        render_inline(Primer::Alpha::ActionMenu.new(menu_id: "m")) do |m|
+          m.with_show_button { "Open" }
+          m.with_item(label: "One")
+        end
+        assert_no_selector "[data-target='action-menu.overlayBody']", visible: false
+      end
+
+      def test_deferred_sub_menu_body_is_not_marked
+        render_inline(Primer::Alpha::ActionMenu.new(menu_id: "m")) do |m|
+          m.with_show_button { "Open" }
+          m.with_sub_menu_item(label: "More", src: "/sub")
+        end
+        assert_no_selector "[data-target='action-menu.overlayBody']", visible: false
       end
     end
   end

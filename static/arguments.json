@@ -519,6 +519,12 @@
         "description": "Arguments to pass to the underlying [ActionMenu::List](/components/alpha/actionmenulist)"
       },
       {
+        "name": "body_arguments",
+        "type": "Hash",
+        "default": "`{}`",
+        "description": "Arguments to pass to the underlying overlay's `body` slot."
+      },
+      {
         "name": "system_arguments",
         "type": "Hash",
         "default": "N/A",

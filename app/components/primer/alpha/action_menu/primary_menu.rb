@@ -68,6 +68,15 @@ module Primer
             { data: { target: "action-menu.list" } }
           )
 
+          if system_arguments[:src].present?
+            system_arguments[:body_arguments] ||= {}
+
+            system_arguments[:body_arguments][:data] = merge_data(
+              system_arguments[:body_arguments],
+              { data: { target: "action-menu.overlayBody" } }
+            )
+          end
+
           super(
             anchor_align: anchor_align,
             anchor_side: anchor_side,
@@ -83,6 +92,12 @@ module Primer
           @overlay.with_show_button(**system_arguments, id: "#{@menu_id}-button", controls: "#{@menu_id}-list") do |button|
             evaluate_block(button, &block)
           end
+        end
+
+        private
+
+        def primary?
+          true
         end
       end
     end

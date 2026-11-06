@@ -13,11 +13,15 @@ type SelectedItem = {
   element: Element
 }
 
+type LoaderRequest = Readonly<{loader: IncludeFragmentElement; src: string}>
+
 @controller('action-menu')
 export class ActionMenuElement extends HTMLElement {
   @target includeFragment: IncludeFragmentElement
   @target overlay: AnchoredPositionElement
   @target list: HTMLElement
+  @target overlayBody: HTMLElement | undefined
+  @target loaderTemplate: HTMLTemplateElement | undefined
 
   #abortController: AbortController
   #originalLabel = ''
@@ -25,6 +29,60 @@ export class ActionMenuElement extends HTMLElement {
   #invokerBeingClicked = false
   #intersectionObserver: IntersectionObserver
   #focusZoneStack: ActionMenuFocusZoneStack
+
+  // The current request of a deferred primary menu: the loader it was made
+  // with and the src it was made for. Never updated; a new request replaces it.
+  // The src is recorded because the loader's attribute is configuration a
+  // morph may rewrite while the request is in flight; the record is what was
+  // requested, so a rewritten loader cannot pass an old response off as new.
+  #request: LoaderRequest | null = null
+  // Every primary loader this element created or adopted, so completions of
+  // superseded ones can be told apart from sub-menu fragments.
+  #ownedLoaders = new WeakSet<IncludeFragmentElement>()
+  // Loaders whose response had no menu items, with the body they left
+  // empty. That body staying empty is not a reason to load again before the
+  // next open; a body other code puts in its place is.
+  #emptyLoaders = new WeakMap<IncludeFragmentElement, HTMLElement>()
+
+  #scrollUpdater = () => {
+    if (this.#isOpen()) {
+      this.overlay?.update()
+    }
+  }
+
+  constructor() {
+    super()
+
+    // Never disconnected: it observes the element's own subtree, so it keeps
+    // working while the element is detached. A local, not a field: the
+    // registration keeps it alive as long as the element is.
+    const observer = new MutationObserver(records => {
+      this.#onBodyMutation(records)
+      this.#updateLevels()
+    })
+    observer.observe(this, {childList: true, subtree: true})
+
+    this.#focusZoneStack = new ActionMenuFocusZoneStack()
+
+    // The code below updates the menu (i.e. overlay) position whenever the invoker button
+    // changes position within its scroll container.
+    //
+    // See: https://github.com/primer/view_components/issues/3175
+    this.#intersectionObserver = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        if (entry.target !== this.invokerElement) continue
+
+        if (entry.isIntersecting) {
+          // eslint-disable-next-line github/prefer-observers
+          window.addEventListener('scroll', this.#scrollUpdater, {capture: true})
+        } else {
+          window.removeEventListener('scroll', this.#scrollUpdater, {capture: true})
+        }
+      }
+    })
+  }
+
+  static observedAttributes = ['src']
 
   static validItemRoles = ['menuitem', 'menuitemcheckbox', 'menuitemradio']
   static validSelectors = ActionMenuElement.validItemRoles.map(role => `[role="${role}"]`)
@@ -71,13 +129,12 @@ export class ActionMenuElement extends HTMLElement {
 
   get invokerElement(): HTMLButtonElement | null {
     const id = this.querySelector('[role=menu]')?.id
-    if (!id) return null
-    for (const el of this.querySelectorAll(`[aria-controls]`)) {
-      if (el.getAttribute('aria-controls') === id) {
-        return el as HTMLButtonElement
-      }
+    if (id) {
+      const el = this.querySelector<HTMLButtonElement>(`[aria-controls="${CSS.escape(id)}"]`)
+      if (el) return el
     }
-    return null
+    const overlayId = this.overlay?.id
+    return overlayId ? this.querySelector<HTMLButtonElement>(`[popovertarget="${CSS.escape(overlayId)}"]`) : null
   }
 
   get invokerLabel(): HTMLElement | null {
@@ -103,6 +160,40 @@ export class ActionMenuElement extends HTMLElement {
   }
 
   connectedCallback() {
+    this.#bindHostListeners()
+    this.#setDynamicLabel()
+    this.#updateInput()
+    this.#softDisableItems()
+    this.#setupSubMenuLoading()
+    this.#sync()
+    this.#observeInvokerPosition()
+
+    if (this.#noLoadPending()) {
+      this.setAttribute('data-ready', 'true')
+    }
+
+    this.#updateLevels()
+  }
+
+  disconnectedCallback() {
+    this.#abortController.abort()
+    this.#focusZoneStack.clear()
+    this.#intersectionObserver.disconnect()
+    window.removeEventListener('scroll', this.#scrollUpdater, {capture: true})
+  }
+
+  attributeChangedCallback(name: string) {
+    if (name === 'src') this.#sync()
+  }
+
+  // Forgets the current request so the menu loads again at the current src:
+  // at once when open or preloaded, otherwise when it next opens.
+  refresh() {
+    this.#invalidate()
+    this.#sync()
+  }
+
+  #bindHostListeners() {
     const {signal} = (this.#abortController = new AbortController())
     this.addEventListener('keydown', this, {signal})
     this.addEventListener('click', this, {signal})
@@ -111,72 +202,248 @@ export class ActionMenuElement extends HTMLElement {
     this.addEventListener('mousedown', this, {signal})
     this.addEventListener('beforetoggle', this, {signal, capture: true})
     this.addEventListener('toggle', this, {signal, capture: true})
-    this.#setDynamicLabel()
-    this.#updateInput()
-    this.#softDisableItems()
+  }
 
-    if (this.includeFragment) {
-      this.includeFragment.addEventListener('include-fragment-replaced', this, {
-        signal,
-      })
-    }
+  // A static primary menu with a deferred sub-menu
+  #setupSubMenuLoading() {
+    if (this.#deferred || !this.includeFragment) return
 
-    // The code below updates the menu (i.e. overlay) position whenever the invoker button
-    // changes position within its scroll container.
-    //
-    // See: https://github.com/primer/view_components/issues/3175
-
-    const scrollUpdater = () => {
-      if (this.#isOpen()) {
-        this.overlay?.update()
-      }
-    }
-
-    this.#intersectionObserver = new IntersectionObserver(entries => {
-      for (const entry of entries) {
-        const elem = entry.target
-        if (elem === this.invokerElement) {
-          if (entry.isIntersecting) {
-            // eslint-disable-next-line github/prefer-observers
-            window.addEventListener('scroll', scrollUpdater, {capture: true})
-          } else {
-            window.removeEventListener('scroll', scrollUpdater, {capture: true})
-          }
-        }
-      }
+    this.includeFragment.addEventListener('include-fragment-replaced', this, {
+      signal: this.#abortController.signal,
     })
+  }
 
+  #observeInvokerPosition() {
     observeMutationsUntilConditionMet(
       this,
       () => Boolean(this.invokerElement),
       () => this.#intersectionObserver.observe(this.invokerElement!),
     )
-
-    // If there's no include fragment, then no async fetching will occur and we can
-    // mark the component as ready.
-    if (!this.includeFragment) {
-      this.setAttribute('data-ready', 'true')
-    }
-
-    const levelObserver = new MutationObserver(() => this.#updateLevels())
-    levelObserver.observe(this, {childList: true, subtree: true})
-
-    this.#updateLevels()
-
-    this.#focusZoneStack = new ActionMenuFocusZoneStack()
   }
 
   #updateLevels() {
-    let idx = 1
-
-    for (const menu of this.querySelectorAll('[role=menu]')) {
-      menu.setAttribute('data-level', idx.toString())
-      idx++
+    for (const [index, menu] of this.querySelectorAll('[role=menu]').entries()) {
+      menu.setAttribute('data-level', String(index + 1))
     }
   }
 
-  disconnectedCallback() {
-    this.#abortController.abort()
+  // A primary menu with `src` renders its loader as a template
+  get #deferred(): boolean {
+    return Boolean(this.loaderTemplate)
+  }
+
+  get #preload(): boolean {
+    return this.loaderTemplate?.content.firstElementChild?.getAttribute('loading') === 'eager'
+  }
+
+  // The primary overlay's body. Looked up on every call, since other code may
+  // replace the body or the overlay.
+  get #body(): HTMLElement | null {
+    return this.overlayBody ?? null
+  }
+
+  // The one rule: a load starts when there is no current request, when the
+  // host src differs from the current request's, or when the body holds no
+  // element (other code emptied it, or the last response was empty); the
+  // current loader still in the body is retried. A closed lazy menu waits
+  // for the open moment (`opening`) instead.
+  #sync(opening = false) {
+    const src = (this.getAttribute('src') ?? '').trim()
+    if (!this.#deferred || !src) return
+
+    if (!(opening || this.#isOpen() || this.#preload)) {
+      // A pending or failed loader for another src must not render meanwhile;
+      // a completed one is kept, so setting its src again does not reload
+      if (this.#request && src !== this.#request.src && this.#request.loader.parentElement === this.#body) {
+        this.#invalidate()
+      }
+      return
+    }
+
+    const loader = this.#request?.loader
+    if (!this.#request || src !== this.#request.src || !this.#body?.firstElementChild) {
+      this.#load(src, opening)
+    } else if (loader?.isConnected) {
+      // A retry fetches the loader's own src, which a morph may have rewritten
+      if ((loader.getAttribute('src') ?? '').trim() === this.#request.src) {
+        loader.classList.remove('is-error')
+        loader.refetch()
+      } else {
+        this.#load(src, opening)
+      }
+    }
+  }
+
+  // Drops the current request. Its loader is removed even while the menu is
+  // detached, since upstream still completes the fetch there.
+  #invalidate() {
+    this.#request?.loader.remove()
+    this.#request = null
+    this.#updateReady()
+  }
+
+  // Starts a request for src with a fresh loader from the template, which
+  // replaces whatever the body holds.
+  #load(src: string, opening = false) {
+    const body = this.#body
+    const template = this.loaderTemplate?.content.firstElementChild
+    if (!body || !template) return
+
+    // Imported, not cloned, so the loader is upgraded before it connects
+    const loader = this.ownerDocument.importNode(template, true) as IncludeFragmentElement
+    loader.setAttribute('src', src)
+    loader.setAttribute('loading', 'eager')
+
+    this.#request = {loader, src}
+    this.#ownedLoaders.add(loader)
+    this.#listen(loader)
+    // The response decides the form field name
+    this.#inputName = ''
+    this.#keepInputs(body)
+
+    body.prepend(loader)
+    if (opening || this.#isOpen()) {
+      this.#keepOpenWhileLoading(loader)
+      // A focus handler may have started a newer load meanwhile
+      if (this.#request?.loader !== loader) return
+    }
+
+    for (const child of Array.from(body.childNodes)) {
+      if (child !== loader) child.remove()
+    }
+
+    this.#updateReady()
+  }
+
+  // Keeps the current form inputs submitting while a load replaces the body,
+  // also when it fails: they move to the host until a response brings its own
+  #keepInputs(body: HTMLElement) {
+    const inputs = body.querySelector('[data-list-inputs]')
+    if (!inputs) return
+
+    this.#dropKeptInputs()
+    this.append(inputs)
+  }
+
+  #dropKeptInputs() {
+    for (const inputs of this.querySelectorAll(':scope > [data-list-inputs]')) inputs.remove()
+  }
+
+  // Loaders are never reused, so the listeners need no lifetime of their own
+  #listen(fragment: IncludeFragmentElement) {
+    fragment.addEventListener('include-fragment-replace', this)
+    fragment.addEventListener('include-fragment-replaced', this)
+  }
+
+  // No primary loader still waiting in the body and, for a static menu, no
+  // sub-menu fragment. A deferred menu's sub-menus load when they open.
+  #noLoadPending(): boolean {
+    if (!this.#deferred && this.includeFragment?.isConnected) return false
+
+    const loader = this.#request?.loader
+    return !loader || loader.parentElement !== this.#body
+  }
+
+  // `data-ready` means no load is pending
+  #updateReady() {
+    if (this.#noLoadPending()) {
+      this.setAttribute('data-ready', 'true')
+    } else {
+      this.removeAttribute('data-ready')
+    }
+  }
+
+  // Picks up loaders other code inserts into the body (the last one wins, so
+  // a loader appended next to a pending one supersedes it), and loads again
+  // when other code empties the body, such as a morph of the server markup,
+  // which renders the body empty.
+  #onBodyMutation(records: MutationRecord[]) {
+    // A replaced overlay may have taken open sub-menus with it
+    this.#pruneFocusZones()
+
+    if (!this.#deferred) return
+
+    const body = this.#body
+    if (!body) return
+
+    if (records.some(record => record.addedNodes.length > 0)) {
+      const fragments = Array.from(body.querySelectorAll<IncludeFragmentElement>(':scope > include-fragment')).filter(
+        fragment => !this.#ownedLoaders.has(fragment),
+      )
+      const fragment = fragments.at(-1)
+      if (fragment) this.#adopt(fragment)
+    }
+
+    // An empty body was emptied or replaced by other code, unless it is the
+    // one the current loader left empty; loading again there would loop on a
+    // preloaded menu, so that one waits for the next open
+    const loader = this.#request?.loader
+    if (!body.firstElementChild && !(loader && this.#emptyLoaders.get(loader) === body)) this.#sync()
+
+    this.#updateReady()
+  }
+
+  // Makes an inserted loader the current request. Its src is reflected onto
+  // the host, so the rule sees the request as current: an open or preloaded
+  // menu loads it at once (upstream's busy guard drops the duplicate for an
+  // eager loader), a closed lazy one when it opens, unless the loader is eager
+  // and has already started itself. Idiomorph inserts a loader
+  // before setting its attributes, but sets them synchronously, so the loader
+  // arrives here with its src; one that gets its src only in a later task is
+  // replaced with a load at the host src. The template is not touched.
+  #adopt(fragment: IncludeFragmentElement) {
+    const body = this.#body
+    if (!body) return
+
+    const src = (fragment.getAttribute('src') ?? '').trim()
+
+    this.#request = {loader: fragment, src}
+    this.#ownedLoaders.add(fragment)
+    this.#listen(fragment)
+    // The response decides the form field name
+    this.#inputName = ''
+    this.#keepInputs(body)
+
+    if (this.#isOpen()) {
+      this.#keepOpenWhileLoading(fragment)
+      // A focus handler may have started a newer load meanwhile
+      if (this.#request?.loader !== fragment) return
+    }
+
+    for (const child of Array.from(body.childNodes)) {
+      if (child !== fragment) child.remove()
+    }
+
+    if (src && src !== this.getAttribute('src')) {
+      this.setAttribute('src', src)
+    } else if (this.#isOpen() || this.#preload) {
+      // An unchanged src does not run the rule, and a lazy loader inserted
+      // before its attributes never starts on its own
+      this.#sync()
+    }
+  }
+
+  // Keeps the open (or opening) menu open while fragment loads into its
+  // body. Open sub-menus are torn down first, since their toggle events
+  // arrive after the nodes are gone, and focus moves to the fragment's
+  // spinner before the focusout frame runs, so it never drops to <body> and
+  // closes the menu. Called from beforetoggle, before the popover shows, the
+  // focus() is a no-op; the toggle frame then focuses the spinner.
+  #keepOpenWhileLoading(fragment: IncludeFragmentElement) {
+    this.#pruneFocusZones()
+    this.#focusZoneStack.popAbove(this.overlay)
+
+    for (const child of this.childPopoverElements) {
+      if (child.matches(':popover-open')) child.hidePopover()
+    }
+
+    fragment.querySelector<HTMLElement>('[role=menuitem]')?.focus()
+  }
+
+  // Drops focus zones of overlays other code removed, such as a replaced
+  // primary overlay and its sub-menus.
+  #pruneFocusZones() {
+    this.#focusZoneStack.prune(element => element.isConnected && this.contains(element))
   }
 
   #softDisableItems() {
@@ -321,7 +588,36 @@ export class ActionMenuElement extends HTMLElement {
       return
     }
 
+    if (event.type === 'include-fragment-replace') {
+      const loader = event.target as IncludeFragmentElement
+      if (loader !== this.#request?.loader) return
+
+      // Other code removed the current loader before it completed, eg. by
+      // emptying the body, or rewrote its src, eg. by a morph: its response is
+      // not the one requested and must not render or mark the menu ready
+      const body = this.#body
+      if (!body || loader.parentElement !== body || (loader.getAttribute('src') ?? '').trim() !== this.#request.src) {
+        event.preventDefault()
+        return
+      }
+
+      // A response without menu items is discarded, so the body stays empty
+      // and the menu loads again when it next opens
+      const fragment: unknown = event instanceof CustomEvent ? event.detail?.fragment : null
+      if (!(fragment instanceof DocumentFragment)) return
+
+      if (!fragment.querySelector(ActionMenuElement.menuItemSelectors.join(','))) {
+        fragment.replaceChildren()
+        this.#emptyLoaders.set(loader, body)
+      }
+      return
+    }
+
     if (event.type === 'include-fragment-replaced') {
+      // A superseded primary loader that completed late
+      const loader = event.target as IncludeFragmentElement
+      if (this.#ownedLoaders.has(loader) && loader !== this.#request?.loader) return
+
       this.#handleIncludeFragmentReplaced()
       return
     }
@@ -351,6 +647,12 @@ export class ActionMenuElement extends HTMLElement {
   }
 
   #handleBeforeToggleEvent(event: ToggleEvent) {
+    if (event.newState === 'open') {
+      // A closed lazy menu catches up, and a failed load retries, as it opens
+      if (event.target === this.overlay) this.#sync(true)
+      return
+    }
+
     if (event.newState !== 'closed') return
 
     const menu = this.#toggledMenu(event)
@@ -379,6 +681,9 @@ export class ActionMenuElement extends HTMLElement {
       // allow tabbing away from primary menu, but trap focus in sub-menus
       const isPrimaryMenu = menu === this.overlay
       this.#focusZoneStack.push(menu, {trapFocus: !isPrimaryMenu})
+
+      // Picks up a src set by a beforetoggle listener that ran after ours
+      if (isPrimaryMenu) this.#sync(true)
 
       window.requestAnimationFrame(() => {
         const firstItem = menu.querySelector(ActionMenuElement.menuItemSelectors.join(',')) as HTMLElement | null
@@ -497,12 +802,32 @@ export class ActionMenuElement extends HTMLElement {
   }
 
   #handleIncludeFragmentReplaced() {
-    this.#firstItem?.focus()
-    this.#softDisableItems()
-    this.overlay?.update()
+    // Content can finish loading while the menu is detached
+    if (this.isConnected) {
+      const firstItem = this.#firstItem
 
-    // async items have loaded, so component is ready
-    this.setAttribute('data-ready', 'true')
+      if (firstItem) {
+        firstItem.focus()
+      } else if (this.#isOpen()) {
+        // Nothing to focus in an empty response: close and return to the
+        // button.
+        this.overlay.hidePopover()
+        this.invokerElement?.focus()
+      }
+
+      this.overlay?.update()
+    }
+    if (this.#deferred) this.#dropKeptInputs()
+    this.#setDynamicLabel()
+    this.#updateInput()
+    this.#softDisableItems()
+
+    // Ready unless the focus moves above started another load
+    if (this.#deferred) {
+      this.#updateReady()
+    } else {
+      this.setAttribute('data-ready', 'true')
+    }
   }
 
   // Close when focus leaves menu
@@ -522,15 +847,20 @@ export class ActionMenuElement extends HTMLElement {
     }
   }
 
-  #isOpen() {
-    return this.popoverElement?.matches(':popover-open')
+  #isOpen(): boolean {
+    return this.overlay?.matches(':popover-open') ?? false
   }
 
   #setDynamicLabel() {
     if (!this.dynamicLabel) return
     const invokerLabel = this.invokerLabel
     if (!invokerLabel) return
-    this.#originalLabel ||= invokerLabel.textContent || ''
+    // Kept on the host, since the button of a cloned or restored menu
+    // already shows a selection
+    if (!this.#originalLabel) {
+      this.#originalLabel = this.getAttribute('data-original-label') ?? (invokerLabel.textContent || '')
+      this.setAttribute('data-original-label', this.#originalLabel)
+    }
     let itemLabel: string | undefined
     if (this.selectVariant === 'single') {
       itemLabel = this.querySelector('[aria-checked=true] .ActionListItem-label')?.textContent?.trim()
@@ -576,6 +906,10 @@ export class ActionMenuElement extends HTMLElement {
       if (inputs.length > 0) {
         this.#inputName ||= (inputs[0] as HTMLInputElement).name
       }
+      // Kept on the container too, so a cloned or restored menu with nothing
+      // selected still names the inputs it creates
+      this.#inputName ||= inputList.getAttribute('data-input-name') ?? ''
+      if (this.#inputName) inputList.setAttribute('data-input-name', this.#inputName)
 
       for (const selectedItem of this.selectedItems) {
         const newInput = document.createElement('input')
