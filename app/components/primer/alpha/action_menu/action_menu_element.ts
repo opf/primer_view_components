@@ -48,6 +48,7 @@ export class ActionMenuElement extends HTMLElement {
       element: this,
       body: () => this.overlayBody,
       template: () => this.loaderTemplate,
+      itemSelector: ActionMenuElement.menuItemSelectors.join(','),
       isOpen: () => this.#isOpen(),
       onLoadStart: (fragment, keepOpen) => {
         // The response decides the form field name

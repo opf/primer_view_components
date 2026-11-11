@@ -11,6 +11,8 @@ export type MenuLoaderHost = {
   // may replace the body or the overlay
   body(): HTMLElement | undefined
   template(): HTMLTemplateElement | undefined
+  // Matches the menu's items; a response without a match is empty
+  itemSelector: string
   isOpen(): boolean
   // A loader is in the body and about to replace its old content; keepOpen
   // when the menu is open or opening
@@ -20,10 +22,6 @@ export type MenuLoaderHost = {
 }
 
 type LoaderRequest = Readonly<{loader: IncludeFragmentElement; src: string}>
-
-const menuItemSelector = ['menuitem', 'menuitemcheckbox', 'menuitemradio']
-  .map(role => `:not([hidden]) > [role="${role}"]`)
-  .join(',')
 
 // Loads a deferred menu's items. The one rule (`sync`): a load starts when
 // there is no current request, when the host src differs from the current
@@ -233,7 +231,7 @@ export class MenuLoader {
     const fragment: unknown = event instanceof CustomEvent ? event.detail?.fragment : null
     if (!(fragment instanceof DocumentFragment)) return
 
-    if (!fragment.querySelector(menuItemSelector)) {
+    if (!fragment.querySelector(this.#host.itemSelector)) {
       fragment.replaceChildren()
       this.#emptyLoaders.set(loader, body)
     }
