@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.96.1
+
+### Patch Changes
+
+- [#551](https://github.com/opf/primer_view_components/pull/551) [`1168f8d`](https://github.com/opf/primer_view_components/commit/1168f8dfb2ea5d289e6461158cc804fe4299b841) Thanks [@myabc](https://github.com/myabc)! - Keep the tab stop on the first loaded item of a deferred `Primer::Alpha::ActionMenu` when it receives focus. Closing any `Primer::Alpha::ActionMenu` by clicking outside it no longer always returns focus to its button: focus that the click or other code moved elsewhere stays there, and returns to the button only when it would otherwise be lost.
+
 ## 0.96.0
 
 ### Minor Changes
