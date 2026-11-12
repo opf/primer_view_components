@@ -1,0 +1,10 @@
+- button "Edit"
+- menu "Edit":
+  - menuitem "Cut"
+  - menuitem "Copy New"
+  - menuitem "Paste special"
+  - menu "Paste special":
+    - menuitem "Paste plain text"
+    - menuitem "Paste formulas"
+    - menuitem "Paste with formatting"
+  - menuitem "Delete"
