@@ -60,7 +60,8 @@ module Primer
       #
       # @snapshot interactive
       # @param nest_in_sub_menu toggle
-      def with_groups(nest_in_sub_menu: false)
+      # @param show_dividers toggle
+      def with_groups(nest_in_sub_menu: false, show_dividers: false)
         contents = -> (menu) {
           menu.with_group do |group|
             group.with_heading(title: "Battlestar Galactica")
@@ -87,14 +88,16 @@ module Primer
           end
         }
 
-        render(Primer::Alpha::ActionMenu.new(menu_id: "menu-1")) do |menu|
+        list_arguments = { show_dividers: show_dividers }
+
+        render(Primer::Alpha::ActionMenu.new(menu_id: "menu-1", list_arguments: nest_in_sub_menu ? {} : list_arguments)) do |menu|
           menu.with_show_button do |button|
             button.with_trailing_action_icon(icon: :"triangle-down")
             "Favorite character"
           end
 
           if nest_in_sub_menu
-            menu.with_sub_menu_item(label: "Sub-menu") do |sub_menu_item|
+            menu.with_sub_menu_item(label: "Sub-menu", list_arguments: list_arguments) do |sub_menu_item|
               contents.call(sub_menu_item)
             end
           else
@@ -524,6 +527,16 @@ module Primer
           sub_menu_anchor_align: sub_menu_anchor_align,
           sub_menu_anchor_side: sub_menu_anchor_side
         })
+      end
+
+      # A menu with dividers whose sub-menu has none. Opening the menu also opens
+      # the sub-menu, so the snapshot shows that it does not inherit the lines.
+      #
+      # @label With dividers
+      # @hidden
+      # @snapshot interactive
+      def with_dividers
+        render_with_template
       end
     end
   end

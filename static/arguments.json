@@ -94,7 +94,7 @@
         "name": "show_dividers",
         "type": "Boolean",
         "default": "`false`",
-        "description": "Display a divider above each item in the list when it does not follow a header or divider."
+        "description": "Display a dividing line above each item in the list when it does not follow a header or divider. These are more subtle than manually inserted dividers."
       },
       {
         "name": "select_variant",
@@ -369,7 +369,7 @@
         "name": "show_dividers",
         "type": "Boolean",
         "default": "`false`",
-        "description": "Display a divider above each item in the list when it does not follow a header or divider."
+        "description": "Display a dividing line above each item in the list when it does not follow a header or divider. These are more subtle than manually inserted dividers."
       },
       {
         "name": "select_variant",

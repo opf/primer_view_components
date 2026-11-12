@@ -144,6 +144,19 @@
         }
       },
       {
+        "preview_path": "primer/alpha/action_list/with_dividers",
+        "name": "with_dividers",
+        "snapshot": "true",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
         "preview_path": "primer/alpha/action_list/divider",
         "name": "divider",
         "snapshot": "false",
@@ -883,6 +896,19 @@
         "preview_path": "primer/alpha/action_menu/sub_menus",
         "name": "sub_menus",
         "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/alpha/action_menu/with_dividers",
+        "name": "with_dividers",
+        "snapshot": "interactive",
         "skip_rules": {
           "wont_fix": [
             "region"

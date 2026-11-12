@@ -216,7 +216,7 @@
         "name": "show_dividers",
         "type": "Boolean",
         "default": "`false`",
-        "description": "Display a divider above each item in the list when it does not follow a header or divider."
+        "description": "Display a dividing line above each item in the list when it does not follow a header or divider. These are more subtle than manually inserted dividers."
       },
       {
         "name": "select_variant",
@@ -493,6 +493,19 @@
         "preview_path": "primer/alpha/action_list/with_manual_dividers",
         "name": "with_manual_dividers",
         "snapshot": "false",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
+      },
+      {
+        "preview_path": "primer/alpha/action_list/with_dividers",
+        "name": "with_dividers",
+        "snapshot": "true",
         "skip_rules": {
           "wont_fix": [
             "region"
@@ -1697,6 +1710,19 @@
             "color-contrast"
           ]
         }
+      },
+      {
+        "preview_path": "primer/alpha/action_menu/with_dividers",
+        "name": "with_dividers",
+        "snapshot": "interactive",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
       }
     ],
     "subcomponents": [
@@ -2488,7 +2514,7 @@
             "name": "show_dividers",
             "type": "Boolean",
             "default": "`false`",
-            "description": "Display a divider above each item in the list when it does not follow a header or divider."
+            "description": "Display a dividing line above each item in the list when it does not follow a header or divider. These are more subtle than manually inserted dividers."
           },
           {
             "name": "select_variant",
