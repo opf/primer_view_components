@@ -917,6 +917,19 @@
             "color-contrast"
           ]
         }
+      },
+      {
+        "preview_path": "primer/alpha/action_menu/with_dividers_in_groups",
+        "name": "with_dividers_in_groups",
+        "snapshot": "interactive",
+        "skip_rules": {
+          "wont_fix": [
+            "region"
+          ],
+          "will_fix": [
+            "color-contrast"
+          ]
+        }
       }
     ]
   },

@@ -42,6 +42,7 @@ module Primer
           type: :group,
           callable: lambda { |**system_arguments|
             Primer::Alpha::ActionMenu::Group.new(
+              show_dividers: @show_dividers,
               **system_arguments,
               role: :group,
               select_variant: @select_variant

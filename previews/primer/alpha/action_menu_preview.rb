@@ -538,6 +538,30 @@ module Primer
       def with_dividers
         render_with_template
       end
+
+      # Groups are a nesting level of their menu, so their items show the same
+      # dividers. The group headings already separate the groups themselves.
+      #
+      # @label With dividers in groups
+      # @hidden
+      # @snapshot interactive
+      def with_dividers_in_groups
+        render(Primer::Alpha::ActionMenu.new(menu_id: "menu-with-dividers-in-groups", list_arguments: { show_dividers: true })) do |menu|
+          menu.with_show_button { "Favorite character" }
+          menu.with_group do |group|
+            group.with_heading(title: "Battlestar Galactica")
+            group.with_item(label: "William Adama")
+            group.with_item(label: "Laura Roslin")
+            group.with_item(label: "Kara Thrace")
+          end
+          menu.with_group do |group|
+            group.with_heading(title: "Star Trek")
+            group.with_item(label: "Jean-Luc Picard")
+            group.with_item(label: "Beverly Crusher")
+            group.with_item(label: "Data")
+          end
+        end
+      end
     end
   end
 end

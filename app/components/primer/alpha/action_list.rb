@@ -148,13 +148,14 @@ module Primer
         @system_arguments[:tag] = :ul
         @item_classes = item_classes
         @scheme = fetch_or_fallback(SCHEME_OPTIONS, scheme, DEFAULT_SCHEME)
+        @show_dividers = show_dividers
         @select_variant = select_variant
         @aria_selection_variant = aria_selection_variant
         @system_arguments[:classes] = class_names(
           SCHEME_MAPPINGS[@scheme],
           system_arguments[:classes],
           "ActionListWrap",
-          "ActionListWrap--divided" => show_dividers
+          "ActionListWrap--divided" => @show_dividers
         )
 
         @role = role || (allows_selection? ? MENU_ROLE : DEFAULT_ROLE)
