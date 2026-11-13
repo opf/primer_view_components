@@ -256,4 +256,36 @@ class Primer::Forms::ColorFieldInputTest < Minitest::Test
     assert_selector "primer-color-input > .ColorField-wrap > input[type=text][data-name=hex][data-targets~='primer-multi-input.fields']"
     assert_selector "input[type=color][disabled][value='#1A67A3'][aria-label='Pick color']"
   end
+
+  def test_element_references_its_validation_element
+    render_color_field
+
+    validation_id = page.find(".FormControl-inlineValidation", visible: :all)[:id]
+
+    assert_selector "primer-color-input[data-validation-id='#{validation_id}']"
+    assert_includes page.find("input[type=text]")[:"aria-describedby"].split, validation_id
+  end
+
+  def test_validation_parts_carry_color_input_targets
+    render_color_field
+
+    %w[validationMessageElement validationSuccessIcon validationErrorIcon].each do |name|
+      assert_selector ".FormControl-inlineValidation [data-target='primer-color-input.#{name}']", visible: :all
+    end
+  end
+
+  def test_no_validation_id_inside_multi
+    render_in_view_context do
+      primer_form_with(url: "/foo") do |f|
+        render_inline_form(f) do |form|
+          form.multi(name: :color, label: "Brand") do |multi|
+            multi.color_field(name: :hex)
+          end
+        end
+      end
+    end
+
+    assert_selector "primer-color-input"
+    refute_selector "primer-color-input[data-validation-id]"
+  end
 end

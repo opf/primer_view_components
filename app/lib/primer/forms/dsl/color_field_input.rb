@@ -83,6 +83,21 @@ module Primer
           true
         end
 
+        # The validation element sits outside `primer-color-input`, which
+        # finds these by `data-target` within it rather than as Catalyst
+        # targets.
+        def validation_message_arguments
+          super.merge(data: { target: "primer-color-input.validationMessageElement" })
+        end
+
+        def validation_success_icon_target
+          "primer-color-input.validationSuccessIcon"
+        end
+
+        def validation_error_icon_target
+          "primer-color-input.validationErrorIcon"
+        end
+
         private
 
         # Inputs inside `multi` have no label of their own.

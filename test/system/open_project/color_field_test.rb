@@ -418,4 +418,114 @@ class IntegrationOpenProjectColorFieldTest < System::TestCase
     assert_selector "input[type=color][aria-label='Pick color for Primary color']"
     assert_selector "input[type=color][aria-label='Pick color for Accent color']"
   end
+
+  def test_set_error_shows_message_and_marks_input_invalid
+    visit_color_field(:default)
+
+    call_color_input("setError('Hex code is invalid')")
+
+    assert_selector ".FormControl-inlineValidation:not(.FormControl-inlineValidation--success)", text: "Hex code is invalid"
+    assert_selector ".FormControl-inlineValidation .octicon-alert-fill"
+    refute_selector ".FormControl-inlineValidation .octicon-check-circle-fill"
+    assert_selector "input[type=text][invalid=true][aria-invalid=true]"
+
+    validation_id = find(".FormControl-inlineValidation")[:id]
+    assert_includes text_input[:"aria-describedby"].split, validation_id
+  end
+
+  def test_set_success_shows_success_styling
+    visit_color_field(:default)
+
+    call_color_input("setSuccess('Looks good')")
+
+    assert_selector ".FormControl-inlineValidation.FormControl-inlineValidation--success", text: "Looks good"
+    assert_selector ".FormControl-inlineValidation .octicon-check-circle-fill"
+    refute_selector ".FormControl-inlineValidation .octicon-alert-fill"
+    assert_selector "input[type=text][invalid=false]"
+    refute_selector "input[type=text][aria-invalid]"
+  end
+
+  def test_clear_error_hides_and_resets
+    visit_color_field(:default)
+
+    call_color_input("setError('Hex code is invalid')")
+    assert_selector ".FormControl-inlineValidation", text: "Hex code is invalid"
+
+    call_color_input("clearError()")
+
+    assert_selector ".FormControl-inlineValidation", visible: :hidden, text: ""
+    refute_selector "input[type=text][invalid]"
+    refute_selector "input[type=text][aria-invalid]"
+
+    call_color_input("clearError()")
+
+    assert_selector ".FormControl-inlineValidation", visible: :hidden, text: ""
+    refute_selector "input[type=text][invalid]"
+  end
+
+  def test_switching_kinds_keeps_one_icon
+    visit_color_field(:default)
+
+    call_color_input("setError('One')")
+    call_color_input("setSuccess('Two')")
+    call_color_input("setError('Three')")
+
+    assert_selector ".FormControl-inlineValidation:not(.FormControl-inlineValidation--success)", text: "Three"
+    assert_selector ".FormControl-inlineValidation--visual", count: 1
+    assert_selector ".FormControl-inlineValidation .octicon-alert-fill"
+  end
+
+  def test_success_over_server_error
+    visit_color_field(:invalid)
+    assert_selector "input[type=text][invalid=true][aria-invalid=true]"
+
+    call_color_input("setSuccess('Fine')")
+
+    refute_selector ".FormControl-inlineValidation .octicon-alert-fill"
+    assert_selector "input[type=text][invalid=false]"
+    refute_selector "input[type=text][aria-invalid]"
+  end
+
+  def test_clear_error_over_server_error
+    visit_color_field(:invalid)
+
+    call_color_input("clearError()")
+
+    assert_selector ".FormControl-inlineValidation", visible: :hidden
+    refute_selector "input[type=text][invalid]"
+    refute_selector "input[type=text][aria-invalid]"
+  end
+
+  def test_api_is_inert_inside_multi
+    visit_color_field(:in_multi)
+
+    before = validation_state
+    call_color_input("setError('x')")
+
+    assert_equal before, validation_state
+    refute_selector "input[type=text][aria-invalid]"
+  end
+
+  def test_client_validation_preview_buttons
+    visit_color_field(:client_validation)
+
+    click_button "Set error"
+    assert_selector ".FormControl-inlineValidation", text: "Hex code is invalid"
+
+    click_button "Set success"
+    assert_selector ".FormControl-inlineValidation--success", text: "Contrast checked"
+
+    click_button "Clear"
+    assert_selector ".FormControl-inlineValidation", visible: :hidden, text: ""
+  end
+
+  def call_color_input(js)
+    page.evaluate_script("document.querySelector('primer-color-input').#{js}")
+  end
+
+  def validation_state
+    page.evaluate_script(<<~JS)
+      Array.from(document.querySelectorAll('.FormControl-inlineValidation'), (element) => [element.hidden, element.textContent.trim()])
+    JS
+  end
 end
