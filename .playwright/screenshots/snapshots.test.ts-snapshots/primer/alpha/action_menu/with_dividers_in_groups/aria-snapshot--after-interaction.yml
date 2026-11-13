@@ -1,0 +1,12 @@
+- button "Favorite character"
+- menu "Favorite character":
+  - text: Battlestar Galactica
+  - group "Battlestar Galactica":
+    - menuitem "William Adama"
+    - menuitem "Laura Roslin"
+    - menuitem "Kara Thrace"
+  - text: Star Trek
+  - group "Star Trek":
+    - menuitem "Jean-Luc Picard"
+    - menuitem "Beverly Crusher"
+    - menuitem "Data"

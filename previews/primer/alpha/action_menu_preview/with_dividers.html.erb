@@ -1,0 +1,36 @@
+<%= render(Primer::Alpha::ActionMenu.new(menu_id: "menu-with-dividers", list_arguments: { show_dividers: true }, data: { interaction_subject: "menu-with-dividers" })) do |menu| %>
+  <% menu.with_show_button { "Edit" } %>
+  <% menu.with_item(label: "Cut") do |item| %>
+    <% item.with_leading_visual_icon(icon: :"x-circle") %>
+  <% end %>
+  <% menu.with_item(label: "Copy") do |item| %>
+    <% item.with_leading_visual_icon(icon: :copy) %>
+    <% item.with_trailing_visual_label { "New" } %>
+  <% end %>
+  <% menu.with_sub_menu_item(label: "Paste special") do |sub_menu| %>
+    <% sub_menu.with_leading_visual_icon(icon: :paste) %>
+    <% sub_menu.with_item(label: "Paste plain text") %>
+    <% sub_menu.with_item(label: "Paste formulas") %>
+    <% sub_menu.with_item(label: "Paste with formatting") %>
+  <% end %>
+  <% menu.with_item(label: "Delete", scheme: :danger) %>
+<% end %>
+
+<script>
+  (() => {
+    const subject = document.querySelector("[data-interaction-subject='menu-with-dividers']")
+    const subMenuItem = subject.querySelector(".ActionListContent[popovertarget]")
+    const subMenu = document.getElementById(subMenuItem.getAttribute("popovertarget"))
+
+    // Open the sub-menu as soon as the menu opens
+    subject.addEventListener("toggle", event => {
+      if (event.newState !== "open") return
+
+      if (event.target === subMenu) {
+        subject.setAttribute("data-ready", "true")
+      } else if (event.target.contains(subMenu)) {
+        subMenu.showPopover()
+      }
+    }, true)
+  })()
+</script>

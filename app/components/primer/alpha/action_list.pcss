@@ -34,58 +34,84 @@ nav-list {
 
 /* list dividers */
 
-.ActionListWrap--divided {
-  & .ActionListItem-label::before {
+/*
+ * Only the list's own items and NavList sub-items get lines, not the items of nested menus.
+ * All items rules have the same specificity, so later rules win.
+ * "X ~ .ActionListItem:not([hidden], X ~ .ActionListItem:not([hidden]) ~ *)" is the first visible item after X.
+ */
+.ActionListWrap--divided,
+.ActionListWrap--divided > .ActionListItem > .ActionList--subGroup {
+  & > :where(.ActionListItem) {
+    --actionListItem-dividerVisibility: hidden;
+  }
+
+  /* only items with a visible item before them get a line */
+  & > :where(.ActionListItem:not([hidden]) ~ .ActionListItem) {
+    --actionListItem-dividerVisibility: visible;
+  }
+
+  /* a manually added divider already separates the items */
+  & > :where(.ActionList-sectionDivider:not([hidden]) + .ActionListItem) {
+    --actionListItem-dividerVisibility: hidden;
+  }
+
+  /* hide the lines around highlighted items */
+  @media (hover: hover) {
+    & > :where(
+      .ActionListItem:not(.ActionListItem--hasSubItem, .ActionListItem--disabled, [aria-disabled='true']):hover,
+      .ActionListItem:not(.ActionListItem--hasSubItem, .ActionListItem--disabled, [aria-disabled='true']):hover ~ .ActionListItem:not([hidden], .ActionListItem:not(.ActionListItem--hasSubItem, .ActionListItem--disabled, [aria-disabled='true']):hover ~ .ActionListItem:not([hidden]) ~ *),
+      .ActionListItem--hasSubItem:has(> .ActionListContent:not([aria-disabled='true']):hover),
+      .ActionListItem--hasSubItem:has(> .ActionListContent:not([aria-disabled='true']):hover) ~ .ActionListItem:not([hidden], .ActionListItem--hasSubItem:has(> .ActionListContent:not([aria-disabled='true']):hover) ~ .ActionListItem:not([hidden]) ~ *)
+    ) {
+      --actionListItem-dividerVisibility: hidden;
+    }
+  }
+
+  & > :where(
+    .ActionListItem:not(.ActionListItem--hasSubItem, .ActionListItem--disabled, [aria-disabled='true']):active,
+    .ActionListItem:not(.ActionListItem--hasSubItem, .ActionListItem--disabled, [aria-disabled='true']):active ~ .ActionListItem:not([hidden], .ActionListItem:not(.ActionListItem--hasSubItem, .ActionListItem--disabled, [aria-disabled='true']):active ~ .ActionListItem:not([hidden]) ~ *),
+    .ActionListItem--hasSubItem:has(> .ActionListContent:not([aria-disabled='true']):active),
+    .ActionListItem--hasSubItem:has(> .ActionListContent:not([aria-disabled='true']):active) ~ .ActionListItem:not([hidden], .ActionListItem--hasSubItem:has(> .ActionListContent:not([aria-disabled='true']):active) ~ .ActionListItem:not([hidden]) ~ *)
+  ) {
+    --actionListItem-dividerVisibility: hidden;
+  }
+
+  /* Autocomplete [aria-selected] items */
+  & > :where(
+    .ActionListItem[aria-selected='true'],
+    .ActionListItem[aria-selected='true'] ~ .ActionListItem:not([hidden], .ActionListItem[aria-selected='true'] ~ .ActionListItem:not([hidden]) ~ *)
+  ) {
+    --actionListItem-dividerVisibility: hidden;
+  }
+
+  & > :where(
+    .ActionListItem--navActive:not(.ActionListItem--danger),
+    .ActionListItem--navActive:not(.ActionListItem--danger) ~ .ActionListItem:not([hidden], .ActionListItem--navActive:not(.ActionListItem--danger) ~ .ActionListItem:not([hidden]) ~ *)
+  ) {
+    --actionListItem-dividerVisibility: hidden;
+  }
+
+  /* collapsed parent of the current item */
+  & > :where(
+    .ActionListItem:has(> .ActionListContent--hasActiveSubItem[aria-expanded='false']),
+    .ActionListItem:has(> .ActionListContent--hasActiveSubItem[aria-expanded='false']) ~ .ActionListItem:not([hidden], .ActionListItem:has(> .ActionListContent--hasActiveSubItem[aria-expanded='false']) ~ .ActionListItem:not([hidden]) ~ *)
+  ) {
+    --actionListItem-dividerVisibility: hidden;
+  }
+
+  /* spans the label to the trailing action, but not the leading visuals */
+  & > .ActionListItem > .ActionListContent::before {
     position: absolute;
-    /* stylelint-disable-next-line primer/spacing */
-    top: calc(-1 * var(--actionListContent-paddingBlock));
-    display: block;
-    width: 100%;
-    height: 1px;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: var(--borderWidth-thin);
+    grid-column: label-start / trailingAction-end;
+    visibility: var(--actionListItem-dividerVisibility);
     content: '';
     /* stylelint-disable-next-line primer/colors */
     background: var(--borderColor-muted);
   }
-
-  /* if descriptionWrap--inline exists, move pseudo divider to wrapper */
-  & .ActionListItem-descriptionWrap--inline {
-    &::before {
-      position: absolute;
-      /* stylelint-disable-next-line primer/spacing */
-      top: calc(-1 * var(--actionListContent-paddingBlock));
-      display: block;
-      width: 100%;
-      height: var(--borderWidth-thin);
-      content: '';
-      /* stylelint-disable-next-line primer/colors */
-      background: var(--borderColor-muted);
-    }
-
-    /* unset the default label pseudo */
-    & .ActionListItem-label::before {
-      content: unset;
-    }
-  }
-
-  /* hide divider if item is active */
-  & .ActionListItem--navActive {
-    & .ActionListItem-label::before,
-    & + .ActionListItem .ActionListItem-label::before {
-      visibility: hidden;
-    }
-  }
-}
-
-/* hide if item is first of type with label::before, or is the first item after a sectionDivider */
-.ActionListItem:first-of-type .ActionListItem-label::before,
-.ActionList-sectionDivider + .ActionListItem .ActionListItem-label::before {
-  visibility: hidden;
-}
-
-/* hide if item is first of type with label::before, or is the first item after a sectionDivider */
-.ActionListItem:first-of-type .ActionListItem-descriptionWrap--inline::before,
-.ActionList-sectionDivider + .ActionListItem .ActionListItem-descriptionWrap--inline::before {
-  visibility: hidden;
 }
 
 /* ActionList::Item */
@@ -101,21 +127,6 @@ nav-list {
   &:hover,
   &:active {
     cursor: pointer;
-  }
-
-  /* hide dividers  */
-  @media (hover: hover) {
-    &:hover {
-      & .ActionListItem-label::before,
-      & + .ActionListItem .ActionListItem-label::before {
-        visibility: hidden;
-      }
-
-      & .ActionListItem-descriptionWrap--inline::before,
-      & + .ActionListItem .ActionListItem-descriptionWrap--inline::before {
-        visibility: hidden;
-      }
-    }
   }
 
   /* Make sure that the first visible item isn't a divider */
@@ -168,11 +179,6 @@ nav-list {
         outline-offset: calc(-1 * var(--borderWidth-thin));
         box-shadow: var(--boxShadow-thin) var(--control-transparent-borderColor-active);
       }
-
-      & .ActionListItem-label::before,
-      & + .ActionListItem .ActionListItem-label::before {
-        visibility: hidden;
-      }
     }
   }
 
@@ -186,11 +192,6 @@ nav-list {
       &:hover {
         background-color: var(--control-transparent-bgColor-hover);
       }
-    }
-
-    &::before,
-    & + .ActionListItem::before {
-      visibility: hidden;
     }
 
     /* blue accent line */
@@ -219,11 +220,6 @@ nav-list {
         &:hover {
           background-color: var(--control-transparent-bgColor-hover);
         }
-      }
-
-      &::before,
-      & + .ActionListItem::before {
-        visibility: hidden;
       }
 
       /* blue accent line  */
@@ -438,11 +434,6 @@ nav-list {
 
       & .ActionListItem-label {
         font-weight: var(--base-text-weight-semibold);
-      }
-
-      &::before,
-      & + .ActionListItem::before {
-        visibility: hidden;
       }
 
       /* blue accent line */

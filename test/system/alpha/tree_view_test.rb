@@ -835,11 +835,11 @@ module Alpha
     def test_space_checks_leaf_node
       visit_preview(:playground, select_variant: :multiple)
 
-      expand_at_path("primer")
-      expand_at_path("primer", "alpha")
+      keyboard.type(:tab, :right, :down, :right)
+      assert_path "primer", "alpha", "action_bar.pcss"
       refute_path_checked "primer", "alpha", "action_bar.pcss"
 
-      keyboard.type(:tab, :down, :down, :down, :space)
+      keyboard.type(:down, :down, :space)
       assert_path_checked "primer", "alpha", "action_bar.pcss"
     end
 
@@ -855,11 +855,11 @@ module Alpha
     def test_enter_checks_leaf_node
       visit_preview(:playground, select_variant: :multiple)
 
-      expand_at_path("primer")
-      expand_at_path("primer", "alpha")
+      keyboard.type(:tab, :right, :down, :right)
+      assert_path "primer", "alpha", "action_bar.pcss"
       refute_path_checked "primer", "alpha", "action_bar.pcss"
 
-      keyboard.type(:tab, :down, :down, :down, :enter)
+      keyboard.type(:down, :down, :enter)
       assert_path_checked "primer", "alpha", "action_bar.pcss"
     end
 

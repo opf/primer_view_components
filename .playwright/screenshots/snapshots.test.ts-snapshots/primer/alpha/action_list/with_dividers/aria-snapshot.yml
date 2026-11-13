@@ -1,0 +1,19 @@
+- list "List with dividers":
+  - listitem:
+    - button "First visible item"
+  - listitem:
+    - button "Leading visual"
+  - listitem:
+    - button "Trailing visual New"
+  - listitem:
+    - button "Inline description Description"
+  - listitem:
+    - button "Block description Description"
+  - listitem:
+    - button "Disabled item" [disabled]
+  - listitem:
+    - button "After a hidden item"
+  - listitem:
+    - button "After a divider"
+  - listitem:
+    - button "Last item"
