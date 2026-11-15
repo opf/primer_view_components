@@ -620,6 +620,18 @@ module Alpha
       end
     end
 
+    def test_arrow_right_does_not_open_disabled_sub_menu
+      visit_preview(:sub_menus, disable_sub_menu: true)
+
+      open_menu_via_keyboard
+      arrow_down_to("Paste special")
+      keyboard.type(:right)
+      wait_for_animation_frames
+
+      refute_selector "[role=menuitem]", text: "Paste plain text"
+      assert_selector "[role=menuitem][aria-disabled=true]", text: "Paste special", focused: true
+    end
+
     def test_action_js_disabled_keydown_space
       visit_preview(:with_actions, disable_items: true)
 
