@@ -534,7 +534,7 @@ module Primer
                )) do |component|
           component.with_heading(title: "Action List")
           component.with_item(label: "Item one", href: "/", active: true)
-          component.with_item(label: "Item two", href: "/") 
+          component.with_item(label: "Item two", href: "/")
           component.with_item(label: "Item three", href: "/")
         end
       end

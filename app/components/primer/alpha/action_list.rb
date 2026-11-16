@@ -230,7 +230,7 @@ module Primer
       end
 
       def multi_select?
-        select_variant == :multiple || select_variant == :multiple_checkbox
+        [:multiple, :multiple_checkbox].include?(select_variant)
       end
 
       def allows_selection?
@@ -242,7 +242,7 @@ module Primer
       end
 
       def acts_as_menu?
-        @system_arguments[:role] == :menu || @system_arguments[:role] == :group
+        [:menu, :group].include?(@system_arguments[:role])
       end
 
       def required_form_arguments_given?
