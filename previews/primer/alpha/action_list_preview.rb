@@ -125,6 +125,51 @@ module Primer
         end
       end
 
+      # Lines start at the label and run through trailing visuals. The first item and
+      # the item after a manual divider get none. Hidden items are not supported with
+      # dividers. The hidden items here pin what the lines do around them: additional dividers.
+      #
+      # @label With dividers
+      # @hidden
+      # @snapshot
+      def with_dividers
+        render(Primer::Alpha::ActionList.new(aria: { label: "List with dividers" }, show_dividers: true)) do |component|
+          component.with_item(label: "Hidden item", hidden: true)
+          component.with_item(label: "First visible item")
+          component.with_item(label: "Leading visual") do |item|
+            item.with_leading_visual_icon(icon: :gear)
+          end
+          component.with_item(label: "Trailing visual") do |item|
+            item.with_trailing_visual_label(scheme: :accent) { "New" }
+          end
+          component.with_item(label: "Inline description", description_scheme: :inline) do |item|
+            item.with_leading_visual_icon(icon: :star)
+            item.with_description { "Description" }
+            item.with_trailing_visual_icon(icon: :check)
+          end
+          component.with_item(label: "Block description", description_scheme: :block) do |item|
+            item.with_leading_visual_icon(icon: :star)
+            item.with_description { "Description" }
+            item.with_trailing_visual_icon(icon: :check)
+          end
+          component.with_item(label: "Disabled item", disabled: true) do |item|
+            item.with_leading_visual_icon(icon: :lock)
+          end
+          component.with_item(label: "Hidden item", hidden: true)
+          component.with_item(label: "After a hidden item")
+          component.with_item(label: "Form item", href: "/", form_arguments: { method: :post, name: "foo" })
+          component.with_divider
+          component.with_item(label: "After a divider")
+          component.with_divider
+          component.with_item(label: "Hidden item – breaks the line rules", hidden: true)
+          component.with_item(label: "After a divider and a hidden item")
+          component.with_item(label: "Hidden item", hidden: true)
+          component.with_divider
+          component.with_item(label: "After a collapsed divider")
+          component.with_item(label: "Last item")
+        end
+      end
+
       # @label Divider
       #
       # @param scheme [Symbol] select [subtle, filled]
