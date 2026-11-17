@@ -226,7 +226,8 @@ module Primer
             @system_arguments[:classes],
             SCHEME_MAPPINGS[@scheme],
             "ActionListItem",
-            "ActionListItem--disabled" => @disabled
+            "ActionListItem--disabled" => @disabled,
+            "ActionListItem--divided" => @list&.show_dividers
           )
 
           @system_arguments[:data] = merge_data(

@@ -164,6 +164,26 @@ module Primer
         ]
       end
 
+      def test_show_dividers_marks_items
+        render_inline(Primer::Alpha::ActionList.new(aria: { label: "List" }, show_dividers: true)) do |component|
+          component.with_item(label: "Item 1")
+          component.with_item(label: "Item 2")
+        end
+
+        assert_selector("ul.ActionListWrap > li.ActionListItem--divided", count: 2)
+      end
+
+      def test_action_menu_ignores_show_dividers
+        render_inline(Primer::Alpha::ActionMenu.new(list_arguments: { show_dividers: true })) do |menu|
+          menu.with_show_button { "Menu" }
+          menu.with_item(label: "Item 1")
+          menu.with_item(label: "Item 2")
+        end
+
+        assert_selector(".ActionListItem", count: 2)
+        refute_selector(".ActionListItem--divided")
+      end
+
       def test_allows_custom_item_tag
         render_inline(Primer::Alpha::ActionList.new(aria: { label: "List" })) do |component|
           component.with_item(label: "Item 1", content_arguments: { tag: :"clipboard-copy" })

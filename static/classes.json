@@ -35,6 +35,9 @@
   "ActionListItem": [
     "Primer::Alpha::ActionList"
   ],
+  "ActionListItem--divided": [
+    "Primer::Alpha::ActionList"
+  ],
   "ActionListItem--subItem": [
     "Primer::Alpha::ActionList"
   ],
@@ -81,9 +84,6 @@
     "Primer::Alpha::ActionList"
   ],
   "ActionListWrap": [
-    "Primer::Alpha::ActionList"
-  ],
-  "ActionListWrap--divided": [
     "Primer::Alpha::ActionList"
   ],
   "ActionListWrap--inset": [

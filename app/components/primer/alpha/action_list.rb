@@ -120,13 +120,15 @@ module Primer
         }
       }
 
-      attr_reader :id, :select_variant, :role, :aria_selection_variant
+      attr_reader :id, :select_variant, :role, :aria_selection_variant, :show_dividers
 
       # @param id [String] HTML ID value.
       # @param role [Boolean] ARIA role describing the function of the list. listbox and menu are a common values.
       # @param item_classes [String] Additional CSS classes to attach to items.
       # @param scheme [Symbol] <%= one_of(Primer::Alpha::ActionList::SCHEME_OPTIONS) %> `inset` children are offset (vertically and horizontally) from list edges. `full` (default) children are flush (vertically and horizontally) with list edges.
-      # @param show_dividers [Boolean] Display a divider above each item in the list when it does not follow a header or divider.
+      # @param show_dividers [Boolean] Display a dividing line above each item in the list when it does not follow a header or divider. These are more subtle than manually inserted dividers.
+      #   Only supported by `ActionList` itself so far. Menus have too many special cases.
+      #   Hidden items are not supported, whether they are rendered with `hidden: true` or hidden later, eg. by filtering: the lines are placed with CSS sibling selectors. To leave items out, don't render them, or remove them from the DOM rather than setting `hidden`.
       # @param select_variant [Symbol] How items may be selected in the list. <%= one_of(Primer::Alpha::ActionList::SELECT_VARIANT_OPTIONS) %>
       # @param aria_selection_variant [Symbol] Specifies which aria selection to use.  <%= one_of(Primer::Alpha::ActionList::ARIA_SELECTION_VARIANT_OPTIONS) %>
       # @param form_arguments [Hash] Allows an `ActionList` to act as a select list in multi- and single-select modes. Pass the `builder:` and `name:` options to this hash. `builder:` should be an instance of `ActionView::Helpers::FormBuilder`, which are created by the standard Rails `#form_with` and `#form_for` helpers. The `name:` option is the desired name of the field that will be included in the params sent to the server on form submission. *NOTE*: Consider using an <%= link_to_component(Primer::Alpha::ActionMenu) %> instead of using this feature directly.
@@ -148,14 +150,14 @@ module Primer
         @system_arguments[:tag] = :ul
         @item_classes = item_classes
         @scheme = fetch_or_fallback(SCHEME_OPTIONS, scheme, DEFAULT_SCHEME)
-        @show_dividers = show_dividers
+        # Subclasses render items in shapes the divider CSS does not handle, so they ignore it
+        @show_dividers = show_dividers && instance_of?(Primer::Alpha::ActionList)
         @select_variant = select_variant
         @aria_selection_variant = aria_selection_variant
         @system_arguments[:classes] = class_names(
           SCHEME_MAPPINGS[@scheme],
           system_arguments[:classes],
-          "ActionListWrap",
-          "ActionListWrap--divided" => @show_dividers
+          "ActionListWrap"
         )
 
         @role = role || (allows_selection? ? MENU_ROLE : DEFAULT_ROLE)
@@ -230,7 +232,7 @@ module Primer
       end
 
       def multi_select?
-        select_variant == :multiple || select_variant == :multiple_checkbox
+        [:multiple, :multiple_checkbox].include?(select_variant)
       end
 
       def allows_selection?
@@ -242,7 +244,7 @@ module Primer
       end
 
       def acts_as_menu?
-        @system_arguments[:role] == :menu || @system_arguments[:role] == :group
+        [:menu, :group].include?(@system_arguments[:role])
       end
 
       def required_form_arguments_given?

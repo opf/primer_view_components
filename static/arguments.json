@@ -94,7 +94,7 @@
         "name": "show_dividers",
         "type": "Boolean",
         "default": "`false`",
-        "description": "Display a divider above each item in the list when it does not follow a header or divider."
+        "description": "Display a dividing line above each item in the list when it does not follow a header or divider. These are more subtle than manually inserted dividers. Only supported by `ActionList` itself so far. Menus have too many special cases. Hidden items are not supported, whether they are rendered with `hidden: true` or hidden later, eg. by filtering: the lines are placed with CSS sibling selectors. To leave items out, don't render them, or remove them from the DOM rather than setting `hidden`."
       },
       {
         "name": "select_variant",
@@ -369,7 +369,7 @@
         "name": "show_dividers",
         "type": "Boolean",
         "default": "`false`",
-        "description": "Display a divider above each item in the list when it does not follow a header or divider."
+        "description": "Display a dividing line above each item in the list when it does not follow a header or divider. These are more subtle than manually inserted dividers. Only supported by `ActionList` itself so far. Menus have too many special cases. Hidden items are not supported, whether they are rendered with `hidden: true` or hidden later, eg. by filtering: the lines are placed with CSS sibling selectors. To leave items out, don't render them, or remove them from the DOM rather than setting `hidden`."
       },
       {
         "name": "select_variant",

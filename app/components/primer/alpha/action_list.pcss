@@ -1,4 +1,3 @@
-/* stylelint-disable selector-max-compound-selectors */
 /* stylelint-disable selector-max-specificity */
 /* stylelint-disable max-nesting-depth */
 :root {
@@ -32,60 +31,58 @@ nav-list {
   padding: var(--base-size-8);
 }
 
-/* list dividers */
+/* List dividers. Behaviour is pinned by test/playwright/action_list_dividers.test.ts. */
 
-.ActionListWrap--divided {
-  & .ActionListItem-label::before {
+/* Hides the line above $item and the line above the item after it. */
+@define-mixin dividerHiddenAround $item {
+  &:where($(item), $(item) + .ActionListItem--divided) {
+    --actionListItem-dividerVisibility: hidden;
+  }
+}
+
+/* Only `Primer::Alpha::ActionList` itself supports dividers, see `show_dividers` there. */
+.ActionListItem--divided {
+  --actionListItem-dividerVisibility: hidden;
+
+  /* Only items with a visible item before them get a line */
+  &:where(.ActionListItem--divided:not([hidden]) ~ .ActionListItem--divided) {
+    --actionListItem-dividerVisibility: visible;
+  }
+
+  /*
+   * A manually added divider already separates the items. A divider that follows a hidden item
+   * is collapsed (see `&[hidden] + .ActionList-sectionDivider` below) and separates nothing.
+   */
+  &:where(.ActionList-sectionDivider:not([hidden], .ActionListItem--divided[hidden] + .ActionList-sectionDivider) + .ActionListItem--divided) {
+    --actionListItem-dividerVisibility: hidden;
+  }
+
+  @media (hover: hover) {
+    @mixin dividerHiddenAround .ActionListItem:hover;
+  }
+
+  @mixin dividerHiddenAround .ActionListItem:active;
+  @mixin dividerHiddenAround .ActionListItem:has(:focus-visible);
+
+  & > .ActionListContent::before,
+  /* Items with non-GET form_arguments wrap their content in a form */
+  /* stylelint-disable-next-line selector-max-type */
+  & > form > .ActionListContent::before {
     position: absolute;
-    /* stylelint-disable-next-line primer/spacing */
-    top: calc(-1 * var(--actionListContent-paddingBlock));
-    display: block;
-    width: 100%;
-    height: 1px;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: var(--borderWidth-thin);
+    /*
+     * The line starts at the label, so it does not divide leading visuals. A `trailing_action`
+     * button sits outside this grid, so the line stops short of it.
+     */
+    grid-column: label-start / trailingAction-end;
+    visibility: var(--actionListItem-dividerVisibility);
     content: '';
     /* stylelint-disable-next-line primer/colors */
     background: var(--borderColor-muted);
   }
-
-  /* if descriptionWrap--inline exists, move pseudo divider to wrapper */
-  & .ActionListItem-descriptionWrap--inline {
-    &::before {
-      position: absolute;
-      /* stylelint-disable-next-line primer/spacing */
-      top: calc(-1 * var(--actionListContent-paddingBlock));
-      display: block;
-      width: 100%;
-      height: var(--borderWidth-thin);
-      content: '';
-      /* stylelint-disable-next-line primer/colors */
-      background: var(--borderColor-muted);
-    }
-
-    /* unset the default label pseudo */
-    & .ActionListItem-label::before {
-      content: unset;
-    }
-  }
-
-  /* hide divider if item is active */
-  & .ActionListItem--navActive {
-    & .ActionListItem-label::before,
-    & + .ActionListItem .ActionListItem-label::before {
-      visibility: hidden;
-    }
-  }
-}
-
-/* hide if item is first of type with label::before, or is the first item after a sectionDivider */
-.ActionListItem:first-of-type .ActionListItem-label::before,
-.ActionList-sectionDivider + .ActionListItem .ActionListItem-label::before {
-  visibility: hidden;
-}
-
-/* hide if item is first of type with label::before, or is the first item after a sectionDivider */
-.ActionListItem:first-of-type .ActionListItem-descriptionWrap--inline::before,
-.ActionList-sectionDivider + .ActionListItem .ActionListItem-descriptionWrap--inline::before {
-  visibility: hidden;
 }
 
 /* ActionList::Item */
@@ -101,21 +98,6 @@ nav-list {
   &:hover,
   &:active {
     cursor: pointer;
-  }
-
-  /* hide dividers  */
-  @media (hover: hover) {
-    &:hover {
-      & .ActionListItem-label::before,
-      & + .ActionListItem .ActionListItem-label::before {
-        visibility: hidden;
-      }
-
-      & .ActionListItem-descriptionWrap--inline::before,
-      & + .ActionListItem .ActionListItem-descriptionWrap--inline::before {
-        visibility: hidden;
-      }
-    }
   }
 
   /* Make sure that the first visible item isn't a divider */
@@ -168,11 +150,6 @@ nav-list {
         outline-offset: calc(-1 * var(--borderWidth-thin));
         box-shadow: var(--boxShadow-thin) var(--control-transparent-borderColor-active);
       }
-
-      & .ActionListItem-label::before,
-      & + .ActionListItem .ActionListItem-label::before {
-        visibility: hidden;
-      }
     }
   }
 
@@ -186,11 +163,6 @@ nav-list {
       &:hover {
         background-color: var(--control-transparent-bgColor-hover);
       }
-    }
-
-    &::before,
-    & + .ActionListItem::before {
-      visibility: hidden;
     }
 
     /* blue accent line */
@@ -219,11 +191,6 @@ nav-list {
         &:hover {
           background-color: var(--control-transparent-bgColor-hover);
         }
-      }
-
-      &::before,
-      & + .ActionListItem::before {
-        visibility: hidden;
       }
 
       /* blue accent line  */
@@ -438,11 +405,6 @@ nav-list {
 
       & .ActionListItem-label {
         font-weight: var(--base-text-weight-semibold);
-      }
-
-      &::before,
-      & + .ActionListItem::before {
-        visibility: hidden;
       }
 
       /* blue accent line */
