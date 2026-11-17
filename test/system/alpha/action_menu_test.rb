@@ -488,6 +488,32 @@ module Alpha
       assert_primary_menu_stays_open
     end
 
+    def test_horizontal_arrows_on_items_without_sub_menu_keep_focus
+      visit_preview(:sub_menus)
+
+      open_menu_via_keyboard
+      arrow_down_to("Copy")
+
+      keyboard.type(:right)
+      assert_selector "[role=menuitem]", text: "Copy", focused: true
+
+      keyboard.type(:left)
+      assert_selector "[role=menuitem]", text: "Copy", focused: true
+      assert_primary_menu_stays_open
+    end
+
+    def test_page_down_and_page_up_move_to_last_and_first_item
+      visit_preview(:sub_menus)
+
+      open_menu_via_keyboard
+
+      keyboard.type(:page_down)
+      assert_selector "[role=menuitem]", text: "Paste special", focused: true
+
+      keyboard.type(:page_up)
+      assert_selector "[role=menuitem]", text: "Cut", focused: true
+    end
+
     def test_arrow_left_on_top_level_deferred_item_keeps_the_menu_open
       visit_preview(:with_deferred_content)
 
@@ -592,6 +618,18 @@ module Alpha
         # "click" on first item
         activate_via_enter
       end
+    end
+
+    def test_arrow_right_does_not_open_disabled_sub_menu
+      visit_preview(:sub_menus, disable_sub_menu: true)
+
+      open_menu_via_keyboard
+      arrow_down_to("Paste special")
+      keyboard.type(:right)
+      wait_for_animation_frames
+
+      refute_selector "[role=menuitem]", text: "Paste plain text"
+      assert_selector "[role=menuitem][aria-disabled=true]", text: "Paste special", focused: true
     end
 
     def test_action_js_disabled_keydown_space

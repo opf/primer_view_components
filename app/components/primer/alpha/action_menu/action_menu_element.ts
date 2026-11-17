@@ -415,6 +415,8 @@ export class ActionMenuElement extends HTMLElement {
   #handleItemKeyboardEvent(event: KeyboardEvent, item: HTMLElement) {
     switch (event.key) {
       case 'ArrowRight': {
+        if (item.getAttribute('aria-disabled')) break
+
         const subMenu = this.#subMenuForItem(item)
         subMenu?.showPopover()
         break

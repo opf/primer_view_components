@@ -65,7 +65,7 @@ export class ActionMenuFocusZoneStack {
 
   #setupFocusZone(containerEl: AnchoredPositionElement, trapFocus: boolean): AbortController {
     const focusZoneAbortController = focusZone(containerEl, {
-      bindKeys: FocusKeys.ArrowVertical | FocusKeys.ArrowHorizontal | FocusKeys.HomeAndEnd | FocusKeys.Backspace,
+      bindKeys: FocusKeys.ArrowVertical | FocusKeys.HomeAndEnd | FocusKeys.PageUpDown | FocusKeys.Backspace,
       focusOutBehavior: 'wrap',
 
       focusableElementFilter: (element: HTMLElement): boolean => {

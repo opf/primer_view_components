@@ -4,7 +4,7 @@
     <% menu.with_show_button { "Edit" } %>
     <% menu.with_item(label: "Cut") %>
     <% menu.with_item(label: "Copy") %>
-    <% menu.with_sub_menu_item(label: "Paste special", anchor_align: sub_menu_anchor_align, anchor_side: sub_menu_anchor_side, anchor_when_narrow: anchor_when_narrow) do |sub_menu| %>
+    <% menu.with_sub_menu_item(label: "Paste special", disabled: disable_sub_menu, anchor_align: sub_menu_anchor_align, anchor_side: sub_menu_anchor_side, anchor_when_narrow: anchor_when_narrow) do |sub_menu| %>
       <% sub_menu.with_leading_visual_icon(icon: :"sparkle-fill") %>
       <% sub_menu.with_item(label: "Paste plain text") %>
       <% sub_menu.with_item(label: "Paste formulas") %>
