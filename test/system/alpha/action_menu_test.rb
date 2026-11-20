@@ -381,6 +381,9 @@ module Alpha
       end
     end
 
+    # Places an element in the bottom-right corner, i.e. clear of the menu and its invoker.
+    CSS_POSITION_OUTSIDE = "position: fixed; bottom: 8px; right: 8px"
+
     ########## TESTS ############
 
     def test_dynamic_labels_for_single_select_variant
@@ -3065,6 +3068,57 @@ module Alpha
       # clicking the invoker a second time should close the menu
       click_on_invoker_button(expect_to_open: false)
       refute_selector "action-menu ul li"
+    end
+
+    def test_outside_click_on_focusable_element_keeps_focus_there
+      visit_preview(:default)
+      page.execute_script(<<~JS)
+        const input = document.createElement('input')
+        input.id = 'outside-input'
+        input.style.cssText = '#{CSS_POSITION_OUTSIDE}'
+        document.body.append(input)
+      JS
+
+      click_on_invoker_button
+      find("#outside-input").click
+
+      assert_no_selector "anchored-position:popover-open"
+      wait_for_animation_frames
+      assert_selector "#outside-input", focused: true
+    end
+
+    def test_outside_click_on_plain_text_returns_focus_to_invoker
+      visit_preview(:default)
+      page.execute_script(<<~JS)
+        const text = document.createElement('p')
+        text.id = 'outside-text'
+        text.textContent = 'Plain text'
+        text.style.cssText = '#{CSS_POSITION_OUTSIDE}'
+        document.body.append(text)
+      JS
+
+      click_on_invoker_button
+      find("#outside-text").click
+
+      assert_no_selector "anchored-position:popover-open"
+      assert_selector "action-menu button[aria-controls]", focused: true
+    end
+
+    def test_tab_out_of_menu_keeps_focus_on_next_control
+      visit_preview(:default)
+      page.execute_script(<<~JS)
+        const button = document.createElement('button')
+        button.id = 'after-menu'
+        button.textContent = 'After menu'
+        document.querySelector('action-menu').after(button)
+      JS
+
+      open_menu_via_keyboard
+      keyboard.type(:tab)
+
+      assert_no_selector "anchored-position:popover-open"
+      wait_for_animation_frames
+      assert_selector "#after-menu", focused: true
     end
 
     def test_unhidden_disabled_item_cannot_be_checked
