@@ -381,6 +381,9 @@ module Alpha
       end
     end
 
+    # Places an element in the bottom-right corner, i.e. clear of the menu and its invoker.
+    CSS_POSITION_OUTSIDE = "position: fixed; bottom: 8px; right: 8px"
+
     ########## TESTS ############
 
     def test_dynamic_labels_for_single_select_variant
@@ -3072,8 +3075,7 @@ module Alpha
       page.execute_script(<<~JS)
         const input = document.createElement('input')
         input.id = 'outside-input'
-        input.setAttribute('aria-label', 'Outside')
-        input.style.cssText = 'position: fixed; bottom: 8px; right: 8px'
+        input.style.cssText = '#{CSS_POSITION_OUTSIDE}'
         document.body.append(input)
       JS
 
@@ -3091,7 +3093,7 @@ module Alpha
         const text = document.createElement('p')
         text.id = 'outside-text'
         text.textContent = 'Plain text'
-        text.style.cssText = 'position: fixed; bottom: 8px; right: 8px'
+        text.style.cssText = '#{CSS_POSITION_OUTSIDE}'
         document.body.append(text)
       JS
 
