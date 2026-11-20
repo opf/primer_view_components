@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## 0.97.0
+
+### Minor Changes
+
+- [#556](https://github.com/opf/primer_view_components/pull/556) [`764f4ec`](https://github.com/opf/primer_view_components/commit/764f4eccb7cdb168f300c1f367549f50022c752a) Thanks [@lwassermann](https://github.com/lwassermann)! - `Primer::Alpha::ActionList` with `show_dividers` draws item dividers between items instead of inserting section dividers – just like Primer React. The line starts at the label, so it does not divide leading visuals. Items of such a list carry an `ActionListItem--divided` class; hand-written ActionList markup has to set it per item to get the lines. Subclasses of `ActionList`, such as the lists of `ActionMenu`, `NavList` and `SelectPanel`, ignore `show_dividers`. Hidden items are not supported: remove items from the DOM instead of hiding them.
+
+### Patch Changes
+
+- [#558](https://github.com/opf/primer_view_components/pull/558) [`35e5dbd`](https://github.com/opf/primer_view_components/commit/35e5dbdbff34906035032099af0685e1df69a89c) Thanks [@myabc](https://github.com/myabc)! - `Primer::Alpha::ActionMenu` follows the published keyboard table: ArrowLeft and ArrowRight only close and open sub-menus instead of also moving between items, and PageUp and PageDown move focus to the first and last item.
+
+- [#558](https://github.com/opf/primer_view_components/pull/558) [`6efc98f`](https://github.com/opf/primer_view_components/commit/6efc98f51625cec134ea8a62ede7385b2dca321b) Thanks [@myabc](https://github.com/myabc)! - Keep a disabled `Primer::Alpha::ActionMenu::SubMenuItem` closed on ArrowRight. Focus stays on the item, as it does for click, Enter and Space.
+
+- [#551](https://github.com/opf/primer_view_components/pull/551) [`1168f8d`](https://github.com/opf/primer_view_components/commit/1168f8dfb2ea5d289e6461158cc804fe4299b841) Thanks [@myabc](https://github.com/myabc)! - Keep the tab stop on the first loaded item of a deferred `Primer::Alpha::ActionMenu` when it receives focus. Closing any `Primer::Alpha::ActionMenu` by clicking outside it no longer always returns focus to its button: focus that the click or other code moved elsewhere stays there, and returns to the button only when it would otherwise be lost.
+
 ## 0.96.0
 
 ### Minor Changes
