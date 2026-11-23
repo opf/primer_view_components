@@ -1,0 +1,39 @@
+<% subject_id = SecureRandom.hex %>
+
+<% if fetch_strategy == :remote %>
+  <%= render(Primer::Alpha::SelectPanel.new(
+    data: { interaction_subject: subject_id },
+    id: "with_counter",
+    title: "Select items",
+    src: primer_view_components.select_panel_items_path(
+      select_variant: select_variant,
+      selected_items: selected_items,
+    ),
+    select_variant: select_variant,
+    fetch_strategy: :remote,
+    open_on_load: open_on_load
+  )) do |panel| %>
+    <% panel.with_show_button(counter: true) { "Choose items" } %>
+  <% end %>
+<% else %>
+  <%= render(Primer::Alpha::SelectPanel.new(
+    data: { interaction_subject: subject_id },
+    id: "with_counter",
+    title: "Select items",
+    select_variant: select_variant,
+    fetch_strategy: :local,
+    open_on_load: open_on_load
+  )) do |panel| %>
+    <% panel.with_show_button(counter: true) { "Choose items" } %>
+
+    <% 1.upto(6) do |i| %>
+      <% panel.with_item(
+        label: "Item #{i}",
+        active: preselected_values.include?("item#{i}"),
+        content_arguments: { data: { value: "item#{i}" } }
+      ) %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<%= render partial: "primer/alpha/select_panel_preview/interaction_subject_js", locals: { subject_id: subject_id } %>
