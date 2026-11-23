@@ -34,25 +34,25 @@ jobs:
       # to link a PR to a list of environments later.
       url: ${{ env.APP_URL }}
     steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+    - uses: actions/checkout@v7.0.1
       with:
         persist-credentials: false
     - name: Install lib deps
-      uses: ruby/setup-ruby@6aaa311d81eba98ae12eaffbcb63296ace0efcde # v1
+      uses: ruby/setup-ruby@v1.307.0
       with:
         ruby-version: '3.4'
         bundler-cache: true
       env:
         BUNDLE_GEMFILE: Gemfile
     - name: Install demo app deps
-      uses: ruby/setup-ruby@6aaa311d81eba98ae12eaffbcb63296ace0efcde # v1
+      uses: ruby/setup-ruby@v1.307.0
       with:
         ruby-version: '3.4'
         bundler-cache: true
       env:
         BUNDLE_GEMFILE: demo/Gemfile
     - name: Install Kuby deps
-      uses: ruby/setup-ruby@6aaa311d81eba98ae12eaffbcb63296ace0efcde # v1
+      uses: ruby/setup-ruby@v1.307.0
       with:
         ruby-version: '3.4'
         bundler-cache: true
@@ -62,7 +62,7 @@ jobs:
       env:
         AZURE_ACR_PASSWORD: ${{ secrets.AZURE_ACR_PASSWORD }}
       run: echo $AZURE_ACR_PASSWORD | docker login primer.azurecr.io --username GitHubActions --password-stdin
-    - uses: Azure/login@532459ea530d8321f2fb9bb10d1e0bcf23869a43 # v3
+    - uses: Azure/login@v3.0.0
       with:
         # excluding a client secret here will cause a login via OpenID Connect (OIDC),
         # which prevents us from having to rotate client credentials, etc
@@ -97,7 +97,7 @@ jobs:
       # bots, they have no intention of viewing the deployed preview anyway.
       # This saves time because the PR can merge sooner.
       if: ${{ !github.event.pull_request.auto_merge }}
-      uses: azure/arm-deploy@a1361c2c2cd398621955b16ca32e01c65ea340f5
+      uses: azure/arm-deploy@v2.0.0
       with:
         resourceGroupName: primer
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
