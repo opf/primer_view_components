@@ -93,6 +93,8 @@ workflows:
         - 'actions/checkout@v7.0.1'
         - 'actions/github-script@v8.0.0'
         - 'actions/labeler@v6.1.0'
+    '.github/workflows/verify-actions-lock.yml':
+        - 'actions/checkout@v7.0.1'
     '.github/workflows/zizmor-scan.yml':
         - 'actions/checkout@v6.0.2'
         - 'zizmorcore/zizmor-action@v0.5.3'
