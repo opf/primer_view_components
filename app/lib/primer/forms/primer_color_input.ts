@@ -1,4 +1,5 @@
 import {attr, controller, target} from '@github/catalyst'
+import {clearValidation, showValidation, type InlineValidationParts} from './inline_validation'
 
 const HEX_PATTERN = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i
 
@@ -23,6 +24,9 @@ export class PrimerColorInputElement extends HTMLElement {
   @attr blank = false
   // There is no color to show in the swatch.
   @attr empty = false
+  // The id of the validation element FormControl renders after this element.
+  // Empty without FormControl, as inside `multi`.
+  @attr validationId = ''
 
   #abortController: AbortController | null = null
   #observer: MutationObserver | null = null
@@ -117,5 +121,46 @@ export class PrimerColorInputElement extends HTMLElement {
   // setting the value from script, which fires no event.
   sync(): void {
     this.syncPicker()
+  }
+
+  // The validation API of `primer-text-field`. The message is parsed as
+  // HTML, so pass trusted markup; announcing it is up to the caller. Without
+  // a validation element these do nothing.
+  setError(message: string): void {
+    const parts = this.#validationParts
+    if (parts) showValidation(parts, message, 'error')
+  }
+
+  setSuccess(message: string): void {
+    const parts = this.#validationParts
+    if (parts) showValidation(parts, message, 'success')
+  }
+
+  clearError(): void {
+    const parts = this.#validationParts
+    if (parts) clearValidation(parts)
+  }
+
+  // The validation element is a sibling, so its parts are not Catalyst
+  // targets; they carry this element's target names all the same.
+  get #validationParts(): InlineValidationParts | null {
+    const validation = this.validationId ? document.getElementById(this.validationId) : null
+    if (!validation) return null
+
+    const part = (name: string) => validation.querySelector<HTMLElement>(`[data-target~="primer-color-input.${name}"]`)!
+
+    return {
+      input: this.inputElement,
+      validation,
+      message: part('validationMessageElement'),
+      successIcon: part('validationSuccessIcon'),
+      errorIcon: part('validationErrorIcon'),
+    }
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'primer-color-input': PrimerColorInputElement
   }
 }

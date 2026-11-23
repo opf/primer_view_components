@@ -1,0 +1,25 @@
+<script type="text/javascript">
+  window.addEventListener('load', function () {
+    var colorInput = document.querySelector('primer-color-input');
+
+    document.querySelector('[data-validation-demo=error]').onclick = function() {
+      colorInput.setError('Hex code is invalid');
+    };
+
+    document.querySelector('[data-validation-demo=success]').onclick = function() {
+      colorInput.setSuccess('Contrast checked');
+    };
+
+    document.querySelector('[data-validation-demo=clear]').onclick = function() {
+      colorInput.clearError();
+    };
+  }, false);
+</script>
+<%= render(Primer::Alpha::Stack.new) do %>
+  <%= render(Primer::OpenProject::ColorField.new(name: "color", id: "color", label: "Primary color", input_width: :small)) %>
+  <%= render(Primer::Alpha::Stack.new(direction: :horizontal)) do %>
+    <%= render(Primer::Beta::Button.new(data: { validation_demo: "error" })) { "Set error" } %>
+    <%= render(Primer::Beta::Button.new(data: { validation_demo: "success" })) { "Set success" } %>
+    <%= render(Primer::Beta::Button.new(data: { validation_demo: "clear" })) { "Clear" } %>
+  <% end %>
+<% end %>

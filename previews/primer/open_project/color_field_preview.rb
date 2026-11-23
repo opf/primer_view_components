@@ -103,6 +103,9 @@ module Primer
 
       # @label In a multi input
       def in_multi; end
+
+      # @label Client-side validation
+      def client_validation; end
     end
   end
 end
