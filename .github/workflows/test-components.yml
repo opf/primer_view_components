@@ -25,7 +25,7 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
       - id: set-matrix
@@ -39,15 +39,15 @@ jobs:
       matrix:
         include: ${{ fromJson(needs.load-matrix.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
-      - uses: ruby/setup-ruby@6aaa311d81eba98ae12eaffbcb63296ace0efcde # v1
+      - uses: ruby/setup-ruby@v1.307.0
         with:
           ruby-version: ${{ matrix.ruby_version }}
           bundler-cache: true
           cache-version: ${{ matrix.rails_version }}-${{ matrix.ruby_version }}
-      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+      - uses: actions/setup-node@v5.0.0
         with:
           node-version: 24
           cache: "npm"

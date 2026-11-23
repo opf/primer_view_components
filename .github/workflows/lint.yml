@@ -17,21 +17,21 @@ jobs:
       contents: read
       pull-requests: read
     steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+    - uses: actions/checkout@v7.0.1
       with:
         persist-credentials: false
     - name: Get specific changed files
       id: changed-files
-      uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96
+      uses: tj-actions/changed-files@v47.0.6
       with:
         files: |
           docs/**/*.md
           README.md
           CONTRIBUTING.md
           CODE_OF_CONDUCT.md
-    - uses: xt0rted/markdownlint-problem-matcher@1a5fabfb577370cfdf5af944d418e4be3ea06f27 # v3
+    - uses: xt0rted/markdownlint-problem-matcher@v3.0.0
       if: steps.changed-files.outputs.any_changed == 'true'
-    - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+    - uses: actions/setup-node@v5.0.0
       if: steps.changed-files.outputs.any_changed == 'true'
       with:
         cache: 'npm'
@@ -49,19 +49,19 @@ jobs:
       contents: read
       pull-requests: read
     steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+    - uses: actions/checkout@v7.0.1
       with:
         persist-credentials: false
     - name: Get specific changed files
       id: changed-files
-      uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96
+      uses: tj-actions/changed-files@v47.0.6
       with:
         files: |
           app/**/*.rb
           lib/**/*.rb
           demo/**/*.rb
           test/**/*.rb
-    - uses: ruby/setup-ruby@6aaa311d81eba98ae12eaffbcb63296ace0efcde # v1
+    - uses: ruby/setup-ruby@v1.307.0
       with:
         ruby-version: '3.4'
         bundler-cache: true
@@ -74,16 +74,16 @@ jobs:
       contents: read
       pull-requests: read
     steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+    - uses: actions/checkout@v7.0.1
       with:
         persist-credentials: false
     - name: Get changed files
       id: changed-files
-      uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96
+      uses: tj-actions/changed-files@v47.0.6
       with:
         files: |
           app/components/**/*.erb
-    - uses: ruby/setup-ruby@6aaa311d81eba98ae12eaffbcb63296ace0efcde # v1
+    - uses: ruby/setup-ruby@v1.307.0
       with:
         ruby-version: '3.4'
         bundler-cache: true
@@ -96,16 +96,16 @@ jobs:
       contents: read
       pull-requests: read
     steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+    - uses: actions/checkout@v7.0.1
       with:
         persist-credentials: false
     - name: Get changed files
       id: changed-files
-      uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96
+      uses: tj-actions/changed-files@v47.0.6
       with:
         files: |
           app/components/**/*.ts
-    - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+    - uses: actions/setup-node@v5.0.0
       if: steps.changed-files.outputs.any_changed == 'true'
       with:
         cache: 'npm'
@@ -123,17 +123,17 @@ jobs:
       contents: read
       pull-requests: read
     steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+    - uses: actions/checkout@v7.0.1
       with:
         persist-credentials: false
     - name: Get changed files
       id: changed-files
-      uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96
+      uses: tj-actions/changed-files@v47.0.6
       with:
         files: |
           app/components/**/*.pcss
           lib/postcss_mixins/*.pcss
-    - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+    - uses: actions/setup-node@v5.0.0
       if: steps.changed-files.outputs.any_changed == 'true'
       with:
         cache: 'npm'
@@ -150,7 +150,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+    - uses: actions/checkout@v7.0.1
       with:
         persist-credentials: false
     - name: Lint with Herb
